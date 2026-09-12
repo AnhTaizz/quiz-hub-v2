@@ -1,0 +1,15 @@
+html {
+    zoom: 85%;
+}
+
+body {
+    background: #f3f4f6;
+    font-family: 'Inter', sans-serif;
+    overflow: hidden;
+}
+
+/* ── Zoom-85% compensation for fixed full-screen overlays ── */
+.modal-backdrop, .modal {
+    width: 117.65vw !important;
+    height: 117.65vh !important;
+}

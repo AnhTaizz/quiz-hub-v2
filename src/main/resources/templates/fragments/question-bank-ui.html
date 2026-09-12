@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+    <!-- 
+        Fragment: Question Bank UI
+        Params:
+        - userType: 'teacher' | 'student'
+        - publicBankEnabled: boolean
+    -->
+    <div th:fragment="question-bank-ui(userType, publicBankEnabled)">
+        
+        <link rel="stylesheet" th:href="@{/css/fragments/question-bank-ui.css}">
+
+        <div class="page-title-box">
+            <div>
+                <h1 class="page-title">Ngân hàng Câu hỏi</h1>
+                <p class="page-sub">Quản lý và soạn thảo câu hỏi trắc nghiệm của bạn</p>
+            </div>
+            <div class="action-btns d-flex align-items-start gap-2">
+                <!-- Group 1: Excel Trigger and dynamic target tracker -->
+                <div th:if="${userType == 'teacher' || userType == 'student'}" id="excel-import-container" class="d-flex flex-column align-items-center gap-1 position-relative excel-btn-wrapper" style="margin-top:0px;">
+                    <input type="file" id="excel-import-input" accept=".xlsx, .xls" style="display:none;" onchange="handleExcelImport(event)">
+                    <button class="btn btn-outline-secondary fw-bold" style="border-radius: 12px; border-color: #cbd5e1; color: #334155; background:#ffffff; height: 42px;" onclick="document.getElementById('excel-import-input').click()">
+                        <i class="bi bi-file-earmark-spreadsheet-fill me-1 text-success"></i> Nhập Excel
+                    </button>
+                    <!-- Custom Tooltip Guide -->
+                    <div class="excel-tooltip-guide">
+                        <div class="tooltip-hdr">
+                            <i class="bi bi-info-circle-fill me-1 text-primary"></i> Hướng dẫn định dạng Excel
+                        </div>
+                        <div class="tooltip-body">
+                            <p class="mb-2">Dữ liệu bắt đầu từ dòng 2 (bỏ qua tiêu đề dòng 1):</p>
+                            <ul class="tooltip-cols">
+                                <li><strong>Cột A:</strong> Nội dung câu hỏi</li>
+                                <li><strong>Cột B:</strong> Loại (<code>single_choice</code>, <code>multiple_choice</code>, <code>fill_in_blank</code>)</li>
+                                <li><strong>Cột C:</strong> Độ khó (<code>easy</code>, <code>medium</code>, <code>hard</code>)</li>
+                                <li><strong>Cột D -> K:</strong> Đáp án A -> H</li>
+                                <li><strong>Cột L:</strong> Đáp án đúng (Ví dụ: <code>A</code> hoặc <code>A,C</code>)</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div style="width: 100%; display:flex; justify-content:center;">
+                        <span class="badge px-2 py-1 shadow-sm" 
+                              id="q-import-dest-badge" 
+                              style="font-size: 0.68rem; font-weight: 700; text-align: center; max-width: 140px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #4338ca !important; background-color: #e0e7ff !important; border: 1px solid #c7d2fe !important;">
+                            <i class="bi bi-box-arrow-in-down me-1"></i>Lưu vào: Mặc định
+                        </span>
+                    </div>
+                </div>
+
+
+                <!-- Group 3: General Manual creation -->
+                <button class="btn-premium" id="btn-create-question" onclick="showCreateModal()" style="height: 42px;">
+                    <i class="bi bi-plus-circle-fill"></i> Soạn câu hỏi mới
+                </button>
+            </div>
+        </div>
+
+        <!-- Tabs Box (Only if public bank is enabled) -->
+        <div class="tab-box" th:if="${publicBankEnabled}">
+            <button class="tab-item active" id="tab-mine" onclick="switchTab('mine')">
+                <i class="bi bi-person-fill"></i> Câu hỏi của tôi
+            </button>
+            <button class="tab-item" id="tab-public" onclick="switchTab('public')">
+                <i class="bi bi-globe2"></i> Kho hệ thống
+            </button>
+        </div>
+
+        <!-- Filters Block -->
+        <div class="filter-shell">
+            <div class="filter-group">
+                <label><i class="bi bi-search me-1"></i> Từ khóa tìm kiếm</label>
+                <input type="text" id="filter-keyword" class="form-control filter-ctrl" placeholder="Tìm tên câu hỏi..." oninput="triggerSearch()" autocomplete="off">
+            </div>
+            <div class="filter-group">
+                <label><i class="bi bi-folder2-open me-1"></i> Danh mục</label>
+                <div class="d-flex gap-1 align-items-center">
+                    <input type="text" id="filter-category-display" class="form-control filter-ctrl cursor-pointer bg-white" placeholder="Tất cả danh mục" readonly onclick="openModalCategorySelector()" style="cursor: pointer;">
+                    <input type="hidden" id="filter-category" value="">
+                    <button type="button" class="btn btn-outline-danger btn-sm p-2" id="clear-cat-btn" style="display: none; border-radius: 12px; height: 42px; width: 42px;" onclick="clearCategorySelection()">
+                        <i class="bi bi-x-lg"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="filter-group">
+                <label><i class="bi bi-tags-fill me-1"></i> Loại câu hỏi</label>
+                <select id="filter-type" class="form-select filter-ctrl" onchange="triggerSearch()">
+                    <option value="">-- Tất cả các loại --</option>
+                    <option value="SINGLE_CHOICE">Trắc nghiệm 1 đáp án</option>
+                    <option value="MULTIPLE_CHOICE">Trắc nghiệm nhiều đáp án</option>
+                    <option value="FILL_IN_BLANK">Điền khuyết</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label><i class="bi bi-bar-chart-fill me-1"></i> Độ khó</label>
+                <select id="filter-level" class="form-select filter-ctrl" onchange="triggerSearch()">
+                    <option value="">-- Tất cả mức độ --</option>
+                    <option value="EASY">Dễ (Easy)</option>
+                    <option value="MEDIUM">Trung bình (Medium)</option>
+                    <option value="HARD">Khó (Hard)</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Questions Listing Panel -->
+        <div class="list-shell">
+            <!-- Bulk Actions Bar -->
+            <div id="bulk-selection-bar" class="bulk-actions-bar">
+                <div class="d-flex flex-column">
+                    <div class="d-flex align-items-center">
+                        <div class="form-check me-3">
+                            <input class="form-check-input" type="checkbox" id="selectAllQuestions" onchange="toggleSelectAll(this)">
+                            <label class="form-check-label fw-bold ms-2" for="selectAllQuestions">Chọn tất cả</label>
+                        </div>
+                        <span id="selected-count-badge" class="badge bg-primary rounded-pill">0 đã chọn</span>
+                    </div>
+                    <div id="select-all-all-area" class="mt-1 small" style="display: none; padding-left: 32px; color: #1e40af;"></div>
+                </div>
+                <div class="d-flex gap-2">
+                    <button th:if="${userType == 'teacher'}" class="btn btn-sm btn-warning fw-bold px-3 py-2 text-white" style="border-radius: 10px;" onclick="confirmBulkShare()">
+                        <i class="bi bi-share-fill me-1"></i> Chia sẻ hàng loạt
+                    </button>
+                    <button class="btn btn-sm btn-danger fw-bold px-3 py-2 text-white" style="border-radius: 10px;" onclick="confirmBulkDelete()">
+                        <i class="bi bi-trash3-fill me-1"></i> Xóa hàng loạt
+                    </button>
+                    <button class="btn btn-sm btn-light fw-bold px-3 py-2" style="border-radius: 10px;" onclick="clearSelection()">
+                        Hủy
+                    </button>
+                </div>
+            </div>
+
+            <div id="questions-container" class="flex-grow-1">
+                <!-- Ajax loading output -->
+            </div>
+
+            <!-- Premium Pagination Bar -->
+            <div id="pagination-shell" class="pagination-shell-up" style="display: none !important;">
+                <!-- JS will render premium pagination here -->
+            </div>
+        </div>
+
+        <!-- The Question Modal is now provided by the shared question-editor fragment -->
+        <div th:replace="~{fragments/question-editor :: question-editor-modal}"></div>
+
+        <div class="modal fade" id="viewDetailModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content" style="border-radius: 20px; overflow: hidden;">
+                    <div class="modal-header border-0" style="background: linear-gradient(135deg, #1d4ed8, #4338ca); padding: 20px 28px;">
+                        <h5 class="modal-title fw-bold text-white"><i class="bi bi-eye-fill me-2"></i>Chi tiết câu hỏi</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body p-4" id="detail-body"></div>
+                    <div class="modal-footer border-0 p-4 pt-0">
+                        <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal" style="border-radius: 12px; padding: 10px 24px;">Đóng</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Confirm Modals -->
+        <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content" style="border-radius: 20px; overflow: hidden;">
+                    <div class="modal-header border-0 bg-danger p-3">
+                        <h5 class="modal-title fw-bold text-white ms-2"><i class="bi bi-trash3-fill me-2"></i>Xác nhận Xóa</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body p-4 text-center">
+                        <i class="bi bi-exclamation-triangle text-danger" style="font-size: 3.5rem;"></i>
+                        <h5 class="fw-bold mt-3 text-dark">Bạn chắc chắn chứ?</h5>
+                        <p class="text-muted small mb-0" id="delete-confirm-msg">Hành động này không thể hoàn tác.</p>
+                    </div>
+                    <div class="modal-footer border-0 p-4 pt-0">
+                        <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal" style="border-radius:12px; padding:10px 24px;">Hủy</button>
+                        <button type="button" class="btn btn-danger fw-bold" id="btnConfirmDelete" style="border-radius:12px; padding:10px 24px;">Đồng ý Xóa</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div th:if="${userType == 'teacher'}" class="modal fade" id="shareConfirmModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content" style="border-radius: 20px; overflow: hidden;">
+                    <div class="modal-header border-0 bg-primary p-3">
+                        <h5 class="modal-title fw-bold text-white ms-2"><i class="bi bi-share-fill me-2"></i>Chia sẻ Câu hỏi</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body p-4 text-center">
+                        <i class="bi bi-patch-question text-primary" style="font-size: 3.5rem;"></i>
+                        <h5 class="fw-bold mt-3 text-dark">Gửi yêu cầu chia sẻ?</h5>
+                        <p class="text-muted small mb-0">Câu hỏi sẽ được gửi lên hệ thống công khai để duyệt.</p>
+                    </div>
+                    <div class="modal-footer border-0 p-4 pt-0">
+                        <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal" style="border-radius:12px; padding:10px 24px;">Hủy</button>
+                        <button type="button" class="btn btn-primary fw-bold" id="btnConfirmShare" style="border-radius:12px; padding:10px 24px;">Đồng ý</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div th:if="${userType == 'teacher'}" class="modal fade" id="bulkShareConfirmModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content" style="border-radius: 20px; overflow: hidden;">
+                    <div class="modal-header border-0 bg-warning p-3">
+                        <h5 class="modal-title fw-bold text-white ms-2"><i class="bi bi-share-fill me-2"></i>Chia sẻ hàng loạt</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body p-4 text-center">
+                        <i class="bi bi-collection-play text-warning" style="font-size: 3.5rem;"></i>
+                        <h5 class="fw-bold mt-3 text-dark">Chia sẻ <span id="bulk-share-count">0</span> câu hỏi?</h5>
+                    </div>
+                    <div class="modal-footer border-0 p-4 pt-0">
+                        <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal" style="border-radius:12px; padding:10px 24px;">Hủy</button>
+                        <button type="button" class="btn btn-warning fw-bold text-white" onclick="executeBulkShare()" style="border-radius:12px; padding:10px 24px;">Đồng ý</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="toast-wrap"></div>
+
+        <!-- Logic Fragment -->
+        <script th:inline="javascript">
+            window.QUESTION_BANK_CONFIG = {
+                userType: [[${userType}]],
+                publicBankEnabled: [[${publicBankEnabled}]],
+                baseApi: '/api/' + [[${userType}]] + '/questions'
+            };
+        </script>
+        <script th:src="@{/js/fragments/question-bank-ui.js}"></script>
+
+        <div th:replace="~{fragments/question-editor :: question-editor-scripts(${userType})}"></div>
+
+    </div>
+
+</body>
+</html>

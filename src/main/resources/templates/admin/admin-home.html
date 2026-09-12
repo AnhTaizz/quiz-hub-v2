@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuizHub - Bảng Điều Khiển Quản Trị Viên</title>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Nunito+Sans:wght@400;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" th:href="@{/css/admin/admin-home.css}">
+</head>
+
+<body>
+    <script>
+        (function () {
+            const isCollapsed = localStorage.getItem('sidebar-collapsed') === 'true';
+            if (isCollapsed) document.body.classList.add('sidebar-collapsed');
+        })();
+    </script>
+
+    <aside th:replace="~{layout/sidebar :: admin-sidebar('dashboard')}"></aside>
+    <header th:replace="~{layout/header :: admin-header}"></header>
+
+    <main id="main-content">
+
+        <div class="page-title-box">
+            <h4>Bảng điều khiển Trung tâm</h4>
+            <p>Tổng quan hoạt động của toàn bộ hệ thống QuizHub.</p>
+        </div>
+
+        <div class="top-cards-row">
+            <div class="stat-card">
+                <div class="stat-icon icon-blue"><i class="bi bi-people-fill"></i></div>
+                <div class="stat-info">
+                    <h2 id="stat-users">...</h2>
+                    <p>Tổng Tài khoản</p>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon icon-green"><i class="bi bi-diagram-3-fill"></i></div>
+                <div class="stat-info">
+                    <h2 id="stat-categories">...</h2>
+                    <p>Danh mục Public</p>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon icon-orange"><i class="bi bi-clipboard2-check-fill"></i></div>
+                <div class="stat-info">
+                    <h2 id="stat-pending">...</h2>
+                    <p>Chờ duyệt</p>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon icon-purple"><i class="bi bi-collection-fill"></i></div>
+                <div class="stat-info">
+                    <h2 id="stat-questions">...</h2>
+                    <p>Câu hỏi Hệ thống</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="bottom-row">
+
+            <div>
+                <div class="dashboard-card">
+                    <div class="card-header-row">
+                        <h5><i class="bi bi-clipboard2-check-fill me-2" style="color: var(--blue);"></i>Duyệt Câu hỏi
+                            Public</h5>
+                        <a href="/admin/moderation">Xem tất cả <i class="bi bi-arrow-right"></i></a>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nội dung yêu cầu</th>
+                                <th>Giáo viên gửi</th>
+                                <th>Danh mục</th>
+                                <th class="text-right">Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody id="moderation-tbody">
+                            <tr>
+                                <td>
+                                    <div class="td-bold">Câu hỏi: "Đâu là đặc điểm của Spring Boot?"</div>
+                                    <div class="td-sub"><i class="bi bi-list-check me-1"></i>Trắc nghiệm (4 đáp án)
+                                    </div>
+                                </td>
+                                <td>Cô Thương</td>
+                                <td><strong>Lập trình Java</strong></td>
+                                <td class="text-right">
+                                    <button class="btn-action-sm btn-approve me-1" onclick="window.location.href='/admin/moderation'"><i class="bi bi-check-lg"></i>
+                                        Duyệt</button>
+                                    <button class="btn-action-sm btn-reject" onclick="window.location.href='/admin/moderation'"><i class="bi bi-x-lg"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="td-bold">Đề thi: "Đề thi thử TOEIC Reading 2026"</div>
+                                    <div class="td-sub"><i class="bi bi-file-earmark-text me-1"></i>100 Câu hỏi — 60
+                                        Phút</div>
+                                </td>
+                                <td>Thầy Minh</td>
+                                <td><strong>Ngoại ngữ</strong></td>
+                                <td class="text-right">
+                                    <button class="btn-action-sm btn-approve me-1" onclick="window.location.href='/admin/moderation'"><i class="bi bi-check-lg"></i>
+                                        Duyệt</button>
+                                    <button class="btn-action-sm btn-reject" onclick="window.location.href='/admin/moderation'"><i class="bi bi-x-lg"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="td-bold">Câu hỏi: "Giải thuật A* dùng để làm gì?"</div>
+                                    <div class="td-sub"><i class="bi bi-list-check me-1"></i>Trắc nghiệm (4 đáp án)
+                                    </div>
+                                </td>
+                                <td>Thầy Dũng</td>
+                                <td><strong>Trí tuệ nhân tạo</strong></td>
+                                <td class="text-right">
+                                    <button class="btn-action-sm btn-approve me-1" onclick="window.location.href='/admin/moderation'"><i class="bi bi-check-lg"></i>
+                                        Duyệt</button>
+                                    <button class="btn-action-sm btn-reject" onclick="window.location.href='/admin/moderation'"><i class="bi bi-x-lg"></i></button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="dashboard-card">
+                    <div class="card-header-row">
+                        <h5><i class="bi bi-person-plus-fill me-2" style="color: var(--green);"></i>Tài khoản đăng ký
+                            gần đây</h5>
+                        <a href="/admin/users">Xem tất cả <i class="bi bi-arrow-right"></i></a>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Họ và Tên</th>
+                                <th>Email</th>
+                                <th>Vai trò</th>
+                                <th>Ngày tham gia</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recent-users-tbody">
+                            <tr>
+                                <td>
+                                    <div class="td-bold">Nguyễn Hữu Anh Tài</div>
+                                </td>
+                                <td>anhtai.ptit@gmail.com</td>
+                                <td><span class="badge-role role-student">Học sinh</span></td>
+                                <td>10/04/2026</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="td-bold">Nguyễn Quỳnh Trang</div>
+                                </td>
+                                <td>trang.nguyen@gmail.com</td>
+                                <td><span class="badge-role role-teacher">Giáo viên</span></td>
+                                <td>09/04/2026</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div>
+                <div class="dashboard-card">
+                    <div class="card-header-row">
+                        <h5><i class="bi bi-diagram-3-fill me-2" style="color: var(--purple);"></i>Danh mục Hệ thống
+                        </h5>
+                        <button onclick="window.location.href='/admin/categories'"
+                            style="background: none; border: none; color: var(--blue); cursor: pointer; font-size: 18px;"><i
+                                class="bi bi-plus-circle-fill"></i></button>
+                    </div>
+                    <ul class="cat-list" id="category-list">
+                        <li class="cat-item">
+                            <div class="cat-info">
+                                <h6>💻 Lập trình cơ sở</h6>
+                                <p>12 Đề thi · 450 Câu hỏi</p>
+                            </div>
+                            <i class="bi bi-three-dots-vertical"></i>
+                        </li>
+                        <li class="cat-item">
+                            <div class="cat-info">
+                                <h6>🌐 Lập trình Web</h6>
+                                <p>8 Đề thi · 210 Câu hỏi</p>
+                            </div>
+                            <i class="bi bi-three-dots-vertical"></i>
+                        </li>
+                        <li class="cat-item">
+                            <div class="cat-info">
+                                <h6>📊 Cơ sở dữ liệu</h6>
+                                <p>5 Đề thi · 180 Câu hỏi</p>
+                            </div>
+                            <i class="bi bi-three-dots-vertical"></i>
+                        </li>
+                        <li class="cat-item">
+                            <div class="cat-info">
+                                <h6>🌍 Ngoại ngữ (TOEIC/IELTS)</h6>
+                                <p>20 Đề thi · 1,200 Câu hỏi</p>
+                            </div>
+                            <i class="bi bi-three-dots-vertical"></i>
+                        </li>
+                    </ul>
+                    <div style="padding-top: 14px; text-align: center;">
+                        <a href="/admin/categories" style="font-size: 13px; color: var(--text-muted);">Xem toàn bộ danh
+                            mục</a>
+                    </div>
+                </div>
+
+                <div class="dashboard-card">
+                    <div class="card-header-row">
+                        <h5>Thao tác nhanh</h5>
+                    </div>
+                    <div class="quick-actions">
+                        <button class="btn-quick" onclick="window.location.href='/admin/users'">
+                            <i class="bi bi-person-plus"></i> Thêm Tài khoản mới
+                        </button>
+                        <button class="btn-quick" onclick="window.location.href='/admin/categories'">
+                            <i class="bi bi-folder-plus"></i> Tạo Danh mục mới
+                        </button>
+                        <button class="btn-quick" onclick="window.location.href='/admin/reports'">
+                            <i class="bi bi-bar-chart-line"></i> Xem Báo cáo
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:src="@{/js/admin/admin-home.js}"></script>
+    <div th:replace="~{layout/header :: changePasswordModal}"></div>
+    <script th:replace="~{layout/header :: change-password-script}"></script>
+</body>
+
+</html>

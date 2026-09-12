@@ -1,0 +1,4383 @@
+[
+    {
+        "question": "Mô hình tổng quát đảm bảo an toàn thông tin và hệ thống thông tin thường gồm các lớp:",
+        "answers": [
+            {
+                "content": "An ninh tổ chức, An ninh mạng và Điều khiển truy cập",
+                "is_correct": false
+            },
+            {
+                "content": "An ninh tổ chức, Tưởng lửa và Điều khiển truy cập",
+                "is_correct": false
+            },
+            {
+                "content": "An ninh tổ chức, An ninh mạng và An toàn hệ điều hành và ứng dụng",
+                "is_correct": false
+            },
+            {
+                "content": "An ninh tổ chức, An ninh mạng và An ninh hệ thống",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "An toàn thông tin gồm hai lĩnh vực chính là:",
+        "answers": [
+            {
+                "content": "An ninh mạng và An toàn hệ thống",
+                "is_correct": false
+            },
+            {
+                "content": "An toàn máy tính và An toàn Internet",
+                "is_correct": false
+            },
+            {
+                "content": "An toàn máy tính và An ninh mạng",
+                "is_correct": false
+            },
+            {
+                "content": "An toàn công nghệ thông tin và Đảm bảo thông tin",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Tại sao cần phải đảm bảo an toàn cho thông tin?",
+        "answers": [
+            {
+                "content": "Do có nhiều thiết bị kết nối mạng Internet với nhiều nguy cơ và đe dọa",
+                "is_correct": true
+            },
+            {
+                "content": "Do có quá nhiều phần mềm độc hại",
+                "is_correct": false
+            },
+            {
+                "content": "Do có quá nhiều nguy cơ tấn công mạng",
+                "is_correct": false
+            },
+            {
+                "content": "Do có nhiều thiết bị kết nối mạng Internet",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "An toàn hệ thống thông tin là:",
+        "answers": [
+            {
+                "content": "Việc đảm bảo thông tin trong hệ thống không bị đánh cắp",
+                "is_correct": false
+            },
+            {
+                "content": "Việc đảm bảo cho hệ thống thông tin hoạt động trơn tru, ổn định",
+                "is_correct": false
+            },
+            {
+                "content": "Việc đảm bảo cho hệ thống thông tin không bị tấn công",
+                "is_correct": false
+            },
+            {
+                "content": "Việc đảm bảo các thuộc tính an ninh, an toàn của hệ thống thông tin",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Người sử dụng hệ thống thông tin quản lý trong mô hình 4 loại hệ thống thông tin là:",
+        "answers": [
+            {
+                "content": "Quản lý cao cấp",
+                "is_correct": false
+            },
+            {
+                "content": "Giám đốc điều hành",
+                "is_correct": false
+            },
+            {
+                "content": "Nhân viên",
+                "is_correct": false
+            },
+            {
+                "content": "Quản lý bộ phận",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Nguyên tắc cơ bản cho đảm bảo an toàn thông tin, hệ thống và mạng là:",
+        "answers": [
+            {
+                "content": "Phòng vệ nhiều lớp có chiều sâu",
+                "is_correct": true
+            },
+            {
+                "content": "Cần đầu tư trang thiết bị và chuyên gia đảm bảo an toàn",
+                "is_correct": false
+            },
+            {
+                "content": "Cần mua sắm và lắp đặt nhiều thiết bị an ninh chuyên dụng",
+                "is_correct": false
+            },
+            {
+                "content": "Cân bằng giữa tính hữu dụng, chi phí và tính năng",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Một trong các nội dung rất quan trọng của quản lý an toàn thông tin là:",
+        "answers": [
+            {
+                "content": "Quản lý các ứng dụng",
+                "is_correct": false
+            },
+            {
+                "content": "Quản lý hệ thống",
+                "is_correct": false
+            },
+            {
+                "content": "Quản lý hệ điều hành",
+                "is_correct": false
+            },
+            {
+                "content": "Quản lý rủi ro",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Một thông điệp có nội dung nhạy cảm truyền trên mạng bị sửa đổi. Các thuộc tính an toàn thông tin nào bị vi phạm?",
+        "answers": [
+            {
+                "content": "Bí mật, Toàn vẹn và sẵn dùng",
+                "is_correct": false
+            },
+            {
+                "content": "Bí mật và Toàn vẹn",
+                "is_correct": true
+            },
+            {
+                "content": "Bí mật",
+                "is_correct": false
+            },
+            {
+                "content": "Toàn vẹn",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Nguy cơ bị tấn công từ chối dịch vụ (DoS) và từ chối dịch vụ phân tán (DDoS) thường gặp ở vùng nào trong 7 vùng cơ sở hạ tầng CNTT?",
+        "answers": [
+            {
+                "content": "Vùng máy trạm",
+                "is_correct": false
+            },
+            {
+                "content": "Vùng mạng WAN",
+                "is_correct": true
+            },
+            {
+                "content": "Vùng mạng LAN-to-WAN",
+                "is_correct": false
+            },
+            {
+                "content": "Vùng mạng LAN",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "An toàn thông tin (Information Security) là gì?",
+        "answers": [
+            {
+                "content": "Là việc phòng chống đánh cắp thông tin",
+                "is_correct": false
+            },
+            {
+                "content": "Là việc bảo vệ chống truy nhập, sử dụng, tiết lộ, sửa đổi, hoặc phá hủy thông tin một cách trái phép",
+                "is_correct": true
+            },
+            {
+                "content": "Là việc bảo vệ chống sử dụng, tiết lộ, sửa đổi, vận chuyển hoặc phá hủy thông tin một cách trái phép",
+                "is_correct": false
+            },
+            {
+                "content": "Là việc phòng chống tấn công mạng",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Tìm phát biểu đúng trong các phát biểu sau:",
+        "answers": [
+            {
+                "content": "Mối đe dọa là bất kỳ một hành động tấn công nào vào hệ thống mạng.",
+                "is_correct": false
+            },
+            {
+                "content": "Mối đe dọa là bất kỳ một hành động nào có thể gây hư hại đến các tài nguyên hệ thống.",
+                "is_correct": true
+            },
+            {
+                "content": "Mối đe dọa là bất kỳ một hành động tấn công nào vào hệ thống máy tính.",
+                "is_correct": false
+            },
+            {
+                "content": "Mối đe dọa là bất kỳ một hành động tấn công nào vào hệ thống máy tính và mạng.",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Đây là một trong các biện pháp phòng chống tấn công khai thác lỗi tràn bộ đệm?",
+        "answers": [
+            {
+                "content": "Sử dụng tường lửa",
+                "is_correct": false
+            },
+            {
+                "content": "Sử dụng công nghệ xác thực mạnh",
+                "is_correct": false
+            },
+            {
+                "content": "Sử dụng các kỹ thuật mật mã",
+                "is_correct": false
+            },
+            {
+                "content": "Sử dụng cơ chế cẩm thực hiện mã trong dữ liệu",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Trong tấn công khai thác lỗi tràn bộ đệm, tin tặc thường sử dụng một số lệnh NOP (No Operation) ở phần đầu của mã tấn công. Mục đích của việc này là để:",
+        "answers": [
+            {
+                "content": "Tăng khả năng phá hoại của mã tấn công",
+                "is_correct": false
+            },
+            {
+                "content": "Tăng khả năng gây tràn bộ đệm",
+                "is_correct": false
+            },
+            {
+                "content": "Tăng khả năng mã tấn công được thực hiện",
+                "is_correct": true
+            },
+            {
+                "content": "Tăng khả năng gây lỗi chương trình",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Tìm phát biểu đúng trong các phát biểu sau:",
+        "answers": [
+            {
+                "content": "Điểm yếu hệ thống chỉ xuất hiện trong các mô đun phần mềm",
+                "is_correct": false
+            },
+            {
+                "content": "Điểm yếu chỉ xuất hiện khi hệ thống bị tấn công",
+                "is_correct": false
+            },
+            {
+                "content": "Điểm yếu hệ thống có thể xuất hiện trong cả các mô đun phần cứng và phần mềm",
+                "is_correct": true
+            },
+            {
+                "content": "Điểm yếu hệ thống chỉ xuất hiện trong các mô đun phần cứng",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Các vùng bộ nhớ thường bị tràn gồm:",
+        "answers": [
+            {
+                "content": "Ngăn xếp (Stack) và vùng nhớ cấp phát động (Heap)",
+                "is_correct": true
+            },
+            {
+                "content": "Ngăn xếp (Stack) và Bộ nhớ đệm (Cache)",
+                "is_correct": false
+            },
+            {
+                "content": "Hàng đợi (Queue) và vùng nhớ cấp phát động (Heap)",
+                "is_correct": false
+            },
+            {
+                "content": "Hàng đợi (Queue) và Ngăn xếp (Stack)",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Các thành phần chính của hệ thống máy tính gồm:",
+        "answers": [
+            {
+                "content": "CPU, Bộ nhớ, HDD, hệ điều hành và các ứng dụng",
+                "is_correct": false
+            },
+            {
+                "content": "CPU, hệ điều hành và các ứng dụng",
+                "is_correct": false
+            },
+            {
+                "content": "Hệ thống phần cứng và Hệ thống phần mềm",
+                "is_correct": true
+            },
+            {
+                "content": "CPU, Bộ nhớ, HDD và Hệ thống bus truyền dẫn",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Nguyên nhân của sự tồn tại các điểm yếu trong hệ thống có thể do:",
+        "answers": [
+            {
+                "content": "Lỗi thiết kế, lỗi cài đặt và lập trình",
+                "is_correct": false
+            },
+            {
+                "content": "Tất cả các khâu trong quá trình phát triển và vận hành",
+                "is_correct": true
+            },
+            {
+                "content": "Lỗi quản trị",
+                "is_correct": false
+            },
+            {
+                "content": "Lỗi cấu hình hoạt động",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Trên thực tế, có thể giảm khả năng bị tấn công nếu có thể...",
+        "answers": [
+            {
+                "content": "Triệt tiêu được hết các nguy cơ",
+                "is_correct": false
+            },
+            {
+                "content": "Triệt tiêu được hết các mối đe dọa",
+                "is_correct": false
+            },
+            {
+                "content": "Giảm thiểu các lỗ hổng bảo mật",
+                "is_correct": true
+            },
+            {
+                "content": "Kiểm soát chặt chẽ người dùng",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Sâu SQL Slammer tấn công khai thác lỗi tràn bộ đệm trong hệ quản trị cơ sở dữ liệu:",
+        "answers": [
+            {
+                "content": "SQL Server 2012",
+                "is_correct": true
+            },
+            {
+                "content": "SQL Server 2000",
+                "is_correct": false
+            },
+            {
+                "content": "SQL Server 2008",
+                "is_correct": false
+            },
+            {
+                "content": "SQL Server 2003",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Các lỗ hổng bảo mật thường tồn tại nhiều nhất trong thành phần nào của hệ thống:",
+        "answers": [
+            {
+                "content": "Hệ điều hành",
+                "is_correct": false
+            },
+            {
+                "content": "Các dịch vụ mạng",
+                "is_correct": false
+            },
+            {
+                "content": "Các ứng dụng",
+                "is_correct": true
+            },
+            {
+                "content": "Các thành phần phần cứng",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Các kỹ thuật và công cụ thường được sử dụng trong an ninh mạng bao gồm:",
+        "answers": [
+            {
+                "content": "VPN, SSL/TLS, PGP",
+                "is_correct": false
+            },
+            {
+                "content": "Điều khiển truy nhập",
+                "is_correct": false
+            },
+            {
+                "content": "Điều khiển truy nhập, tường lửa, proxy và các giao thức bảo mật, ứng dụng dựa trên mật mã",
+                "is_correct": true
+            },
+            {
+                "content": "Tường lửa, proxy",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Các thành phần của an toàn thông tin gồm:",
+        "answers": [
+            {
+                "content": "An toàn máy tính, An ninh mạng, Quản lý ATTT và Chính sách ATTT",
+                "is_correct": false
+            },
+            {
+                "content": "An toàn máy tính và dữ liệu, An ninh mạng, Quản lý ATTT và Chính sách ATTT",
+                "is_correct": true
+            },
+            {
+                "content": "An toàn máy tính, An ninh mạng, Quản lý rủi ro ATTT và Chính sách ATTT",
+                "is_correct": false
+            },
+            {
+                "content": "An toàn máy tính, An toàn dữ liệu, An ninh mạng, Quản lý ATTT",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Trong tấn công khai thác lỗi tràn bộ đệm, tin tặc thường sử dụng shellcode. Shellcode đó là dạng:",
+        "answers": [
+            {
+                "content": "Mã Java",
+                "is_correct": false
+            },
+            {
+                "content": "Mã C/C++",
+                "is_correct": false
+            },
+            {
+                "content": "Mã máy",
+                "is_correct": true
+            },
+            {
+                "content": "Mã Hợp ngữ",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Các yêu cầu cơ bản trong đảm bảo an toàn thông tin và an toàn hệ thống thông tin gồm:",
+        "answers": [
+            {
+                "content": "Bảo mật, Toàn vẹn và Khả dụng",
+                "is_correct": false
+            },
+            {
+                "content": "Bảo mật, Toàn vẹn và Sẵn dùng",
+                "is_correct": false
+            },
+            {
+                "content": "Bí mật, Toàn vẹn và Sẵn dùng",
+                "is_correct": true
+            },
+            {
+                "content": "Bí mật, Toàn vẹn và không chối bỏ",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Việc thực thi quản lý ATTT cần được thực hiện theo chu trình lặp lại là do",
+        "answers": [
+            {
+                "content": "Các điều kiện bên trong và bên ngoài hệ thống thay đổi theo thời gian",
+                "is_correct": true
+            },
+            {
+                "content": "Trình độ cao của tin tặc và công cụ tấn công ngày càng phổ biến",
+                "is_correct": false
+            },
+            {
+                "content": "Số lượng và khả năng phá hoại của các phần mềm độc hại ngày càng tăng",
+                "is_correct": false
+            },
+            {
+                "content": "Máy tính, hệ điều hành và các phần mềm được nâng cấp nhanh chóng",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Hệ thống thông tin là:",
+        "answers": [
+            {
+                "content": "Một hệ thống tích hợp các thành phần nhằm phục vụ việc thu thập, lưu trữ, xử lý thông tin, chuyển giao thông tin, tri thức và các sản phẩm số",
+                "is_correct": true
+            },
+            {
+                "content": "Một hệ thống gồm các thành phần phần cứng và phần mềm nhằm phục vụ việc thu thập, lưu trữ, xử lý thông tin, chuyển giao thông tin",
+                "is_correct": false
+            },
+            {
+                "content": "Một hệ thống gồm các thành phần phần cứng nhằm phục vụ việc thu thập, lưu trữ, xử lý thông tin, chuyển giao thông tin, tri thức và các sản phẩm số",
+                "is_correct": false
+            },
+            {
+                "content": "Một hệ thống gồm các thành phần phần mềm nhằm phục vụ việc thu thập, lưu trữ, xử lý thông tin, chuyển giao thông tin, tri thức và các sản phẩm số",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Tính bí mật của thông tin có thể được đảm bảo bằng:",
+        "answers": [
+            {
+                "content": "Bảo vệ vật lý",
+                "is_correct": false
+            },
+            {
+                "content": "Các kỹ thuật mã hóa",
+                "is_correct": false
+            },
+            {
+                "content": "sử dụng VPN",
+                "is_correct": false
+            },
+            {
+                "content": "Bảo vệ vật lý, VPN, hoặc mã hóa",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Lỗ hổng bảo mật (Security vulnerability) là một điểm yếu tồn tại trong một hệ thống cho phép tin tặc:",
+        "answers": [
+            {
+                "content": "Khai thác nhằm đánh cắp các thông tin trong hệ thống",
+                "is_correct": false
+            },
+            {
+                "content": "Khai thác gây tổn hại đến các thuộc tính an ninh của hệ thống đó",
+                "is_correct": true
+            },
+            {
+                "content": "Khai thác, tấn công phá hoại và gây tê liệt hệ thống",
+                "is_correct": false
+            },
+            {
+                "content": "Khai thác nhằm chiếm quyền điều khiển hệ thống",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Đảm bảo thông tin (Information assurance) thường được thực hiện bằng cách:",
+        "answers": [
+            {
+                "content": "Sử dụng kỹ thuật tạo dự phòng ra đĩa cứng",
+                "is_correct": false
+            },
+            {
+                "content": "Sử dụng kỹ thuật tạo dự phòng ra băng từ",
+                "is_correct": false
+            },
+            {
+                "content": "Sử dụng kỹ thuật tạo dự phòng ngoại vi",
+                "is_correct": true
+            },
+            {
+                "content": "Sử dụng kỹ thuật tạo dự phòng cục bộ",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Lỗi tràn bộ đệm là lỗi trong khâu:",
+        "answers": [
+            {
+                "content": "Kiểm thử phần mềm",
+                "is_correct": false
+            },
+            {
+                "content": "Thiết kế phần mềm",
+                "is_correct": false
+            },
+            {
+                "content": "Lập trình phần mềm",
+                "is_correct": true
+            },
+            {
+                "content": "Quản trị phần mềm",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Đâu là dạng lỗ hổng bảo mật thường gặp trong hệ điều hành và các phần mềm ứng dụng?",
+        "answers": [
+            {
+                "content": "Lỗi tràn bộ đệm",
+                "is_correct": true
+            },
+            {
+                "content": "Lỗi quản trị",
+                "is_correct": false
+            },
+            {
+                "content": "Lỗi cấu hình",
+                "is_correct": false
+            },
+            {
+                "content": "Lỗi thiết kế",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Quản lý các bản vá và cập nhật phần mềm là phần việc thuộc lớp bảo vệ nào trong mô hình tổng thể đảm bảo an toàn hệ thống thông tin?",
+        "answers": [
+            {
+                "content": "Lớp an ninh mạng",
+                "is_correct": false
+            },
+            {
+                "content": "Lớp an ninh hệ thống",
+                "is_correct": true
+            },
+            {
+                "content": "Lớp an ninh cơ quan/tổ chức",
+                "is_correct": false
+            },
+            {
+                "content": "Lớp an ninh hệ điều hành và phần mềm",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Khi khai thác lỗi tràn bộ đệm, tin tặc thường chèn mã độc, gây tràn và ghi đè để sửa đổi thành phần nào sau đây của bộ nhớ Ngăn xếp để chuyển hướng nhằm thực hiện mã độc của mình:",
+        "answers": [
+            {
+                "content": "Các biển đầu vào của hàm",
+                "is_correct": false
+            },
+            {
+                "content": "Bộ đệm hoặc biển cục bộ của hàm",
+                "is_correct": false
+            },
+            {
+                "content": "Con trỏ khung ngăn xếp (sfp)",
+                "is_correct": false
+            },
+            {
+                "content": "Địa chỉ trở về của hàm",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Khác biệt cơ bản của vi rút và sâu là:",
+        "answers": [
+            {
+                "content": "Vi rút có khả năng tự lây lan mà không cần tương tác của người dùng",
+                "is_correct": false
+            },
+            {
+                "content": "Sâu có khả năng tự lây lan mà không cần tương tác của người dùng",
+                "is_correct": true
+            },
+            {
+                "content": "Sâu Có khả năng phá hoại lớn lơn",
+                "is_correct": false
+            },
+            {
+                "content": "Vi rút có khả năng phá hoại lớn lớn",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Dạng tấn công gây ngắt quãng dịch vụ hoặc kênh truyền thông cho người dùng bình thường là:",
+        "answers": [
+            {
+                "content": "Interceptions",
+                "is_correct": false
+            },
+            {
+                "content": "Fabrications",
+                "is_correct": false
+            },
+            {
+                "content": "Interruptions",
+                "is_correct": true
+            },
+            {
+                "content": "Modifications",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Tấn công nghe lén là kiểu tấn công:",
+        "answers": [
+            {
+                "content": "Thụ động",
+                "is_correct": true
+            },
+            {
+                "content": "Chủ động",
+                "is_correct": false
+            },
+            {
+                "content": "Chiếm quyền điều khiển",
+                "is_correct": false
+            },
+            {
+                "content": "Chủ động và bị động",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Dạng tấn công chặn bắt thông tin truyền trên mạng để sửa đổi hoặc lạm dụng là:",
+        "answers": [
+            {
+                "content": "Fabrications",
+                "is_correct": false
+            },
+            {
+                "content": "Modifications",
+                "is_correct": true
+            },
+            {
+                "content": "Interruptions",
+                "is_correct": false
+            },
+            {
+                "content": "Interceptions",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Có thể phòng chống tấn công Smurf bằng cách cấu hình các máy và router không trả lời...",
+        "answers": [
+            {
+                "content": "Các yêu cầu ICMP hoặc các yêu cầu phát quảng bá",
+                "is_correct": true
+            },
+            {
+                "content": "Các yêu cầu TCP hoặc các yêu cầu phát quảng bá",
+                "is_correct": false
+            },
+            {
+                "content": "Các yêu cầu UPD hoặc các yêu cầu phát quảng bá",
+                "is_correct": false
+            },
+            {
+                "content": "Các yêu cầu HTTP hoặc các yêu cầu phát quảng bá",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Đâu là một kỹ thuật tấn công Dos?",
+        "answers": [
+            {
+                "content": "UDP Ping",
+                "is_correct": false
+            },
+            {
+                "content": "DNS Cache Poisoning",
+                "is_correct": false
+            },
+            {
+                "content": "Smurf",
+                "is_correct": true
+            },
+            {
+                "content": "DNS spoofing",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Dạng tấn công giả mạo thông tin thường để đánh lừa người dùng thông thường là:",
+        "answers": [
+            {
+                "content": "Modifications",
+                "is_correct": false
+            },
+            {
+                "content": "Fabrications",
+                "is_correct": true
+            },
+            {
+                "content": "Interruptions",
+                "is_correct": false
+            },
+            {
+                "content": "Interceptions",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Kỹ thuật tấn công Smurf sử dụng giao thức ICMP và Cơ chế gửi…",
+        "answers": [
+            {
+                "content": "Unicast",
+                "is_correct": false
+            },
+            {
+                "content": "Multicast",
+                "is_correct": false
+            },
+            {
+                "content": "Anycast",
+                "is_correct": false
+            },
+            {
+                "content": "Broadcast",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Trong tấn công DDoS phản chiếu hay gián tiếp, có sự tham gia của một số lượng lớn máy chủ trên mạng Internet không bị tin tặc chiếm quyền điều khiển. Các máy chủ này được gọi là…",
+        "answers": [
+            {
+                "content": "Reflectors",
+                "is_correct": true
+            },
+            {
+                "content": "Injectors",
+                "is_correct": false
+            },
+            {
+                "content": "Requesters",
+                "is_correct": false
+            },
+            {
+                "content": "Forwarders",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Pharming là kiểu tấn công vào…",
+        "answers": [
+            {
+                "content": "Máy chủ web",
+                "is_correct": false
+            },
+            {
+                "content": "Máy chủ cơ sở dữ liệu của trang web",
+                "is_correct": false
+            },
+            {
+                "content": "Máy chủ và máy khách web",
+                "is_correct": false
+            },
+            {
+                "content": "Máy khách/trình duyệt web",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Đây là một công cụ kiểm tra lỗ hổng tấn công chèn mã SQL trên các website:",
+        "answers": [
+            {
+                "content": "SQLCheck",
+                "is_correct": false
+            },
+            {
+                "content": "SQL Server",
+                "is_correct": false
+            },
+            {
+                "content": "SQLmap",
+                "is_correct": true
+            },
+            {
+                "content": "SQLite",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Khác biệt cơ bản giữa tấn công DoS và DDoS là:",
+        "answers": [
+            {
+                "content": "Phạm vi tấn công",
+                "is_correct": true
+            },
+            {
+                "content": "Mức độ gây hại",
+                "is_correct": false
+            },
+            {
+                "content": "Kỹ thuật tấn công",
+                "is_correct": false
+            },
+            {
+                "content": "Tần suất tấn công",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Mục đích chính của tấn công giả mạo địa chỉ IP là:",
+        "answers": [
+            {
+                "content": "Để vượt qua các hệ thống IPS và IDS",
+                "is_correct": false
+            },
+            {
+                "content": "Để vượt qua các hàng rào kiểm soát an ninh",
+                "is_correct": true
+            },
+            {
+                "content": "Để đánh cắp các dữ liệu nhạy cảm trên máy trạm",
+                "is_correct": false
+            },
+            {
+                "content": "Để đánh cắp các dữ liệu nhạy cảm trên máy chủ",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Các máy tính ma/máy tính bị chiếm quyền điều khiển thường được tin tặc sử dụng để...",
+        "answers": [
+            {
+                "content": "Gửi các yêu cầu tấn công chèn mã",
+                "is_correct": false
+            },
+            {
+                "content": "Đánh cắp dữ liệu từ máy chủ cơ sở dữ liệu",
+                "is_correct": false
+            },
+            {
+                "content": "Gửi thư rác, thư quảng cáo",
+                "is_correct": true
+            },
+            {
+                "content": "Thực hiện tấn công tràn bộ đệm.",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Trong dạng tấn công vào mật khẩu dựa trên từ điển, tin tặc đánh cắp mật khẩu của người dùng bằng cách:",
+        "answers": [
+            {
+                "content": "Tìm mật khẩu trong từ điển các mật khẩu",
+                "is_correct": false
+            },
+            {
+                "content": "Thử các từ có tần suất sử dụng cao làm mật khẩu trong từ điển",
+                "is_correct": true
+            },
+            {
+                "content": "Vét cận các mật khẩu có thể có",
+                "is_correct": false
+            },
+            {
+                "content": "Lắng nghe trên đường truyền để đánh cắp mật khẩu",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Một trong các phương thức lây lan thường gặp của sâu mạng là:",
+        "answers": [
+            {
+                "content": "Lây lan thông qua sao chép các file",
+                "is_correct": false
+            },
+            {
+                "content": "Lây lan thông qua dịch vụ POP",
+                "is_correct": false
+            },
+            {
+                "content": "Lây lan thông qua khả năng thực thi từ xa",
+                "is_correct": true
+            },
+            {
+                "content": "Lây lan thông qua Microsoft Office",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Đây là một kỹ thuật tấn công Dos?",
+        "answers": [
+            {
+                "content": "SYN requests",
+                "is_correct": false
+            },
+            {
+                "content": "DNS spoofing",
+                "is_correct": false
+            },
+            {
+                "content": "IP spoofing",
+                "is_correct": false
+            },
+            {
+                "content": "Ping of death",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Tấn công từ chối dịch vụ (Dos - Denial of Service Attacks) là dạng tấn công có khả năng...",
+        "answers": [
+            {
+                "content": "Gây hư hỏng phần cứng máy chủ",
+                "is_correct": false
+            },
+            {
+                "content": "Cản trở người dùng hợp pháp truy nhập các tài nguyên hệ thống",
+                "is_correct": true
+            },
+            {
+                "content": "Đánh cắp dữ liệu trong hệ thống",
+                "is_correct": false
+            },
+            {
+                "content": "Cản trở người dùng hợp pháp truy nhập các file dữ liệu của hệ thống",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Mật khẩu an toàn trong thời điểm hiện tại là mật khẩu có:",
+        "answers": [
+            {
+                "content": "Chứa các ký tự từ nhiều dạng ký tự",
+                "is_correct": false
+            },
+            {
+                "content": "Khả năng chống tấn công phát lại và chứa các ký tự từ nhiều dạng ký tự",
+                "is_correct": false
+            },
+            {
+                "content": "Độ dài từ 8 ký tự trở lên, gồm chữ cái hoa, thường, chữ số và ký tự đặc biệt",
+                "is_correct": true
+            },
+            {
+                "content": "Độ dài lớn hơn hoặc bằng 8 ký tự",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Một trong các mối đe dọa an toàn thông tin thường gặp là:",
+        "answers": [
+            {
+                "content": "Phần mềm nghe lén",
+                "is_correct": false
+            },
+            {
+                "content": "Phần mềm quảng cáo",
+                "is_correct": false
+            },
+            {
+                "content": "Phần mềm phá mã",
+                "is_correct": false
+            },
+            {
+                "content": "Phần mềm độc hại",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Nguy cơ cao nhất mà một cuộc tấn công chèn mã SQL có thể gây ra cho một hệ thống là:",
+        "answers": [
+            {
+                "content": "Đánh cắp các thông tin trong cơ sở dữ liệu",
+                "is_correct": false
+            },
+            {
+                "content": "Chèn, xóa hoặc sửa đổi dữ liệu",
+                "is_correct": false
+            },
+            {
+                "content": "Vượt qua các khâu xác thực người dùng",
+                "is_correct": false
+            },
+            {
+                "content": "Chiếm quyền điều khiển hệ thống",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Một trong các biện pháp có thể sử dụng để phòng chống tấn công người đứng giữa là:",
+        "answers": [
+            {
+                "content": "Sử dụng các hệ thống IPS/IDS",
+                "is_correct": false
+            },
+            {
+                "content": "Sử dụng chứng chỉ số để xác thực thông tin nhận dạng các bên",
+                "is_correct": true
+            },
+            {
+                "content": "Sử dụng mã hóa để đảm bảo tính bí mật các thông điệp truyền",
+                "is_correct": false
+            },
+            {
+                "content": "Sử dụng tường lửa để ngăn chặn",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Macro viruses là loại viruses thường lây nhiễm vào…",
+        "answers": [
+            {
+                "content": "Các file tài liệu của bộ phần mềm Open Office",
+                "is_correct": false
+            },
+            {
+                "content": "Các file tài liệu của bộ phần mềm Microsoft Exchange",
+                "is_correct": false
+            },
+            {
+                "content": "Các file tài liệu của bộ phần mềm Microsoft SQL",
+                "is_correct": false
+            },
+            {
+                "content": "Các file tài liệu của bộ phần mềm Microsoft Office",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Tấn công kiểu Social Engineering là dạng tấn công khai thác yếu tố nào sau đây trong hệ thống?",
+        "answers": [
+            {
+                "content": "Máy trạm",
+                "is_correct": false
+            },
+            {
+                "content": "Người dùng",
+                "is_correct": true
+            },
+            {
+                "content": "Máy chủ",
+                "is_correct": false
+            },
+            {
+                "content": "Hệ điều hành & ứng dụng",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Câu lệnh SQL nào tin tặc thường sử dụng trong tấn công chèn mã SQL để đánh cắp các thông tin trong cơ sở dữ liệu?",
+        "answers": [
+            {
+                "content": "UNION INSERT",
+                "is_correct": false
+            },
+            {
+                "content": "UNION SELECT",
+                "is_correct": true
+            },
+            {
+                "content": "SELECT UNION",
+                "is_correct": false
+            },
+            {
+                "content": "INSERT SELECT",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Phishing là một dạng của loại tấn công sử dụng...",
+        "answers": [
+            {
+                "content": "Kỹ thuật chèn mã",
+                "is_correct": false
+            },
+            {
+                "content": "Kỹ thuật giả mạo địa chỉ IP",
+                "is_correct": false
+            },
+            {
+                "content": "Kỹ thuật gây tràn bộ đệm",
+                "is_correct": false
+            },
+            {
+                "content": "Kỹ thuật xã hội",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Các dạng phần mềm độc hại (malware) có khả năng tự nhân bản gồm:",
+        "answers": [
+            {
+                "content": "Virus, zombie, spyware",
+                "is_correct": false
+            },
+            {
+                "content": "Virus, trojan, zombie",
+                "is_correct": false
+            },
+            {
+                "content": "Virus, worm, trojan",
+                "is_correct": false
+            },
+            {
+                "content": "Virus, worm, zombie",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Một trong các cách virus thường sử dụng để lây nhiễm vào các chương trình khác là:",
+        "answers": [
+            {
+                "content": "Ẩn mã của virus",
+                "is_correct": false
+            },
+            {
+                "content": "Thay thế các chương trình",
+                "is_correct": false
+            },
+            {
+                "content": "Xáo trộn mã của virus",
+                "is_correct": false
+            },
+            {
+                "content": "Sửa đổi các chương trình",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Trong tấn công DDoS phản chiếu hay gián tiếp, có sự tham gia của một số lượng lớn máy chủ trên mạng Internet không bị tin tặc chiếm quyền điều khiển. Các máy chủ này được gọi là...",
+        "answers": [
+            {
+                "content": "Reflectors",
+                "is_correct": true
+            },
+            {
+                "content": "Requesters",
+                "is_correct": false
+            },
+            {
+                "content": "Forwarders",
+                "is_correct": false
+            },
+            {
+                "content": "Injectors",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Mục đích chính của tấn công giả mạo địa chỉ IP là:",
+        "answers": [
+            {
+                "content": "Để vượt qua các hệ thống IPS và IDS",
+                "is_correct": false
+            },
+            {
+                "content": "Để vượt qua các hàng rào kiểm soát an ninh",
+                "is_correct": true
+            },
+            {
+                "content": "Để đánh cắp các dữ liệu nhạy cảm trên máy trạm",
+                "is_correct": false
+            },
+            {
+                "content": "Để đánh cắp các dữ liệu nhạy cảm trên máy chủ",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Trojan horses là dạng phần mềm độc hại thường giành quyền truy nhập vào các file của người dùng khai thác cơ chế điều khiển truy nhập...",
+        "answers": [
+            {
+                "content": "МАС",
+                "is_correct": true
+            },
+            {
+                "content": "Role-Based",
+                "is_correct": false
+            },
+            {
+                "content": "Rule-Based",
+                "is_correct": false
+            },
+            {
+                "content": "DAC",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "PGP đảm bảo tính bí mật thông điệp bằng cách sử dụng:",
+        "answers": [
+            {
+                "content": "Mã hóa khóa bất đối xứng sử dụng khóa phiên",
+                "is_correct": false
+            },
+            {
+                "content": "Mã hóa khóa đối xứng sử dụng khóa phiên",
+                "is_correct": false
+            },
+            {
+                "content": "Mã hóa khóa bất đối xứng sử dụng khóa công khai",
+                "is_correct": true
+            },
+            {
+                "content": "Mã hóa khóa đối xứng sử dụng khóa công khai",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Số lượng thao tác trong mỗi vòng xử lý của hàm băm MD5 là:",
+        "answers": [
+            {
+                "content": "14",
+                "is_correct": false
+            },
+            {
+                "content": "16",
+                "is_correct": true
+            },
+            {
+                "content": "18",
+                "is_correct": false
+            },
+            {
+                "content": "12",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Giao thức SSL sử dụng giao thức con SSL Handshake để khởi tạo phiên làm việc. SSL Handshake thực hiện việc trao đổi các khóa phiên dùng cho phiên làm việc dựa trên:",
+        "answers": [
+            {
+                "content": "Chữ ký số",
+                "is_correct": false
+            },
+            {
+                "content": "Mã hóa khóa bí mật",
+                "is_correct": false
+            },
+            {
+                "content": "Mã hóa khóa công khai",
+                "is_correct": true
+            },
+            {
+                "content": "Chứng chỉ số",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Các thuộc tính cơ bản của chứng chỉ số khóa công khai (Public key digital certificate) gồm:",
+        "answers": [
+            {
+                "content": "Số nhận dạng, khóa riêng của chủ thể, chữ ký của nhà cung cấp CA",
+                "is_correct": true
+            },
+            {
+                "content": "Khóa công khai của chủ thể, thông tin địa chỉ chủ thể, thuật toán chữ ký sử dụng",
+                "is_correct": false
+            },
+            {
+                "content": "Số nhận dạng, khóa riêng của chủ thể, thông tin định danh chủ thể",
+                "is_correct": false
+            },
+            {
+                "content": "Khóa công khai của chủ thể, thông tin định danh chủ thể, chữ ký của nhà cung cấp (CA)",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Một hệ mã hóa (cryptosystem) được cấu thành từ hai thành phần chính gồm:",
+        "answers": [
+            {
+                "content": "Phương pháp mã hóa và chia khối",
+                "is_correct": false
+            },
+            {
+                "content": "Giải thuật mã hóa và ký số",
+                "is_correct": false
+            },
+            {
+                "content": "Phương pháp mã hóa và không gian khóa",
+                "is_correct": true
+            },
+            {
+                "content": "Giải thuật mã hóa và giải mã",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Đây là một phương pháp mã hóa",
+        "answers": [
+            {
+                "content": "OR",
+                "is_correct": false
+            },
+            {
+                "content": "AND",
+                "is_correct": false
+            },
+            {
+                "content": "NOT",
+                "is_correct": false
+            },
+            {
+                "content": "XOR",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Kích thước khối dữ liệu xử lý của giải thuật mã hóa AES là:",
+        "answers": [
+            {
+                "content": "160 bit",
+                "is_correct": false
+            },
+            {
+                "content": "64 bit",
+                "is_correct": false
+            },
+            {
+                "content": "192 bít",
+                "is_correct": false
+            },
+            {
+                "content": "128 bit",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Điểm khác nhau chính giữa hai loại hàm băm MDC và MAC là:",
+        "answers": [
+            {
+                "content": "MDC là loại hàm băm không khóa, còn MAC là loại hàm băm có khóa",
+                "is_correct": true
+            },
+            {
+                "content": "MDC có khả năng chống đụng độ cao hơn MAC",
+                "is_correct": false
+            },
+            {
+                "content": "MDC an toàn hơn MAC",
+                "is_correct": false
+            },
+            {
+                "content": "MAC an toàn hơn MDC",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Chữ ký số (sử dụng riêng) thường được sử dụng để đảm bảo thuộc tính nào sau đây của thông điệp truyền đưa:",
+        "answers": [
+            {
+                "content": "Tính bí mật",
+                "is_correct": false
+            },
+            {
+                "content": "Tính không chối bỏ",
+                "is_correct": false
+            },
+            {
+                "content": "Tính sẵn dùng",
+                "is_correct": false
+            },
+            {
+                "content": "Tính toàn vẹn",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Trong hệ chữ ký số RSA, việc tạo chữ ký số cho một thông điệp cần sử dụng một khóa. Khóa đó là:",
+        "answers": [
+            {
+                "content": "Khóa riêng của người nhận",
+                "is_correct": false
+            },
+            {
+                "content": "Khóa công khai của người nhận",
+                "is_correct": false
+            },
+            {
+                "content": "Khóa công khai của người gửi",
+                "is_correct": false
+            },
+            {
+                "content": "Khóa riêng của người gửi",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Một trong các điểm yếu của các hệ mã hóa khóa công khai là:",
+        "answers": [
+            {
+                "content": "Khó cài đặt trên thực tế",
+                "is_correct": false
+            },
+            {
+                "content": "Khó khăn trong quản lý và phân phối khóa",
+                "is_correct": false
+            },
+            {
+                "content": "Tốc độ chậm",
+                "is_correct": true
+            },
+            {
+                "content": "Độ an toàn thấp",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Phát biểu nào sau đây về chữ ký số là chính xác:",
+        "answers": [
+            {
+                "content": "Chữ ký số là một chuỗi dữ liệu được tạo ra bằng cách mã hóa thông điệp sử dụng khóa bí mật",
+                "is_correct": false
+            },
+            {
+                "content": "Chữ ký số là một chuỗi dữ liệu liên kết với một thông điệp và thực thể tạo ra thông điệp",
+                "is_correct": true
+            },
+            {
+                "content": "Chữ ký số được sử dụng để đảm bảo tính bí mật và toàn vẹn thông điệp",
+                "is_correct": false
+            },
+            {
+                "content": "Chữ ký số được sử dụng để đảm bảo tính bí mật, toàn vẹn và xác thực thông điệp",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Hai thuộc tính cơ bản quan trọng nhất của một hàm băm là:",
+        "answers": [
+            {
+                "content": "Nén và một chiều",
+                "is_correct": false
+            },
+            {
+                "content": "Dễ tính toán và có đầu ra cố định",
+                "is_correct": false
+            },
+            {
+                "content": "Một chiều và đầu ra cố định",
+                "is_correct": false
+            },
+            {
+                "content": "Nén và dễ tính toán",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Độ an toàn của hệ mật mã RSA dựa trên...",
+        "answers": [
+            {
+                "content": "Độ phức tạp cao của giải thuật RSA",
+                "is_correct": false
+            },
+            {
+                "content": "Chi phí tính toán lớn",
+                "is_correct": false
+            },
+            {
+                "content": "Tính khó của việc phân tích số nguyên rất lớn",
+                "is_correct": true
+            },
+            {
+                "content": "Khóa có kích thước lớn",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Khi sinh cặp khóa RSA, các số nguyên tố p và q nên được chọn với kích thước…",
+        "answers": [
+            {
+                "content": "p càng lớn càng tốt",
+                "is_correct": false
+            },
+            {
+                "content": "Bằng khoảng một nửa kích thước của modulo n",
+                "is_correct": true
+            },
+            {
+                "content": "Không có yêu cầu về kích thước của p và q",
+                "is_correct": false
+            },
+            {
+                "content": "q càng lớn càng tốt",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Tìm phát biểu đúng về mã hóa khóa bất đối xứng (Asymmetric key cryptography):",
+        "answers": [
+            {
+                "content": "An toàn hơn mã hóa khóa bí mật",
+                "is_correct": false
+            },
+            {
+                "content": "Sử dụng một khóa quá trình mã hóa và một khóa khác cho giải mã",
+                "is_correct": true
+            },
+            {
+                "content": "Chỉ sử dụng kỹ thuật mã hóa khối",
+                "is_correct": false
+            },
+            {
+                "content": "Sử dụng một khóa chung cho cả quá trình mã hóa và giải mã",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Tìm phát biểu đúng về mã hóa khóa đối xứng (Symmetric key cryptography):",
+        "answers": [
+            {
+                "content": "Sử dụng một khóa chung cho cả quá trình mã hóa và giải mã",
+                "is_correct": true
+            },
+            {
+                "content": "Sử dụng một khóa quá trình mã hóa và một khóa khác cho giải mã",
+                "is_correct": false
+            },
+            {
+                "content": "An toàn hơn mã hóa khóa công khai",
+                "is_correct": false
+            },
+            {
+                "content": "Chỉ sử dụng kỹ thuật mã hóa khối",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Sử dụng kết hợp chứng chỉ số khóa công khai và chữ ký số có thể đảm bảo:",
+        "answers": [
+            {
+                "content": "Xác thực thực thể và toàn vẹn thông tin truyền",
+                "is_correct": true
+            },
+            {
+                "content": "Xác thực thực thể và bí mật thông tin truyền",
+                "is_correct": false
+            },
+            {
+                "content": "Bí mật và xác thực nguồn gốc thông tin truyền",
+                "is_correct": false
+            },
+            {
+                "content": "Bí mật và toàn vẹn thông tin truyền",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Số lượng vòng lặp chính thực hiện xáo trộn dữ liệu theo hàm Feistel (F) trong giải thuật DES là:",
+        "answers": [
+            {
+                "content": "14",
+                "is_correct": false
+            },
+            {
+                "content": "16",
+                "is_correct": true
+            },
+            {
+                "content": "18",
+                "is_correct": false
+            },
+            {
+                "content": "20",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Các hộp thay thế s-box trong giải thuật DES có số bít đầu vào và đầu ra tương ứng là:",
+        "answers": [
+            {
+                "content": "Vào 4 bít và ra 4 bít",
+                "is_correct": false
+            },
+            {
+                "content": "Vào 6 bít và ra 6 bít",
+                "is_correct": false
+            },
+            {
+                "content": "Vào 8 bít và ra 6 bít",
+                "is_correct": false
+            },
+            {
+                "content": "Vào 6 bít và ra 4 bít",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Một trong các ứng dụng phổ biến của các hàm băm là để tạo chuỗi...",
+        "answers": [
+            {
+                "content": "CheckError",
+                "is_correct": false
+            },
+            {
+                "content": "CheckTotal",
+                "is_correct": false
+            },
+            {
+                "content": "CheckNum",
+                "is_correct": false
+            },
+            {
+                "content": "Checksum",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "PGP đảm bảo tính bí mật thông điệp bằng cách sử dụng:",
+        "answers": [
+            {
+                "content": "Mã hóa khóa bất đối xứng sử dụng khóa công khai",
+                "is_correct": true
+            },
+            {
+                "content": "Mã hóa khóa đối xứng sử dụng khóa phiên",
+                "is_correct": false
+            },
+            {
+                "content": "Mã hóa khóa đối xứng sử dụng khóa công khai",
+                "is_correct": false
+            },
+            {
+                "content": "Mã hóa khóa bất đối xứng sử dụng khóa phiên",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Trong quá trình xử lý thông điệp đầu vào tạo chuỗi băm, số lượng vòng xử lý của hàm băm SHA1 là:",
+        "answers": [
+            {
+                "content": "80",
+                "is_correct": true
+            },
+            {
+                "content": "90",
+                "is_correct": false
+            },
+            {
+                "content": "60",
+                "is_correct": false
+            },
+            {
+                "content": "70",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Giải thuật mã hóa AES được thiết kế dựa trên…",
+        "answers": [
+            {
+                "content": "mạng hoán vị-vernam",
+                "is_correct": false
+            },
+            {
+                "content": "mạng xor-thay thế",
+                "is_correct": false
+            },
+            {
+                "content": "mạng hoán vị-thay thế",
+                "is_correct": true
+            },
+            {
+                "content": "mạng hoán vị-xor",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Một trong các điểm yếu của các hệ mã hóa khóa đối xứng là:",
+        "answers": [
+            {
+                "content": "Chi phí tính toán lớn",
+                "is_correct": false
+            },
+            {
+                "content": "Khó khăn trong quản lý và phân phối khóa",
+                "is_correct": true
+            },
+            {
+                "content": "Độ an toàn thấp",
+                "is_correct": false
+            },
+            {
+                "content": "Khó khăn trong cài đặt và triển khai hệ thống",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Số vòng lặp chuyển đổi cần thực hiện để chuyển bản rõ thành bản mã của giải thuật mã hóa AES với khóa 192 bít là:",
+        "answers": [
+            {
+                "content": "10",
+                "is_correct": false
+            },
+            {
+                "content": "12",
+                "is_correct": true
+            },
+            {
+                "content": "16",
+                "is_correct": false
+            },
+            {
+                "content": "14",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Phát biểu nào sau đây về chữ ký số là chính xác:",
+        "answers": [
+            {
+                "content": "Chữ ký số là một chuỗi dữ liệu được tạo ra bằng cách mã hóa thông điệp sử dụng khóa bí mật",
+                "is_correct": false
+            },
+            {
+                "content": "Chữ ký số là một chuỗi dữ liệu liên kết với một thông điệp và thực thể tạo ra thông điệp",
+                "is_correct": true
+            },
+            {
+                "content": "Chữ ký số được sử dụng để đảm bảo tính bí mật, toàn vẹn và xác thực thông điệp",
+                "is_correct": false
+            },
+            {
+                "content": "Chữ ký số được sử dụng để đảm bảo tính bí mật và toàn vẹn thông điệp",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Một trong các ứng dụng phổ biến của các hàm băm một chiều là để...",
+        "answers": [
+            {
+                "content": "Mã hóa thẻ tín dụng",
+                "is_correct": false
+            },
+            {
+                "content": "Mã hóa địa chỉ",
+                "is_correct": false
+            },
+            {
+                "content": "Mã hóa mật khẩu",
+                "is_correct": true
+            },
+            {
+                "content": "Mã hóa tên tài khoản",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Giao thức SSL sử dụng giao thức con SSL Handshake để khởi tạo phiên làm việc. SSL Handshake thực hiện việc xác thực thực thể dựa trên:",
+        "answers": [
+            {
+                "content": "Chứng chỉ số khóa công khai",
+                "is_correct": true
+            },
+            {
+                "content": "Mã hóa khóa bí mật",
+                "is_correct": false
+            },
+            {
+                "content": "Mã hóa khóa công khai",
+                "is_correct": false
+            },
+            {
+                "content": "Chữ ký số",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "PGP đảm bảo tính xác thực thông điệp bằng cách:",
+        "answers": [
+            {
+                "content": "Mã hóa/giải mã thông điệp",
+                "is_correct": false
+            },
+            {
+                "content": "Sử dụng hàm băm có khóa MAC",
+                "is_correct": true
+            },
+            {
+                "content": "Sử dụng hàm băm không khóa MDC",
+                "is_correct": false
+            },
+            {
+                "content": "Tạo và kiểm tra chữ ký số",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Nguyên tắc bảo mật tài nguyên của mô hình Bell-La Padula là:",
+        "answers": [
+            {
+                "content": "Đọc lên và ghi lên",
+                "is_correct": false
+            },
+            {
+                "content": "Đọc xuống và ghi xuống",
+                "is_correct": false
+            },
+            {
+                "content": "Đọc xuống và ghi lên",
+                "is_correct": true
+            },
+            {
+                "content": "Đọc lên và ghi xuống",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Tính bảo mật của kỹ thuật điều khiển truy nhập sử dụng mật khẩu dựa trên:",
+        "answers": [
+            {
+                "content": "Tần suất sử dụng mật khẩu",
+                "is_correct": false
+            },
+            {
+                "content": "Kích thước của mật khẩu",
+                "is_correct": false
+            },
+            {
+                "content": "Độ khó đoán và tuổi thọ của mật khẩu",
+                "is_correct": true
+            },
+            {
+                "content": "Số loại ký tự dùng trong mật khẩu",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Phát hiện tấn công, xâm nhập dựa trên bất thường có tiềm năng phát hiện các loại tấn công, xâm nhập mới là do:",
+        "answers": [
+            {
+                "content": "Không yêu cầu biết trước thông tin về chúng",
+                "is_correct": true
+            },
+            {
+                "content": "Đã có chữ ký của các tấn công, xâm nhập mới",
+                "is_correct": false
+            },
+            {
+                "content": "Các tấn công, xâm nhập mới thường dễ nhận biết",
+                "is_correct": false
+            },
+            {
+                "content": "Không yêu cầu xây dựng cơ sở dữ liệu các chữ ký",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Một trong các điểm yếu làm giảm hiệu quả của phát hiện tấn công, xâm nhập dựa trên bất thường là:",
+        "answers": [
+            {
+                "content": "Không có khả năng ngăn chặn tấn công, đột nhập",
+                "is_correct": false
+            },
+            {
+                "content": "Không có khả năng phát hiện các cuộc tấn công Dos",
+                "is_correct": false
+            },
+            {
+                "content": "Tỷ lệ cảnh báo sai cao",
+                "is_correct": true
+            },
+            {
+                "content": "Không có khả năng phát hiện tấn công, xâm nhập mới",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Phát hiện tấn công, xâm nhập dựa trên bất thường dựa trên giá thiết:",
+        "answers": [
+            {
+                "content": "Các hành vi tấn công, xâm nhập thường có quan hệ chặt chẽ với các hành vi bất thường",
+                "is_correct": true
+            },
+            {
+                "content": "Các hành vi tấn công, xâm nhập gây ngắt quãng dịch vụ cung cấp cho người dùng",
+                "is_correct": false
+            },
+            {
+                "content": "Các hành vi tấn công, xâm nhập có quan hệ chặt chẽ với các dịch vụ được cung cấp",
+                "is_correct": false
+            },
+            {
+                "content": "Các hành vi tấn công, xâm nhập gây tổn hại nghiêm trọng cho hệ thống",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Ưu điểm của điều khiển truy nhập dựa trên các đặc điểm sinh trắc học là:",
+        "answers": [
+            {
+                "content": "Bảo mật cao và độ ổn định cao",
+                "is_correct": false
+            },
+            {
+                "content": "Bảo mật cao và chi phí thấp",
+                "is_correct": false
+            },
+            {
+                "content": "Bảo mật cao và luôn đi cùng với chủ thể",
+                "is_correct": true
+            },
+            {
+                "content": "Bảo mật cao và được hỗ trợ rộng rãi",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Một ưu điểm của tường lửa có trạng thái so với tường lửa không trạng thái là:",
+        "answers": [
+            {
+                "content": "Lọc nội dung gói tốt hơn",
+                "is_correct": false
+            },
+            {
+                "content": "Nhận dạng được các dạng tấn công và các phần mềm độc hại",
+                "is_correct": false
+            },
+            {
+                "content": "Chạy nhanh hơn",
+                "is_correct": false
+            },
+            {
+                "content": "Phân biệt được các gói tin thuộc về các kết nối mạng khác nhau",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Các phương pháp xử lý, phân tích dữ liệu và mô hình hoá trong phát hiện tấn công, xâm nhập dựa trên bất thường, gồm:",
+        "answers": [
+            {
+                "content": "Thống kê, học máy, khai phá dữ liệu",
+                "is_correct": true
+            },
+            {
+                "content": "Học máy, khai phá dữ liệu, agents",
+                "is_correct": false
+            },
+            {
+                "content": "Thống kê, học máy, đồ thị",
+                "is_correct": false
+            },
+            {
+                "content": "Thống kê, đối sánh chuỗi, đồ thị",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Phát biểu nào sau đây đúng với cơ chế điều khiển truy nhập dựa trên vai trò - RBAC:",
+        "answers": [
+            {
+                "content": "RBAC cho phép người tạo ra đối tượng có thể cấp quyền truy nhập cho người dùng khác",
+                "is_correct": false
+            },
+            {
+                "content": "RBAC là cơ chế điều khiển truy nhập được sử dụng rộng rãi nhất",
+                "is_correct": false
+            },
+            {
+                "content": "RBAC cấp quyền truy nhập dựa trên vai trò của người dùng trong tổ chức",
+                "is_correct": true
+            },
+            {
+                "content": "RBAC cấp quyền truy nhập dựa trên tính nhạy cảm của thông tin và chính sách quản trị",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Phát biểu nào sau đây đúng với cơ chế điều khiển truy nhập DAC:",
+        "answers": [
+            {
+                "content": "DAC cho phép người tạo ra đối tượng có thể cấp quyền truy nhập cho người dùng khác",
+                "is_correct": true
+            },
+            {
+                "content": "DAC cấp quyền truy nhập dựa trên tính nhạy cảm của thông tin và chính sách quản trị",
+                "is_correct": false
+            },
+            {
+                "content": "DAC là cơ chế điều khiển truy nhập được sử dụng rộng rãi nhất",
+                "is_correct": false
+            },
+            {
+                "content": "DAC quản lý quyền truy nhập chặt chẽ hơn các cơ chế khác",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Đâu là một công cụ có khả năng rà quét các lỗ hổng chèn mã SQL cho các trang web?",
+        "answers": [
+            {
+                "content": "nmap",
+                "is_correct": false
+            },
+            {
+                "content": "Microsoft Baseline Security Analyzer",
+                "is_correct": false
+            },
+            {
+                "content": "Nessus vulnerability scanner",
+                "is_correct": false
+            },
+            {
+                "content": "Acunetix Web Vulnerability Scanner",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Danh sách điều khiển truy nhập ACL thực hiện việc quản lý quyền truy nhập đến các đối tượng cho người dùng bằng cách:",
+        "answers": [
+            {
+                "content": "Các quyền truy nhập vào đối tượng cho mỗi người dùng được quản lý trong một ma trận",
+                "is_correct": false
+            },
+            {
+                "content": "Các quyền truy nhập vào đối tượng cho mỗi người dùng được quản lý riêng rẽ",
+                "is_correct": false
+            },
+            {
+                "content": "Mỗi người dùng được gán một danh sách các đối tượng kèm theo quyền truy nhập",
+                "is_correct": false
+            },
+            {
+                "content": "Mỗi đối tượng được gán một danh sách người dùng kèm theo quyền truy nhập",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Tường lửa không thể chống lại...",
+        "answers": [
+            {
+                "content": "Các hiểm họa từ bên trong",
+                "is_correct": true
+            },
+            {
+                "content": "Các hiểm họa từ bên ngoài",
+                "is_correct": false
+            },
+            {
+                "content": "Tấn công giả mạo địa chỉ",
+                "is_correct": false
+            },
+            {
+                "content": "Tấn công từ mạng Internet",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Sự khác biệt chính giữa hệ thống ngăn chặn xâm nhập (IPS) và hệ thống phát hiện xâm nhập (IDS) là:",
+        "answers": [
+            {
+                "content": "IPS phát hiện xâm nhập hiệu quả hơn",
+                "is_correct": false
+            },
+            {
+                "content": "IPS có khả năng chủ động ngăn chặn xâm nhập",
+                "is_correct": true
+            },
+            {
+                "content": "IDS phát hiện xâm nhập hiệu quả hơn",
+                "is_correct": false
+            },
+            {
+                "content": "IDS có khả năng chủ động ngăn chặn xâm nhập",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Tường lửa lọc gói có thể lọc các thông tin nào trong gói tin?",
+        "answers": [
+            {
+                "content": "Chỉ các thông tin trong header của gói tin",
+                "is_correct": true
+            },
+            {
+                "content": "Chỉ các thông tin trong payload của gói tin",
+                "is_correct": false
+            },
+            {
+                "content": "Chỉ lọc địa chỉ IP trong gói tin",
+                "is_correct": false
+            },
+            {
+                "content": "Cả thông tin trong header và payload của gói tin",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Không nên sử dụng nhiều hơn 1 phần mềm quét virus chạy ở chế độ quét theo thời gian thực trên một máy tính vì:",
+        "answers": [
+            {
+                "content": "Các phần mềm quét virus xung đột với nhau",
+                "is_correct": true
+            },
+            {
+                "content": "Các phần mềm quét virus không thể hoạt động",
+                "is_correct": false
+            },
+            {
+                "content": "Các phần mềm quét virus chiếm nhiều tài nguyên",
+                "is_correct": false
+            },
+            {
+                "content": "Các phần mềm quét virus tấn công lẫn nhau",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Phát biểu nào sau đây đúng với cơ chế điều khiển truy nhập bắt buộc MAC:",
+        "answers": [
+            {
+                "content": "MAC cho phép người tạo ra đối tượng có thể cấp quyền truy nhập cho người dùng khác",
+                "is_correct": false
+            },
+            {
+                "content": "MAC quản lý quyền truy nhập chặt chẽ hơn các cơ chế khác",
+                "is_correct": false
+            },
+            {
+                "content": "MAC cấp quyền truy nhập dựa trên tính nhạy cảm của thông tin và chính sách quản trị",
+                "is_correct": true
+            },
+            {
+                "content": "MAC là cơ chế điều khiển truy nhập được sử dụng rộng rãi nhất",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Đâu là một loại tường lửa?",
+        "answers": [
+            {
+                "content": "Server gateway",
+                "is_correct": false
+            },
+            {
+                "content": "Application server",
+                "is_correct": false
+            },
+            {
+                "content": "Application-level gateway",
+                "is_correct": true
+            },
+            {
+                "content": "Gateway server",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Ví điện tử Paypal là một dạng...",
+        "answers": [
+            {
+                "content": "Khóa mã (encrypted key)",
+                "is_correct": false
+            },
+            {
+                "content": "The ATM",
+                "is_correct": false
+            },
+            {
+                "content": "Thẻ bài (token)",
+                "is_correct": true
+            },
+            {
+                "content": "Thẻ thông minh (smart card)",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Dạng xác thực sử dụng các thông tin nào dưới đây đảm bảo độ an toàn cao hơn?",
+        "answers": [
+            {
+                "content": "Thẻ ATM và tên truy nhập",
+                "is_correct": false
+            },
+            {
+                "content": "Tên truy nhập và số PIN",
+                "is_correct": false
+            },
+            {
+                "content": "Thẻ ATM và số PIN",
+                "is_correct": true
+            },
+            {
+                "content": "Tên truy nhập và mật khẩu",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Một trong các dạng khóa mã (encrypted keys) được sử dụng rộng rãi trong điều khiển truy nhập là:",
+        "answers": [
+            {
+                "content": "E-token",
+                "is_correct": false
+            },
+            {
+                "content": "Chứng chỉ số khóa công khai",
+                "is_correct": true
+            },
+            {
+                "content": "The ATM",
+                "is_correct": false
+            },
+            {
+                "content": "Mobile-token",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Tại sao một hệ thống phát hiện xâm nhập dựa trên chữ ký không thể phát hiện các tấn công, xâm nhập mới?",
+        "answers": [
+            {
+                "content": "Do chữ ký của chúng chưa tồn tại trong hệ thống",
+                "is_correct": true
+            },
+            {
+                "content": "Do các tấn công, xâm nhập mới không có chữ ký",
+                "is_correct": false
+            },
+            {
+                "content": "Do các tấn công, xâm nhập mới không gây ra bất thường",
+                "is_correct": false
+            },
+            {
+                "content": "Do các tấn công, xâm nhập mới chỉ gây thiệt hại nhỏ",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Ưu điểm của thẻ bài (token) so với thẻ thông minh (smart card) trong điều khiển truy nhập là:",
+        "answers": [
+            {
+                "content": "Có cơ chế xác thực mạnh hơn",
+                "is_correct": true
+            },
+            {
+                "content": "Có cơ chế xác thực đa dạng hơn",
+                "is_correct": false
+            },
+            {
+                "content": "Được sử dụng rộng rãi hơn",
+                "is_correct": false
+            },
+            {
+                "content": "Có chi phí rẻ hơn",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Phương pháp xác thực nào dưới đây có thể cung cấp khả năng xác thực có độ an toàn cao nhất?",
+        "answers": [
+            {
+                "content": "Sử dụng Smartcard",
+                "is_correct": false
+            },
+            {
+                "content": "Sử dụng vân tay",
+                "is_correct": true
+            },
+            {
+                "content": "Sử dụng chứng chỉ số",
+                "is_correct": false
+            },
+            {
+                "content": "Sử dụng mật khẩu",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Đâu là các tính năng của kiểm soát truy nhập sử dụng tường lửa?",
+        "answers": [
+            {
+                "content": "Kiểm soát dịch vụ và các phần mềm",
+                "is_correct": false
+            },
+            {
+                "content": "Kiểm soát người dùng và tin tặc",
+                "is_correct": false
+            },
+            {
+                "content": "Kiểm soát dịch vụ và hướng",
+                "is_correct": true
+            },
+            {
+                "content": "Kiểm soát virus và các malware khác",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Ba cơ chế điều khiển truy nhập thông dụng gồm:",
+        "answers": [
+            {
+                "content": "DAC, MAC và RRAC",
+                "is_correct": false
+            },
+            {
+                "content": "DAC, BAC và RBAC",
+                "is_correct": false
+            },
+            {
+                "content": "DAC, MAC và BAC",
+                "is_correct": false
+            },
+            {
+                "content": "DAC, MAC và RBAC",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Mục đích chính của điều khiển truy nhập là để đảm bảo các thuộc tính an ninh của thông tin, hệ thống và các tài nguyên, gồm:",
+        "answers": [
+            {
+                "content": "Tính bảo mật, tính toàn vẹn và tính xác thực",
+                "is_correct": false
+            },
+            {
+                "content": "Tính bí mật, tính toàn vẹn và tính xác thực",
+                "is_correct": false
+            },
+            {
+                "content": "Tính bảo mật, tính toàn vẹn và tính sẵn dùng",
+                "is_correct": false
+            },
+            {
+                "content": "Tính bí mật, tính toàn vẹn và tính sẵn dùng",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Số lượng nhân tố (factor) xác thực sử dụng trong điều khiển truy nhập dựa trên thẻ thông minh là:",
+        "answers": [
+            {
+                "content": "1",
+                "is_correct": false
+            },
+            {
+                "content": "3",
+                "is_correct": false
+            },
+            {
+                "content": "2",
+                "is_correct": true
+            },
+            {
+                "content": "4",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Một nhiệm vụ chính của các hệ thống IDS/IPS là:",
+        "answers": [
+            {
+                "content": "Truy tìm và tấn công ngược lại hệ thống của tin tặc",
+                "is_correct": false
+            },
+            {
+                "content": "Giám sát lưu lượng mạng hoặc các hành vi trên một hệ thống để nhận dạng các dấu hiệu của tấn công, xâm nhập",
+                "is_correct": true
+            },
+            {
+                "content": "Giám sát lưu lượng mạng nhận dạng các dấu hiệu của tấn công, xâm nhập",
+                "is_correct": false
+            },
+            {
+                "content": "Giám sát các hành vi trên một hệ thống để nhận dạng các dấu hiệu của tấn công, xâm nhập",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Hai dịch vụ quan trọng nhất của một hệ thống điều khiển truy nhập là:",
+        "answers": [
+            {
+                "content": "Authentication và Authorization",
+                "is_correct": true
+            },
+            {
+                "content": "Authenticator và Administrator",
+                "is_correct": false
+            },
+            {
+                "content": "Administrator và Authorization",
+                "is_correct": false
+            },
+            {
+                "content": "Authentication và Administrator",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Tìm phát biểu đúng về phát hiện xâm nhập dựa trên chữ ký và phát hiện xâm nhập dựa trên bất thường:",
+        "answers": [
+            {
+                "content": "Phát hiện xâm nhập dựa trên chữ ký thường có tỷ lệ phát hiện đúng cao hơn",
+                "is_correct": true
+            },
+            {
+                "content": "Tính bảo mật, tính toàn vẹn và tính xác thực",
+                "is_correct": false
+            },
+            {
+                "content": "Tính bảo mật, tính toàn vẹn và tính sẵn dùng",
+                "is_correct": false
+            },
+            {
+                "content": "Tính bí mật, tính toàn vẹn và tính sẵn dùng",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Tìm phát biểu đúng về dịch vụ xác thực trong điều khiển truy nhập:",
+        "answers": [
+            {
+                "content": "Là quá trình xác minh tính chân thực của thông tin nhận dạng người dùng cung cấp",
+                "is_correct": true
+            },
+            {
+                "content": "Là quá trình xác minh nhận dạng của chủ thể",
+                "is_correct": false
+            },
+            {
+                "content": "Là quá trình xác minh các thông tin nhận dạng của chủ thể yêu cầu truy nhập đối tượng",
+                "is_correct": false
+            },
+            {
+                "content": "Là quá trình xác minh nhận dạng của người dùng",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Loại tấn công nào sau đây chiếm quyền truy nhập đến tài nguyên lợi dụng cơ chế điều khiển truy nhập DAC?",
+        "answers": [
+            {
+                "content": "Spoofing",
+                "is_correct": false
+            },
+            {
+                "content": "Trojan horse",
+                "is_correct": true
+            },
+            {
+                "content": "Man in the middle",
+                "is_correct": false
+            },
+            {
+                "content": "Phishing",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Đâu là tên viết đúng của Hệ thống phát hiện đột nhập/xâm nhập?",
+        "answers": [
+            {
+                "content": "Intrusion Detector System",
+                "is_correct": false
+            },
+            {
+                "content": "Intrusion Detecting System",
+                "is_correct": false
+            },
+            {
+                "content": "Intrusion Detection System",
+                "is_correct": true
+            },
+            {
+                "content": "Instruction Detection System",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Một trong các nhược điểm chính của điều khiển truy nhập dựa trên các đặc điểm sinh trắc học là:",
+        "answers": [
+            {
+                "content": "Không được hỗ trợ rộng rãi",
+                "is_correct": false
+            },
+            {
+                "content": "Chi phí đắt",
+                "is_correct": true
+            },
+            {
+                "content": "Khó sử dụng",
+                "is_correct": false
+            },
+            {
+                "content": "Công nghệ phức tạp",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Ưu điểm của mật khẩu một lần (OTP-One Time Password) so với mật khẩu truyền thống là:",
+        "answers": [
+            {
+                "content": "Chống được tấn công từ điển",
+                "is_correct": false
+            },
+            {
+                "content": "Chống được tấn công vét cạn",
+                "is_correct": false
+            },
+            {
+                "content": "Chống được tấn công phá mã",
+                "is_correct": false
+            },
+            {
+                "content": "Chống được tấn công phát lại",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Kỹ thuật tấn công SYN Floods khai thác điểm yếu trong khâu nào trong bộ giao thức TCP/IP?",
+        "answers": [
+            {
+                "content": "Bắt tay 3 bước",
+                "is_correct": true
+            },
+            {
+                "content": "Bắt tay 2 bước",
+                "is_correct": false
+            },
+            {
+                "content": "Xác thực người dùng",
+                "is_correct": false
+            },
+            {
+                "content": "Truyền dữ liệu",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Tấn công từ chối dịch vụ (Dos - Denial of Service Attacks) là dạng tấn công có khả năng…",
+        "answers": [
+            {
+                "content": "a. Cản trở người dùng hợp pháp truy nhập các file dữ liệu của hệthống",
+                "is_correct": false
+            },
+            {
+                "content": "b. Cản trở người dùng hợp pháp truy nhập các tài nguyên hệ thống",
+                "is_correct": true
+            },
+            {
+                "content": "c. Đánh cắp dữ liệu trong hệ thống",
+                "is_correct": false
+            },
+            {
+                "content": "d. Gây hư hỏng phần cứng máy chủ",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Một trong các mối đe dọa an toàn thông tin thường gặp là:",
+        "answers": [
+            {
+                "content": "a.Phần mềm độc hại",
+                "is_correct": true
+            },
+            {
+                "content": "b. Phần mềm quảng cáo",
+                "is_correct": false
+            },
+            {
+                "content": "c. Phần mềm nghe lén",
+                "is_correct": false
+            },
+            {
+                "content": "d Phần mềm phá mã",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Các dạng phần mềm độc hại (malware) có khả năng tự nhân bản gồm:",
+        "answers": [
+            {
+                "content": "a. Virus, zombie, spyware",
+                "is_correct": false
+            },
+            {
+                "content": "b. Virus, trojan, zombie",
+                "is_correct": false
+            },
+            {
+                "content": "c. virus, worm, zombie",
+                "is_correct": true
+            },
+            {
+                "content": "d. Virus, worm, trojan",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Pharming là kiểu tấn công vào...",
+        "answers": [
+            {
+                "content": "a. Máy khách/trình duyệt web",
+                "is_correct": true
+            },
+            {
+                "content": "b. Máy chủ và máy khách web",
+                "is_correct": false
+            },
+            {
+                "content": "c. Máy chủ web.",
+                "is_correct": false
+            },
+            {
+                "content": "d.  Máy chủ cơ sở dữ liệu của trang web",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Các máy tính ma/máy tính bị chiếm quyền điều khiển thường được tin tặc sử dụng để...",
+        "answers": [
+            {
+                "content": "a. Gửi các yêu cầu tấn công chèn mã",
+                "is_correct": false
+            },
+            {
+                "content": "b. Đánh cấp dữ liệu từ máy chủ cơ sở dữ liệu",
+                "is_correct": false
+            },
+            {
+                "content": "c. Thực hiện tấn công tràn bộ đệm",
+                "is_correct": false
+            },
+            {
+                "content": "d. Gửi thư rác, thư quảng cáo",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Đâu là một kỹ thuật tấn công DoS?",
+        "answers": [
+            {
+                "content": "a. DNS spoofing",
+                "is_correct": false
+            },
+            {
+                "content": "b. UDP Ping",
+                "is_correct": false
+            },
+            {
+                "content": "c. Smurf",
+                "is_correct": true
+            },
+            {
+                "content": "d. DNS Cache Poisoning",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Đâu là một biện pháp phòng chống tấn công SYN Floods?",
+        "answers": [
+            {
+                "content": "a. SYN Firewall",
+                "is_correct": false
+            },
+            {
+                "content": "b. SYN IDS",
+                "is_correct": false
+            },
+            {
+                "content": "c. SYN Proxy",
+                "is_correct": false
+            },
+            {
+                "content": "d. SYN Cache",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Kỹ thuật tấn công Smurf sử dụng giao thức ICMP và cơ chế gửi…",
+        "answers": [
+            {
+                "content": "a. Multicast",
+                "is_correct": false
+            },
+            {
+                "content": "b. Anycast",
+                "is_correct": false
+            },
+            {
+                "content": "c. Broadcast",
+                "is_correct": true
+            },
+            {
+                "content": "d. Unicast",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Tấn công nghe lén là kiểu tấn công:",
+        "answers": [
+            {
+                "content": "a. Chủ động và bị động",
+                "is_correct": false
+            },
+            {
+                "content": "b. Thụ động",
+                "is_correct": true
+            },
+            {
+                "content": "c. Chủ động",
+                "is_correct": false
+            },
+            {
+                "content": "d. Chiếm quyền điều khiến",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Trong dạng tấn công vào mật khẩu dựa trên từ điển, tin tặc đánh cấp mật khẩu của người dùng bằng cách:",
+        "answers": [
+            {
+                "content": "a. vét cạn các mật khẩu có thể có",
+                "is_correct": false
+            },
+            {
+                "content": "b. Tìm mật khẩu trong từ điển các mật khẩu",
+                "is_correct": false
+            },
+            {
+                "content": "c. Lắng nghe trên đường truyền để đánh cấp mật khẩu",
+                "is_correct": false
+            },
+            {
+                "content": "d. Thử các từ có tần suất sử dụng cao làm mật khẩu trong từ điển",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Dạng tấn công chặn bắt thông tin truyền trên mạng để sửa đổi hoặc lạm dụng là:",
+        "answers": [
+            {
+                "content": "a. Fabrications",
+                "is_correct": false
+            },
+            {
+                "content": "b. Modifications",
+                "is_correct": true
+            },
+            {
+                "content": "c. Interruptions",
+                "is_correct": false
+            },
+            {
+                "content": "d. Interceptions",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Mật khẩu an toàn trong thời điểm hiện tại là mật khẩu có :",
+        "answers": [
+            {
+                "content": "a. Khả năng chống tấn công phát lại và chứa các ký tự từ nhiều dạng kýtự",
+                "is_correct": false
+            },
+            {
+                "content": "b. Chứa các ký tự từ nhiều dạng ký tự",
+                "is_correct": false
+            },
+            {
+                "content": "c.  Độ dài lớn hơn hoặc bằng 8 ký tự",
+                "is_correct": false
+            },
+            {
+                "content": "d. Độ dài từ 8 ký tự trở lên , gồm chữ cái hoa , thường , chữ số và kýtự đặc biệt",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Tấn công bằng mã độc có thể gồm:",
+        "answers": [
+            {
+                "content": "a. Chèn mã XSS, CSRF",
+                "is_correct": false
+            },
+            {
+                "content": "b. Chèn mã SQL",
+                "is_correct": false
+            },
+            {
+                "content": "c. Tràn bộ đệm",
+                "is_correct": false
+            },
+            {
+                "content": "d.SQLi , XSS , CSRF và Buffer overflow",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Tấn công kiểu Social Engineering có thể cho phép tin tặc :",
+        "answers": [
+            {
+                "content": "a Phá hỏng máy chủ",
+                "is_correct": false
+            },
+            {
+                "content": "b. Đánh cắp toàn bộ cơ sở dữ liệu trên máy chủ",
+                "is_correct": false
+            },
+            {
+                "content": "c. Đánh cắp thông tin nhạy cảm của người dùng",
+                "is_correct": true
+            },
+            {
+                "content": "d.  Đánh cắp thông tin nhạy cảm trong cơ sở dữ liệu trên máy chủ",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Khác biệt cơ bản giữa tấn công DoS và DDoS là:",
+        "answers": [
+            {
+                "content": "a.  Phạm vi tấn công",
+                "is_correct": true
+            },
+            {
+                "content": "b. Tần suất tấn công",
+                "is_correct": false
+            },
+            {
+                "content": "c. Mức độ gây hại",
+                "is_correct": false
+            },
+            {
+                "content": "d.  Kỹ thuật tấn công",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Một trong các cách virus thường sử dụng để lây nhiễm vào các chương trình khác là:",
+        "answers": [
+            {
+                "content": "a. Thay thế các chương trình",
+                "is_correct": false
+            },
+            {
+                "content": "b. Xáo trộn mã của virus",
+                "is_correct": false
+            },
+            {
+                "content": "c. Sửa đổi các chương trình",
+                "is_correct": true
+            },
+            {
+                "content": "d.  Ăn mã của virus",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Trojan horses là dạng phần mềm độc hại thường giành quyền truy nhập vào các file của người dùng khai thác Cơ chỉ điều khiển truy nhập.",
+        "answers": [
+            {
+                "content": "a. Rule - Based",
+                "is_correct": false
+            },
+            {
+                "content": "b. DAC",
+                "is_correct": true
+            },
+            {
+                "content": "c. MAC",
+                "is_correct": false
+            },
+            {
+                "content": "d. Role - Based",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Tại sao việc sử dụng thủ tục cơ sở dữ liệu (Stored procedure ) là một trong các biện pháp hiệu quả để ngăn chặn triệt để tấn công chèn mã SQL ?",
+        "answers": [
+            {
+                "content": "a. Thủ tục cơ sở dữ liệu có khả năng cẩm chèn mã",
+                "is_correct": false
+            },
+            {
+                "content": "b. Thủ tục cơ sở dữ liệu độc lập với các ứng dụng",
+                "is_correct": false
+            },
+            {
+                "content": "c. Thủ tục cơ sở dữ liệu cho phép tách mã lệnh SQL khỏi dữ liệu ngườidùng",
+                "is_correct": true
+            },
+            {
+                "content": "d. Thủ tục cơ sở dữ liệu lưu trong cơ sở dữ liệu và chạy nhanh hơn câulệnh trực tiếp",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Có thể phòng chống tấn công Smurf bằng cách cấu hình các máy và router không trả lời.",
+        "answers": [
+            {
+                "content": "a. các yêu cầu UPD hoặc các yêu cầu phát quảng bá",
+                "is_correct": false
+            },
+            {
+                "content": "b. các yêu cầu TCP hoặc các yêu cầu phát quảng bá",
+                "is_correct": false
+            },
+            {
+                "content": "c. các yêu cầu HTTP hoặc các yêu cầu phát quảng bá",
+                "is_correct": false
+            },
+            {
+                "content": "d. các yêu cầu ICMP hoặc các yêu cầu phát quảng bá",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Đây là một công cụ kiểm tra lỗ hổng tấn công chèn mã SQL trên các website:",
+        "answers": [
+            {
+                "content": "a. SQLmap",
+                "is_correct": true
+            },
+            {
+                "content": "b. SQLite",
+                "is_correct": false
+            },
+            {
+                "content": "c. SQLCheck",
+                "is_correct": false
+            },
+            {
+                "content": "d. SQL Server",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Một trong các biện pháp hiệu quả để phòng chống macro viruses là:",
+        "answers": [
+            {
+                "content": "a. Sử dụng IPS/IDS.",
+                "is_correct": false
+            },
+            {
+                "content": "b. Sử dụng tường lửa",
+                "is_correct": false
+            },
+            {
+                "content": "c.Cấm tự động thực hiện macro trong Microsoft Office",
+                "is_correct": true
+            },
+            {
+                "content": "d.Cấm tự động thực hiện macro trong Microsoft Exchange",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Đâu là một kỹ thuật tấn công DoS?",
+        "answers": [
+            {
+                "content": "a. SYN requests",
+                "is_correct": false
+            },
+            {
+                "content": "b. IP spoofing",
+                "is_correct": false
+            },
+            {
+                "content": "c.DNS spoofing",
+                "is_correct": false
+            },
+            {
+                "content": "d.Ping of death",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Đâu là một trong các biện pháp chống tấn công khai thác lỗi tràn bộ đệm?",
+        "answers": [
+            {
+                "content": "a. Sử dụng công nghệ xác minh mạnh",
+                "is_correct": false
+            },
+            {
+                "content": "b. Sử dụng cơ chế cấm thực hiện mã trong dữ liệu",
+                "is_correct": true
+            },
+            {
+                "content": "c.Sử dụng tường lửa",
+                "is_correct": false
+            },
+            {
+                "content": "d.Sử dụng các kỹ thuật mật mã",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Tấn công chặn bắt thường liên quan đến việc nghe lén trên đường truyền và chuyển hướng thông tin để sử dụng trái phép?",
+        "answers": [
+            {
+                "content": "Fabrications",
+                "is_correct": false
+            },
+            {
+                "content": "Interceptions",
+                "is_correct": true
+            },
+            {
+                "content": "Interruptions",
+                "is_correct": false
+            },
+            {
+                "content": "Modifications",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Tấn công gây ngắt quãng làm ngắt, hoặc chậm kênh truyền thông, hoặc làm quá tải hệ thống, ngăn cản việc truy nhập dịch vụ của người dùng hợp pháp:",
+        "answers": [
+            {
+                "content": "Fabrications",
+                "is_correct": false
+            },
+            {
+                "content": "Interceptions",
+                "is_correct": false
+            },
+            {
+                "content": "Interruptions",
+                "is_correct": true
+            },
+            {
+                "content": "Modifications",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Trong các vùng hạ tầng CNTT, vùng nào có các lỗ hổng trong quản lý phần mềm ứng dụng của máy chủ?",
+        "answers": [
+            {
+                "content": "vùng máy trạm",
+                "is_correct": false
+            },
+            {
+                "content": "vùng mạng LAN-to-WAN",
+                "is_correct": false
+            },
+            {
+                "content": "vùng truy nhập từ xa",
+                "is_correct": false
+            },
+            {
+                "content": "vùng hệ thống và ứng dụng",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Trong các vùng hạ tầng CNTT, vùng nào có nhiều mối đe dọa nguy cơ nhất?",
+        "answers": [
+            {
+                "content": "vùng người dùng",
+                "is_correct": true
+            },
+            {
+                "content": "vùng máy trạm",
+                "is_correct": false
+            },
+            {
+                "content": "vùng mạng LAN",
+                "is_correct": false
+            },
+            {
+                "content": "vùng mạng LAN-to-WAN",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Trong các vùng hạ tầng CNTT, vùng nào dễ bị tấn công DoS, DDoS nhất?",
+        "answers": [
+            {
+                "content": "vùng người dùng",
+                "is_correct": false
+            },
+            {
+                "content": "vùng mạng LAN",
+                "is_correct": true
+            },
+            {
+                "content": "vùng mạng WAN",
+                "is_correct": false
+            },
+            {
+                "content": "vùng mạng LAN-to-WAN",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "An toàn thông tin được chia làm những thành phần nào?",
+        "answers": [
+            {
+                "content": "an toàn máy tính và dữ liệu, an toàn mạng, quản lý an toàn thông tin",
+                "is_correct": false
+            },
+            {
+                "content": "an toàn mạng, quản lý an toàn thông tin, chính sách an toàn thông tin",
+                "is_correct": false
+            },
+            {
+                "content": "an toàn mạng, an toàn máy tính và dữ liệu, chính sách an toàn thông tin",
+                "is_correct": false
+            },
+            {
+                "content": "an toàn máy tính và dữ liệu, quản lý an toàn thông tin, chính sách an toàn thông tin",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Nếu dữ liệu bị sửa đổi thì đã vi phạm yêu cầu gì?",
+        "answers": [
+            {
+                "content": "toàn vẹn, sẵn dùng",
+                "is_correct": false
+            },
+            {
+                "content": "bí mật, sẵn dùng",
+                "is_correct": false
+            },
+            {
+                "content": "toàn vẹn, bí mật",
+                "is_correct": true
+            },
+            {
+                "content": "an toàn. bí mật",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "An toàn thông tin gồm các lĩnh vực nào?",
+        "answers": [
+            {
+                "content": "an toàn cntt, đảm bảo thông tin",
+                "is_correct": false
+            },
+            {
+                "content": "đảm bảo thông tin, an toàn mạng",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Trong tấn công khai thác lỗi tràn bộ đệm tin tắc thường sử dụng một số lệnh NOP (No Operation) ở phần đầu của mã tấn công. Mục đích của việc này là gì:",
+        "answers": [
+            {
+                "content": "tăng khả năng gây tràn bộ đệm",
+                "is_correct": false
+            },
+            {
+                "content": "Tăng khả năng gây lỗi chương trình",
+                "is_correct": false
+            },
+            {
+                "content": "Tăng khả năng phá hoại của mã tấn công",
+                "is_correct": false
+            },
+            {
+                "content": "Tăng khả năng mã tấn công được thực hiện",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Sâu SQL Slammer được phát hiện vào năm nào?",
+        "answers": [
+            {
+                "content": "2002",
+                "is_correct": false
+            },
+            {
+                "content": "1997",
+                "is_correct": false
+            },
+            {
+                "content": "2007",
+                "is_correct": true
+            },
+            {
+                "content": "2003",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Dạng tấn công chèn mã được tin tặc sử dụng phổ biến trên các trang web nhắm đến các cơ sở dữ liệu là:",
+        "answers": [
+            {
+                "content": "Tấn công chèn mã SQL",
+                "is_correct": true
+            },
+            {
+                "content": "Tấn công chèn mã XSS",
+                "is_correct": false
+            },
+            {
+                "content": "Tấn công chèn mã CSRF",
+                "is_correct": false
+            },
+            {
+                "content": "Tấn công chèn mã HTML",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Các lỗ hổng bảo mật thường tồn tại nhiều nhất trong thành phần nào của hệ thống:",
+        "answers": [
+            {
+                "content": "Các thành phần phần cứng",
+                "is_correct": false
+            },
+            {
+                "content": "Các ứng dụng",
+                "is_correct": true
+            },
+            {
+                "content": "Hệ điều hành",
+                "is_correct": false
+            },
+            {
+                "content": "Các dịch vụ mạng",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Lỗi tràn bộ đệm là lỗi trong khâu:",
+        "answers": [
+            {
+                "content": "Quản trị phần mềm",
+                "is_correct": true
+            },
+            {
+                "content": "Lập trình phần mềm",
+                "is_correct": false
+            },
+            {
+                "content": "Thiết kế phần mềm",
+                "is_correct": false
+            },
+            {
+                "content": "Kiểm thử phần mềm",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Đâu là một trong các biện pháp phòng chống tấn công khai thác lỗi tràn bộ đệm?",
+        "answers": [
+            {
+                "content": "Sử dụng các thư viện lập trình an toàn //or sử dụng cơ chế cấm thựchiện mã trong dữ liệu (DEP)",
+                "is_correct": true
+            },
+            {
+                "content": "Sử dụng tường lửa",
+                "is_correct": false
+            },
+            {
+                "content": "Sử dụng các kỹ thuật mật mã",
+                "is_correct": false
+            },
+            {
+                "content": "Sử dụng công nghệ xác thực mạnh",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Một điểm yếu điển hình trong hệ thống điều khiển truy cập là việc sử dụng mật khẩu dễ đoán hoặc mật khẩu được lưu ở dạng rõ. Đây là điểm yếu thuộc khâu:",
+        "answers": [
+            {
+                "content": "Quản trị",
+                "is_correct": true
+            },
+            {
+                "content": "Xác thực",
+                "is_correct": false
+            },
+            {
+                "content": "Trao quyền",
+                "is_correct": false
+            },
+            {
+                "content": "Xác thực và Trao quyền",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Lỗ hổng bảo mật (Security vulnerability) là một điểm yếu tồn tại trong một hệ thống cho phép tin tặc:",
+        "answers": [
+            {
+                "content": "Khai thác nhằm đánh cắp các thông tin trong hệ thống",
+                "is_correct": true
+            },
+            {
+                "content": "Khai thác nhằm chiếm quyền điều khiển hệ thống",
+                "is_correct": false
+            },
+            {
+                "content": "Khai thác, tấn công phá hoại và gây tê liệt hệ thống",
+                "is_correct": false
+            },
+            {
+                "content": "Khai thác gây tổn hại đến các thuộc tính an ninh của hệ thống đó",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Trong tấn công khai thác lỗi tràn bộ đệm, tin tặc thường sử dụng shellcode. Shellcode đó là dạng:",
+        "answers": [
+            {
+                "content": "Mã Java",
+                "is_correct": true
+            },
+            {
+                "content": "Mã Hợp ngữ",
+                "is_correct": false
+            },
+            {
+                "content": "Mã C/C++",
+                "is_correct": false
+            },
+            {
+                "content": "Mã máy",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Tấn công kiểu Social Engineering có thể cho phép tin tặc:",
+        "answers": [
+            {
+                "content": "Đánh cắp thông tin nhạy cảm trong cơ sở dữ liệu trên máychủ",
+                "is_correct": true
+            },
+            {
+                "content": "Đánh cắp toàn bộ cơ sở dữ liệu trên máy chủ",
+                "is_correct": false
+            },
+            {
+                "content": "Đánh cắp thông tin nhạy cảm của người dùng",
+                "is_correct": false
+            },
+            {
+                "content": "Phá hỏng máy chủ",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Một trong các mối đe dọa an toàn thông tin thường gặp là:",
+        "answers": [
+            {
+                "content": "Phần mềm nghe lén",
+                "is_correct": true
+            },
+            {
+                "content": "Phần mềm phá mã",
+                "is_correct": false
+            },
+            {
+                "content": "Phần mềm quảng cáo",
+                "is_correct": false
+            },
+            {
+                "content": "Phần mềm độc hại",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Tấn công kiểu Social Engineering là dạng tấn công khai thác yếu tố nào sau đây trong hệ thống?",
+        "answers": [
+            {
+                "content": "Người dùng",
+                "is_correct": true
+            },
+            {
+                "content": "Hệ điều hành & ứng dụng",
+                "is_correct": false
+            },
+            {
+                "content": "Máy trạm",
+                "is_correct": false
+            },
+            {
+                "content": "Máy chủ",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Dạng tấn công giả mạo thông tin thường để đánh lừa người dùng thông thường là:",
+        "answers": [
+            {
+                "content": "Interruptions",
+                "is_correct": true
+            },
+            {
+                "content": "Interceptions",
+                "is_correct": false
+            },
+            {
+                "content": "Fabrications",
+                "is_correct": false
+            },
+            {
+                "content": "Modifications",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Trong tấn công DDoS phản chiếu hay gián tiếp, có sự tham gia của một số lượng lớn máy chủ trên mạng Internet không bị tin tặc chiếm quyền điều khiển. Các máy chủ này được gọi là…",
+        "answers": [
+            {
+                "content": "Requesters",
+                "is_correct": true
+            },
+            {
+                "content": "Reflectors",
+                "is_correct": false
+            },
+            {
+                "content": "Injectors",
+                "is_correct": false
+            },
+            {
+                "content": "Forwarders",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Các vùng bộ nhớ thường bị tràn gồm:",
+        "answers": [
+            {
+                "content": "Ngăn xếp (Stack) và Bộ nhớ đệm (Cache)",
+                "is_correct": true
+            },
+            {
+                "content": "Hàng đợi (Queue) và Vùng nhớ cấp phát động (Heap)",
+                "is_correct": false
+            },
+            {
+                "content": "Ngăn xếp (Stack) và Vùng nhớ cấp phát động (Heap)",
+                "is_correct": false
+            },
+            {
+                "content": "Hàng đợi (Queue) và Ngăn xếp (Stack)",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Để đảm bảo an toàn cho hệ thống điều khiển truy cập, một trong các biện pháp phòng chống hiệu quả là:",
+        "answers": [
+            {
+                "content": "Không mở các email của người lạ hoặc email quảng cáo",
+                "is_correct": true
+            },
+            {
+                "content": "Không cho phép chạy các chương trình điều khiển từ xa",
+                "is_correct": false
+            },
+            {
+                "content": "Không cài đặt và chạy các chương trình tải từ các nguồn khôngtin cậy",
+                "is_correct": false
+            },
+            {
+                "content": "Không dùng tài khoản có quyền quản trị để chạy các chương trình ứngdụng",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Để thực hiện tấn công Smurf, tin tặc phải giả mạo địa chỉ gói tin ICMP trong yêu cầu tấn công. Tin tặc sử dụng…",
+        "answers": [
+            {
+                "content": "Địa chỉ máy nạn nhân làm địa đích của gói tin",
+                "is_correct": true
+            },
+            {
+                "content": "Địa chỉ router làm địa đích của gói tin",
+                "is_correct": false
+            },
+            {
+                "content": "Địa chỉ máy nạn nhân làm địa nguồn của gói tin",
+                "is_correct": false
+            },
+            {
+                "content": "Địa chỉ router làm địa nguồn của gói tin",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Macro viruses là loại viruses thường lây nhiễm vào…",
+        "answers": [
+            {
+                "content": "Các file tài liệu của bộ phần mềm Open Office",
+                "is_correct": true
+            },
+            {
+                "content": "Các file tài liệu của bộ phần mềm Microsoft SQL",
+                "is_correct": false
+            },
+            {
+                "content": "Các file tài liệu của bộ phần mềm Microsoft Office",
+                "is_correct": false
+            },
+            {
+                "content": "Các file tài liệu của bộ phần mềm Microsoft Exchange",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Khác biệt cơ bản của vi rút và sâu là:",
+        "answers": [
+            {
+                "content": "Vi rút có khả năng phá hoại lớn hơn",
+                "is_correct": true
+            },
+            {
+                "content": "Sâu có khả năng phá hoại lớn hơn",
+                "is_correct": false
+            },
+            {
+                "content": "Vi rút có khả năng tự lây lan mà không cần tương tác của ngườidùng",
+                "is_correct": false
+            },
+            {
+                "content": "Sâu có khả năng tự lây lan mà không cần tương tác của người dùng",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Mục đích chính của tấn công giả mạo địa chỉ IP là:",
+        "answers": [
+            {
+                "content": "Để đánh cắp các dữ liệu nhạy cảm trên máy trạm",
+                "is_correct": true
+            },
+            {
+                "content": "Để vượt qua các hệ thống IPS và IDS",
+                "is_correct": false
+            },
+            {
+                "content": "Để vượt qua các hàng rào kiểm soát an ninh",
+                "is_correct": false
+            },
+            {
+                "content": "Để đánh cắp các dữ liệu nhạy cảm trên máy chủ",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Việc quản lý, khắc phục các lỗ hổng bảo mật và tăng cường khả năng đề kháng cho hệ thống cần được thực hiện theo nguyên tắc chung là:",
+        "answers": [
+            {
+                "content": "Cân bằng giữa An toàn, Hữu dụng và Tin cậy",
+                "is_correct": true
+            },
+            {
+                "content": "Cân bằng giữa An toàn, Rẻ tiền và Chất lượng",
+                "is_correct": false
+            },
+            {
+                "content": "Cân bằng giữa An toàn, Hữu dụng và Rẻ tiền",
+                "is_correct": false
+            },
+            {
+                "content": "Cân bằng giữa An toàn, Tin cậy và Rẻ tiền",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Một trong các biện pháp cụ thể cho quản lý, khắc phục các lỗ hổng bảo mật và tăng cường khả năng đề kháng cho hệ thống là:",
+        "answers": [
+            {
+                "content": "Định kỳ cập nhật thông tin về các lỗ hổng từ các trang web chínhthức",
+                "is_correct": true
+            },
+            {
+                "content": "Định kỳ cập nhật các bản vá và nâng cấp hệ điều hành",
+                "is_correct": false
+            },
+            {
+                "content": "Định kỳ nâng cấp hệ thống phần mềm",
+                "is_correct": false
+            },
+            {
+                "content": "Định kỳ nâng cấp hệ thống phần cứng",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Có thể phòng chống tấn công Smurf bằng cách cấu hình các máy và router không trả lời…",
+        "answers": [
+            {
+                "content": "các yêu cầu UPD hoặc các yêu cầu phát quảng bá",
+                "is_correct": true
+            },
+            {
+                "content": "các yêu cầu ICMP hoặc các yêu cầu phát quảng bá",
+                "is_correct": false
+            },
+            {
+                "content": "các yêu cầu TCP hoặc các yêu cầu phát quảng bá",
+                "is_correct": false
+            },
+            {
+                "content": "các yêu cầu HTTP hoặc các yêu cầu phát quảng bá",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Các thành phần chính của hệ thống máy tính gồm:",
+        "answers": [
+            {
+                "content": "Hệ thống phần cứng và Hệ thống phần mềm",
+                "is_correct": true
+            },
+            {
+                "content": "CPU, Bộ nhớ, HDD, hệ điều hành và các ứng dụng",
+                "is_correct": false
+            },
+            {
+                "content": "CPU, Bộ nhớ, HDD và Hệ thống bus truyền dẫn",
+                "is_correct": false
+            },
+            {
+                "content": "CPU, hệ điều hành và các ứng dụng",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Đâu là dạng lỗ hổng bảo mật thường gặp trong hệ điều hành và các phần mềm ứng dụng",
+        "answers": [
+            {
+                "content": "Lỗi tràn bộ đệm",
+                "is_correct": true
+            },
+            {
+                "content": "Lỗi quản trị",
+                "is_correct": false
+            },
+            {
+                "content": "Lỗi thiết kế",
+                "is_correct": false
+            },
+            {
+                "content": "Lỗi cấu hình",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Đâu là một công cụ có khả năng rà quét các lỗ hổng chèn mã SQL cho các trang web?",
+        "answers": [
+            {
+                "content": "Microsoft Baseline Security Analyzer",
+                "is_correct": true
+            },
+            {
+                "content": "Acunetix Web Vulnerability Scanner",
+                "is_correct": false
+            },
+            {
+                "content": "nmap",
+                "is_correct": false
+            },
+            {
+                "content": "Nessus vulnerability scanner",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Điều khiển truy nhập dựa trên luật (Rule-based access control) được sử dụng phổ biến trong:",
+        "answers": [
+            {
+                "content": "VPN",
+                "is_correct": false
+            },
+            {
+                "content": "Firewall",
+                "is_correct": true
+            },
+            {
+                "content": "SSL/TLS",
+                "is_correct": false
+            },
+            {
+                "content": "Kerberos",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Phát hiện tấn công, xâm nhập dựa trên bất thường dựa trên giả thiết:",
+        "answers": [
+            {
+                "content": "Các hành vi tấn công, xâm nhập gây tổn hại nghiêm trọng cho hệthống",
+                "is_correct": false
+            },
+            {
+                "content": "Các hành vi tấn công, xâm nhập thường có quan hệ chặt chẽ với các hànhvi bất thường",
+                "is_correct": true
+            },
+            {
+                "content": "Các hành vi tấn công, xâm nhập có quan hệ chặt chẽ với các dịch vụ đượccung cấp",
+                "is_correct": false
+            },
+            {
+                "content": "Các hành vi tấn công, xâm nhập gây ngắt quãng dịch vụ cung cấp chongười dùng",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Một trong các nhược điểm chính của điều khiển truy nhập dựa trên các đặc điểm sinh trắc học là:",
+        "answers": [
+            {
+                "content": "Không được hỗ trợ rộng rãi",
+                "is_correct": false
+            },
+            {
+                "content": "Công nghệ phức tạp",
+                "is_correct": false
+            },
+            {
+                "content": "Chi phí đắt",
+                "is_correct": true
+            },
+            {
+                "content": "Khó sử dụng",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Phát biểu nào sau đây đúng với cơ chế điều khiển truy nhập DAC:",
+        "answers": [
+            {
+                "content": "DAC cho phép người tạo ra đối tượng có thể cấp quyền truy nhập chongười dùng khác",
+                "is_correct": true
+            },
+            {
+                "content": "DAC quản lý quyền truy nhập chặt chẽ hơn các cơ chế khác",
+                "is_correct": false
+            },
+            {
+                "content": "DAC cấp quyền truy nhập dựa trên tính nhạy cảm của thông tin và chínhsách quản trị",
+                "is_correct": false
+            },
+            {
+                "content": "DAC là cơ chế điều khiển truy nhập được sử dụng rộng rãi nhất",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Phát biểu nào sau đây đúng với cơ chế điều khiển truy nhập bắt buộc MAC:",
+        "answers": [
+            {
+                "content": "MAC quản lý quyền truy nhập chặt chẽ hơn các cơ chế khác",
+                "is_correct": false
+            },
+            {
+                "content": "MAC cấp quyền truy nhập dựa trên tính nhạy cảm của thông tin và chínhsách quản trị",
+                "is_correct": true
+            },
+            {
+                "content": "MAC là cơ chế điều khiển truy nhập được sử dụng rộng rãi nhất",
+                "is_correct": false
+            },
+            {
+                "content": "MAC cho phép người tạo ra đối tượng có thể cấp quyền truy nhập chongười dùng khác",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Tìm phát biểu đúng về dịch vụ xác thực trong điều khiển truy nhập:",
+        "answers": [
+            {
+                "content": "Là quá trình xác minh nhận dạng của chủ thể",
+                "is_correct": false
+            },
+            {
+                "content": "Là quá trình xác minh nhận dạng của người dùng",
+                "is_correct": false
+            },
+            {
+                "content": "Là quá trình xác minh các thông tin nhận dạng của chủ thể yêu cầu truynhập đối tượng",
+                "is_correct": false
+            },
+            {
+                "content": "Là quá trình xác minh tính chân thực của thông tin nhận dạng người dùngcung cấp",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Hai dịch vụ quan trọng nhất của một hệ thống điều khiển truy nhập là:",
+        "answers": [
+            {
+                "content": "Authenticator và Administrator",
+                "is_correct": false
+            },
+            {
+                "content": "Authentication và Authorization",
+                "is_correct": true
+            },
+            {
+                "content": "Authentication và Administrator",
+                "is_correct": false
+            },
+            {
+                "content": "Administrator và Authorization",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Mục đích chính của điều khiển truy nhập là để đảm bảo các thuộc tính an ninh của thông tin, hệ thống và các tài nguyên, gồm:",
+        "answers": [
+            {
+                "content": "Tính bí mật, tính toàn vẹn và tính sẵn dùng",
+                "is_correct": true
+            },
+            {
+                "content": "Tính bảo mật, tính toàn vẹn và tính xác thực",
+                "is_correct": false
+            },
+            {
+                "content": "Tính bí mật, tính toàn vẹn và tính xác thực",
+                "is_correct": false
+            },
+            {
+                "content": "Tính bảo mật, tính toàn vẹn và tính sẵn dùng",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Tại sao một hệ thống phát hiện xâm nhập dựa trên chữ ký không thể phát hiện các tấn công, xâm nhập mới?",
+        "answers": [
+            {
+                "content": "Do chữ ký của chúng chưa tồn tại trong hệ thống",
+                "is_correct": true
+            },
+            {
+                "content": "Do các tấn công, xâm nhập mới chỉ gây thiệt hại nhỏ",
+                "is_correct": false
+            },
+            {
+                "content": "Do các tấn công, xâm nhập mới không có chữ ký",
+                "is_correct": false
+            },
+            {
+                "content": "Do các tấn công, xâm nhập mới không gây ra bất thường",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Ưu điểm của điều khiển truy nhập dựa trên các đặc điểm sinh trắc học là:",
+        "answers": [
+            {
+                "content": "Bảo mật cao và được hỗ trợ rộng rãi",
+                "is_correct": false
+            },
+            {
+                "content": "Bảo mật cao và độ ổn định cao",
+                "is_correct": false
+            },
+            {
+                "content": "Bảo mật cao và chi phí thấp",
+                "is_correct": false
+            },
+            {
+                "content": "Bảo mật cao và luôn đi cùng với chủ thể",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Các hệ thống phát hiện xâm nhập có thể thu thập dữ liệu đầu vào từ…",
+        "answers": [
+            {
+                "content": "Các host",
+                "is_correct": false
+            },
+            {
+                "content": "Mạng và các host",
+                "is_correct": true
+            },
+            {
+                "content": "Mạng",
+                "is_correct": false
+            },
+            {
+                "content": "Các router",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Dạng xác thực sử dụng các thông tin nào dưới đây đảm bảo độ an toàn cao hơn?",
+        "answers": [
+            {
+                "content": "Thẻ ATM và số PIN",
+                "is_correct": true
+            },
+            {
+                "content": "Tên truy nhập và mật khẩu",
+                "is_correct": false
+            },
+            {
+                "content": "Tên truy nhập và số PIN",
+                "is_correct": false
+            },
+            {
+                "content": "Thẻ ATM và tên truy nhập",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Phương pháp xác thực nào dưới đây có thể cung cấp khả năng xác thực có độ an toàn cao nhất?",
+        "answers": [
+            {
+                "content": "Sử dụng Smartcard",
+                "is_correct": false
+            },
+            {
+                "content": "Sử dụng chứng chỉ số",
+                "is_correct": false
+            },
+            {
+                "content": "Sử dụng mật khẩu",
+                "is_correct": false
+            },
+            {
+                "content": "Sử dụng vân tay",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Tìm phát biểu đúng về phát hiện xâm nhập dựa trên chữ ký và phát hiện xâm nhập dựa trên bất thường:",
+        "answers": [
+            {
+                "content": "Phát hiện xâm nhập dựa trên bất thường không thể phát hiện các tấncông, xâm nhập mới",
+                "is_correct": false
+            },
+            {
+                "content": "Phát hiện xâm nhập dựa trên chữ ký có thể phát hiện các tấn công, xâmnhập mới",
+                "is_correct": false
+            },
+            {
+                "content": "Phát hiện xâm nhập dựa trên chữ ký thường có tỷ lệ phát hiện đúng caohơn",
+                "is_correct": true
+            },
+            {
+                "content": "Phát hiện xâm nhập dựa trên bất thường thường có tỷ lệ phát hiện đúngcao hơn",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Đâu là một loại tường lửa?",
+        "answers": [
+            {
+                "content": "Gateway server",
+                "is_correct": false
+            },
+            {
+                "content": "Application server",
+                "is_correct": false
+            },
+            {
+                "content": "Server gateway",
+                "is_correct": false
+            },
+            {
+                "content": "Application-level gateway",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Loại tấn công nào sau đây chiếm quyền truy nhập đến tài nguyên lợi dụng cơ chế điều khiển truy nhập DAC?",
+        "answers": [
+            {
+                "content": "Man in the middle",
+                "is_correct": false
+            },
+            {
+                "content": "Phishing",
+                "is_correct": false
+            },
+            {
+                "content": "Trojan horse",
+                "is_correct": true
+            },
+            {
+                "content": "Spoofing",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Số lượng nhân tố (factor) xác thực sử dụng trong điều khiển truy nhập dựa trên thẻ thông minh là:",
+        "answers": [
+            {
+                "content": "3",
+                "is_correct": false
+            },
+            {
+                "content": "4",
+                "is_correct": false
+            },
+            {
+                "content": "1",
+                "is_correct": false
+            },
+            {
+                "content": "2",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Ưu điểm của thẻ bài (token) so với thẻ thông minh (smart card) trong điều khiển truy nhập là:",
+        "answers": [
+            {
+                "content": "Được sử dụng rộng rãi hơn",
+                "is_correct": false
+            },
+            {
+                "content": "Có chi phí rẻ hơn",
+                "is_correct": false
+            },
+            {
+                "content": "Có cơ chế xác thực mạnh hơn",
+                "is_correct": true
+            },
+            {
+                "content": "Có cơ chế xác thực đa dạng hơn",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Danh sách điều khiển truy nhập ACL thực hiện việc quản lý quyền truy nhập đến các đối tượng cho người dùng bằng cách:",
+        "answers": [
+            {
+                "content": "Các quyền truy nhập vào đối tượng cho mỗi người dùng được quản lý riêngrẽ",
+                "is_correct": false
+            },
+            {
+                "content": "Mỗi người dùng được gán một danh sách các đối tượng kèm theo quyền truynhập",
+                "is_correct": false
+            },
+            {
+                "content": "Mỗi đối tượng được gán một danh sách người dùng kèm theo quyền truynhập",
+                "is_correct": true
+            },
+            {
+                "content": "Các quyền truy nhập vào đối tượng cho mỗi người dùng được quản lý trongmột ma trận",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Tìm phát biểu đúng về mã hóa khóa bất đối xứng (Asymmetric key cryptography):",
+        "answers": [
+            {
+                "content": "Sử dụng một khóa quá trình mã hóa và một khóa khác cho giải mã",
+                "is_correct": true
+            },
+            {
+                "content": "An toàn hơn mã hóa khóa bí mật",
+                "is_correct": false
+            },
+            {
+                "content": "Sử dụng một khóa chung cho cả quá trình mã hóa và giải mã",
+                "is_correct": false
+            },
+            {
+                "content": "Chỉ sử dụng kỹ thuật mã hóa khối",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Độ an toàn của hệ mật mã RSA dựa trên...",
+        "answers": [
+            {
+                "content": "Khóa có kích thước lớn",
+                "is_correct": false
+            },
+            {
+                "content": "Độ phức tạp cao của giải thuật RSA",
+                "is_correct": false
+            },
+            {
+                "content": "Tính khó của việc phân tích số nguyên rất lớn",
+                "is_correct": true
+            },
+            {
+                "content": "Chi phí tính toán lớn",
+                "is_correct": false
+            }
+        ]
+    }
+]

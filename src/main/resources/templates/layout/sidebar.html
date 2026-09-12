@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<body>
+    <aside th:fragment="teacher-sidebar(activeItem)" id="sidebar">
+        <a th:href="@{/teacher}" class="brand-logo" style="text-decoration: none;">
+            <i class="bi bi-mortarboard-fill"></i> <span>Quiz<span class="hub">Hub</span></span>
+        </a>
+
+        <div class="menu-title">Bảng điều khiển</div>
+        <ul class="nav-menu">
+            <li><a href="/teacher" th:classappend="${activeItem == 'dashboard' ? 'active' : ''}" data-title="Tổng quan">
+                    <i class="bi bi-grid-1x2-fill"></i> <span>Tổng quan</span>
+                </a></li>
+            <li><a href="/teacher/classrooms" th:classappend="${activeItem == 'classrooms' ? 'active' : ''}"
+                    data-title="Lớp học">
+                    <i class="bi bi-people-fill"></i> <span>Lớp học</span>
+                </a></li>
+            <li><a href="/teacher/quizzes" th:classappend="${activeItem == 'quizzes' ? 'active' : ''}"
+                    data-title="Đề thi">
+                    <i class="bi bi-file-earmark-text-fill"></i> <span>Đề thi</span>
+                </a></li>
+        </ul>
+
+        <div class="menu-title">Giám sát & Đánh giá</div>
+        <ul class="nav-menu">
+            <li><a href="/teacher/monitoring" th:classappend="${activeItem == 'monitoring' ? 'active' : ''}" data-title="Giám sát phòng thi">
+                <i class="bi bi-display"></i> <span>Giám sát phòng thi</span>
+            </a></li>
+        </ul>
+
+        <div class="menu-title">Thư viện dữ liệu</div>
+        <ul class="nav-menu">
+            <li><a href="/teacher/categories?type=mine" th:classappend="${activeItem == 'categories-mine' ? 'active' : ''}" data-title="Danh mục của tôi">
+                <i class="bi bi-folder-fill"></i> <span>Danh mục của tôi</span>
+            </a></li>
+            <li><a href="/teacher/questions" th:classappend="${activeItem == 'questions' ? 'active' : ''}" data-title="Ngân hàng câu hỏi">
+                <i class="bi bi-pencil-square"></i> <span>Ngân hàng câu hỏi</span>
+            </a></li>
+        </ul>
+    </aside>
+
+    <aside th:fragment="student-sidebar(activeItem)" id="sidebar">
+        <a th:href="@{/student}" class="brand-logo" style="text-decoration: none;">
+            <i class="bi bi-layers-fill"></i> <span>Quiz<span class="hub">Hub</span></span>
+        </a>
+
+        <div class="menu-title">Bảng điều khiển</div>
+        <ul class="nav-menu">
+            <li><a href="/student" th:classappend="${activeItem == 'dashboard' ? 'active' : ''}" data-title="Tổng quan"><i class="bi bi-grid-1x2-fill"></i> <span>Tổng quan</span></a></li>
+            <li><a href="/student/classrooms" th:classappend="${activeItem == 'classrooms' ? 'active' : ''}" data-title="Lớp học"><i class="bi bi-people-fill"></i> <span>Lớp học</span></a></li>
+            <li><a href="/student/history" th:classappend="${activeItem == 'history' ? 'active' : ''}" data-title="Lịch sử làm bài"><i class="bi bi-clock-history"></i> <span>Lịch sử làm bài</span></a></li>
+        </ul>
+
+        <div class="menu-title">Thư viện cá nhân</div>
+        <ul class="nav-menu">
+            <li>
+                <a href="/student/categories?type=public" th:classappend="${activeItem == 'categories-public' ? 'active' : ''}" data-title="Thư viện đề thi">
+                    <i class="bi bi-globe2"></i> <span>Thư viện đề thi</span>
+                </a>
+            </li>
+            <li>
+                <a href="/student/categories?type=mine" th:classappend="${activeItem == 'categories-mine' ? 'active' : ''}" data-title="Đề thi của tôi">
+                    <i class="bi bi-folder-fill"></i> <span>Đề thi của tôi</span>
+                </a>
+            </li>
+            <li><a href="/student/questions" th:classappend="${activeItem == 'questions' ? 'active' : ''}" data-title="Tự tạo câu hỏi"><i class="bi bi-pencil-square"></i> <span>Tự tạo câu hỏi</span></a></li>
+            <li><a href="/student/quizzes/create" th:classappend="${activeItem == 'create-quiz' ? 'active' : ''}" data-title="Tự tạo đề luyện tập"><i class="bi bi-file-earmark-plus"></i> <span>Tự tạo đề luyện tập</span></a></li>
+        </ul>
+    </aside>
+
+    <aside th:fragment="admin-sidebar(activeItem)" id="sidebar">
+        <a th:href="@{/admin}" class="brand-logo" style="text-decoration: none;">
+            <i class="bi bi-shield-fill-check"></i> <span>Quiz<span class="hub">Hub</span></span>
+        </a>
+
+        <div class="menu-title">Quản trị Hệ thống</div>
+        <ul class="nav-menu">
+            <li><a href="/admin" th:classappend="${activeItem == 'dashboard' ? 'active' : ''}" data-title="Dashboard">
+                <i class="bi bi-grid-1x2-fill"></i> <span>Tổng quan</span>
+            </a></li>
+            <li><a href="/admin/users" th:classappend="${activeItem == 'users' ? 'active' : ''}" data-title="Tài khoản">
+                <i class="bi bi-people-fill"></i> <span>Quản lý Tài khoản</span>
+            </a></li>
+        </ul>
+
+        <div class="menu-title">Nội dung Public</div>
+        <ul class="nav-menu">
+            <li><a href="/admin/categories" th:classappend="${activeItem == 'categories' ? 'active' : ''}" data-title="Danh mục">
+                <i class="bi bi-diagram-3-fill"></i> <span>Danh mục Hệ thống</span>
+            </a></li>
+            <li>
+                <a href="/admin/moderation" th:classappend="${activeItem == 'moderation' ? 'active' : ''}" data-title="Duyệt nội dung">
+                    <i class="bi bi-clipboard2-check-fill"></i>
+                    <span>Duyệt Câu hỏi</span>
+                    <span th:if="${pendingQuestionsCount != null && pendingQuestionsCount > 0}" th:text="${pendingQuestionsCount}"
+                        style="background: var(--orange); color: #fff; padding: 2px 7px; border-radius: 20px; font-size: 11px; margin-left: auto;">0</span>
+                </a>
+            </li>
+        </ul>
+
+        <div class="menu-title">Báo cáo</div>
+        <ul class="nav-menu">
+            <li><a href="/admin/reports" th:classappend="${activeItem == 'reports' ? 'active' : ''}" data-title="Thống kê">
+                <i class="bi bi-bar-chart-line-fill"></i> <span>Thống kê Hệ thống</span>
+            </a></li>
+        </ul>
+    </aside>
+</body>
+
+</html>

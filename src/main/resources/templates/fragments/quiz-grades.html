@@ -1,0 +1,411 @@
+    <div th:fragment="assignment-grades-modal">
+        <!-- Main Grades Modal -->
+        <div class="modal fade" id="gradesModal" aria-hidden="true">
+            <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content" style="border-radius:24px; border:none; box-shadow:0 20px 60px rgba(0,0,0,0.15);">
+                    <div class="modal-header border-0 px-4 pt-4">
+                        <div class="d-flex align-items-center">
+                            <div class="grade-icon-box me-3">
+                                <i class="bi bi-trophy-fill text-primary"></i>
+                            </div>
+                            <div>
+                                <h5 class="modal-title fw-bold mb-0" style="color:#1e293b;">Báo cáo kết quả bài tập</h5>
+                                <p class="text-muted small mb-0" id="grades-assignment-title">Đang tải...</p>
+                            </div>
+                        </div>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    
+                    <div class="modal-body px-4 py-3">
+                        <!-- Nav Tabs -->
+                        <ul class="nav nav-pills mb-4 gap-2" id="gradeModalTabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active fw-bold px-4 rounded-pill" id="table-tab" data-bs-toggle="pill" data-bs-target="#grade-table-pane" type="button" role="tab">
+                                    <i class="bi bi-list-check me-2"></i>Bảng điểm chi tiết
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link fw-bold px-4 rounded-pill" id="stats-tab" data-bs-toggle="pill" data-bs-target="#grade-stats-pane" type="button" role="tab" onclick="loadAssignmentStats()">
+                                    <i class="bi bi-bar-chart-line me-2"></i>Thống kê tổng quát
+                                </button>
+                            </li>
+                        </ul>
+
+                        <div class="tab-content" id="gradeModalTabsContent">
+                            <!-- Pane 1: Table -->
+                            <div class="tab-pane fade show active" id="grade-table-pane" role="tabpanel">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h6 class="fw-bold m-0" style="color: #475569;"><i class="bi bi-people me-2"></i>Danh sách điểm sinh viên</h6>
+                                    <button type="button" class="btn btn-success btn-sm fw-bold d-flex align-items-center px-3 shadow-sm" onclick="exportGradesToExcel()" style="border-radius:10px; background-color: #16a34a; border:none;">
+                                        <i class="bi bi-file-earmark-excel me-2"></i> Xuất Excel
+                                    </button>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-hover align-middle custom-grade-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Sinh viên</th>
+                                                <th>Email</th>
+                                                <th class="text-center">Số lần làm</th>
+                                                <th class="text-center">Trạng thái</th>
+                                                <th class="text-center">Điểm cao nhất</th>
+                                                <th class="text-end">Hành động</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="grades-table-body">
+                                            <!-- Data via JS -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div id="grades-empty-state" class="text-center py-5 d-none">
+                                    <i class="bi bi-clipboard-x text-muted" style="font-size: 3rem; opacity: 0.3;"></i>
+                                    <p class="mt-3 text-muted fw-medium">Chưa có dữ liệu điểm cho bài tập này.</p>
+                                </div>
+                            </div>
+
+                            <!-- Pane 2: Statistics -->
+                            <div class="tab-pane fade" id="grade-stats-pane" role="tabpanel">
+                                <div id="stats-loading" class="text-center py-5">
+                                    <div class="spinner-border text-primary" role="status"></div>
+                                    <p class="mt-2 text-muted small">Đang tính toán thống kê...</p>
+                                </div>
+                                <div id="stats-content" class="d-none">
+                                    <!-- Metric Cards -->
+                                    <div class="row g-3 mb-4">
+                                        <div class="col-md-3">
+                                            <div class="stat-card p-3 bg-primary bg-opacity-10 text-primary">
+                                                <div class="small fw-bold opacity-75">Điểm Trung Bình</div>
+                                                <div class="fs-2 fw-800 mt-1" id="stat-avg">0.0</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="stat-card p-3 bg-success bg-opacity-10 text-success">
+                                                <div class="small fw-bold opacity-75">Điểm Cao Nhất</div>
+                                                <div class="fs-2 fw-800 mt-1" id="stat-highest">0.0</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="stat-card p-3 bg-danger bg-opacity-10 text-danger">
+                                                <div class="small fw-bold opacity-75">Điểm Thấp Nhất</div>
+                                                <div class="fs-2 fw-800 mt-1" id="stat-lowest">0.0</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="stat-card p-3 bg-info bg-opacity-10 text-info">
+                                                <div class="small fw-bold opacity-75">Tỉ lệ nộp bài</div>
+                                                <div class="fs-2 fw-800 mt-1" id="stat-completion">0%</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Chart -->
+                                    <div class="row">
+                                        <div class="col-lg-8">
+                                            <div class="card border-0 bg-light p-4 rounded-4">
+                                                <h6 class="fw-bold mb-4">Phổ điểm học sinh</h6>
+                                                <div style="height: 300px;">
+                                                    <canvas id="scoreChart"></canvas>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-4">
+                                            <div class="card border-0 bg-light p-4 rounded-4 h-100">
+                                                <h6 class="fw-bold mb-4">Phân bố trạng thái</h6>
+                                                <div class="d-flex flex-column gap-3">
+                                                    <div class="d-flex justify-content-between align-items-center">
+                                                        <span class="small fw-bold text-muted">Đã nộp bài:</span>
+                                                        <span class="badge bg-success rounded-pill" id="stat-count-completed">0</span>
+                                                    </div>
+                                                    <div class="d-flex justify-content-between align-items-center">
+                                                        <span class="small fw-bold text-muted">Đang làm:</span>
+                                                        <span class="badge bg-warning text-dark rounded-pill" id="stat-count-inprogress">0</span>
+                                                    </div>
+                                                    <div class="d-flex justify-content-between align-items-center">
+                                                        <span class="small fw-bold text-muted">Chưa bắt đầu:</span>
+                                                        <span class="badge bg-secondary rounded-pill" id="stat-count-notstarted">0</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal: Student History Detail -->
+        <div class="modal fade" id="historyModal" tabindex="-1" aria-hidden="true" style="z-index: 1060;">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content" style="border-radius:24px; border:none; box-shadow:0 20px 60px rgba(0,0,0,0.15);">
+                    <div class="modal-header border-0 px-4 pt-4">
+                        <div class="d-flex align-items-center">
+                            <div class="history-icon-box me-3">
+                                <i class="bi bi-clock-history text-primary"></i>
+                            </div>
+                            <div>
+                                <h5 class="fw-bold mb-0">Lịch sử làm bài</h5>
+                                <p class="text-muted small mb-0" id="hist-student-name">Học sinh: ...</p>
+                            </div>
+                        </div>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body px-4 py-4">
+                        <div id="history-loading" class="text-center py-5">
+                            <div class="spinner-border text-primary" role="status"></div>
+                            <p class="mt-2 text-muted small">Đang tải lịch sử làm bài...</p>
+                        </div>
+                        <div id="history-content" class="d-none">
+                            <div class="table-responsive">
+                                <table class="table table-hover align-middle">
+                                    <thead class="bg-light">
+                                        <tr>
+                                            <th class="border-0 rounded-start">Lần làm</th>
+                                            <th class="border-0">Thời gian bắt đầu</th>
+                                            <th class="border-0">Kết quả</th>
+                                            <th class="border-0 text-center">Đúng/Sai</th>
+                                            <th class="border-0 text-end rounded-end">Thao tác</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="history-table-body">
+                                        <!-- History items via JS -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div id="history-empty" class="text-center py-5 d-none">
+                            <p class="text-muted">Chưa có lịch sử làm bài cho học sinh này.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chart and Excel Libs -->
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+
+        <style>
+            .grade-icon-box { width: 48px; height: 48px; background: #eff6ff; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; }
+            .custom-grade-table thead th { background: #f8fafc; color: #64748b; font-weight: 600; text-transform: uppercase; font-size: 11px; letter-spacing: 0.05em; border-top: none; padding: 16px; }
+            .custom-grade-table tbody td { padding: 16px; border-bottom: 1px solid #f1f5f9; }
+            .grade-score { font-weight: 700; color: #2563eb; font-size: 1.1rem; }
+            .status-badge { padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; display: inline-block; min-width: 100px; text-align: center; }
+            .status-completed { background: #dcfce7; color: #166534; }
+            .status-inprogress { background: #fef9c3; color: #854d0e; }
+            .status-notstarted { background: #f1f5f9; color: #475569; }
+            .custom-grade-table tbody tr:hover { background-color: #f8fafc; }
+            
+            .stat-card { border-radius: 16px; }
+            .fw-800 { font-weight: 800; }
+            #gradeModalTabs .nav-link { color: #64748b; background: transparent; border: 1px solid #e2e8f0; margin-right: 8px; transition: all 0.2s; }
+            #gradeModalTabs .nav-link.active { background: #2563eb !important; color: #fff; border-color: #2563eb; box-shadow: 0 4px 12px rgba(37,99,235,0.2); }
+            
+            .history-icon-box { width: 40px; height: 40px; background: #eff6ff; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+            .history-score { font-weight: 700; color: #2563eb; }
+        </style>
+
+        <script th:inline="javascript">
+            (function() {
+                let gradesModalInstance = null;
+                let historyModalInstance = null;
+                let currentAssigningId = null;
+                let scoreChartInstance = null;
+
+                window.openGradesModal = async function(assigningId, title) {
+                    // Hide any other open modals first to prevent backdrop issues
+                    const openModals = document.querySelectorAll('.modal.show');
+                    openModals.forEach(m => {
+                        if (m.id !== 'gradesModal') {
+                            const inst = bootstrap.Modal.getInstance(m);
+                            if (inst) inst.hide();
+                        }
+                    });
+
+                    currentAssigningId = assigningId;
+                    const modalEl = document.getElementById('gradesModal');
+                    if (!gradesModalInstance) {
+                        gradesModalInstance = new bootstrap.Modal(modalEl);
+                        modalEl.addEventListener('hidden.bs.modal', () => {
+                            const tableTab = document.querySelector('#table-tab');
+                            bootstrap.Tab.getOrCreateInstance(tableTab).show();
+                        });
+                    }
+                    
+                    document.getElementById('grades-assignment-title').innerText = title || 'Báo cáo chi tiết';
+                    const tbody = document.getElementById('grades-table-body');
+                    const emptyState = document.getElementById('grades-empty-state');
+                    
+                    tbody.innerHTML = `<tr><td colspan="6" class="text-center py-5"><div class="spinner-border text-primary" role="status"></div></td></tr>`;
+                    emptyState.classList.add('d-none');
+                    gradesModalInstance.show();
+
+                    try {
+                        const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+                        const response = await fetch(`/api/teacher/classrooms/assigned-quizzes/${assigningId}/grades`, {
+                            headers: { 'Authorization': 'Bearer ' + token }
+                        });
+                        if (response.ok) {
+                            const data = await response.json();
+                            renderGradesData(data);
+                        } else {
+                            tbody.innerHTML = '<tr><td colspan="6" class="text-center text-danger py-4">Không thể tải dữ liệu điểm.</td></tr>';
+                        }
+                    } catch (error) {
+                        tbody.innerHTML = '<tr><td colspan="6" class="text-center text-danger py-4">Lỗi kết nối máy chủ.</td></tr>';
+                    }
+                };
+
+                window.loadAssignmentStats = async function() {
+                    if (!currentAssigningId) return;
+                    const loader = document.getElementById('stats-loading');
+                    const content = document.getElementById('stats-content');
+                    loader.classList.remove('d-none');
+                    content.classList.add('d-none');
+
+                    try {
+                        const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+                        const response = await fetch(`/api/teacher/classrooms/assigned-quizzes/${currentAssigningId}/statistics`, {
+                            headers: { 'Authorization': 'Bearer ' + token }
+                        });
+                        if (response.ok) {
+                            const stats = await response.json();
+                            renderStatsData(stats);
+                            loader.classList.add('d-none');
+                            content.classList.remove('d-none');
+                        }
+                    } catch (e) {
+                        console.error('Stats error:', e);
+                    }
+                };
+
+                function renderStatsData(s) {
+                    document.getElementById('stat-avg').innerText = s.averageScore.toFixed(1);
+                    document.getElementById('stat-highest').innerText = s.highestScore.toFixed(1);
+                    document.getElementById('stat-lowest').innerText = s.lowestScore.toFixed(1);
+                    const completion = s.totalStudents > 0 ? Math.round((s.completedCount / s.totalStudents) * 100) : 0;
+                    document.getElementById('stat-completion').innerText = completion + '%';
+                    document.getElementById('stat-count-completed').innerText = s.completedCount;
+                    document.getElementById('stat-count-inprogress').innerText = s.inProgressCount;
+                    document.getElementById('stat-count-notstarted').innerText = s.notStartedCount;
+                    renderScoreChart(s.scoreDistribution);
+                }
+
+                function renderScoreChart(dist) {
+                    const ctx = document.getElementById('scoreChart').getContext('2d');
+                    if (scoreChartInstance) scoreChartInstance.destroy();
+                    const labels = ["0-2", "2-4", "4-6", "6-8", "8-10"];
+                    const dataValues = labels.map(label => dist[label] || 0);
+                    scoreChartInstance = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                label: 'Số lượng học sinh',
+                                data: dataValues,
+                                backgroundColor: [
+                                    'rgba(239, 68, 68, 0.6)', 'rgba(249, 115, 22, 0.6)', 
+                                    'rgba(234, 179, 8, 0.6)', 'rgba(34, 197, 94, 0.6)', 'rgba(59, 130, 246, 0.6)'
+                                ],
+                                borderRadius: 8, borderWidth: 0
+                            }]
+                        },
+                        options: {
+                            responsive: true, maintainAspectRatio: false,
+                            plugins: { legend: { display: false } },
+                            scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
+                        }
+                    });
+                }
+
+                function renderGradesData(data) {
+                    const tbody = document.getElementById('grades-table-body');
+                    const emptyState = document.getElementById('grades-empty-state');
+                    if (!data || data.length === 0) {
+                        tbody.innerHTML = '';
+                        emptyState.classList.remove('d-none');
+                        return;
+                    }
+                    emptyState.classList.add('d-none');
+                    tbody.innerHTML = data.map(item => {
+                        let statusClass = 'status-notstarted';
+                        if (item.status === 'Đã nộp bài') statusClass = 'status-completed';
+                        else if (item.status === 'Đang làm bài') statusClass = 'status-inprogress';
+                        const scoreDisplay = item.highestScore !== null ? `<span class="grade-score">${item.highestScore.toFixed(1)}</span>` : '<span class="text-muted">_</span>';
+                        return `
+                            <tr>
+                                <td><div class="fw-bold" style="color:#334155;">${item.fullName}</div><div class="text-muted small" style="font-size: 10px;">ID: #${item.studentId}</div></td>
+                                <td><span class="text-muted small">${item.email}</span></td>
+                                <td class="text-center fw-medium">${item.attemptCount}</td>
+                                <td class="text-center"><span class="status-badge ${statusClass}">${item.status}</span></td>
+                                <td class="text-center">${scoreDisplay}</td>
+                                <td class="text-end"><button class="btn btn-sm btn-light border d-flex align-items-center gap-1 ms-auto" style="border-radius:10px;" onclick="viewDetailedHistory(${item.studentId}, '${item.fullName.replace(/'/g, "\\'")}')"><i class="bi bi-search small"></i> Lịch sử</button></td>
+                            </tr>`;
+                    }).join('');
+                }
+
+                window.exportGradesToExcel = function() {
+                    const title = document.getElementById('grades-assignment-title').innerText;
+                    const table = document.querySelector('.custom-grade-table');
+                    const clone = table.cloneNode(true);
+                    clone.querySelectorAll('tr').forEach(tr => {
+                        if (tr.lastElementChild) tr.lastElementChild.remove();
+                        const nameCell = tr.cells[0];
+                        if (nameCell) {
+                            const idDiv = nameCell.querySelector('div.text-muted.small');
+                            if (idDiv) idDiv.remove();
+                        }
+                    });
+                    const ws = XLSX.utils.table_to_sheet(clone);
+                    ws['!cols'] = [{ wch: 25 }, { wch: 35 }, { wch: 15 }, { wch: 20 }, { wch: 15 }];
+                    const wb = XLSX.utils.book_new();
+                    XLSX.utils.book_append_sheet(wb, ws, "Bảng điểm");
+                    XLSX.writeFile(wb, `Bang_diem_${title.replace(/\s+/g, '_')}.xlsx`);
+                };
+
+                window.viewDetailedHistory = async function(studentId, fullName) {
+                    const histModalEl = document.getElementById('historyModal');
+                    if (!historyModalInstance) historyModalInstance = new bootstrap.Modal(histModalEl);
+                    document.getElementById('hist-student-name').innerText = `Học sinh: ${fullName}`;
+                    const loader = document.getElementById('history-loading');
+                    const content = document.getElementById('history-content');
+                    const empty = document.getElementById('history-empty');
+                    const tbody = document.getElementById('history-table-body');
+                    loader.classList.remove('d-none'); content.classList.add('d-none'); empty.classList.add('d-none');
+                    tbody.innerHTML = '';
+                    historyModalInstance.show();
+                    try {
+                        const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+                        const response = await fetch(`/api/teacher/classrooms/assigned-quizzes/${currentAssigningId}/students/${studentId}/history`, {
+                            headers: { 'Authorization': 'Bearer ' + token }
+                        });
+                        if (response.ok) {
+                            const history = await response.json();
+                            loader.classList.add('d-none');
+                            if (!history || history.length === 0) { empty.classList.remove('d-none'); }
+                            else {
+                                content.classList.remove('d-none');
+                                tbody.innerHTML = history.map((att, idx) => {
+                                    const startTime = new Date(att.startedAt).toLocaleString('vi-VN');
+                                    const score = att.result !== null ? `<span class="history-score">${att.result.toFixed(1)}</span>` : '<span class="text-muted">Chưa hoàn thành</span>';
+                                    const correctStats = att.endedAt ? `<span class="text-success small fw-bold">${att.correctNum}</span>/<span class="text-danger small fw-bold">${att.incorrectNum}</span>` : '-';
+                                    return `
+                                        <tr>
+                                            <td class="fw-bold">Lần ${history.length - idx}</td>
+                                            <td class="small text-muted">${startTime}</td>
+                                            <td>${score}</td>
+                                            <td class="text-center">${correctStats}</td>
+                                            <td class="text-end">
+                                                ${att.endedAt ? `<a href="/teacher/monitoring/attempt/${att.id}" class="btn btn-sm btn-outline-primary rounded-pill px-3 fw-bold small">Chi tiết</a>` : '<span class="badge bg-warning text-dark">Đang làm</span>'}
+                                            </td>
+                                        </tr>`;
+                                }).join('');
+                            }
+                        }
+                    } catch (e) { console.error(e); }
+                };
+            })();
+        </script>
+    </div>

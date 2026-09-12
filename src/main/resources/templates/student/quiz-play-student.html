@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuizHub | Phòng thi trực tuyến</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Nunito+Sans:wght@700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/student/quiz-play-common.css}">
+</head>
+
+<body th:data-assigning-id="${quizId}" th:data-attempt-id="${attemptId}">
+
+    <div id="pageLoading">
+        <div class="loader-spinner mb-3"></div>
+        <p class="fw-bold text-muted">Đang thiết lập phòng thi...</p>
+    </div>
+
+    <header class="exam-header">
+        <!-- Left: Logo & Title -->
+        <div class="d-flex align-items-center gap-3">
+            <a th:href="@{/student}" class="exam-logo">
+                <i class="bi bi-layers-fill logo-icon"></i>
+                Quiz<span class="hub">Hub</span>
+            </a>
+            <div style="width: 1px; height: 20px; background: #e2e8f0; margin: 0 5px;"></div>
+            <h5 id="examTitle">Đang tải...</h5>
+        </div>
+
+        <!-- Center: Timer -->
+        <div class="exam-timer-wrapper">
+            <div class="exam-timer-box" id="timerBox">
+                <i class="bi bi-clock-fill fs-5 text-primary"></i>
+                <span class="timer-text" id="timerDisplay">--:--</span>
+            </div>
+        </div>
+
+        <!-- Right: Actions & User -->
+        <div class="header-actions">
+            <button class="btn-exit-exam" onclick="confirmExit()">
+                <i class="bi bi-door-open me-1"></i>Thoát
+            </button>
+            <div class="user-mini d-none d-md-flex">
+                <span class="fw-bold small" th:text="${currentUser != null ? currentUser.fullName : 'Học Sinh'}">Học
+                    Sinh</span>
+                <img th:src="${currentUser != null && currentUser.avatarUrl != null && !currentUser.avatarUrl.isEmpty() ? currentUser.avatarUrl : 'https://ui-avatars.com/api/?name=' + (currentUser != null ? currentUser.fullName : 'Student') + '&background=10b981&color=fff'}"
+                    alt="Avatar">
+            </div>
+        </div>
+    </header>
+
+    <div class="container exam-container">
+        <div class="row g-4">
+            <!-- Left: Main Content -->
+            <div class="col-lg-8">
+                <!-- Single Mode Container -->
+                <div id="singleModeView">
+                    <div class="question-card" id="questionCard">
+                        <div class="q-meta align-items-center justify-content-between">
+                            <div class="d-flex gap-2">
+                                <span class="q-type-badge" id="qNumber">Câu 1</span>
+                                <span class="q-type-badge" id="qType">Trắc nghiệm</span>
+                            </div>
+                            <button class="btn-flag" id="btnFlag" onclick="toggleFlag()">
+                                <i class="bi bi-flag"></i> <span>Đặt cờ</span>
+                            </button>
+                        </div>
+
+                        <div class="q-text" id="qText">
+                            Đang chuẩn bị câu hỏi...
+                        </div>
+
+                        <div id="answersList">
+                            <!-- Answers -->
+                        </div>
+
+                        <div class="exam-footer">
+                            <button class="btn btn-outline-secondary btn-nav" id="btnPrev" onclick="prevQuestion()">
+                                <i class="bi bi-chevron-left"></i> Câu trước
+                            </button>
+                            <button class="btn btn-primary btn-nav" id="btnNext" onclick="nextQuestion()">
+                                Câu tiếp theo <i class="bi bi-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Full Mode Container (Hidden by default) -->
+                <div id="fullModeView" style="display: none;">
+                    <!-- List of questions will be rendered here -->
+                </div>
+            </div>
+
+            <!-- Right: Sidebar -->
+            <div class="col-lg-4">
+                <div class="exam-sidebar">
+                    <!-- View Mode Toggle -->
+                    <div class="view-mode-card">
+                        <p class="small fw-bold text-muted mb-2">Chế độ hiển thị</p>
+                        <div class="toggle-container">
+                            <button class="toggle-btn-mode active" id="btnSingleMode" onclick="setViewMode('single')">
+                                <i class="bi bi-square me-1"></i> Từng câu
+                            </button>
+                            <button class="toggle-btn-mode" id="btnFullMode" onclick="setViewMode('full')">
+                                <i class="bi bi-list-ul me-1"></i> Toàn bộ
+                            </button>
+                        </div>
+                    </div>
+
+                    <h6 class="fw-bold mb-3 d-flex justify-content-between">
+                        <span>Tiến trình</span>
+                        <span id="progressText">0/0</span>
+                    </h6>
+                    <div class="q-grid mb-4" id="qGrid">
+                        <!-- Dots -->
+                    </div>
+
+                    <hr>
+
+                    <div class="mb-4">
+                        <div class="d-flex justify-content-between mb-2 small fw-bold">
+                            <span>Đã trả lời</span>
+                            <span id="answeredCount">0</span>
+                        </div>
+                        <div class="progress" style="height: 8px;">
+                            <div class="progress-bar bg-success" id="progressBar" style="width: 0%"></div>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-submit w-100" onclick="submitQuiz()">
+                        <i class="bi bi-send-fill me-2"></i> NỘP BÀI THI
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div class="modal fade" id="submitModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 rounded-4">
+                <div class="modal-body p-4 text-center">
+                    <div class="mb-3 text-warning">
+                        <i class="bi bi-exclamation-circle" style="font-size: 4rem;"></i>
+                    </div>
+                    <h4 class="fw-bold">Xác nhận nộp bài?</h4>
+                    <p class="text-muted">Bạn vẫn còn <span id="remainingTimeInfo">--:--</span> thời gian. Bạn có chắc
+                        chắn muốn kết thúc bài thi ngay bây giờ?</p>
+                    <div class="d-flex gap-2 justify-content-center mt-4">
+                        <button class="btn btn-light px-4 rounded-pill fw-bold" data-bs-dismiss="modal">Kiểm tra
+                            lại</button>
+                        <button class="btn btn-primary px-4 rounded-pill fw-bold" onclick="executeSubmit()">Đồng ý nộp
+                            bài</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="exitModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content border-0 rounded-4">
+                <div class="modal-body p-4 text-center">
+                    <div class="mb-3 text-danger">
+                        <i class="bi bi-door-open-fill" style="font-size: 3rem;"></i>
+                    </div>
+                    <h5 class="fw-bold">Thoát phòng thi?</h5>
+                    <p class="small text-muted">Dữ liệu bài thi đang được lưu lại. Bạn có chắc chắn muốn rời đi?</p>
+                    <div class="d-grid gap-2 mt-4">
+                        <button class="btn btn-danger rounded-pill fw-bold"
+                            onclick="executeExit()">Thoát ngay</button>
+                        <button class="btn btn-light rounded-pill fw-bold" data-bs-dismiss="modal">Tiếp tục làm
+                            bài</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:src="@{/js/student/quiz-play-student.js}"></script>
+</body>
+
+</html>

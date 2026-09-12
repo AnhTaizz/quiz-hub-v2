@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuizHub | Lịch sử làm bài</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/student/student-quiz-history.css}">
+</head>
+<body>
+    <header th:replace="~{layout/header :: student-header(activePage='history')}"></header>
+
+    <main class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-9">
+                <div class="d-flex align-items-start gap-4 mb-5">
+                    <a th:href="@{/student/quizzes}" class="back-button">
+                        <i class="bi bi-arrow-left"></i>
+                    </a>
+                    <div>
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb mb-2">
+                                <li class="breadcrumb-item"><a th:href="@{/student}">Bảng điều khiển</a></li>
+                                <li class="breadcrumb-separator">/</li>
+                                <li class="breadcrumb-item"><a th:href="@{/student/quizzes}">Bài thi của tôi</a></li>
+                                <li class="breadcrumb-separator">/</li>
+                                <li class="breadcrumb-item active text-muted">Lịch sử làm bài</li>
+                            </ol>
+                        </nav>
+                        <h1 class="page-header-title mb-0" th:text="${assigning != null ? assigning.quiz.title : (attempts.size() > 0 ? attempts[0].quizTaking.quiz.title : 'Đề thi')}">Tên đề thi</h1>
+                    </div>
+                </div>
+
+                <div class="card history-card p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h5 class="fw-bold mb-0"><i class="bi bi-clock-history me-2 text-primary"></i> Danh sách lượt làm bài</h5>
+                        <span class="badge bg-light text-dark rounded-pill px-3 py-2 fw-bold" th:text="${attempts.size() + ' lượt đã thực hiện'}">0 lượt</span>
+                    </div>
+
+                    <div th:if="${#lists.isEmpty(attempts)}" class="text-center py-5">
+                        <i class="bi bi-clipboard-x text-muted" style="font-size: 4rem;"></i>
+                        <p class="text-muted mt-3">Bạn chưa thực hiện lượt làm bài nào cho đề thi này.</p>
+                        <a th:href="@{'/student/quiz/play/' + ${assigning.id}}" class="btn btn-primary rounded-pill px-4 fw-bold mt-2">Bắt đầu làm bài ngay</a>
+                    </div>
+
+                    <div th:unless="${#lists.isEmpty(attempts)}">
+                        <div th:each="attempt : ${attempts}" class="attempt-item p-3">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <div class="d-flex align-items-center gap-4">
+                                    <div th:if="${attempt.endedAt != null}" 
+                                         th:class="'score-badge ' + (${attempt.result >= 8} ? 'score-high' : (${attempt.result >= 5} ? 'score-mid' : 'score-low'))"
+                                         th:text="${attempt.result}">
+                                        0.0
+                                    </div>
+                                    <div th:if="${attempt.endedAt == null}" class="score-badge bg-light text-muted">
+                                        <i class="bi bi-hourglass-split"></i>
+                                    </div>
+                                    
+                                    <div>
+                                        <div class="fw-bold fs-5 mb-1" th:text="${attempt.endedAt != null ? 'Lượt hoàn thành' : 'Đang làm dở'}">Trạng thái</div>
+                                        <div class="text-muted small">
+                                            <i class="bi bi-calendar3 me-1"></i> <span th:text="${#temporals.format(attempt.startedAt, 'HH:mm dd/MM/yyyy')}">--:-- --/--/----</span>
+                                            <span class="mx-2">|</span>
+                                            <i class="bi bi-stopwatch me-1"></i> 
+                                            <span th:if="${attempt.endedAt != null}" th:text="'Hoàn thành lúc ' + ${#temporals.format(attempt.endedAt, 'HH:mm')}">--:--</span>
+                                            <span th:if="${attempt.endedAt == null}" class="text-warning">Chưa nộp bài</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <a th:if="${attempt.endedAt != null}" th:href="@{'/student/quiz/result/' + ${attempt.id}}" class="btn-review text-decoration-none">
+                                        Xem chi tiết <i class="bi bi-chevron-right ms-1"></i>
+                                    </a>
+                                    <a th:if="${attempt.endedAt == null}" th:href="@{'/student/quiz/play/' + ${assigning.id}}" class="btn btn-primary btn-sm rounded-pill px-3 fw-bold">
+                                        Tiếp tục <i class="bi bi-play-fill"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuizHub | Quản lý thành viên</title>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Nunito+Sans:wght@400;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/dashboard-layout.css}">
+
+    <link rel="stylesheet" th:href="@{/css/teacher/teacher-classroom-members.css}">
+</head>
+
+<body>
+
+
+    <!-- Sidebar Fragment -->
+    <aside th:replace="~{layout/sidebar :: teacher-sidebar('classrooms')}"></aside>
+
+    <!-- Header Fragment -->
+    <header th:replace="~{layout/header :: teacher-header}"></header>
+
+    <main id="main-content">
+        <a th:href="@{/teacher/classrooms}" class="back-link">
+            <i class="bi bi-arrow-left"></i> Quay lại danh sách lớp
+        </a>
+
+        <div class="page-header mt-2">
+            <div>
+                <h1 class="fw-black mb-1" th:text="${classroom.name}">Tên lớp học</h1>
+                <p class="text-muted mb-0">Mã lớp: <strong class="text-primary"
+                        th:text="${classroom.code}">CODE123</strong></p>
+            </div>
+            <div class="d-flex gap-2 align-items-center">
+                <button class="btn btn-outline-success fw-bold d-flex align-items-center gap-2"
+                    style="border-radius: 12px; padding: 10px 24px;"
+                    onclick="document.getElementById('excelFileInput').click()" data-bs-toggle="popover"
+                    data-bs-trigger="hover focus" data-bs-placement="bottom" data-bs-html="true"
+                    title="<i class='bi bi-info-circle-fill text-success me-2'></i> Hướng dẫn định dạng"
+                    data-bs-content="File Excel của bạn cần có cấu trúc sau:<br><ul class='small mt-2 mb-0 ps-3'><li><b>Cột A:</b> Email sinh viên (bắt buộc)</li><li>Dòng 1 là dòng tiêu đề (sẽ được bỏ qua)</li><li>Email phải trùng với email sinh viên đã đăng ký tài khoản.</li></ul>">
+                    <i class="bi bi-file-earmark-excel"></i>
+                    Nhập từ Excel
+                </button>
+                <input type="file" id="excelFileInput" style="display: none;" accept=".xlsx, .xls"
+                    onchange="handleExcelUpload(this)">
+            </div>
+        </div>
+
+
+        <div class="card-management">
+            <div class="nav-tabs-custom">
+                <div class="nav-tab-item active" data-tab="pending">
+                    Yêu cầu tham gia
+                    <span class="badge rounded-pill bg-danger" th:text="${pendingRequests.size()}">0</span>
+                </div>
+                <div class="nav-tab-item" data-tab="active">
+                    Thành viên lớp
+                    <span class="badge rounded-pill bg-secondary" th:text="${activeMembers.size()}">0</span>
+                </div>
+            </div>
+
+            <div class="tab-content">
+                <!-- Pending Requests Tab -->
+                <div class="tab-pane active" id="tab-pending">
+                    <div th:if="${#lists.isEmpty(pendingRequests)}" class="text-center py-5">
+                        <div class="empty-icon"><i class="bi bi-envelope-open"></i></div>
+                        <h5 class="text-muted fw-bold">Không có yêu cầu nào đang chờ</h5>
+                        <p class="text-muted small">Mọi sinh viên đã được phê duyệt hoặc chưa có yêu cầu mới.</p>
+                    </div>
+
+                    <table th:if="${!#lists.isEmpty(pendingRequests)}" class="table-custom">
+                        <thead>
+                            <tr>
+                                <th>Sinh viên</th>
+                                <th>Ngày yêu cầu</th>
+                                <th class="text-end">Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="request : ${pendingRequests}">
+                                <td>
+                                    <div class="user-info">
+                                        <img th:src="${request.learner.avatarUrl != null && !request.learner.avatarUrl.isEmpty() ? request.learner.avatarUrl : 'https://ui-avatars.com/api/?name=' + request.learner.fullName + '&background=10b981&color=fff'}"
+                                            class="user-avatar" alt="Avatar">
+                                        <div>
+                                            <span class="user-name" th:text="${request.learner.fullName}">Tên sinh
+                                                viên</span>
+                                            <span class="user-email"
+                                                th:text="${request.learner.email}">email@example.com</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="fw-bold text-muted small"
+                                        th:text="${#temporals.format(request.joinedAt, 'HH:mm - dd/MM/yyyy')}">12:00 -
+                                        10/10/2026</span>
+                                </td>
+                                <td class="text-end">
+                                    <form
+                                        th:action="@{'/teacher/classrooms/' + ${classroom.id} + '/approve/' + ${request.id}}"
+                                        method="POST" style="display: inline-block;">
+                                        <button type="submit" class="btn-action btn-approve">Phê duyệt</button>
+                                    </form>
+                                    <form
+                                        th:action="@{'/teacher/classrooms/' + ${classroom.id} + '/reject/' + ${request.id}}"
+                                        method="POST" style="display: inline-block;">
+                                        <button type="submit" class="btn-action btn-reject">Từ chối</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Active Members Tab -->
+                <div class="tab-pane" id="tab-active">
+                    <div th:if="${#lists.isEmpty(activeMembers)}" class="text-center py-5">
+                        <div class="empty-icon"><i class="bi bi-people"></i></div>
+                        <h5 class="text-muted fw-bold">Chưa có thành viên nào trong lớp</h5>
+                        <p class="text-muted small">Chia sẻ mã lớp để sinh viên có thể tham gia.</p>
+                    </div>
+
+                    <table th:if="${!#lists.isEmpty(activeMembers)}" class="table-custom">
+                        <thead>
+                            <tr>
+                                <th>Thành viên</th>
+                                <th>Ngày gia nhập</th>
+                                <th class="text-end">Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="member : ${activeMembers}">
+                                <td>
+                                    <div class="user-info">
+                                        <img th:src="${member.learner.avatarUrl != null && !member.learner.avatarUrl.isEmpty() ? member.learner.avatarUrl : 'https://ui-avatars.com/api/?name=' + member.learner.fullName + '&background=10b981&color=fff'}"
+                                            class="user-avatar" alt="Avatar">
+                                        <div>
+                                            <span class="user-name" th:text="${member.learner.fullName}">Tên sinh
+                                                viên</span>
+                                            <span class="user-email"
+                                                th:text="${member.learner.email}">email@example.com</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="fw-bold text-muted small"
+                                        th:text="${#temporals.format(member.joinedAt, 'dd/MM/yyyy')}">10/10/2026</span>
+                                </td>
+                                <td class="text-end">
+                                    <div class="d-flex align-items-center justify-content-end gap-2">
+                                        <span class="badge bg-success bg-opacity-10 text-success fw-bold p-2 px-3"
+                                            style="border-radius: 8px;">Đang hoạt động</span>
+                                        <button type="button" class="btn-remove"
+                                            th:data-student-id="${member.learner.id}"
+                                            th:data-student-name="${member.learner.fullName}"
+                                            th:data-classroom-id="${classroom.id}" onclick="confirmRemoveStudent(this)">
+                                            <i class="bi bi-person-x"></i> Xóa khỏi lớp
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:inline="javascript">
+        window.classroomId = /*[[${classroom.id}]]*/ 0;
+    </script>
+    <script th:src="@{/js/teacher/teacher-classroom-members.js}"></script>
+
+    <!-- Modal Kết quả Import -->
+    <div class="modal fade" id="importResultModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content"
+                style="border-radius: 20px; border: none; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+                <div class="modal-body p-4" id="importResultBody">
+                    <!-- Nội dung kết quả sẽ được chèn vào đây -->
+                </div>
+                <div class="modal-footer border-0 p-4 pt-0">
+                    <button type="button" class="btn btn-primary w-100 fw-bold py-2" data-bs-dismiss="modal"
+                        style="border-radius: 10px;">Đóng</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div th:replace="~{layout/header :: changePasswordModal}"></div>
+
+    <!-- Modal Xác nhận Xóa Sinh viên -->
+    <div class="modal fade" id="removeStudentModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content"
+                style="border-radius: 20px; border: none; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+                <div class="modal-body p-4 text-center">
+                    <div class="mb-3" style="font-size: 48px; color: #ef4444;"><i class="bi bi-person-x-fill"></i></div>
+                    <h5 class="fw-bold mb-2">Xác nhận xóa sinh viên</h5>
+                    <p class="text-muted mb-0">Bạn có chắc chắn muốn xóa <strong id="removeStudentName"></strong> khỏi
+                        lớp học không? Hành động này không thể hoàn tác.</p>
+                </div>
+                <div class="modal-footer border-0 p-4 pt-0 d-flex gap-2">
+                    <button type="button" class="btn btn-outline-secondary fw-bold py-2 flex-fill"
+                        data-bs-dismiss="modal" style="border-radius: 10px;">Hủy bỏ</button>
+                    <form id="removeStudentForm" th:action="@{/teacher/classrooms}" method="POST" style="flex: 1;">
+                        <button type="submit" class="btn btn-danger fw-bold py-2 w-100" style="border-radius: 10px;">Xóa
+                            khỏi lớp</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script th:replace="~{layout/header :: change-password-script}"></script>
+
+    <!-- Toast flash message -->
+    <th:block th:replace="~{layout/header :: toast-dependencies}"></th:block>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        (function() {
+            const sm = /*[[${successMessage}]]*/ null;
+            const em = /*[[${errorMessage}]]*/ null;
+            if (sm || em) {
+                document.addEventListener('DOMContentLoaded', function() {
+                    if (sm) toast.success(sm);
+                    if (em) toast.error(em);
+                });
+            }
+        })();
+        /*]]>*/
+    </script>
+</body>
+
+</html>

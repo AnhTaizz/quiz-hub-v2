@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuizHub | Đang luyện tập</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Nunito+Sans:wght@700;800;900&subset=vietnamese&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+
+    <link rel="stylesheet" th:href="@{/css/student/practice-play.css}">
+</head>
+
+<body>
+
+    <div id="pageLoading">
+        <div class="loading-spinner"></div>
+        <div class="fw-bold text-primary" style="font-family:'Nunito Sans', sans-serif; font-size: 1.2rem;">QuizHub
+        </div>
+        <p class="text-muted small mt-2">Đang nạp dữ liệu...</p>
+    </div>
+
+    <nav class="practice-nav">
+        <h1 class="logo mb-0">
+            <a href="/student/categories">
+                <i class="bi bi-layers-fill logo-icon"></i>
+                Quiz<span class="hub">Hub</span>
+            </a>
+        </h1>
+        <div class="practice-title-wrap">
+            <p class="practice-category" id="topCategoryName">Đang tải...</p>
+            <h1 class="practice-session-title">Chế độ Tự Luyện</h1>
+        </div>
+        <div class="practice-actions d-flex gap-2">
+            <button class="btn-exit" onclick="confirmExit()" id="btnExit">
+                <i class="bi bi-box-arrow-left"></i> <span>Thoát</span>
+            </button>
+        </div>
+    </nav>
+
+    <div class="container practice-container" id="mainContent">
+        <div class="row g-4">
+            <!-- Sidebar: Navigation -->
+            <div class="col-lg-3">
+                <div class="question-nav-card">
+                    <h5 class="fw-bold mb-1" style="color:#1e1b4b;">Câu hỏi</h5>
+                    <p class="text-muted small mb-0">Nhấn để di chuyển nhanh</p>
+                    <div class="nav-grid" id="questionNav">
+                        <!-- Nav dots injected here -->
+                    </div>
+
+                    <div class="mt-4 pt-4 border-top" id="navLegend">
+                        <div class="d-flex align-items-center gap-2 mb-2">
+                            <div style="width:12px;height:12px;border-radius:3px;background:#e0e7ff;"></div>
+                            <span class="small text-muted">Đã trả lời</span>
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                            <div
+                                style="width:12px;height:12px;border-radius:3px;background:#f1f5f9;border:1px solid #e2e8f0;">
+                            </div>
+                            <span class="small text-muted">Chưa trả lời</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main: Question Area -->
+            <div class="col-lg-9">
+                <div class="question-card" id="questionArea">
+                    <div class="question-header align-items-center justify-content-between">
+                        <div class="d-flex gap-2 align-items-center">
+                            <span class="q-number-badge" id="qNumber">Câu 0/0</span>
+                            <span class="q-type-badge" id="qType"></span>
+                            <span class="q-level-badge level-easy" id="qLevel">Dễ</span>
+                        </div>
+                        <button class="btn-flag" id="btnFlag" onclick="toggleFlag()">
+                            <i class="bi bi-flag"></i> <span>Đặt cờ</span>
+                        </button>
+                    </div>
+
+                    <div class="question-text" id="qText">
+                        Đang tải nội dung câu hỏi...
+                    </div>
+
+                    <div class="answers-list" id="answersList">
+                        <!-- Answers injected here -->
+                    </div>
+
+                    <div class="feedback-box" id="feedbackBox">
+                        <!-- Feedback content -->
+                    </div>
+
+                    <div class="practice-footer">
+                        <button class="btn-nav btn-prev" id="btnPrev" onclick="prevQuestion()" disabled>
+                            <i class="bi bi-arrow-left"></i> Câu trước
+                        </button>
+
+                        <div class="d-flex gap-3">
+                            <button class="btn-nav btn-next" id="btnNext" onclick="nextQuestion()">
+                                Tiếp theo <i class="bi bi-arrow-right"></i>
+                            </button>
+                            <button class="btn-finish d-none" id="btnFinish" onclick="submitPractice()">
+                                <i class="bi bi-check2-all"></i> Nộp bài
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Flashcard Area (Hidden by default) -->
+                <div class="question-card" id="flashcardArea" style="display: none;">
+                    <div class="question-header align-items-center justify-content-between mb-2">
+                        <div class="d-flex gap-2 align-items-center">
+                            <span class="q-number-badge" id="fcNumber">Câu 0/0</span>
+                            <span class="q-type-badge" id="fcType">FLASHCARD</span>
+                        </div>
+                    </div>
+
+                    <div class="flashcard-container">
+                        <div class="flashcard" id="fcCard" onclick="flipFlashcard()">
+                            <div class="flashcard-face flashcard-front">
+                                <div class="flashcard-text" id="fcFrontText">Nội dung câu hỏi...</div>
+                                <div class="flashcard-hint"><i class="bi bi-hand-index-thumb"></i> Nhấn để xem đáp án</div>
+                            </div>
+                            <div class="flashcard-face flashcard-back">
+                                <div class="flashcard-back-content" id="fcBackText">Nội dung đáp án...</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="practice-footer">
+                        <button class="btn-nav btn-prev" id="fcBtnPrev" onclick="prevQuestion()" disabled>
+                            <i class="bi bi-arrow-left"></i> Câu trước
+                        </button>
+
+                        <div class="d-flex gap-3">
+                            <button class="btn-nav btn-next" id="fcBtnNext" onclick="nextQuestion()">
+                                Tiếp theo <i class="bi bi-arrow-right"></i>
+                            </button>
+                            <button class="btn-finish-review d-none" id="fcBtnFinish" onclick="confirmExit()">
+                                <i class="bi bi-door-open"></i> Kết thúc ôn tập
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Result Card (Hidden by default) -->
+                <div class="result-card" id="resultCard">
+                    <div class="score-circle">
+                        <svg viewBox="0 0 160 160">
+                            <circle class="bg" cx="80" cy="80" r="70"></circle>
+                            <circle class="progress" id="scoreCircleProgress" cx="80" cy="80" r="70"></circle>
+                        </svg>
+                        <div class="score-text-wrap">
+                            <div class="score-percent" id="resPercent">0%</div>
+                            <div class="score-sub">Chính xác</div>
+                        </div>
+                    </div>
+
+                    <div class="score-detail">
+                        Đúng <span id="resCorrect">0</span> <span id="resTotal">/ 0</span> câu
+                    </div>
+
+                    <div class="score-badge">
+                        <i class="bi bi-star-fill"></i>
+                        <div class="score-val-wrap">
+                            <div class="score-label">Điểm số đạt được</div>
+                            <div class="score-number"><span id="resScore">0.0</span> <span
+                                    style="font-size: 1rem; opacity: 0.7;">/ 10</span></div>
+                        </div>
+                    </div>
+
+                    <h2 class="fw-bold mb-2">Hoàn thành luyện tập!</h2>
+                    <p class="text-muted mb-4">Tuyệt vời! Bạn vừa hoàn thành lượt tự luyện này.</p>
+
+                    <div class="d-flex gap-3 justify-content-center">
+                        <button class="btn btn-outline-secondary px-4 py-2 rounded-pill fw-bold" onclick="viewReview()">
+                            Xem lại bài làm
+                        </button>
+                        <button onclick="confirmExit()" class="btn btn-primary px-4 py-2 rounded-pill fw-bold"
+                            style="background:var(--primary); border:none;" id="btnGoBack">
+                            Về ngân hàng đề
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="toastWrap"></div>
+
+
+    <script th:inline="javascript">
+        window.reviewPracticeId = /*[[${reviewPracticeId}]]*/ null;
+    </script>
+    <script th:src="@{/js/student/practice-play.js}"></script>
+</body>
+
+</html>

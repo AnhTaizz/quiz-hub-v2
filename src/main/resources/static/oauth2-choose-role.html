@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chọn vai trò của bạn | QuizHub</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --bg: #f8fafc;
+            --text: #1e293b;
+            --text-muted: #64748b;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            text-align: center;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 { font-size: 2.5rem; font-weight: 800; margin-bottom: 12px; color: #0f172a; }
+        p.subtitle { font-size: 1.1rem; color: var(--text-muted); margin-bottom: 48px; }
+
+        .role-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        @media (max-width: 640px) {
+            .role-grid { grid-template-columns: 1fr; }
+        }
+
+        .role-card {
+            background: white;
+            padding: 40px 32px;
+            border-radius: 24px;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+        }
+
+        .role-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--primary);
+            box-shadow: 0 20px 25px -5px rgba(79, 70, 229, 0.1), 0 8px 10px -6px rgba(79, 70, 229, 0.1);
+        }
+
+        .role-card i {
+            font-size: 4rem;
+            color: var(--primary);
+            margin-bottom: 24px;
+            display: block;
+        }
+
+        .role-card h3 { font-size: 1.5rem; font-weight: 700; margin-bottom: 12px; }
+        .role-card p { color: var(--text-muted); font-size: 0.95rem; line-height: 1.6; }
+
+        .role-card.selected {
+            border-color: var(--primary);
+            background: #f5f3ff;
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(4px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+        }
+
+        .spinner {
+            width: 40px; height: 40px;
+            border: 4px solid #e2e8f0;
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .btn-confirm {
+            margin-top: 48px;
+            padding: 16px 48px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        .btn-confirm.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .btn-confirm:hover { background: var(--primary-hover); transform: scale(1.02); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Chào mừng bạn đến với QuizHub</h1>
+        <p class="subtitle">Vui lòng chọn vai trò của bạn để bắt đầu trải nghiệm</p>
+
+        <div class="role-grid">
+            <div class="role-card" onclick="selectRole('STUDENT', this)">
+                <i class="bi bi-mortarboard-fill"></i>
+                <h3>Tôi là Học sinh</h3>
+                <p>Tham gia các lớp học, làm bài kiểm tra và theo dõi tiến độ học tập của bạn.</p>
+            </div>
+
+            <div class="role-card" onclick="selectRole('TEACHER', this)">
+                <i class="bi bi-person-workspace"></i>
+                <h3>Tôi là Giáo viên</h3>
+                <p>Tạo câu hỏi, quản lý lớp học và theo dõi kết quả của học sinh một cách dễ dàng.</p>
+            </div>
+        </div>
+
+        <button id="btnConfirm" class="btn-confirm" onclick="completeRegistration()">
+            Tiếp tục <i class="bi bi-arrow-right"></i>
+        </button>
+    </div>
+
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+    </div>
+
+    <script>
+        let selectedRole = null;
+        const params = new URLSearchParams(window.location.search);
+
+        function selectRole(role, element) {
+            selectedRole = role;
+            document.querySelectorAll('.role-card').forEach(c => c.classList.remove('selected'));
+            element.classList.add('selected');
+            document.getElementById('btnConfirm').classList.add('active');
+        }
+
+        function showLocalToast(msg, type = 'error') {
+            let w = document.getElementById('localToastWrap');
+            if (!w) {
+                w = document.createElement('div');
+                w.id = 'localToastWrap';
+                w.style.position = 'fixed';
+                w.style.top = '24px';
+                w.style.right = '24px';
+                w.style.zIndex = '99999';
+                w.style.pointerEvents = 'none';
+                document.body.appendChild(w);
+            }
+            const t = document.createElement('div');
+            t.style.background = '#fff';
+            t.style.color = '#1e293b';
+            t.style.padding = '14px 24px';
+            t.style.borderRadius = '12px';
+            t.style.boxShadow = '0 10px 40px rgba(0, 0, 0, 0.12)';
+            t.style.borderLeft = type === 'success' ? '4px solid #10b981' : '4px solid #ef4444';
+            t.style.fontWeight = '600';
+            t.style.display = 'flex';
+            t.style.alignItems = 'center';
+            t.style.gap = '10px';
+            t.style.marginBottom = '8px';
+            t.style.fontFamily = "'Inter', sans-serif";
+            t.style.fontSize = '0.9rem';
+            t.style.animation = 'slideIn 0.3s ease-out';
+            t.innerHTML = `<i class="bi ${type==='success'?'bi-check-circle-fill text-success':'bi-exclamation-triangle-fill text-danger'}"></i> ${msg}`;
+            w.appendChild(t);
+            
+            if (!document.getElementById('localToastStyle')) {
+                const s = document.createElement('style');
+                s.id = 'localToastStyle';
+                s.textContent = `
+                    @keyframes slideIn {
+                        from { transform: translateX(100%); opacity: 0; }
+                        to { transform: translateX(0); opacity: 1; }
+                    }
+                `;
+                document.head.appendChild(s);
+            }
+            
+            setTimeout(() => { 
+                t.style.opacity = '0'; 
+                t.style.transform = 'translateX(100%)'; 
+                t.style.transition = 'all 0.3s ease-in';
+                setTimeout(() => t.remove(), 300); 
+            }, 3000);
+        }
+
+        async function completeRegistration() {
+            if (!selectedRole) return;
+
+            document.getElementById('loadingOverlay').style.display = 'flex';
+
+            const decodeB64 = (str) => {
+                try {
+                    return decodeURIComponent(escape(window.atob(str)));
+                } catch (e) {
+                    return str;
+                }
+            };
+
+            const payload = {
+                email: params.get('email'),
+                fullName: decodeB64(params.get('fullName') || ''),
+                avatarUrl: params.get('avatarUrl'),
+                role: selectedRole
+            };
+
+            try {
+                const response = await fetch('/api/auth/oauth2-register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    // Chuyển sang trang redirect trung gian để lưu dữ liệu
+                    const redirectUrl = `/oauth2-redirect.html?token=${data.token}&id=${data.id}&email=${encodeURIComponent(data.email)}&fullName=${encodeURIComponent(data.fullName)}&role=${data.role}&avatarUrl=${encodeURIComponent(data.avatarUrl || '')}`;
+                    window.location.href = redirectUrl;
+                } else {
+                    showLocalToast('Đã có lỗi xảy ra: ' + (data.message || 'Vui lòng thử lại sau.'));
+                    document.getElementById('loadingOverlay').style.display = 'none';
+                }
+            } catch (error) {
+                console.error('Registration error:', error);
+                showLocalToast('Không thể kết nối tới máy chủ.');
+                document.getElementById('loadingOverlay').style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Đăng nhập | QuizHub</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Nunito+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <!-- Bootstrap Grid -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/toast.css}">
+
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/auth.css}">
+
+</head>
+
+<body id="top">
+
+<!-- HEADER -->
+<header id="header" class="fixed-top">
+    <div class="container d-flex align-items-center justify-content-between">
+        <h1 class="logo mb-0">
+            <a th:href="@{/}">
+                <i class="bi bi-layers-fill logo-icon"></i>
+                Quiz<span class="hub">Hub</span>
+            </a>
+        </h1>
+
+        <nav id="navbar" class="navbar">
+            <ul id="nav-menu">
+                <li><a class="nav-link scrollto" th:href="@{/#about}">Về chúng tôi</a></li>
+                <li><a class="nav-link scrollto" th:href="@{/#features}">Tính năng</a></li>
+                <li><a class="nav-link scrollto" th:href="@{/#workflow}">Quy trình</a></li>
+                <li class="ms-lg-3"><a th:href="@{/login}" class="nav-btn-login">Đăng nhập</a></li>
+                <li><a th:href="@{/register}" class="nav-btn-signup">Dùng miễn phí</a></li>
+            </ul>
+            <i class="bi bi-list mobile-nav-toggle" id="mobile-nav-toggle"></i>
+        </nav>
+    </div>
+</header>
+
+<!-- BACKGROUND -->
+<section class="hero-section" style="padding: 0; min-height: 100vh;">
+    <div class="hero-blob hero-blob-1"></div>
+    <div class="hero-blob hero-blob-2"></div>
+
+    <div class="container position-relative login-wrapper">
+        <div class="auth-card">
+            <div class="auth-header text-center">
+                <h2>Chào mừng trở lại</h2>
+                <p>Đăng nhập để tiếp tục hành trình của bạn</p>
+            </div>
+
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="email">Địa chỉ Email</label>
+                    <div class="input-wrapper">
+                        <i class="bi bi-envelope"></i>
+                        <input type="email" id="email" class="form-control-auth" placeholder="name@example.com" required autocomplete="email">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Mật khẩu</label>
+                    <div class="input-wrapper" id="passwordWrapper">
+                        <i class="bi bi-lock"></i>
+                        <input type="password" id="password" class="form-control-auth" placeholder="••••••••" required autocomplete="current-password">
+                    </div>
+                    <div id="loginError" style="display:none; margin-top:8px; padding:10px 14px; background:rgba(248,113,113,0.12); border:1px solid rgba(248,113,113,0.3); border-radius:8px; color:#fca5a5; font-size:13px; font-weight:600; display:none; align-items:center; gap:8px;">
+                        <i class="bi bi-exclamation-circle-fill" style="font-size:14px; flex-shrink:0;"></i>
+                        <span id="loginErrorMsg"></span>
+                    </div>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                    <label style="display: flex; align-items: center; gap: 8px; font-size: 14px; color: rgba(255,255,255,0.6); cursor: pointer; margin-bottom: 0;">
+                        <input type="checkbox" id="rememberMe" style="accent-color: #4ade80;"> Ghi nhớ tôi
+                    </label>
+                    <a th:href="@{/forgot-password}" style="font-size: 14px; color: #4ade80; text-decoration: none; font-weight: 600;">Quên mật khẩu?</a>
+                </div>
+
+                <button type="submit" id="submitBtn" class="btn-auth">
+                    <span>Đăng nhập</span>
+                    <i class="bi bi-arrow-right" style="margin-left: 8px;"></i>
+                </button>
+
+                <div style="display: flex; align-items: center; margin: 24px 0;">
+                    <div style="flex: 1; height: 1px; background: rgba(255,255,255,0.1);"></div>
+                    <span style="padding: 0 16px; color: rgba(255,255,255,0.5); font-size: 13px; font-weight: 500;">Hoặc</span>
+                    <div style="flex: 1; height: 1px; background: rgba(255,255,255,0.1);"></div>
+                </div>
+
+                <a href="/oauth2/authorization/google" class="btn-auth btn-google" style="background: white; color: #1e293b; display: flex; align-items: center; justify-content: center; gap: 12px; box-shadow: none; text-decoration: none;">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google" style="width: 20px; height: 20px;">
+                    <span style="font-weight: 600;">Đăng nhập bằng Google</span>
+                </a>
+            </form>
+
+            <div class="auth-footer">
+                Chưa có tài khoản? <a th:href="@{/register}">Đăng ký miễn phí</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/toast.js}"></script>
+<script th:src="@{/js/script.js}"></script>
+<script th:src="@{/js/login.js}"></script>
+</body>
+</html>

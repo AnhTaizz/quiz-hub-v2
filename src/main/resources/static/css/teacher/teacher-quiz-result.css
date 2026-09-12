@@ -1,0 +1,119 @@
+/* ── Summary Card ── */
+.summary-card {
+    background: #ffffff;
+    border-radius: 24px;
+    padding: 28px 36px;
+    margin-bottom: 36px;
+    border: 1px solid var(--border, #e2e8f0);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+}
+
+/* Score circle – clean ring style */
+.score-ring {
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    background: #eff6ff;
+    border: 6px solid #2563eb;
+    box-shadow: 0 0 0 4px #dbeafe, 0 6px 20px rgba(37,99,235,0.2);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+.score-ring .val { font-size: 28px; font-weight: 900; color: #2563eb; line-height: 1; }
+.score-ring .lbl { font-size: 9px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.8px; margin-top: 3px; }
+
+.quiz-meta-name { font-size: 20px; font-weight: 800; color: #1e293b; margin-bottom: 4px; }
+.quiz-meta-date { font-size: 13px; color: #94a3b8; font-weight: 500; }
+
+/* Stat pills on white bg */
+.stat-pill {
+    display: flex; align-items: center; gap: 12px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 14px 20px;
+    min-width: 130px;
+    transition: all 0.2s;
+}
+.stat-pill:hover { background: #f1f5f9; border-color: #cbd5e1; transform: translateY(-2px); }
+.stat-pill .sp-icon { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+.stat-pill .sp-val { font-size: 20px; font-weight: 800; color: #1e293b; line-height: 1; }
+.stat-pill .sp-lbl { font-size: 11px; color: #94a3b8; font-weight: 600; text-transform: uppercase; }
+
+.sp-green .sp-icon { background: #dcfce7; color: #16a34a; }
+.sp-red   .sp-icon { background: #fee2e2; color: #dc2626; }
+.sp-slate .sp-icon { background: #f1f5f9; color: #64748b; }
+.sp-blue  .sp-icon { background: #dbeafe; color: #2563eb; }
+
+/* ── Question cards ── */
+.q-result-card {
+    background: white;
+    border-radius: 20px;
+    padding: 25px;
+    margin-bottom: 20px;
+    border: 1px solid #e2e8f0;
+    transition: transform 0.2s;
+}
+.q-result-card:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.03); }
+
+.q-badge, .q-level-badge {
+    font-size: 0.75rem;
+    font-weight: 800;
+    padding: 6px 12px;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 28px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border: 1px solid #e2e8f0;
+}
+.badge-correct   { background: #dcfce7; color: #166534; border-color: #bbf7d0; }
+.badge-wrong     { background: #fee2e2; color: #991b1b; border-color: #fecaca; }
+.badge-warning   { background: #fef9c3; color: #854d0e; border-color: #fef08a; }
+.q-level-badge.level-easy   { background: #f0fdf4; color: #15803d; border-color: #bbf7d0; }
+.q-level-badge.level-medium { background: #fffbeb; color: #d97706; border-color: #fde68a; }
+.q-level-badge.level-hard   { background: #fef2f2; color: #dc2626; border-color: #fecaca; }
+
+.ans-opt {
+    padding: 12px 18px;
+    border-radius: 12px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border: 1.5px solid #f1f5f9;
+}
+.ans-opt.correct       { background: #f0fdf4; border-color: #22c55e; box-shadow: 0 0 0 1px #22c55e; }
+.ans-opt.selected-wrong{ background: #fff1f2; border-color: #ef4444; box-shadow: 0 0 0 1px #ef4444; }
+
+.opt-icon {
+    width: 24px; height: 24px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 50%; font-size: 0.8rem;
+}
+.icon-correct { background: #4ade80; color: white; }
+.icon-wrong   { background: #fb7185; color: white; }
+.icon-none    { background: #e2e8f0; color: #94a3b8; }
+
+/* ── Loading ── */
+#resultLoading {
+    position: fixed; inset: 0; background: white;
+    z-index: 1000; display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+}
+.loader-spinner {
+    width: 50px; height: 50px;
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid #6366f1;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+@keyframes spin { 100% { transform: rotate(360deg); } }
+
+/* ── Section heading ── */
+.review-title { margin-top: 40px; margin-bottom: 22px; font-weight: 800; color: #334155; }

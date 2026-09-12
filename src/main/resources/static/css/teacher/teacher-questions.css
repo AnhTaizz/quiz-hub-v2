@@ -1,0 +1,12 @@
+body {
+    background-color: #f8fafc;
+}
+
+#main-content {
+    padding: 24px;
+    transition: all 0.3s;
+}
+
+body.sidebar-collapsed #main-content {
+    margin-left: 70px;
+}

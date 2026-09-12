@@ -1,0 +1,804 @@
+/* ── Student Dashboard Combined Styles ─────────────────── */
+html {
+    zoom: 85%;
+}
+
+body {
+    background-color: var(--bg-section, #f4f7fa);
+    font-family: 'Inter', sans-serif;
+    padding-top: 100px;
+    padding-bottom: 60px;
+}
+
+/* ─── Premium Hero Dashboard (Home) ─── */
+.dashboard-hero {
+    background: linear-gradient(140deg, #1e1b4b 0%, #312e81 50%, #4338ca 100%);
+    border-radius: var(--radius-xl, 24px);
+    padding: 56px 48px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(49, 46, 129, 0.2);
+    color: #fff;
+    margin-bottom: 48px;
+}
+
+.dashboard-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(circle, rgba(255, 255, 255, .08) 1px, transparent 1px);
+    background-size: 24px 24px;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.dash-blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(60px);
+    z-index: 0;
+}
+
+.dash-blob-1 {
+    width: 350px;
+    height: 350px;
+    background: rgba(139, 92, 246, 0.4);
+    top: -100px;
+    right: 5%;
+    animation: blob1 10s infinite alternate;
+}
+
+.dash-blob-2 {
+    width: 250px;
+    height: 250px;
+    background: rgba(56, 189, 248, 0.3);
+    bottom: -50px;
+    left: 10%;
+    animation: blob2 12s infinite alternate;
+}
+
+@keyframes blob1 {
+    from {
+        transform: translate(0, 0);
+    }
+
+    to {
+        transform: translate(-30px, 20px);
+    }
+}
+
+@keyframes blob2 {
+    from {
+        transform: translate(0, 0);
+    }
+
+    to {
+        transform: translate(20px, -20px);
+    }
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+}
+
+.hero-title {
+    font-family: 'Nunito Sans', sans-serif;
+    font-weight: 900;
+    font-size: clamp(2rem, 4vw, 2.8rem);
+    margin-bottom: 8px;
+    letter-spacing: -1px;
+}
+
+.hero-title span {
+    background: linear-gradient(90deg, #a78bfa, #38bdf8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.hero-subtitle {
+    font-size: 1.1rem;
+    color: rgba(255, 255, 255, 0.8);
+    max-width: 600px;
+    margin-bottom: 32px;
+}
+
+.hero-stats-row {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.hero-stat-glass {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    padding: 10px 20px;
+    border-radius: var(--radius-pill, 50px);
+    font-weight: 600;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.hero-stat-glass i {
+    opacity: 0.8;
+    font-size: 16px;
+}
+
+/* ─── Page Hero (Classrooms) ─── */
+.page-hero {
+    background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+    border-radius: 24px;
+    padding: 40px;
+    color: white;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 40px;
+    box-shadow: 0 20px 40px rgba(30, 27, 75, 0.2);
+}
+
+.hero-shape {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 50%;
+    z-index: 1;
+}
+
+.shape-1 {
+    width: 300px;
+    height: 300px;
+    top: -150px;
+    right: -50px;
+}
+
+.shape-2 {
+    width: 200px;
+    height: 200px;
+    bottom: -100px;
+    left: -50px;
+}
+
+/* ─── Generic Section Styling ─── */
+.section-label {
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--blue, #2563eb);
+    background: rgba(37, 99, 235, 0.1);
+    padding: 6px 14px;
+    border-radius: 50px;
+    display: inline-block;
+    margin-bottom: 12px;
+}
+
+.section-title {
+    font-family: 'Nunito Sans', sans-serif;
+    font-size: 1.7rem;
+    font-weight: 800;
+    color: var(--text-dark, #1a1a2e);
+    margin-bottom: 24px;
+}
+
+/* ─── Dash Cards ─── */
+.dash-card {
+    background: #fff;
+    border-radius: var(--radius-lg, 16px);
+    border: 1px solid var(--border, #e2e8f0);
+    padding: 24px;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.dash-card:hover {
+    box-shadow: var(--shadow-hover, 0 12px 40px rgba(0, 0, 0, 0.08));
+    transform: translateY(-4px);
+}
+
+.task-card {
+    border-left: 4px solid transparent;
+}
+
+.task-warning {
+    border-left-color: #fd7e14;
+}
+
+.task-primary {
+    border-left-color: #0d6efd;
+}
+
+.dash-icon-box {
+    width: 56px;
+    height: 56px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    flex-shrink: 0;
+    background: var(--bg, #f4f7fa);
+}
+
+.task-title {
+    font-family: 'Nunito Sans', sans-serif;
+    font-weight: 800;
+    font-size: 18px;
+    color: var(--text-dark);
+    margin-bottom: 8px;
+}
+
+.task-chips {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.info-chip {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-muted);
+    background: var(--bg-section);
+    padding: 6px 12px;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.info-chip.urgent {
+    background: rgba(220, 53, 69, 0.1);
+    color: #dc3545;
+}
+
+.info-chip.safe {
+    background: rgba(40, 167, 69, 0.1);
+    color: #28a745;
+}
+
+/* Quick Actions */
+.quick-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.btn-quick {
+    display: flex;
+    align-items: center;
+    padding: 14px 20px;
+    background: var(--bg-body, #f4f7fa);
+    border: 1px solid transparent;
+    border-radius: 14px;
+    color: var(--text-dark, #1a1a2e);
+    font-weight: 600;
+    font-size: 15px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    text-decoration: none;
+    width: 100%;
+}
+
+.btn-quick i {
+    font-size: 18px;
+    margin-right: 12px;
+}
+
+.btn-quick:hover {
+    background: #ffffff;
+    border-color: var(--border, #e2e8f0);
+    box-shadow: var(--shadow-card, 0 2px 20px rgba(0, 0, 0, 0.07));
+    transform: translateX(4px);
+    color: var(--blue, #2563eb);
+}
+
+.class-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+}
+
+@media (max-width: 1400px) {
+    .class-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 992px) {
+    .class-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 576px) {
+    .class-grid {
+        grid-template-columns: repeat(1, 1fr);
+    }
+}
+
+.class-card {
+    background: #fff;
+    border-radius: 20px;
+    border: 1px solid #e2e8f0;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.class-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.06);
+    border-color: #3b82f6;
+}
+
+.class-banner {
+    height: 140px;
+    position: relative;
+    background: #6366f1;
+}
+
+.class-banner img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.status-badge {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    padding: 6px 14px;
+    border-radius: 50px;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.status-approved {
+    background: rgba(34, 197, 94, 0.9);
+    color: white;
+}
+
+.status-pending {
+    background: rgba(245, 158, 11, 0.9);
+    color: white;
+}
+
+.status-rejected {
+    background: rgba(239, 68, 68, 0.9);
+    color: white;
+}
+
+.class-content {
+    padding: 24px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.teacher-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.teacher-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.teacher-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: #64748b;
+}
+
+.class-name {
+    font-family: 'Nunito Sans', sans-serif;
+    font-size: 20px;
+    font-weight: 800;
+    color: #1e1b4b;
+    margin-bottom: 8px;
+    line-height: 1.3;
+}
+
+.class-desc {
+    font-size: 14px;
+    color: #64748b;
+    margin-bottom: 20px;
+    flex-grow: 1;
+}
+
+.class-footer {
+    padding: 20px 24px;
+    background: #f8fafc;
+    border-top: 1px solid #e2e8f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.btn-enter {
+    color: #2563eb;
+    font-weight: 800;
+    font-size: 14px;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.btn-join {
+    background: #fff;
+    color: #1e1b4b;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 14px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.3s;
+    box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2);
+}
+
+.btn-join:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(255, 255, 255, 0.3);
+    background: #f8fafc;
+}
+
+/* Modal */
+/* ── Zoom-85% compensation for Bootstrap fixed/backdrop elements ── */
+/* html { zoom: 85% } makes 100vw/100vh = 85% of actual viewport.   */
+/* Override to cover the full physical screen.                        */
+.modal-backdrop, .modal {
+    width: 117.65vw !important;
+    height: 117.65vh !important;
+}
+
+.modal-content {
+    border-radius: 24px;
+    border: none;
+    overflow: hidden;
+}
+
+.modal-header {
+    border-bottom: none;
+    padding: 32px 32px 16px;
+}
+
+.modal-body {
+    padding: 16px 32px 32px;
+}
+
+.form-control {
+    padding: 14px 20px;
+    border-radius: 14px;
+    border: 2px solid #e2e8f0;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+
+.form-control:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 80px 20px;
+    background: white;
+    border-radius: 24px;
+    border: 2px dashed #e2e8f0;
+}
+
+.empty-icon {
+    font-size: 48px;
+    color: #cbd5e1;
+    margin-bottom: 20px;
+}
+
+
+/* =========================================
+   MINIMAL TYPOGRAPHIC CLOCK
+========================================= */
+.typo-clock-widget {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    z-index: 10;
+    text-align: right;
+    padding-right: 10px;
+}
+
+.typo-time {
+    font-family: 'Nunito Sans', sans-serif;
+    color: #ffffff;
+    display: flex;
+    align-items: baseline;
+    line-height: 1;
+    margin-bottom: 8px;
+    text-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.typo-hours-mins {
+    font-size: 4.8rem;
+    font-weight: 800;
+    letter-spacing: -2px;
+}
+
+.typo-colon {
+    font-size: 4.8rem;
+    font-weight: 800;
+    margin: 0 2px;
+    opacity: 0.8;
+    transform: translateY(-4px);
+    animation: typo-blink 2s infinite;
+}
+
+.typo-ampm {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: #a78bfa;
+    margin-left: 12px;
+    text-transform: uppercase;
+}
+
+.typo-date {
+    font-family: 'Inter', sans-serif;
+    font-size: 1.25rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.85);
+    letter-spacing: 0.5px;
+}
+
+@keyframes typo-blink {
+
+    0%,
+    100% {
+        opacity: 0.8;
+    }
+
+.class-content {
+    padding: 24px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.teacher-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.teacher-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.teacher-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: #64748b;
+}
+
+.class-name {
+    font-family: 'Nunito Sans', sans-serif;
+    font-size: 20px;
+    font-weight: 800;
+    color: #1e1b4b;
+    margin-bottom: 8px;
+    line-height: 1.3;
+}
+
+.class-desc {
+    font-size: 14px;
+    color: #64748b;
+    margin-bottom: 20px;
+    flex-grow: 1;
+}
+
+.class-footer {
+    padding: 20px 24px;
+    background: #f8fafc;
+    border-top: 1px solid #e2e8f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.btn-enter {
+    color: #2563eb;
+    font-weight: 800;
+    font-size: 14px;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.btn-join {
+    background: #fff;
+    color: #1e1b4b;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 14px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.3s;
+    box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2);
+}
+
+.btn-join:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(255, 255, 255, 0.3);
+    background: #f8fafc;
+}
+
+/* Modal */
+/* ── Zoom-85% compensation for Bootstrap fixed/backdrop elements ── */
+/* html { zoom: 85% } makes 100vw/100vh = 85% of actual viewport.   */
+/* Override to cover the full physical screen.                        */
+.modal-backdrop, .modal {
+    width: 117.65vw !important;
+    height: 117.65vh !important;
+}
+
+.modal-content {
+    border-radius: 24px;
+    border: none;
+    overflow: hidden;
+}
+
+.modal-header {
+    border-bottom: none;
+    padding: 32px 32px 16px;
+}
+
+.modal-body {
+    padding: 16px 32px 32px;
+}
+
+.form-control {
+    padding: 14px 20px;
+    border-radius: 14px;
+    border: 2px solid #e2e8f0;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+
+.form-control:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 80px 20px;
+    background: white;
+    border-radius: 24px;
+    border: 2px dashed #e2e8f0;
+}
+
+.empty-icon {
+    font-size: 48px;
+    color: #cbd5e1;
+    margin-bottom: 20px;
+}
+
+
+/* =========================================
+   MINIMAL TYPOGRAPHIC CLOCK
+========================================= */
+.typo-clock-widget {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    z-index: 10;
+    text-align: right;
+    padding-right: 10px;
+}
+
+.typo-time {
+    font-family: 'Nunito Sans', sans-serif;
+    color: #ffffff;
+    display: flex;
+    align-items: baseline;
+    line-height: 1;
+    margin-bottom: 8px;
+    text-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.typo-hours-mins {
+    font-size: 4.8rem;
+    font-weight: 800;
+    letter-spacing: -2px;
+}
+
+.typo-colon {
+    font-size: 4.8rem;
+    font-weight: 800;
+    margin: 0 2px;
+    opacity: 0.8;
+    transform: translateY(-4px);
+    animation: typo-blink 2s infinite;
+}
+
+.typo-ampm {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: #a78bfa;
+    margin-left: 12px;
+    text-transform: uppercase;
+}
+
+.typo-date {
+    font-family: 'Inter', sans-serif;
+    font-size: 1.25rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.85);
+    letter-spacing: 0.5px;
+}
+
+@keyframes typo-blink {
+
+    0%,
+    100% {
+        opacity: 0.8;
+    }
+
+    50% {
+        opacity: 0;
+    }
+}
+
+/* ─── Mobile Responsive ─── */
+@media (max-width: 768px) {
+    .dashboard-hero {
+        padding: 32px 20px;
+        border-radius: 20px;
+    }
+
+    .page-hero {
+        padding: 24px 20px;
+        border-radius: 20px;
+    }
+    
+    .hero-title {
+        font-size: 2rem;
+    }
+
+    .hero-stats-row {
+        gap: 12px;
+    }
+
+    .hero-stat-glass {
+        width: 100%;
+        justify-content: flex-start;
+        padding: 12px 16px;
+    }
+
+    .dash-card {
+        padding: 16px;
+    }
+}

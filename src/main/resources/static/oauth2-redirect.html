@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Đang xử lý đăng nhập Google...</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f1f5f9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            color: #1e293b;
+        }
+        .loader {
+            text-align: center;
+        }
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #e2e8f0;
+            border-top: 5px solid #4f46e5;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="loader">
+        <div class="spinner"></div>
+        <h3>Đang hoàn tất đăng nhập...</h3>
+        <p>Vui lòng đợi trong giây lát.</p>
+    </div>
+
+    <script>
+        window.onload = function() {
+            const params = new URLSearchParams(window.location.search);
+            const error = params.get('error');
+            const token = params.get('token');
+
+            if (error) {
+                const loader = document.querySelector('.loader');
+                if (loader) {
+                    loader.innerHTML = `
+                        <div style="font-size: 3rem; color: #ef4444; margin-bottom: 15px;">⚠️</div>
+                        <h3 style="color: #ef4444; font-weight: bold; margin-bottom: 8px;">Đăng nhập thất bại</h3>
+                        <p style="max-width: 400px; margin: 0 auto 24px; font-size: 0.95rem; color: #64748b;">${decodeURIComponent(error)}</p>
+                        <a href="/login" style="display: inline-block; padding: 10px 24px; background: #4f46e5; color: #fff; text-decoration: none; border-radius: 12px; font-weight: 600; box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2);">Quay lại trang đăng nhập</a>
+                    `;
+                } else {
+                    window.location.replace('/login');
+                }
+            } else if (token) {
+                // Hàm giải mã Base64 hỗ trợ Unicode
+                const decodeB64 = (str) => {
+                    try {
+                        return decodeURIComponent(escape(window.atob(str)));
+                    } catch (e) {
+                        return str;
+                    }
+                };
+
+                const user = {
+                    id: params.get('id'),
+                    email: params.get('email') || '',
+                    fullName: decodeB64(params.get('fullName') || ''),
+                    role: params.get('role'),
+                    avatarUrl: params.get('avatarUrl') || ''
+                };
+                
+                // Save to localStorage so frontend logic works seamlessly
+                localStorage.setItem('token', token);
+                localStorage.setItem('user', JSON.stringify(user));
+                
+                // Save to Cookie for Thymeleaf pages
+                document.cookie = `jwt=${token}; path=/; max-age=86400; samesite=strict`;
+                
+                // Redirect based on role
+                setTimeout(() => {
+                    const role = user.role;
+                    if (role === 'ADMIN') window.location.replace('/admin');
+                    else if (role === 'TEACHER') window.location.replace('/teacher');
+                    else window.location.replace('/student');
+                }, 500); // small delay to ensure storage is saved
+            } else {
+                window.location.replace('/login');
+            }
+        };
+    </script>
+</body>
+</html>

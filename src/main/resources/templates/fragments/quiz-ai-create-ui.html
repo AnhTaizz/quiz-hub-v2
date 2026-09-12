@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
+<!-- ─── SHARED BODY FRAGMENT ─── -->
+<main id="main-content" class="designer-layout"
+    th:classappend="${userType == 'teacher' ? 'designer-layout-teacher' : ''}"
+    th:fragment="quiz-ai-create-body(userType, closeUrl)">
+    <!-- COMPACT TOP BAR -->
+    <div class="designer-topbar">
+        <div class="d-flex align-items-center gap-3 flex-grow-1">
+            <div class="d-flex align-items-center gap-2" style="width: 380px;">
+                <span class="small fw-bold text-muted text-nowrap">Đề thi:</span>
+                <input type="text" id="q-title" class="form-control fc-header w-100"
+                    placeholder="Nhập tiêu đề đề thi tại đây..." oninput="updateVisualMeta()">
+            </div>
+            <div class="d-flex align-items-center gap-2" style="width: 280px;">
+                <span class="small fw-bold text-muted text-nowrap">Lưu tại:</span>
+                <div class="position-relative flex-grow-1">
+                    <i class="bi bi-folder-symlink position-absolute top-50 end-0 translate-middle-y me-2 text-muted small"></i>
+                    <input type="text" id="quiz-category-display"
+                        class="form-control fc-header cursor-pointer w-100 pe-4" placeholder="Chọn danh mục..." readonly
+                        onclick="openCategoryTreePicker('quiz')">
+                </div>
+                <input type="hidden" id="quiz-category">
+            </div>
+        </div>
+
+        <div class="d-flex align-items-center gap-2">
+            <div class="badge bg-indigo-subtle text-primary border border-primary-subtle rounded-pill px-2 py-1"
+                style="font-size: 0.6rem; color: #7c3aed !important; background-color: #faf5ff !important; border-color: #e9d5ff !important;">
+                <i class="bi bi-robot me-1"></i> AI POWERED
+            </div>
+            <a th:href="${closeUrl}" class="btn btn-sm btn-light fw-bold border rounded-pill px-3 shadow-sm" onclick="return confirmExit();">
+                <i class="bi bi-x-lg me-1"></i> Đóng
+            </a>
+        </div>
+    </div>
+
+    <div class="designer-body">
+        <!-- LEFT: THE VISUAL PREVIEW SHEET -->
+        <div class="preview-pane" id="left-pane">
+            <div class="paper-sheet" id="render-target">
+                <!-- Empty State Loaded by Default -->
+                <div id="empty-state">
+                    <div style="background: #faf5ff; width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 15px;">
+                        <i class="bi bi-robot text-primary fs-1" style="color: #7c3aed !important;"></i>
+                    </div>
+                    <h5 class="fw-bold text-secondary">Chưa có câu hỏi nào</h5>
+                    <p class="small">Hãy điền nội dung và thiết lập ở cột bên phải, sau đó nhấn "Tạo đề thi bằng AI".</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- THE RESIZER SPLITTER -->
+        <div class="gutter-resizer" id="drag-gutter"></div>
+
+        <!-- RIGHT: AI CONTROLS -->
+        <div class="source-pane" id="right-pane">
+            <div class="ai-form-container">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h5 class="fw-bold text-dark mb-0 d-flex align-items-center gap-2" style="font-size: 1.1rem;">
+                        <span></span> Soạn đề thi với Gemini AI
+                    </h5>
+                    <button class="btn btn-generate-ai fw-bold py-2 px-3 d-flex align-items-center gap-2"
+                        id="btn-ai-generate" onclick="generateQuizFromAi()" style="font-size: 0.8rem; border-radius: 10px; flex-shrink: 0; box-shadow: 0 4px 10px rgba(139, 92, 246, 0.25);">
+                        <i class="bi bi-stars"></i> TẠO ĐỀ THI BẰNG AI
+                    </button>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold text-secondary small">Nội dung bài học / Tài liệu tham khảo</label>
+                    <textarea id="ai-text-content" class="form-control" rows="12"
+                        placeholder="Hãy dán nội dung bài học, chương sách hoặc chủ đề chi tiết vào đây để AI đọc và tạo câu hỏi bám sát nội dung..."
+                        style="border-radius: 12px; font-size: 0.9rem; resize: vertical;"></textarea>
+                </div>
+
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold text-secondary small">Số lượng câu hỏi</label>
+                        <select id="ai-num-questions" class="form-select" style="border-radius: 10px;">
+                            <option value="5">5 câu hỏi</option>
+                            <option value="10" selected>10 câu hỏi</option>
+                            <option value="15">15 câu hỏi</option>
+                            <option value="20">20 câu hỏi</option>
+                            <option value="25">25 câu hỏi</option>
+                            <option value="30">30 câu hỏi</option>
+                            <option value="35">35 câu hỏi</option>
+                            <option value="40">40 câu hỏi</option>
+                            <option value="45">45 câu hỏi</option>
+                            <option value="50">50 câu hỏi</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold text-secondary small">Mức độ khó</label>
+                        <select id="ai-level" class="form-select" style="border-radius: 10px;">
+                            <option value="EASY">🟢 Dễ</option>
+                            <option value="MEDIUM" selected>🟡 Trung bình</option>
+                            <option value="HARD">🔴 Khó</option>
+                        </select>
+                    </div>
+                </div>
+
+
+
+                <!-- Loading State (Inside form pane to give instant feedback) -->
+                <div id="ai-loading" class="ai-loading-panel d-none mt-4">
+                    <div class="ai-pulse-glow">
+                        <div class="spinner-border text-primary" style="width: 2rem; height: 2rem; color: #7c3aed !important;" role="status"></div>
+                    </div>
+                    <h6 class="fw-bold text-indigo" style="color: #7c3aed;">Gemini đang phân tích tài liệu...</h6>
+                    <p class="small text-muted mb-0">Quá trình này có thể mất từ 5 đến 15 giây. Vui lòng chờ trong giây lát.</p>
+                </div>
+            </div>
+
+            <!-- ACTION BOTTOM BAR -->
+            <div class="action-bar mt-auto">
+                <div>
+                    <span class="fw-bold text-dark fs-5" id="stat-count">0</span>
+                    <span class="text-muted small fw-bold"> CÂU HỎI</span>
+                </div>
+                <button class="btn btn-primary fw-bold rounded-pill px-4 py-2 shadow-sm" onclick="submitFinalQuiz()"
+                    id="btn-save" style="background: #7c3aed; border-color: #7c3aed;" disabled>
+                    <i class="bi bi-cloud-upload-fill me-2"></i> LƯU ĐỀ THI
+                </button>
+            </div>
+        </div>
+    </div> <!-- End designer-body -->
+</main>
+
+<!-- ─── SHARED SCRIPTS FRAGMENT ─── -->
+<th:block th:fragment="quiz-ai-create-scripts(userType, closeUrl)">
+    <!-- ── Delete Question Confirm Modal ── -->
+    <div class="modal fade" id="deleteQModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" style="max-width: 420px;">
+            <div class="modal-content" style="border-radius: 20px; border: none; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.15);">
+                <div class="modal-header" style="background: linear-gradient(135deg, #ef4444, #dc2626); border: none; padding: 20px 24px;">
+                    <h5 class="modal-title fw-bold text-white d-flex align-items-center gap-2">
+                        <i class="bi bi-trash3-fill"></i> Xóa câu hỏi
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" style="padding: 24px 28px;">
+                    <p class="text-dark fw-semibold mb-1" id="deleteQModalLabel">Bạn có chắc muốn xóa câu hỏi này?</p>
+                    <p class="text-muted small mb-0">Thao tác này không thể hoàn tác.</p>
+                </div>
+                <div class="modal-footer" style="border: none; padding: 0 28px 20px; gap: 10px;">
+                    <button class="btn btn-light fw-semibold rounded-pill px-4" data-bs-dismiss="modal">Hủy</button>
+                    <button class="btn btn-danger fw-bold rounded-pill px-4" id="deleteQConfirmBtn">
+                        <i class="bi bi-trash3 me-1"></i> Xóa
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <link rel="stylesheet" th:href="@{/css/toast.css}">
+    <div id="toast-container"></div>
+
+    <script th:inline="javascript">
+        const userType = /*[[${userType}]]*/ 'student';
+        const closeUrl = /*[[${closeUrl}]]*/ '/student';
+        const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+        let currentQuestions = [];
+        let hasGenerated = false;
+
+        const bulkCreateUrl = userType === 'teacher' ? '/api/teacher/quizzes/bulk-create' : '/api/student/quiz/bulk-create';
+
+        // --- Initial Load Setup ---
+        document.addEventListener('DOMContentLoaded', function () {
+            const initialCatId = /*[[${categoryId}]]*/ null;
+            if (initialCatId) {
+                document.getElementById('quiz-category').value = initialCatId;
+                fetchCategories('private').then(cats => {
+                    const catName = findCategoryNameInTree(cats, initialCatId);
+                    if (catName) {
+                        document.getElementById('quiz-category-display').value = catName;
+                    }
+                }).catch(e => console.error(e));
+            }
+        });
+
+        function findCategoryNameInTree(nodes, id) {
+            if (!nodes) return null;
+            for (let node of nodes) {
+                if (node.id == id) return node.name;
+                if (node.children && node.children.length > 0) {
+                    const found = findCategoryNameInTree(node.children, id);
+                    if (found) return found;
+                }
+            }
+            return null;
+        }
+
+        function confirmExit() {
+            if (hasGenerated && currentQuestions.length > 0) {
+                return confirm("⚠️ Bạn chưa lưu đề thi này vào kho hệ thống!\n\nBạn có chắc chắn muốn rời đi và hủy kết quả không?");
+            }
+            return true;
+        }
+
+        // Dùng hệ thống toast chung (toast.js)
+        function showToast(msg, type = 'ok') {
+            if (type === 'ok') toast.success(msg);
+            else if (type === 'warn') toast.warning(msg);
+            else toast.error(msg);
+        }
+
+        // --- AI API Call ---
+        async function generateQuizFromAi() {
+            const contentText = document.getElementById('ai-text-content').value.trim();
+            const numQuestions = parseInt(document.getElementById('ai-num-questions').value);
+            const level = document.getElementById('ai-level').value;
+            const catId = document.getElementById('quiz-category').value;
+
+            if (!contentText) {
+                showToast("Vui lòng nhập nội dung bài học hoặc chủ đề vào ô văn bản!", "err");
+                document.getElementById('ai-text-content').focus();
+                return;
+            }
+
+            const btnGenerate = document.getElementById('btn-ai-generate');
+            const loadingPanel = document.getElementById('ai-loading');
+
+            btnGenerate.disabled = true;
+            loadingPanel.classList.remove('d-none');
+
+            const payload = {
+                text: contentText,
+                numberOfQuestions: numQuestions,
+                level: level,
+                categoryId: catId ? parseInt(catId) : null
+            };
+
+            try {
+                const response = await fetch('/api/v1/ai/generate-questions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    const errData = await response.json().catch(() => ({}));
+                    throw new Error(errData.message || `Lỗi HTTP ${response.status}`);
+                }
+
+                const data = await response.json();
+                const questions = data.result || [];
+
+                if (questions.length === 0) {
+                    throw new Error("AI không thể tạo câu hỏi nào từ nội dung được cung cấp.");
+                }
+
+                // Process answers correct structure
+                currentQuestions = questions.map(q => {
+                    const processedAnswers = (q.answers || []).map(a => {
+                        const isCorrect = a.correct === true || a.isCorrect === true;
+                        return { text: a.text, isCorrect: isCorrect, correct: isCorrect };
+                    });
+                    return {
+                        text: q.text,
+                        type: q.type || 'SINGLE_CHOICE',
+                        level: q.level || level,
+                        answers: processedAnswers
+                    };
+                });
+
+                hasGenerated = true;
+                renderVisualPreview();
+                showToast(`Đã tạo thành công ${currentQuestions.length} câu hỏi bằng AI!`, 'ok');
+
+            } catch (e) {
+                showToast("Tạo câu hỏi thất bại: " + e.message, 'err');
+            } finally {
+                btnGenerate.disabled = false;
+                loadingPanel.classList.add('d-none');
+            }
+        }
+
+        // --- Render Visual Preview ---
+        function renderVisualPreview() {
+            const target = document.getElementById('render-target');
+            const statCount = document.getElementById('stat-count');
+            const btnSave = document.getElementById('btn-save');
+
+            statCount.innerText = currentQuestions.length;
+            btnSave.disabled = (currentQuestions.length === 0);
+
+            if (currentQuestions.length === 0) {
+                target.innerHTML = `
+                    <div id="empty-state">
+                        <div style="background: #faf5ff; width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 15px;">
+                            <i class="bi bi-robot text-primary fs-1" style="color: #7c3aed !important;"></i>
+                        </div>
+                        <h5 class="fw-bold text-secondary">Chưa có câu hỏi nào</h5>
+                        <p class="small">Hãy điền nội dung và thiết lập ở cột bên phải, sau đó nhấn "Tạo đề thi bằng AI".</p>
+                    </div>`;
+                return;
+            }
+
+            const quizTitle = document.getElementById('q-title').value.trim() || 'Đề thi tạo bằng AI';
+            const categoryText = document.getElementById('quiz-category-display').value || 'Chưa chọn danh mục';
+
+            let html = `
+                <div class="text-center mb-4 pb-3" style="border-bottom: 2px solid #f1f5f9;">
+                    <div class="badge bg-primary-subtle text-primary mb-2 fw-bold px-3 rounded-pill" style="color: #7c3aed !important; background-color: #faf5ff !important; border: 1px solid #e9d5ff !important;">
+                        <i class="bi bi-robot me-1"></i> Preview Đề Thi AI
+                    </div>
+                    <h2 class="fw-bolder text-dark mb-2" style="font-family:'Nunito Sans'; font-size: 1.8rem;">${quizTitle}</h2>
+                    <div class="d-flex justify-content-center gap-3 small fw-bold text-muted">
+                        <span><i class="bi bi-folder2-open me-1"></i> ${categoryText}</span>
+                        <span class="text-indigo" style="color: #7c3aed;"><i class="bi bi-card-list me-1"></i> ${currentQuestions.length} Câu hỏi</span>
+                    </div>
+                </div>
+            `;
+
+            currentQuestions.forEach((q, qIdx) => {
+                const levelBadge = q.level === 'EASY' ? 'bg-success-subtle text-success' : (q.level === 'HARD' ? 'bg-danger-subtle text-danger' : 'bg-warning-subtle text-warning');
+                const typeLabel = q.type === 'MULTIPLE_CHOICE' ? 'Nhiều đáp án' : (q.type === 'FILL_IN_BLANK' ? 'Điền khuyết' : 'Trắc nghiệm 1');
+
+                html += `
+                <div class="q-preview-card">
+                    <button class="btn-delete-q" onclick="deleteQuestion(${qIdx})" title="Xóa câu hỏi này">
+                        <i class="bi bi-trash3-fill"></i>
+                    </button>
+                    <div class="d-flex justify-content-between align-items-start mb-3" style="padding-right: 35px;">
+                        <h6 class="fw-bold mb-0 text-dark d-flex align-items-start gap-2" style="line-height: 1.5; flex-grow: 1;">
+                            <span class="badge bg-dark text-white rounded-pill mt-1" style="font-size: 0.7rem; background-color: #7c3aed !important;">Câu ${qIdx + 1}</span>
+                            <span class="editable-text flex-grow-1" contenteditable="true" onblur="syncQText(${qIdx}, this)">${escapeHtml(q.text)}</span>
+                        </h6>
+                        <div class="d-flex flex-column gap-1 align-items-end flex-shrink-0 ms-2">
+                            <span class="badge-status ${levelBadge}">${q.level || 'MEDIUM'}</span>
+                            <span class="badge-status bg-secondary-subtle text-secondary" style="font-size:0.6rem">${typeLabel}</span>
+                        </div>
+                    </div>
+                    <div class="ps-4 ms-2">
+                        ${q.answers ? q.answers.map((ans, aIdx) => {
+                            const isActuallyCorrect = (ans.correct === true || ans.isCorrect === true);
+                            return `
+                            <div class="opt-pill ${isActuallyCorrect ? 'is-correct' : ''}" onclick="toggleCorrectAnswer(${qIdx}, ${aIdx})">
+                                <div class="opt-letter">
+                                    ${String.fromCharCode(65 + aIdx)}
+                                </div>
+                                <span class="flex-grow-1 editable-text" contenteditable="true" onclick="event.stopPropagation();" onblur="syncAnswerText(${qIdx}, ${aIdx}, this)">${escapeHtml(ans.text)}</span>
+                                ${isActuallyCorrect ? '<i class="bi bi-check-lg text-success fw-bold ms-auto"></i>' : ''}
+                            </div>
+                            `;
+                        }).join('') : '<div class="text-muted small">Không có phương án.</div>'}
+                    </div>
+                </div>
+                `;
+            });
+
+            target.innerHTML = html;
+        }
+
+        function updateVisualMeta() {
+            if (currentQuestions.length > 0) renderVisualPreview();
+        }
+
+        // --- Interactive Actions ---
+        function syncQText(qIdx, el) {
+            if (currentQuestions[qIdx]) {
+                currentQuestions[qIdx].text = el.innerText.trim();
+            }
+        }
+
+        function syncAnswerText(qIdx, aIdx, el) {
+            if (currentQuestions[qIdx] && currentQuestions[qIdx].answers[aIdx]) {
+                currentQuestions[qIdx].answers[aIdx].text = el.innerText.trim();
+                currentQuestions[qIdx].answers[aIdx].correct = currentQuestions[qIdx].answers[aIdx].isCorrect;
+            }
+        }
+
+        let _pendingDeleteIdx = null;
+
+        function deleteQuestion(qIdx) {
+            _pendingDeleteIdx = qIdx;
+            document.getElementById('deleteQModalLabel').textContent =
+                `Bạn có chắc muốn xóa Câu số ${qIdx + 1}?`;
+            const modal = new bootstrap.Modal(document.getElementById('deleteQModal'));
+            modal.show();
+            document.getElementById('deleteQConfirmBtn').onclick = function () {
+                modal.hide();
+                if (_pendingDeleteIdx !== null) {
+                    currentQuestions.splice(_pendingDeleteIdx, 1);
+                    _pendingDeleteIdx = null;
+                    renderVisualPreview();
+                    toast.success(`Đã xóa câu hỏi thành công.`);
+                }
+            };
+        }
+
+        function toggleCorrectAnswer(qIdx, aIdx) {
+            const q = currentQuestions[qIdx];
+            if (!q) return;
+
+            if (q.type === 'SINGLE_CHOICE' || q.type === 'FILL_IN_BLANK') {
+                q.answers.forEach((ans, idx) => {
+                    const matched = idx === aIdx;
+                    ans.isCorrect = matched;
+                    ans.correct = matched;
+                });
+            } else if (q.type === 'MULTIPLE_CHOICE') {
+                const currentStatus = (q.answers[aIdx].isCorrect === true || q.answers[aIdx].correct === true);
+                q.answers[aIdx].isCorrect = !currentStatus;
+                q.answers[aIdx].correct = !currentStatus;
+            }
+            renderVisualPreview();
+        }
+
+        // --- Save Final Quiz ---
+        async function submitFinalQuiz() {
+            const title = document.getElementById('q-title').value.trim();
+            const catId = document.getElementById('quiz-category').value;
+
+            if (!title) {
+                showToast("Vui lòng nhập tên đề thi trước khi lưu!", "err");
+                document.getElementById('q-title').focus();
+                return;
+            }
+
+            if (currentQuestions.length === 0) {
+                showToast("Đề thi chưa có câu hỏi nào để lưu!", "err");
+                return;
+            }
+
+            // Client-side verification: check if each question has at least 1 correct answer
+            for (let i = 0; i < currentQuestions.length; i++) {
+                const hasCorrect = currentQuestions[i].answers.some(a => a.isCorrect === true || a.correct === true);
+                if (!hasCorrect) {
+                    showToast(`Câu hỏi ${i + 1} chưa có đáp án đúng! Vui lòng chọn ít nhất 1 đáp án đúng.`, "err");
+                    return;
+                }
+            }
+
+            const btn = document.getElementById('btn-save');
+            const originalHtml = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Đang lưu...';
+
+            const payload = {
+                title: title,
+                description: "Tạo tự động bằng Gemini AI",
+                categoryId: catId ? parseInt(catId) : null,
+                imageUrl: "",
+                questions: currentQuestions.map(q => ({
+                    text: q.text,
+                    type: q.type,
+                    level: q.level,
+                    answers: q.answers.map(a => ({
+                        text: a.text,
+                        isCorrect: a.isCorrect
+                    }))
+                }))
+            };
+
+            try {
+                const resp = await fetch(bulkCreateUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                if (resp.ok) {
+                    showToast("Lưu đề thi thành công!", "ok");
+                    hasGenerated = false; // Disables confirm exit dialog
+                    setTimeout(() => { window.location.href = closeUrl; }, 1500);
+                } else {
+                    const err = await resp.json().catch(() => ({ message: "Lỗi kết nối từ máy chủ." }));
+                    throw new Error(err.message || "Lỗi tạo đề.");
+                }
+            } catch (e) {
+                showToast(e.message, "err");
+                btn.disabled = false;
+                btn.innerHTML = originalHtml;
+            }
+        }
+
+        // --- Helpers ---
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        }
+
+        // --- Sync watcher for category picker changes ---
+        setInterval(() => {
+            const val = document.getElementById('quiz-category-display').value;
+            if (val && document.getElementById('render-target').innerText.indexOf(val) === -1 && currentQuestions.length > 0) {
+                renderVisualPreview();
+            }
+        }, 1000);
+
+        // --- RESIZER ENGINE IMPLEMENTATION ---
+        document.addEventListener('DOMContentLoaded', function () {
+            const gutter = document.getElementById('drag-gutter');
+            const leftPane = document.getElementById('left-pane');
+            const rightPane = document.getElementById('right-pane');
+            const container = document.querySelector('.designer-body');
+
+            let isDragging = false;
+
+            gutter.addEventListener('mousedown', function (e) {
+                isDragging = true;
+                document.body.style.cursor = 'col-resize';
+                gutter.classList.add('is-resizing');
+                document.body.style.userSelect = 'none';
+            });
+
+            document.addEventListener('mousemove', function (e) {
+                if (!isDragging) return;
+
+                const containerRect = container.getBoundingClientRect();
+                const containerWidth = containerRect.width;
+                const pointerPos = e.clientX - containerRect.left;
+
+                let leftPercent = (pointerPos / containerWidth) * 100;
+
+                if (leftPercent < 25) leftPercent = 25;
+                if (leftPercent > 75) leftPercent = 75;
+
+                const rightPercent = 100 - leftPercent;
+
+                leftPane.style.flex = `0 0 ${leftPercent}%`;
+                rightPane.style.flex = `0 0 ${rightPercent}%`;
+                rightPane.style.width = 'auto';
+            });
+
+            document.addEventListener('mouseup', function () {
+                if (isDragging) {
+                    isDragging = false;
+                    document.body.style.cursor = '';
+                    gutter.classList.remove('is-resizing');
+                    document.body.style.userSelect = '';
+                }
+            });
+        });
+    </script>
+    <script th:src="@{/js/toast.js}"></script>
+
+    <!-- Category Explorer Picker Modals -->
+    <div th:replace="~{fragments/category-explorer-private :: category-explorer-private-modal}"></div>
+    <div th:replace="~{fragments/category-explorer-private :: category-explorer-private-scripts(${userType})}"></div>
+</th:block>
+
+</html>

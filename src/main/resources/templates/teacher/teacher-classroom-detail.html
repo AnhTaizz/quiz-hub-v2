@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuizHub | Chi tiết Lớp học</title>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Nunito+Sans:wght@400;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/dashboard-layout.css}">
+
+    <link rel="stylesheet" th:href="@{/css/teacher/teacher-classroom-detail.css}">
+    <!-- Flatpickr for 24h time format -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/material_blue.css">
+</head>
+
+<body>
+    <script>
+        (function () {
+            if (localStorage.getItem('sidebar-collapsed') === 'true') {
+                document.body.classList.add('sidebar-collapsed');
+            }
+        })();
+    </script>
+
+    <!-- Sidebar Fragment -->
+    <aside th:replace="~{layout/sidebar :: teacher-sidebar('classrooms')}"></aside>
+
+    <!-- Header Fragment -->
+    <header th:replace="~{layout/header :: teacher-header}"></header>
+
+    <main id="main-content">
+        <div class="page-header">
+            <div class="page-title">
+                <a href="/teacher/classrooms"
+                    class="text-decoration-none fw-bold small text-primary mb-2 d-inline-block"><i
+                        class="bi bi-arrow-left"></i> Trở về kho lớp học</a>
+                <h1 class="fw-bold text-dark mb-3" th:text="${classroom.name}" style="font-size: 1.8rem; letter-spacing: -0.5px;">Tên Lớp Học</h1>
+                <div class="d-flex flex-wrap align-items-center gap-3 text-muted">
+                    <div class="d-flex align-items-center gap-2 bg-light px-3 py-1 rounded-3 border" style="font-size: 0.95rem;">
+                        <i class="bi bi-upc-scan text-primary"></i>
+                        <span class="fw-semibold">Mã Code:</span>
+                        <strong class="text-primary font-monospace" th:text="${classroom.code}">CODE</strong>
+                    </div>
+                    <div class="vr d-none d-sm-block" style="opacity: 0.15; height: 24px;"></div>
+                    <div class="d-flex align-items-center gap-2" style="font-size: 0.95rem;">
+                        <i class="bi bi-info-circle text-secondary"></i>
+                        <span th:if="${classroom.description != null and classroom.description != ''}" th:text="${classroom.description}">Mô tả</span>
+                        <span th:unless="${classroom.description != null and classroom.description != ''}" class="fst-italic opacity-75">Chưa có mô tả</span>
+                    </div>
+                </div>
+            </div>
+            <div class="d-flex gap-2">
+                <button class="btn btn-outline-secondary fw-bold" style="border-radius: 14px; padding: 12px 24px;"
+                    data-bs-toggle="modal" data-bs-target="#editClassroomModal">
+                    <i class="bi bi-pencil-square me-1"></i> Sửa lớp
+                </button>
+                <button class="btn btn-outline-danger fw-bold" style="border-radius: 14px; padding: 12px 24px;"
+                    onclick="deleteClassroom()">
+                    <i class="bi bi-trash me-1"></i> Xóa lớp
+                </button>
+                <button class="btn-create" data-bs-toggle="modal" data-bs-target="#assignQuizModal">
+                    <i class="bi bi-plus-lg"></i> Giao đề thi mới
+                </button>
+            </div>
+        </div>
+
+        <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show mb-4 rounded-3"
+            role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i> <span th:text="${successMessage}">Thành công</span>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show mb-4 rounded-3" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i> <span th:text="${errorMessage}">Lỗi</span>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <!-- Section: Danh sách Chủ đề (Topics) -->
+        <div class="mb-5">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h3 class="fw-bold m-0" style="color:#1e1b4b;"><i class="bi bi-collection-fill me-2 text-primary"></i>
+                    Chủ đề học tập (Topics)</h3>
+                <button class="btn btn-outline-primary fw-bold" style="border-radius: 12px; padding: 10px 24px;"
+                    data-bs-toggle="modal" data-bs-target="#manageTopicsModal">
+                    <i class="bi bi-tags me-1"></i> Quản lý & Tạo chủ đề
+                </button>
+            </div>
+
+            <div th:if="${topics == null || topics.isEmpty()}" class="text-center py-4 border rounded-4 bg-white mb-4">
+                <i class="bi bi-tags fs-1 text-muted d-block mb-3"></i>
+                <p class="text-muted mb-0">Chưa có chủ đề nào được tạo. Hãy nhấn "Quản lý & Tạo chủ đề" để gom nhóm các
+                    đề thi.</p>
+            </div>
+
+            <div class="row g-4" th:if="${topics != null && !topics.isEmpty()}">
+                <div class="col-md-6" th:each="t : ${topics}">
+                    <div class="card p-4 border rounded-4 shadow-sm h-100 d-flex flex-column"
+                        style="border-color:#e2e8f0; cursor:pointer; background:#fff; transition: all 0.3s;"
+                        onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 12px 24px rgba(0,0,0,0.06)';"
+                        onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 6px -1px rgb(0 0 0 / 0.1)';"
+                        th:data-id="${t.id}" th:data-name="${t.name}"
+                        onclick="openTopicDetailsModal(this.getAttribute('data-id'), this.getAttribute('data-name'))">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <div>
+                                <h4 class="fw-bold mb-2" style="color: #1e1b4b; font-size: 1.25rem;"
+                                    th:text="${t.name}">Tên chủ đề</h4>
+                                <span class="text-muted small"><i class="bi bi-calendar2-check me-1"></i> Nhấp để xem
+                                    các đề thi thuộc chủ đề này</span>
+                            </div>
+                            <div class="d-flex gap-2" onclick="event.stopPropagation()">
+                                <button class="btn btn-sm btn-outline-secondary border-0 rounded-pill px-3 py-1"
+                                    th:data-id="${t.id}" th:data-name="${t.name}"
+                                    onclick="editTopic(this.getAttribute('data-id'), this.getAttribute('data-name'))"><i
+                                        class="bi bi-pencil-square"></i> Sửa</button>
+                                <button class="btn btn-sm btn-outline-danger border-0 rounded-pill px-3 py-1"
+                                    th:data-id="${t.id}" onclick="deleteTopic(this.getAttribute('data-id'))"><i
+                                        class="bi bi-trash"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mb-4 d-flex justify-content-between align-items-center">
+            <h3 class="fw-bold m-0"><i class="bi bi-file-earmark-check me-2 text-primary"></i> Đề thi đã giao</h3>
+        </div>
+
+        <div th:if="${assignedQuizzes == null || assignedQuizzes.isEmpty()}"
+            class="text-center py-5 border rounded-4 bg-white">
+            <i class="bi bi-journal-x fs-1 text-muted d-block mb-3"></i>
+            <p class="text-muted mb-0">Chưa có đề thi nào được giao cho lớp này.</p>
+        </div>
+
+        <div class="assigned-grid">
+            <div class="assigned-card" th:each="assigning : ${assignedQuizzes}"
+                th:data-topic-id="${assigning.topic != null ? assigning.topic.id : ''}">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                    <span class="badge-status"
+                        th:text="${assigning.quiz != null && assigning.quiz.isExam != null && assigning.quiz.isExam ? 'Đề thi' : 'Bài tập'}">Loại</span>
+                    <span th:if="${assigning.topic != null}" class="badge bg-light text-dark border px-2 py-1 rounded"
+                        style="font-size: 11px; font-weight: 700;" th:text="${assigning.topic.name}">Tên chủ đề</span>
+                </div>
+                <h4 class="assigned-title">
+                    <span th:text="${assigning.quiz != null ? assigning.quiz.title : 'Tên đề thi'}">Đề thi số 1</span>
+                    <span th:if="${assigning.isHidden}" class="badge bg-secondary ms-2" style="font-size: 11px;">Đã ẩn</span>
+                </h4>
+
+                <div class="assigned-meta">
+                    <div><i class="bi bi-clock me-1"></i> Thời gian: <strong
+                            th:text="${assigning.durationInMins != null ? assigning.durationInMins : 0}">0</strong> phút
+                    </div>
+                    <div><i class="bi bi-calendar2-event me-1"></i> Mở đề: <span
+                            th:text="${assigning.startDate != null ? #temporals.format(assigning.startDate, 'dd/MM/yyyy HH:mm') : '--/--/----'}">--/--/----</span>
+                    </div>
+                    <div><i class="bi bi-calendar2-x me-1"></i> Hạn chót: <span
+                            th:text="${assigning.dueDate != null ? #temporals.format(assigning.dueDate, 'dd/MM/yyyy HH:mm') : '--/--/----'}">--/--/----</span>
+                    </div>
+                    <div><i class="bi bi-arrow-repeat me-1"></i> Số lần làm tối đa: <strong
+                            th:text="${assigning.maxAttempt != null ? assigning.maxAttempt : 1}">1</strong> lần</div>
+                    <div><i class="bi bi-shuffle me-1"></i> Trộn câu hỏi: <span
+                            th:text="${assigning.questionShuffled != null && assigning.questionShuffled ? 'Bật' : 'Tắt'}">Tắt</span>
+                        | Trộn đáp án: <span
+                            th:text="${assigning.answerShuffled != null && assigning.answerShuffled ? 'Bật' : 'Tắt'}">Tắt</span>
+                    </div>
+                    <div><i class="bi bi-eye me-1"></i> Xem đáp án: <span
+                            th:text="${assigning.showAnswer != null && assigning.showAnswer ? 'Cho phép' : 'Ẩn'}">Ẩn</span>
+                    </div>
+                </div>
+
+                <div class="border-top pt-3 d-flex flex-wrap justify-content-between align-items-center mt-auto gap-2">
+                    <span class="text-muted small"><i class="bi bi-calendar-check me-1"></i> Giao ngày: <span
+                            th:text="${assigning.createdAt != null ? #temporals.format(assigning.createdAt, 'dd/MM/yyyy') : '--/--/----'}">--</span></span>
+                    <div class="d-flex gap-2 flex-wrap mt-2 w-100">
+                        <button th:if="${assigning.quiz != null}" th:data-id="${assigning.quiz.id}"
+                            onclick="openQuizPreviewModal(this.getAttribute('data-id'), event)"
+                            class="btn btn-sm btn-outline-primary rounded-pill px-3 text-nowrap flex-grow-1">Xem đề <i
+                                class="bi bi-chevron-right ms-1"></i></button>
+                        <button class="btn btn-sm btn-outline-success rounded-pill px-3 text-nowrap flex-grow-1" th:data-id="${assigning.id}"
+                            th:data-title="${assigning.quiz != null ? assigning.quiz.title : 'Đề thi'}"
+                            onclick="openGradesModal(this.getAttribute('data-id'), this.getAttribute('data-title'))">
+                            Bảng điểm <i class="bi bi-award ms-1"></i>
+                        </button>
+                        <a th:href="@{'/teacher/monitoring/log/' + ${assigning.id}}"
+                            class="btn btn-sm btn-outline-danger rounded-pill px-3 text-nowrap flex-grow-1 text-center">
+                            Giám sát <i class="bi bi-eye ms-1"></i>
+                        </a>
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-secondary rounded-pill px-3 text-nowrap" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-three-dots"></i>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0" style="border-radius: 12px;">
+                                <li>
+                                    <button class="dropdown-item" th:data-id="${assigning.id}" th:data-due="${assigning.dueDate != null ? assigning.dueDate : ''}"
+                                        onclick="openEditDeadlineModal(this.getAttribute('data-id'), this.getAttribute('data-due'))">
+                                        <i class="bi bi-calendar2-plus me-2 text-primary"></i> Sửa hạn chót
+                                    </button>
+                                </li>
+                                <li>
+                                    <button class="dropdown-item" th:data-id="${assigning.id}" th:data-title="${assigning.quiz != null ? assigning.quiz.title : 'Đề thi'}"
+                                        onclick="closeAssignment(this.getAttribute('data-id'), this.getAttribute('data-title'))">
+                                        <i class="bi bi-stop-circle me-2 text-warning"></i> Đóng bài ngay
+                                    </button>
+                                </li>
+                                <li>
+                                    <button class="dropdown-item" th:data-id="${assigning.id}"
+                                        onclick="toggleHidden(this.getAttribute('data-id'))">
+                                        <i class="bi bi-eye-slash me-2 text-secondary" th:if="${!assigning.isHidden}"></i>
+                                        <i class="bi bi-eye me-2 text-secondary" th:if="${assigning.isHidden}"></i>
+                                        <span th:text="${assigning.isHidden ? 'Hiện bài' : 'Ẩn bài'}">Ẩn bài</span>
+                                    </button>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <button class="dropdown-item text-danger"
+                                        th:data-id="${assigning.id}"
+                                        th:data-title="${assigning.quiz != null ? assigning.quiz.title : 'Đề thi'}"
+                                        onclick="deleteAssignment(this.getAttribute('data-id'), this.getAttribute('data-title'))">
+                                        <i class="bi bi-trash3 me-2"></i> Xóa
+                                    </button>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Assign Quiz Modal -->
+    <div class="modal fade" id="assignQuizModal" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl" style="max-width: 1300px;">
+            <div class="modal-content" style="border-radius: 20px;">
+                <div class="modal-header border-0 pb-0 pt-4 px-4">
+                    <h5 class="modal-title fw-bold">Giao đề thi cho lớp</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <form id="assignQuizForm">
+                        <input type="hidden" name="classroomId" th:value="${classroom.id}">
+
+                        <div class="row g-4">
+                            <!-- Left Column: Settings -->
+                            <div class="col-lg-5">
+                                <div class="mb-2">
+                                    <label class="form-label fw-bold small text-muted mb-1">Lọc theo danh mục</label>
+                                    <div class="d-flex gap-1 align-items-center">
+                                        <input type="text" id="categoryFilterDisplay"
+                                            class="form-control form-control-sm rounded-3 cursor-pointer bg-white"
+                                            placeholder="-- Tất cả danh mục --" readonly onclick="openCategoryExplorer()"
+                                            style="cursor: pointer;">
+                                        <input type="hidden" id="categoryFilterValue" value="">
+                                        <button type="button" class="btn btn-outline-danger btn-sm p-1" id="clearCatBtn"
+                                            style="display: none; border-radius: 8px; height: 31px; width: 31px;"
+                                            onclick="clearCategoryFilter()">
+                                            <i class="bi bi-x-lg"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <h6 class="fw-bold mb-2 text-primary border-bottom pb-2 mt-2"><i class="bi bi-gear-fill me-2"></i>1. Cấu hình cơ bản</h6>
+                                
+                                <div class="mb-2">
+                                    <label class="form-label fw-bold small text-muted mb-1">Chọn lớp học <span class="text-danger">*</span></label>
+                                    <select id="classroomIdSelect" name="classroomId" class="form-select form-select-sm rounded-3" required onchange="onClassroomChange()">
+                                        <option th:value="${classroom.id}" th:text="${classroom.name}" selected></option>
+                                    </select>
+                                </div>
+                                <div class="mb-2" id="topicDropdownContainer" th:style="${topics != null and not #lists.isEmpty(topics) ? 'display:block;' : 'display:none;'}">
+                                    <label class="form-label fw-bold small text-muted mb-1">Chọn chủ đề (Topic)</label>
+                                    <select id="assignTopicId" name="topicId" class="form-select form-select-sm rounded-3">
+                                        <option value="" selected>-- Không chọn chủ đề --</option>
+                                        <option th:each="topic : ${topics}" th:value="${topic.id}" th:text="${topic.name}"></option>
+                                    </select>
+                                </div>
+                                
+                                <div class="mb-2">
+                                    <label class="form-label fw-bold small text-muted mb-1">Chọn đề thi <span class="text-danger">*</span></label>
+                                    <select name="quizId" id="quizSelect" class="form-select form-select-sm rounded-3" required>
+                                        <option value="" disabled selected>-- Chọn đề thi trong kho --</option>
+                                        <option th:each="q : ${quizzes}" th:value="${q.id}"
+                                            th:data-category-id="${q.category != null ? q.category.id : ''}"
+                                            th:text="${q.title}">Tên đề thi</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="row g-2 mb-2">
+                                    <div class="col-6">
+                                        <label class="form-label fw-bold small text-muted mb-1">Thời gian (Phút) <span class="text-danger">*</span></label>
+                                        <input type="number" name="durationInMins" class="form-control form-control-sm rounded-3" value="45" min="1" required>
+                                    </div>
+                                    <div class="col-6">
+                                        <label class="form-label fw-bold small text-muted mb-1">Làm tối đa</label>
+                                        <input type="number" name="maxAttempt" class="form-control form-control-sm rounded-3" value="1" min="1" required>
+                                    </div>
+                                </div>
+
+                                <div class="row g-2 mb-2">
+                                    <div class="col-6">
+                                        <label class="form-label fw-bold small text-muted mb-1">Ngày mở đề</label>
+                                        <input type="text" id="assignStartDate" name="startDate" class="form-control form-control-sm rounded-3 flatpickr-datetime" th:value="${#temporals.format(today, 'yyyy-MM-dd') + 'T' + #temporals.format(today, 'HH:mm')}" required>
+                                    </div>
+                                    <div class="col-6">
+                                        <label class="form-label fw-bold small text-muted mb-1">Hạn chót <span class="text-danger">*</span></label>
+                                        <input type="text" id="assignDueDate" name="dueDate" class="form-control form-control-sm rounded-3 flatpickr-datetime" th:value="${#temporals.format(nextWeek, 'yyyy-MM-dd') + 'T' + #temporals.format(nextWeek, 'HH:mm')}" required>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Right Column: Advanced Options -->
+                            <div class="col-lg-7 border-start border-light-subtle">
+                                <h6 class="fw-bold mb-2 text-primary border-bottom pb-2"><i class="bi bi-sliders me-2"></i>2. Tùy chọn nâng cao</h6>
+                                
+                                <div class="mb-2">
+                                    <label class="form-label fw-bold small text-muted mb-1">Ghi chú cho học sinh</label>
+                                    <textarea name="note" class="form-control form-control-sm rounded-3" rows="2" placeholder="Ví dụ: Bài tập về nhà cuối tuần..."></textarea>
+                                </div>
+
+                                <div class="bg-light p-3 rounded-3 mb-3 border">
+                                    <div class="form-check form-switch mb-2">
+                                        <input class="form-check-input" type="checkbox" id="questionShuffled" name="questionShuffled">
+                                        <label class="form-check-label small fw-bold" for="questionShuffled">Xáo trộn câu hỏi</label>
+                                    </div>
+                                    <div class="form-check form-switch mb-2">
+                                        <input class="form-check-input" type="checkbox" id="answerShuffled" name="answerShuffled">
+                                        <label class="form-check-label small fw-bold" for="answerShuffled">Xáo trộn đáp án</label>
+                                    </div>
+                                    <div class="form-check form-switch mb-0">
+                                        <input class="form-check-input" type="checkbox" id="showAnswer" name="showAnswer" checked>
+                                        <label class="form-check-label small fw-bold" for="showAnswer">Cho xem đáp án chi tiết sau khi nộp</label>
+                                    </div>
+                                </div>
+
+                                <h6 class="fw-bold mb-2 text-primary border-bottom pb-2 mt-3"><i class="bi bi-people-fill me-2"></i>3. Đối tượng tham gia</h6>
+                                
+                                <div class="d-flex gap-4 mb-2">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="assignTarget" id="assignTargetAll" value="ALL" checked onclick="toggleStudentSelection(false)">
+                                            <label class="form-check-label fw-semibold text-dark" for="assignTargetAll">
+                                                Toàn bộ lớp
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="assignTarget" id="assignTargetCustom" value="CUSTOM" onclick="toggleStudentSelection(true)">
+                                            <label class="form-check-label fw-semibold text-dark" for="assignTargetCustom">
+                                                Chỉ định học sinh cụ thể
+                                            </label>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Student selection container -->
+                                    <div id="studentSelectionContainer" class="border rounded-3 bg-white mt-3 overflow-hidden shadow-sm" style="display: none; border-color: #cbd5e1 !important; flex-direction: column; max-height: 350px;">
+                                        <div class="p-2 border-bottom bg-white d-flex align-items-center justify-content-between gap-2 flex-wrap">
+                                            <input type="text" id="studentSearchInput" class="form-control form-control-sm" style="flex: 1; min-width: 200px; border-radius: 8px;" placeholder="Tìm tên/email học sinh..." onkeyup="filterStudentList()">
+                                            <div class="d-flex gap-2 align-items-center">
+                                                <label for="assignExcelUpload" class="btn btn-sm btn-success py-1 px-3 mb-0 d-flex align-items-center fw-bold shadow-sm" style="border-radius: 8px; cursor: pointer;" title="Tải file Excel để chọn hàng loạt">
+                                                    <i class="bi bi-file-earmark-excel me-2"></i> Nhập từ Excel
+                                                </label>
+                                                <input type="file" id="assignExcelUpload" style="display:none;" accept=".xlsx, .xls" onchange="importStudentsFromExcel(this)">
+                                                
+                                                <div class="btn-group shadow-sm">
+                                                    <button type="button" class="btn btn-sm btn-outline-primary fw-bold" onclick="selectAllStudents(true)">Chọn tất cả</button>
+                                                    <button type="button" class="btn btn-sm btn-outline-secondary fw-bold" onclick="selectAllStudents(false)">Bỏ chọn</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div id="studentCheckboxesList" class="p-3 overflow-y-auto" style="max-height: 200px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;">
+                                            <!-- Populated via JS -->
+                                        </div>
+                                    </div>
+                                    <input type="hidden" name="assignedStudentIds" id="assignedStudentIdsInput" value="">
+                            </div>
+                        </div>
+
+                        <div class="mt-4 text-end">
+                            <button type="button" class="btn btn-light px-4 me-2 rounded-3 fw-bold" data-bs-dismiss="modal">Hủy</button>
+                            <button type="button" onclick="submitAssignment()" class="btn btn-primary px-4 rounded-3 fw-bold" style="background: var(--blue); border: none;"><i class="bi bi-send me-2"></i>Xác nhận giao bài</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/vn.js"></script>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        window.CLASSROOM_ID = /*[[${classroom.id}]]*/ 0;
+        window.myCategories = /*[[${myCategories}]]*/[];
+        window.publicCategories = /*[[${publicCategories}]]*/[];
+        /*]]>*/
+    </script>
+
+
+    <!-- Manage Topics Modal -->
+    <div class="modal fade" id="manageTopicsModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="border-radius: 20px;">
+                <div class="modal-header border-0 pb-0 pt-4 px-4">
+                    <div>
+                        <h5 class="modal-title fw-bold">Quản lý Chủ đề (Topics)</h5>
+                        <p class="text-muted small mb-0">Các chủ đề giúp bạn gom nhóm các đề thi đã giao.</p>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <!-- Create new Topic form -->
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">Thêm chủ đề mới</label>
+                        <div class="input-group">
+                            <input type="text" id="newTopicName" class="form-control rounded-3"
+                                placeholder="Ví dụ: Chương 1, Tuần 1,..." required>
+                            <button class="btn btn-primary px-3 fw-bold" onclick="createTopic()"
+                                style="border-radius: 0 10px 10px 0; background:var(--blue); border:none;">
+                                <i class="bi bi-plus-lg"></i> Thêm
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="border-top pt-3">
+                        <label class="form-label fw-bold mb-3">Danh sách chủ đề hiện tại</label>
+                        <div th:if="${topics == null || topics.isEmpty()}" class="text-center py-3 text-muted">
+                            Chưa có chủ đề nào được tạo.
+                        </div>
+                        <ul class="list-group">
+                            <li class="list-group-item d-flex justify-content-between align-items-center"
+                                th:each="t : ${topics}" style="border-radius: 12px; margin-bottom: 8px;">
+                                <span class="fw-bold text-dark" th:text="${t.name}">Tên chủ đề</span>
+                                <button class="btn btn-sm btn-outline-danger border-0" th:data-id="${t.id}"
+                                    onclick="deleteTopic(this.getAttribute('data-id'))"><i
+                                        class="bi bi-trash"></i></button>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Edit Classroom Modal -->
+    <div class="modal fade" id="editClassroomModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="border-radius: 20px;">
+                <div class="modal-header border-0 pb-0 pt-4 px-4">
+                    <h5 class="modal-title fw-bold">Sửa thông tin lớp học</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <form id="editClassroomForm">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Tên lớp học</label>
+                            <input type="text" id="editClassName" class="form-control rounded-3"
+                                th:value="${classroom.name}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Mô tả</label>
+                            <textarea id="editClassDesc" class="form-control rounded-3" rows="3"
+                                th:text="${classroom.description}"></textarea>
+                        </div>
+                        <div class="form-check form-switch mb-4">
+                            <input class="form-check-input" type="checkbox" id="editRequireApproval"
+                                th:checked="${classroom.requireApproval}">
+                            <label class="form-check-label fw-bold" for="editRequireApproval">Yêu cầu phê duyệt tham
+                                gia</label>
+                        </div>
+                        <button type="button" onclick="updateClassroom()" class="btn btn-primary w-100 py-2 fw-bold"
+                            style="background: var(--blue); border: none; border-radius: 10px;">Lưu thay đổi</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Modal: Xem chi tiết các Đề thi trong Topic -->
+    <div class="modal fade" id="viewTopicQuizzesModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content"
+                style="border-radius: 20px; border:none; box-shadow:0 15px 40px rgba(0,0,0,0.18);">
+                <div class="modal-header border-0 px-4 pt-4 bg-light"
+                    style="border-top-left-radius:20px; border-top-right-radius:20px;">
+                    <div>
+                        <h5 class="modal-title fw-bold" id="topicModalTitle" style="color:#1e1b4b;"></h5>
+                        <p class="text-muted small mb-0">Tất cả đề thi thuộc chủ đề này.</p>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body px-4 py-3" style="max-height: 60vh; overflow-y: auto;" id="topicModalBody">
+                    <!-- Quizzes belonging to this topic listed here -->
+                </div>
+                <div class="modal-footer border-0 px-4 pb-4">
+                    <button type="button" class="btn btn-light fw-bold" data-bs-dismiss="modal"
+                        style="border-radius:12px; padding:10px 24px;">Đóng</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Deadline Modal -->
+    <div class="modal fade" id="editDeadlineModal" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content border-0 shadow" style="border-radius: 20px;">
+                <div class="modal-header border-0 pb-0 pt-4 px-4">
+                    <h5 class="modal-title fw-bold text-primary">
+                        <i class="bi bi-calendar-event me-2"></i>Sửa hạn chót
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <form id="editDeadlineForm">
+                        <input type="hidden" id="editDeadlineAssigningId">
+                        <div class="mb-4">
+                            <label class="form-label fw-bold text-muted small text-uppercase">Thời gian hết hạn mới</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0 rounded-start-3">
+                                    <i class="bi bi-clock text-muted"></i>
+                                </span>
+                                <input type="text" id="newDueDate" class="form-control bg-light border-start-0 rounded-end-3 flatpickr-datetime" placeholder="Chọn ngày và giờ..." required>
+                            </div>
+                            <small class="text-muted mt-2 d-block"><i class="bi bi-info-circle me-1"></i>Học sinh không thể làm bài sau thời điểm này.</small>
+                        </div>
+                        <button type="button" onclick="submitEditDeadline()" class="btn btn-primary w-100 py-2 fw-bold"
+                            style="border-radius: 12px; box-shadow: 0 4px 12px rgba(13,110,253,0.2);">
+                            <i class="bi bi-check2-circle me-1"></i> Lưu thay đổi
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script th:src="@{/js/teacher/teacher-classroom-detail.js}"></script>
+
+    <div th:replace="~{fragments/quiz-preview :: quiz-preview-modal}"></div>
+    <div th:replace="~{fragments/category-explorer-public :: category-explorer-public-modal}"></div>
+    <div th:replace="~{fragments/category-explorer-private :: category-explorer-private-modal}"></div>
+    <div th:replace="~{fragments/category-explorer-private :: category-create-modal}"></div>
+    <div th:replace="~{fragments/category-explorer-private :: category-explorer-private-scripts('teacher')}"></div>
+
+    <div th:replace="~{fragments/quiz-grades :: assignment-grades-modal}"></div>
+    <div th:replace="~{layout/header :: changePasswordModal}"></div>
+    <script th:replace="~{layout/header :: change-password-script}"></script>
+</body>
+
+</html>

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuizHub | Lớp học của tôi</title>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Nunito+Sans:wght@400;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/student.css}">
+</head>
+
+<body>
+
+    <header th:replace="~{layout/header :: student-header(activePage='classrooms')}"></header>
+
+    <main class="container">
+        <script th:inline="javascript">
+            document.addEventListener('DOMContentLoaded', function() {
+                /*[[${successMessage}]]*/
+                let successMessage = /*[[${successMessage}]]*/ null;
+                if (successMessage) {
+                    toast.success(successMessage);
+                }
+
+                /*[[${errorMessage}]]*/
+                let errorMessage = /*[[${errorMessage}]]*/ null;
+                if (errorMessage) {
+                    toast.error(errorMessage);
+                }
+            });
+        </script>
+
+        <section class="page-hero">
+            <div class="hero-shape shape-1"></div>
+            <div class="hero-shape shape-2"></div>
+
+            <div
+                class="hero-content d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-4">
+                <div>
+                    <h1 class="hero-title">Lớp học của tôi</h1>
+                    <p class="hero-subtitle">Nơi bạn có thể quản lý các lớp học đang tham gia, nộp bài tập và xem kết
+                        quả học tập của mình.</p>
+                </div>
+                <button class="btn-join" data-bs-toggle="modal" data-bs-target="#joinClassModal">
+                    <i class="bi bi-plus-circle-fill"></i> Tham gia lớp học
+                </button>
+            </div>
+        </section>
+
+        <div class="class-grid">
+            <!-- Joined Classes -->
+            <div class="class-card" style="position: relative;" th:each="joining : ${joinedClasses}">
+                <div class="class-banner">
+                    <img th:if="${joining.classroom.imageUrl}" th:src="${joining.classroom.imageUrl}" alt="Banner" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1510070112810-d4e9a46d9e91?auto=format&fit=crop&w=400&q=80'">
+                    <img th:unless="${joining.classroom.imageUrl}"
+                        src="https://images.unsplash.com/photo-1510070112810-d4e9a46d9e91?auto=format&fit=crop&w=400&q=80"
+                        alt="Default Banner">
+
+                    <!-- Status Badge -->
+                    <div th:if="${joining.status.name() == 'APPROVED'}" class="status-badge status-approved">Đã vào lớp
+                    </div>
+                    <div th:if="${joining.status.name() == 'PENDING'}" class="status-badge status-pending">Chờ phê duyệt
+                    </div>
+                    <div th:if="${joining.status.name() == 'REJECTED'}" class="status-badge status-rejected">Đã từ chối
+                    </div>
+                </div>
+
+                <div class="class-content">
+                    <div class="teacher-info">
+                        <img th:src="${joining.classroom.creator.avatarUrl != null && !joining.classroom.creator.avatarUrl.isEmpty() ? joining.classroom.creator.avatarUrl : 'https://ui-avatars.com/api/?name=' + joining.classroom.creator.fullName + '&background=28a745&color=fff'}"
+                            class="teacher-avatar" alt="Teacher">
+                        <span class="teacher-name" th:text="${joining.classroom.creator.fullName}">Thầy Nguyễn Văn
+                            A</span>
+                    </div>
+                    <h3 class="class-name" th:text="${joining.classroom.name}">Lập trình Java Nâng cao</h3>
+                    <p class="class-desc" th:text="${joining.classroom.description}">Mô tả ngắn về lớp học và mục tiêu
+                        đào tạo của khóa học này...</p>
+                </div>
+
+                <div class="class-footer">
+                    <div class="text-muted small">
+                        <i class="bi bi-clock-history me-1"></i> 
+                        <span th:if="${joining.status.name() == 'APPROVED'}">Tham gia:</span>
+                        <span th:if="${joining.status.name() == 'PENDING'}">Xin vào:</span>
+                        <span th:if="${joining.status.name() == 'REJECTED'}">Từ chối:</span>
+                        <span th:text="${#temporals.format(joining.joinedAt, 'dd/MM/yyyy')}">12/04/2026</span>
+                    </div>
+                    <a th:if="${joining.status.name() == 'APPROVED'}"
+                        th:href="@{'/student/classrooms/' + ${joining.classroom.id}}"
+                        class="btn-enter stretched-link">Vào lớp <i class="bi bi-arrow-right-short"></i></a>
+                    <span th:if="${joining.status.name() == 'PENDING'}" class="text-muted small fw-bold text-nowrap">Chờ duyệt</span>
+                    <span th:if="${joining.status.name() == 'REJECTED'}" class="text-danger small fw-bold text-nowrap">Từ chối</span>
+                </div>
+            </div>
+
+            <!-- Empty State -->
+            <div th:if="${#lists.isEmpty(joinedClasses)}" class="empty-state">
+                <div class="empty-icon"><i class="bi bi-mortarboard"></i></div>
+                <h3>Bạn chưa tham gia lớp học nào</h3>
+                <p class="text-muted mb-4">Nhập mã lớp học từ giáo viên để bắt đầu hành trình học tập của mình.</p>
+                <button class="btn btn-primary rounded-pill px-4 fw-bold" data-bs-toggle="modal"
+                    data-bs-target="#joinClassModal">Tham gia ngay</button>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

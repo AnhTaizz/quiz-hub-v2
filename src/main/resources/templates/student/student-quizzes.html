@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuizHub | Kho bài thi của tôi</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Nunito+Sans:wght@700;800;900&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/student.css}">
+    <link rel="stylesheet" th:href="@{/css/student/student-quizzes.css}">
+</head>
+<body>
+
+    <header th:replace="~{layout/header :: student-header(activePage='quizzes')}"></header>
+
+    <main class="container py-4">
+        <!-- Premium Hero -->
+        <section class="quizzes-hero" style="opacity: 1 !important; transform: none !important;">
+            <div class="hero-pattern"></div>
+            <div class="hero-blob" style="top: -100px; right: -50px;"></div>
+            <div class="hero-blob" style="bottom: -150px; left: -100px; background: radial-gradient(circle, rgba(56, 189, 248, 0.2), transparent 70%);"></div>
+            
+            <div class="position-relative z-1">
+
+                <div class="d-flex align-items-center gap-3 mb-3">
+                    <h1 class="hero-title text-white mb-0">Bài thi <span class="text-info">của tôi</span></h1>
+                    <span class="badge bg-info text-dark rounded-pill px-3 py-2 fw-bold" th:text="${(allQuizzes != null ? allQuizzes.size() : 0) + ' bài thi'}">0 bài thi</span>
+                </div>
+                <p class="hero-subtitle text-white opacity-75 mb-0" style="max-width: 500px;">
+                    Tổng hợp tất cả bài tập từ các lớp học của bạn. Bạn có thể tìm kiếm theo tên hoặc lọc theo lớp học bên dưới.
+                </p>
+            </div>
+        </section>
+
+        <!-- Search & Filter Bar -->
+        <div class="filter-bar" style="opacity: 1 !important; transform: none !important;">
+            <div class="search-input-wrap">
+                <i class="bi bi-search"></i>
+                <input type="text" class="search-input" id="quizSearch" placeholder="Tìm kiếm tên bài thi...">
+            </div>
+            
+            <div class="classroom-select-wrap">
+                <select class="classroom-select" id="classFilter">
+                    <option value="all">Tất cả lớp học</option>
+                    <th:block th:if="${joinedClasses != null}">
+                        <option th:each="joining : ${joinedClasses}" 
+                                th:if="${joining != null && joining.classroom != null}"
+                                th:value="${joining.classroom.id}" 
+                                th:text="${joining.classroom.name}">Tên lớp</option>
+                    </th:block>
+                </select>
+            </div>
+        </div>
+
+        <!-- Quizzes Grid -->
+        <div th:if="${allQuizzes == null || #lists.isEmpty(allQuizzes)}" class="text-center py-5 bg-white rounded-5 shadow-sm">
+            <i class="bi bi-journal-x text-muted mb-3 d-block" style="font-size: 5rem;"></i>
+            <h2 class="fw-bold">Bạn chưa có bài thi nào</h2>
+            <p class="text-muted mb-4">Hãy tham gia lớp học để nhận bài thi từ giáo viên.</p>
+            <a href="/student/classrooms" class="btn btn-primary rounded-pill px-5 py-3 fw-bold">Tham gia lớp học</a>
+        </div>
+
+        <div th:if="${allQuizzes != null && !#lists.isEmpty(allQuizzes)}" class="row g-4" id="quizzesGrid">
+            <th:block th:each="info, iter : ${allQuizzes}">
+                <!-- Each Quiz Card -->
+                <div th:if="${info != null and info.assigning != null and info.assigning.quiz != null}" 
+                     class="col-md-6 col-lg-4 quiz-container" 
+                     th:data-classroom-id="${info.assigning.classroom != null ? info.assigning.classroom.id : 'all'}"
+                     style="display: block !important;">
+                    
+                    <div class="quiz-item-card" style="opacity: 1 !important; transform: none !important;">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <!-- Status Pills -->
+                            <th:block th:with="isUpcoming=${info.assigning.startDate != null && now.isBefore(info.assigning.startDate)}, 
+                                               isExpired=${info.assigning.dueDate != null && now.isAfter(info.assigning.dueDate)}">
+                                
+                                <span th:if="${isUpcoming}" class="status-pill pill-upcoming">
+                                    <i class="bi bi-clock"></i> Sắp tới
+                                </span>
+                                <span th:if="${isExpired}" class="status-pill pill-expired">
+                                    <i class="bi bi-x-circle"></i> Hết hạn
+                                </span>
+                                <span th:if="${!isUpcoming && !isExpired}" class="status-pill pill-ongoing">
+                                    <i class="bi bi-play-circle"></i> Đang mở
+                                </span>
+                            </th:block>
+                            
+                            <div class="dropdown">
+                                <button class="btn p-0 border-0" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></button>
+                                <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 rounded-3">
+                                    <li><a class="dropdown-item py-2" th:href="@{'/student/quiz/history/' + ${info.assigning.id}}"><i class="bi bi-history me-2"></i>Lịch sử</a></li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <a th:href="@{'/student/quiz/history/' + ${info.assigning.id}}" class="quiz-title-link" th:text="${info.assigning.quiz.title}">Tên bài thi</a>
+                        
+                        <div class="meta-grid">
+                            <div class="meta-item">
+                                <i class="bi bi-stopwatch"></i>
+                                <div>
+                                    <div style="font-size: 10px; color: #94a3b8;">THỜI GIAN</div>
+                                    <span th:text="${(info.assigning.durationInMins != null ? info.assigning.durationInMins : 0) + ' phút'}">45 phút</span>
+                                </div>
+                            </div>
+                            <div class="meta-item">
+                                <i class="bi bi-card-list"></i>
+                                <div>
+                                    <div style="font-size: 10px; color: #94a3b8;">CÂU HỎI</div>
+                                    <span th:text="${(info.assigning.quiz.questions != null ? info.assigning.quiz.questions.size() : 0) + ' câu'}">30 câu</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="attempt-progress-box">
+                            <div class="attempt-header">
+                                <span>LƯỢT LÀM</span>
+                                <span th:text="${info.attemptsMade + ' / ' + (info.assigning.maxAttempt != null && info.assigning.maxAttempt > 0 ? info.assigning.maxAttempt : '∞')}">0 / 1</span>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-bar" role="progressbar" 
+                                     th:style="|width: ${(info.assigning.maxAttempt != null and info.assigning.maxAttempt > 0) ? (info.attemptsMade * 100 / info.assigning.maxAttempt) : 0}%|"></div>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <div th:if="${info.assigning.dueDate != null}" class="d-flex align-items-center gap-2 text-danger fw-bold" style="font-size: 0.85rem;">
+                                <i class="bi bi-calendar-x"></i> Hạn: 
+                                <span th:text="${#temporals != null ? #temporals.format(info.assigning.dueDate, 'HH:mm dd/MM/yyyy') : info.assigning.dueDate}">---</span>
+                            </div>
+                            <div th:unless="${info.assigning.dueDate != null}" class="d-flex align-items-center gap-2 text-muted" style="font-size: 0.85rem;">
+                                <i class="bi bi-infinity"></i> Không giới hạn thời gian
+                            </div>
+                        </div>
+
+                        <div class="mt-auto d-flex gap-2">
+                            <th:block th:with="canPlay=${(info.assigning.startDate == null or now.isAfter(info.assigning.startDate)) and (info.assigning.dueDate == null or now.isBefore(info.assigning.dueDate)) and (info.assigning.maxAttempt == null or info.assigning.maxAttempt == 0 or info.attemptsMade < info.assigning.maxAttempt)}">
+                                
+                                <a th:href="@{'/student/quiz/history/' + ${info.assigning.id}}" class="btn-history">
+                                    <i class="bi bi-clock-history"></i> Lịch sử
+                                </a>
+
+                                <a th:if="${canPlay}" th:href="@{/student/quiz/play/{id}(id=${info.assigning.id})}" class="btn-play">
+                                    <i class="bi bi-pencil-square"></i> Làm bài
+                                </a>
+                                
+                                <th:block th:unless="${canPlay}">
+                                    <button th:if="${info.assigning.dueDate != null && now.isAfter(info.assigning.dueDate)}" class="btn-disabled" disabled>
+                                        <i class="bi bi-lock"></i> Hết hạn
+                                    </button>
+                                    <button th:if="${info.assigning.startDate != null && now.isBefore(info.assigning.startDate)}" class="btn-disabled" disabled>
+                                        <i class="bi bi-calendar"></i> Sắp tới
+                                    </button>
+                                    <button th:if="${info.assigning.maxAttempt != null && info.assigning.maxAttempt > 0 && info.attemptsMade >= info.assigning.maxAttempt}" class="btn-disabled" disabled>
+                                        <i class="bi bi-check-all"></i> Hết lượt
+                                    </button>
+                                </th:block>
+                            </th:block>
+                        </div>
+
+                        <div class="classroom-footer" th:if="${info.assigning.classroom != null}">
+                            <div class="class-tag">
+                                <i class="bi bi-mortarboard-fill"></i>
+                                <span th:text="${info.assigning.classroom.name}">Tên lớp</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </th:block>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:src="@{/js/student/student-quizzes.js}"></script>
+</body>
+</html>

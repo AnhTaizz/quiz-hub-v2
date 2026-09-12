@@ -1,0 +1,343 @@
+/* Styling for AI Quiz Creator (Shared Fragment CSS) */
+
+html {
+    zoom: 85% !important;
+}
+
+html, body {
+    height: calc(100vh / 0.85) !important;
+    overflow: hidden !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.designer-layout {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh / 0.85 - 80px) !important;
+    padding: 0 !important;
+    margin-top: 80px !important;
+    overflow: hidden;
+}
+
+.designer-layout-teacher {
+    height: calc(100vh / 0.85 - 70px) !important;
+    margin-top: 70px !important;
+}
+
+.designer-topbar {
+    background: #ffffff;
+    border-bottom: 1px solid #e2e8f0;
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+    gap: 15px;
+    flex-shrink: 0;
+    z-index: 10;
+}
+
+.designer-body {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+}
+
+/* Splitting Handle */
+.gutter-resizer {
+    width: 6px;
+    background: #f1f5f9;
+    border-left: 1px solid #e2e8f0;
+    border-right: 1px solid #e2e8f0;
+    cursor: col-resize;
+    transition: background 0.2s;
+    flex-shrink: 0;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.gutter-resizer:hover,
+.gutter-resizer.is-resizing {
+    background: #7c3aed;
+}
+
+.gutter-resizer::after {
+    content: '||';
+    font-size: 8px;
+    color: #94a3b8;
+    letter-spacing: -1px;
+}
+
+/* Left Pane: Preview Engine */
+.preview-pane {
+    flex: 1;
+    min-width: 300px;
+    background: #f8fafc;
+    overflow-y: auto;
+    padding: 25px;
+    position: relative;
+}
+
+.preview-pane::-webkit-scrollbar {
+    width: 6px;
+}
+
+.preview-pane::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 10px;
+}
+
+/* Right Pane: Parameter Controller */
+.source-pane {
+    width: 40%;
+    min-width: 380px;
+    flex-shrink: 0;
+    background: white;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    border-left: 1px solid #e2e8f0;
+}
+
+.paper-sheet {
+    background: white;
+    min-height: 100%;
+    padding: 30px;
+    width: 100%;
+    margin: 0;
+    border-radius: 12px;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.02);
+}
+
+/* Question Cards in Preview */
+.q-preview-card {
+    position: relative;
+    padding: 20px 0;
+    border-bottom: 1px dashed #e2e8f0;
+}
+
+.q-preview-card:last-child {
+    border-bottom: none;
+}
+
+.q-preview-card .btn-delete-q {
+    position: absolute;
+    top: 15px;
+    right: 0;
+    color: #ef4444;
+    background: none;
+    border: none;
+    padding: 4px 8px;
+    border-radius: 6px;
+    opacity: 0.4;
+    transition: all 0.2s;
+}
+
+.q-preview-card:hover .btn-delete-q {
+    opacity: 1;
+}
+
+.q-preview-card .btn-delete-q:hover {
+    background: #fef2f2;
+}
+
+/* Option Pill with toggles */
+.opt-pill {
+    padding: 8px 15px;
+    border-radius: 10px;
+    background: #f8fafc;
+    border: 1.5px solid #e2e8f0;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.opt-pill:hover {
+    background: #f1f5f9;
+    border-color: #cbd5e1;
+}
+
+.opt-pill.is-correct {
+    background: #f0fdf4;
+    border-color: #86efac;
+    color: #166534;
+    font-weight: 600;
+}
+
+.opt-pill.is-correct .opt-letter {
+    background: #22c55e !important;
+    color: white !important;
+    border-color: #22c55e !important;
+}
+
+.opt-letter {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: white;
+    border: 1px solid #cbd5e1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 0.7rem;
+    transition: all 0.2s;
+    flex-shrink: 0;
+}
+
+.editable-text {
+    outline: none;
+    border-bottom: 1.5px dashed transparent;
+    border-radius: 4px;
+    padding: 2px 4px;
+    min-height: 24px;
+}
+
+.editable-text:hover {
+    border-bottom-color: #7c3aed;
+    background: #fcfaff;
+}
+
+.editable-text:focus {
+    border-bottom-color: #7c3aed;
+    background: #faf5ff;
+}
+
+/* Form Styles */
+.ai-form-container {
+    padding: 24px;
+    overflow-y: auto;
+    flex-grow: 1;
+}
+
+.ai-form-container::-webkit-scrollbar {
+    width: 5px;
+}
+
+.ai-form-container::-webkit-scrollbar-thumb {
+    background: #e2e8f0;
+    border-radius: 4px;
+}
+
+.action-bar {
+    padding: 15px 24px;
+    background: #ffffff;
+    border-top: 1px solid #e2e8f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 20;
+    flex-shrink: 0;
+}
+
+/* Top bar inputs */
+.fc-header {
+    border-radius: 8px;
+    border: 1px solid #cbd5e1;
+    background: #ffffff;
+    font-weight: 600;
+    padding: 8px 12px;
+    font-size: 0.85rem;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.fc-header:focus {
+    border-color: #7c3aed;
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+}
+
+#empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 50vh;
+    color: #94a3b8;
+    text-align: center;
+    padding: 20px;
+}
+
+.toast-wrap {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+}
+
+.badge-status {
+    font-size: 0.65rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 10px;
+}
+
+/* Modern Gradient Buttons */
+.btn-generate-ai {
+    background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+    border: none;
+    color: white;
+    font-weight: 700;
+    border-radius: 12px;
+    padding: 12px 24px;
+    box-shadow: 0 4px 15px rgba(139, 92, 246, 0.25);
+    transition: all 0.25s ease;
+}
+
+.btn-generate-ai:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(139, 92, 246, 0.35);
+    opacity: 0.95;
+}
+
+.btn-generate-ai:active {
+    transform: translateY(1px);
+}
+
+/* Loading animations */
+.ai-loading-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 50px 20px;
+    text-align: center;
+}
+
+.ai-pulse-glow {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: rgba(124, 58, 237, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 24px;
+    animation: pulseGlow 2s infinite ease-in-out;
+}
+
+@keyframes pulseGlow {
+    0% {
+        box-shadow: 0 0 0 0 rgba(124, 58, 237, 0.4);
+    }
+    70% {
+        box-shadow: 0 0 0 20px rgba(124, 58, 237, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(124, 58, 237, 0);
+    }
+}
+
+/* ── Zoom-85% compensation for Bootstrap fixed/backdrop elements ── */
+/* html { zoom: 85% } makes 100vw/100vh = 85% of actual viewport.   */
+.modal-backdrop, .modal {
+    width: 117.65vw !important;
+    height: 117.65vh !important;
+}

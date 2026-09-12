@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuizHub - Bảng điều khiển Giáo viên</title>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Nunito+Sans:wght@400;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/dashboard-layout.css}">
+
+    <link rel="stylesheet" th:href="@{/css/teacher/teacher-home.css}">
+</head>
+
+<body>
+
+
+    <!-- Sidebar Fragment -->
+    <aside th:replace="~{layout/sidebar :: teacher-sidebar('dashboard')}"></aside>
+
+    <!-- Header Fragment -->
+    <header th:replace="~{layout/header :: teacher-header}"></header>
+
+    <main id="main-content">
+
+        <div class="page-title-box">
+            <h4>Xin chào, <span th:text="${currentUser != null ? currentUser.fullName : 'Cô Giáo Hương'}">Cô Giáo
+                    Hương</span>! 👋</h4>
+            <p>Dưới đây là tóm tắt hoạt động giảng dạy của bạn trong hệ thống.</p>
+        </div>
+
+        <div class="top-cards-row">
+            <div class="stat-card">
+                <div class="stat-icon icon-blue"><i class="bi bi-mortarboard-fill"></i></div>
+                <div class="stat-info">
+                    <h2 th:text="${studentCount ?: '0'}">0</h2>
+                    <p>Tổng sinh viên</p>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon icon-green"><i class="bi bi-diagram-3-fill"></i></div>
+                <div class="stat-info">
+                    <h2 th:text="${classroomCount ?: '0'}">0</h2>
+                    <p>Lớp học</p>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon icon-teal"><i class="bi bi-collection-fill"></i></div>
+                <div class="stat-info">
+                    <h2 th:text="${questionCount ?: '0'}">0</h2>
+                    <p>Câu hỏi</p>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon icon-orange"><i class="bi bi-stopwatch-fill"></i></div>
+                <div class="stat-info">
+                    <h2 th:text="${liveQuizCount ?: '0'}">0</h2>
+                    <p>Phòng thi Live</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="bottom-row">
+
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h5>Hoạt động kiểm tra trực tuyến</h5>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Tên Lớp / Môn</th>
+                            <th>Đề thi</th>
+                            <th class="text-center">Trạng thái</th>
+                            <th class="text-center">Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="as : ${assignments}">
+                            <td>
+                                <div class="td-bold" th:text="${as.classroomName}">Lập trình Java</div>
+                            </td>
+                            <td>
+                                <div class="td-sub" th:text="${as.quizTitle}">Kiểm tra giữa kỳ</div>
+                            </td>
+                            <td>
+                                <div class="status-flex">
+                                    <span th:if="${as.status == 'LIVE'}" class="badge-live">
+                                        <i class="bi bi-record-circle me-1"></i> Đang diễn ra
+                                    </span>
+                                    <span th:if="${as.status == 'ENDED'}" class="badge-done">
+                                        <i class="bi bi-check2-circle me-1"></i> Đã kết thúc
+                                    </span>
+                                    <span th:if="${as.violationCount > 0}" class="badge-warn">
+                                        <i class="bi bi-exclamation-triangle-fill me-1"></i> <span
+                                            th:text="${as.violationCount}">2</span>&nbsp;Vi phạm
+                                    </span>
+                                    <span th:if="${as.status == 'UPCOMING'}" class="badge-done"
+                                        style="background: #f8fafc; color: #64748b;">
+                                        <i class="bi bi-calendar-event me-1"></i> Sắp diễn ra
+                                    </span>
+                                </div>
+                            </td>
+                            <td class="text-center">
+                                <div class="action-flex">
+                                    <a th:if="${as.violationCount > 0}"
+                                        th:href="@{'/teacher/monitoring/log/' + ${as.assigningId}}"
+                                        class="btn-table-action btn-log">
+                                        <i class="bi bi-shield-exclamation"></i> Xem Log
+                                    </a>
+                                    <a th:if="${as.status == 'LIVE' && as.violationCount == 0}"
+                                        th:href="@{'/teacher/monitoring/log/' + ${as.assigningId}}"
+                                        class="btn-table-action btn-monitor">
+                                        <i class="bi bi-eye"></i> Giám sát
+                                    </a>
+                                    <a th:if="${as.status == 'ENDED'}" href="#" class="btn-table-action btn-grades"
+                                        th:attr="data-id=${as.assigningId}, data-title=${as.quizTitle}"
+                                        onclick="openGradesModal(this.getAttribute('data-id'), this.getAttribute('data-title'))">
+                                        <i class="bi bi-award"></i> Bảng điểm
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(assignments)}">
+                            <td colspan="4" class="text-center py-4 text-muted italic">Chưa có hoạt động kiểm tra nào.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h5>Thao tác nhanh</h5>
+                </div>
+                <div class="quick-actions">
+                    <button class="btn-quick" onclick="window.location.href='/teacher/classrooms'">
+                        <i class="bi bi-people-fill text-primary"></i> Quản lý Lớp học
+                    </button>
+                    <button class="btn-quick" onclick="window.location.href='/teacher/quizzes/ai-create'">
+                        <i class="bi bi-robot text-purple" style="color: #7c3aed !important;"></i> Tạo đề bằng AI (Gemini)
+                    </button>
+                    <button class="btn-quick" onclick="window.location.href='/teacher/questions'">
+                        <i class="bi bi-pencil-square text-info"></i> Ngân hàng câu hỏi
+                    </button>
+                    <button class="btn-quick" onclick="window.location.href='/teacher/categories'">
+                        <i class="bi bi-folder-plus text-secondary"></i> Danh mục của tôi
+                    </button>
+                    <button class="btn-quick" onclick="window.location.href='/teacher/monitoring'">
+                        <i class="bi bi-display text-danger"></i> Giám sát phòng thi
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <div th:replace="~{layout/header :: changePasswordModal}"></div>
+    <script th:replace="~{layout/header :: change-password-script}"></script>
+    <div th:replace="~{fragments/quiz-grades :: assignment-grades-modal}"></div>
+</body>
+
+</html>

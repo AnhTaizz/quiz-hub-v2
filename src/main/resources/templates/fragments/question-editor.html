@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+    <!-- 
+        FRAGMENT: Unified Question Editor Modal
+        Usage: 
+        1. Include the modal: <div th:replace="~{fragments/question-editor :: question-editor-modal}"></div>
+        2. Include the scripts: <div th:replace="~{fragments/question-editor :: question-editor-scripts(${userType})}"></div>
+    -->
+
+    <style>
+        /* Speed up all modals for a snappier feel */
+        .modal.fade .modal-dialog { transition: transform .15s ease-out !important; }
+        .modal.show .modal-dialog { transform: none !important; }
+        .modal-backdrop.fade { transition: opacity .1s linear !important; }
+        
+        .editor-ctrl-wrapper:hover { border-color: #4f46e5 !important; box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1) !important; }
+        .editor-ctrl-wrapper:hover i { color: #4f46e5 !important; }
+        
+        /* Fix answers list overflow */
+        #editor-answers-wrapper::-webkit-scrollbar { width: 6px; }
+        #editor-answers-wrapper::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        #editor-answers-wrapper::-webkit-scrollbar-track { background: transparent; }
+    </style>
+
+    <div th:fragment="question-editor-modal" class="modal fade" id="questionEditorModal" tabindex="-1" aria-hidden="true" style="z-index: 1055;">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content" style="border-radius: 24px; border: none; box-shadow: 0 20px 60px rgba(0,0,0,0.15); overflow-x: hidden;">
+                <!-- Header -->
+                <div class="modal-header border-0 p-4" style="background: linear-gradient(135deg, #4f46e5, #4338ca);">
+                    <h5 class="modal-title fw-bold text-white mb-0" id="questionEditorTitle">
+                        <i class="bi bi-patch-plus-fill me-2"></i>Soạn câu hỏi mới
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body p-4" style="background: #ffffff;">
+                    <form id="questionEditorForm" autocomplete="off">
+                        <input type="hidden" id="editor-q-id">
+                        
+                        <!-- Question Text -->
+                        <div class="mb-3">
+                            <label class="form-label fw-bold text-dark small text-uppercase tracking-wider mb-1">Nội dung câu hỏi <span class="text-danger">*</span></label>
+                            <textarea id="editor-q-text" class="form-control" rows="2" required 
+                                style="border-radius: 16px; border: 1.5px solid #e2e8f0; padding: 12px 15px; font-weight: 500; font-size: 0.95rem; transition: all 0.2s;"
+                                placeholder="Ví dụ: Thủ đô của Việt Nam là gì?"></textarea>
+                        </div>
+
+                        <div class="row g-3 mb-3">
+                            <!-- Question Type -->
+                            <div class="col-lg-4 col-md-6">
+                                <label class="form-label fw-bold text-dark small text-uppercase tracking-wider mb-1">Loại câu hỏi <span class="text-danger">*</span></label>
+                                <select id="editor-q-type" class="form-select" onchange="adaptEditorAnswerUI()" required
+                                    style="border-radius: 12px; border: 1.5px solid #e2e8f0; padding: 0 8px 0 12px; font-weight: 600; cursor: pointer; height: 44px; font-size: 0.85rem;">
+                                    <option value="SINGLE_CHOICE" selected>Trắc nghiệm (1 đáp án)</option>
+                                    <option value="MULTIPLE_CHOICE">Trắc nghiệm (Nhiều đáp án)</option>
+                                    <option value="FILL_IN_BLANK">Điền khuyết</option>
+                                </select>
+                            </div>
+                            <!-- Difficulty Level -->
+                            <div class="col-lg-4 col-md-6">
+                                <label class="form-label fw-bold text-dark small text-uppercase tracking-wider mb-1">Độ khó <span class="text-danger">*</span></label>
+                                <select id="editor-q-level" class="form-select"
+                                    style="border-radius: 12px; border: 1.5px solid #e2e8f0; padding: 0 14px; font-weight: 600; cursor: pointer; height: 44px; font-size: 0.88rem;">
+                                    <option value="EASY">Dễ</option>
+                                    <option value="MEDIUM" selected>Trung bình</option>
+                                    <option value="HARD">Khó</option>
+                                </select>
+                            </div>
+                            <!-- Category Selection -->
+                            <div class="col-lg-4 col-md-12" id="editor-q-cat-wrapper">
+                                <label class="form-label fw-bold text-dark small text-uppercase tracking-wider mb-1">Danh mục</label>
+                                <div class="position-relative editor-ctrl-wrapper" 
+                                     style="cursor: pointer; border-radius: 12px; border: 1.5px solid #e2e8f0; background: #fff; transition: all 0.2s; height: 44px; display: flex; align-items: center;">
+                                    <!-- Overlay to ensure clickability -->
+                                    <div class="position-absolute" onclick="openEditorCategorySelector()" 
+                                         style="top: 0; left: 0; right: 0; bottom: 0; z-index: 5; cursor: pointer;"></div>
+                                    
+                                    <input type="text" id="editor-q-category-display" class="form-control border-0 bg-transparent" 
+                                        placeholder="-- Chọn danh mục --" readonly
+                                        style="border-radius: 12px; padding: 0 35px 0 12px; font-weight: 600; box-shadow: none; height: 100%; width: 100%; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; font-size: 0.85rem;">
+                                    <input type="hidden" id="editor-q-category" value="">
+                                    <i class="bi bi-chevron-expand position-absolute top-50 end-0 translate-middle-y me-2 text-muted" style="pointer-events: none;"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Answers Section -->
+                        <div class="mb-2">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h6 class="fw-bold text-dark mb-0"><i class="bi bi-list-check me-2 text-primary"></i>Danh sách đáp án</h6>
+                                <button type="button" id="btn-add-editor-ans" class="btn btn-sm btn-outline-primary rounded-pill px-3 fw-bold" onclick="addEditorAnswerRow()">
+                                    <i class="bi bi-plus-lg me-1"></i> Thêm đáp án
+                                </button>
+                            </div>
+                            <div id="editor-answers-wrapper" class="d-flex flex-column gap-2" style="max-height: 300px; overflow-y: auto; padding-right: 5px;">
+                                <!-- Answers will be rendered here -->
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Footer -->
+                <div class="modal-footer border-0 p-4 pt-0" style="background: #ffffff;">
+                    <button type="button" class="btn btn-light px-4 py-2 fw-bold text-muted" data-bs-dismiss="modal" style="border-radius:12px;">Hủy bỏ</button>
+                    <button type="button" class="btn btn-primary px-5 py-2 fw-bold shadow-sm" onclick="saveQuestionFromEditor()"
+                        style="border-radius:12px; background: linear-gradient(135deg, #4f46e5, #4338ca); border: none; min-width: 160px;">
+                        <i class="bi bi-check-circle-fill me-2"></i>Lưu câu hỏi
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script Fragment -->
+    <th:block th:fragment="question-editor-scripts(userType)">
+        <script th:inline="javascript">
+            /*<![CDATA[*/
+            const EDITOR_USER_TYPE = /*[[${userType}]]*/ 'student';
+            const EDITOR_BASE_API = `/api/${EDITOR_USER_TYPE}/questions`;
+            /*]]>*/
+
+            function _safeToast(msg, type = 'ok') {
+                if (typeof toast !== 'undefined') {
+                    if (type === 'ok' || type === 'success') toast.success(msg);
+                    else if (type === 'warning' || type === 'warn') toast.warning(msg);
+                    else toast.error(msg);
+                } else if (typeof showToast === 'function') {
+                    showToast(msg, type);
+                } else {
+                    console.error('Toast Error:', msg);
+                    let w = document.getElementById('toastWrap') || document.getElementById('toast-wrap');
+                    if (!w) {
+                        w = document.createElement('div');
+                        w.id = 'toastWrap';
+                        w.className = 'toast-wrap';
+                        w.style.position = 'fixed';
+                        w.style.top = '24px';
+                        w.style.right = '24px';
+                        w.style.zIndex = '99999';
+                        document.body.appendChild(w);
+                    }
+                    const t = document.createElement('div');
+                    t.style.background = '#fff';
+                    t.style.padding = '14px 24px';
+                    t.style.borderRadius = '12px';
+                    t.style.boxShadow = '0 10px 40px rgba(0, 0, 0, 0.12)';
+                    t.style.borderLeft = type === 'ok' ? '4px solid #10b981' : '4px solid #ef4444';
+                    t.style.fontWeight = '600';
+                    t.style.display = 'flex';
+                    t.style.alignItems = 'center';
+                    t.style.gap = '10px';
+                    t.style.marginBottom = '8px';
+                    t.innerHTML = `<i class="bi ${type==='ok'?'bi-check-circle-fill text-success':'bi-exclamation-triangle-fill text-danger'}"></i> ${msg}`;
+                    w.appendChild(t);
+                    setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 300); }, 3000);
+                }
+            }
+
+            window.openEditorCategorySelector = function() {
+                if (typeof openCategoryModal === 'function') {
+                    openCategoryModal('editor-q-category');
+                } else if (typeof openCategoryExplorer === 'function') {
+                    openCategoryExplorer('editor-q-category', 'private');
+                } else {
+                    console.error('Category Explorer scripts not found!');
+                    _safeToast('Lỗi: Không tìm thấy trình quản lý danh mục.', 'error');
+                }
+            };
+
+            function adaptEditorAnswerUI() {
+                const type = document.getElementById('editor-q-type').value;
+                const wrapper = document.getElementById('editor-answers-wrapper');
+                const btnAdd = document.getElementById('btn-add-editor-ans');
+
+                btnAdd.style.display = 'block';
+
+                document.querySelectorAll('.editor-ans-row').forEach(row => {
+                    const toggle = row.querySelector('.editor-ans-toggle');
+                    if (toggle) {
+                        toggle.type = (type === 'MULTIPLE_CHOICE') ? 'checkbox' : 'radio';
+                        toggle.style.display = (type === 'FILL_IN_BLANK') ? 'none' : 'block';
+                        if (type === 'FILL_IN_BLANK') toggle.checked = true;
+                    }
+                });
+                syncEditorAnsStyles();
+            }
+
+            function addEditorAnswerRow(text = '', isCorrect = false) {
+                const wrapper = document.getElementById('editor-answers-wrapper');
+                const type = document.getElementById('editor-q-type').value;
+                const row = document.createElement('div');
+                const toggleType = (type === 'MULTIPLE_CHOICE') ? 'checkbox' : 'radio';
+                const toggleDisplay = (type === 'FILL_IN_BLANK') ? 'none' : 'block';
+                const finalCorrect = (type === 'FILL_IN_BLANK') ? true : isCorrect;
+
+                row.className = `d-flex align-items-center gap-3 p-2 px-3 rounded-4 border editor-ans-row transition-all ${finalCorrect ? 'correct' : ''}`;
+                row.style.background = finalCorrect ? '#f0fdf4' : '#f8fafc';
+                row.style.borderColor = finalCorrect ? '#10b981' : '#e2e8f0';
+                row.style.minHeight = '52px';
+
+                row.innerHTML = `
+                    <div class="d-flex align-items-center justify-content-center" style="width: 24px; height: 24px;">
+                        <input class="editor-ans-toggle" type="${toggleType}" name="editorCorrectAns" 
+                            ${finalCorrect ? 'checked' : ''} onchange="syncEditorAnsStyles()"
+                            style="width: 20px; height: 20px; cursor: pointer; accent-color: #4f46e5; display: ${toggleDisplay}">
+                    </div>
+                    <input type="text" class="form-control border-0 bg-transparent fw-semibold editor-ans-text" 
+                        value="${text}" placeholder="${type === 'FILL_IN_BLANK' ? 'Nhập đáp án đúng...' : 'Nhập nội dung đáp án...'}" required
+                        style="font-size: 0.95rem; padding: 0; box-shadow: none;">
+                    <button type="button" class="btn btn-sm text-danger border-0 p-0 ms-auto" onclick="this.closest('.editor-ans-row').remove(); syncEditorAnsStyles()" style="width: 30px;">
+                        <i class="bi bi-x-circle-fill fs-5"></i>
+                    </button>
+                `;
+                wrapper.appendChild(row);
+                if (!text) row.querySelector('.editor-ans-text').focus();
+            }
+
+            function syncEditorAnsStyles() {
+                const type = document.getElementById('editor-q-type').value;
+                document.querySelectorAll('.editor-ans-row').forEach(row => {
+                    const toggle = row.querySelector('.editor-ans-toggle');
+                    const isChecked = (type === 'FILL_IN_BLANK') || (toggle && toggle.checked);
+                    row.classList.toggle('correct', isChecked);
+                    row.style.background = isChecked ? '#f0fdf4' : '#f8fafc';
+                    row.style.borderColor = isChecked ? '#10b981' : '#e2e8f0';
+                });
+            }
+
+            async function saveQuestionFromEditor() {
+                const id = document.getElementById('editor-q-id').value;
+                const text = document.getElementById('editor-q-text').value.trim();
+                const type = document.getElementById('editor-q-type').value;
+                const level = document.getElementById('editor-q-level').value;
+                const catId = document.getElementById('editor-q-category').value;
+                const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+
+                if (!text) { _safeToast('Vui lòng nhập nội dung câu hỏi!', 'error'); return; }
+
+                const answers = [];
+                document.querySelectorAll('.editor-ans-row').forEach(row => {
+                    const aText = row.querySelector('.editor-ans-text').value.trim();
+                    const toggle = row.querySelector('.editor-ans-toggle');
+                    const isCorrect = (type === 'FILL_IN_BLANK') || (toggle && toggle.checked);
+                    if (aText) answers.push({ text: aText, isCorrect });
+                });
+
+                if (answers.length === 0) { _safeToast('Vui lòng thêm ít nhất một đáp án!', 'error'); return; }
+                if (type !== 'FILL_IN_BLANK' && !answers.some(a => a.isCorrect)) { _safeToast('Vui lòng chọn ít nhất một đáp án đúng!', 'error'); return; }
+
+                const payload = { text, type, level, categoryId: (catId && !isNaN(parseInt(catId))) ? parseInt(catId) : null, answers };
+                
+                try {
+                    const url = id ? `${EDITOR_BASE_API}/${id}` : EDITOR_BASE_API;
+                    const method = id ? 'PUT' : 'POST';
+                    const res = await fetch(url, {
+                        method,
+                        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (res.ok) {
+                        const saved = await res.json();
+                        bootstrap.Modal.getInstance(document.getElementById('questionEditorModal')).hide();
+                        
+                        // Callback to parent if exists
+                        if (typeof fetchQuestions === 'function') fetchQuestions(); // Shared with question-bank-ui
+                        if (typeof onQuestionSaved === 'function') onQuestionSaved(saved, !!id, id);
+                        _safeToast(id ? 'Cập nhật thành công!' : 'Đã tạo câu hỏi mới!', 'ok');
+                    } else {
+                        const err = await res.json();
+                        _safeToast(err.message || 'Lỗi khi lưu câu hỏi', 'error');
+                    }
+                } catch (e) {
+                    console.error(e);
+                    _safeToast('Lỗi kết nối máy chủ!', 'error');
+                }
+            }
+
+            window.openQuestionEditor = function(q = null) {
+                const modal = document.getElementById('questionEditorModal');
+                document.getElementById('editor-q-id').value = q ? q.id : '';
+                document.getElementById('editor-q-text').value = q ? q.text : '';
+                document.getElementById('editor-q-type').value = q ? q.type : 'SINGLE_CHOICE';
+                document.getElementById('editor-q-level').value = q ? q.level : 'MEDIUM';
+                document.getElementById('editor-q-category').value = q ? (q.categoryId !== undefined && q.categoryId !== null ? q.categoryId : (q.category ? q.category.id : '')) : '';
+                document.getElementById('editor-q-category-display').value = q ? (q.categoryName || (q.category ? q.category.name : '')) : '';
+
+                // If opened from Quiz Editor, auto-assign quiz category and hide selector
+                const quizCatEl = document.getElementById('quiz-category');
+                const catWrapper = document.getElementById('editor-q-cat-wrapper');
+                if (quizCatEl && !q) {
+                    document.getElementById('editor-q-category').value = quizCatEl.value;
+                    document.getElementById('editor-q-category-display').value = document.getElementById('quiz-category-display').value;
+                    if (catWrapper) catWrapper.style.display = 'none';
+                } else {
+                    if (catWrapper) catWrapper.style.display = 'block';
+                }
+                
+                document.getElementById('questionEditorTitle').innerHTML = q ? '<i class="bi bi-pencil-square me-2"></i>Chỉnh sửa câu hỏi' : '<i class="bi bi-patch-plus-fill me-2"></i>Soạn câu hỏi mới';
+                
+                const wrapper = document.getElementById('editor-answers-wrapper');
+                wrapper.innerHTML = '';
+                
+                if (q && q.answers && q.answers.length > 0) {
+                    q.answers.forEach(a => addEditorAnswerRow(a.text, a.isCorrect));
+                } else {
+                    // Default rows
+                    if (document.getElementById('editor-q-type').value === 'FILL_IN_BLANK') {
+                        addEditorAnswerRow('', true);
+                    } else {
+                        addEditorAnswerRow('', true);
+                        addEditorAnswerRow('', false);
+                        addEditorAnswerRow('', false);
+                        addEditorAnswerRow('', false);
+                    }
+                }
+                
+                adaptEditorAnswerUI();
+                bootstrap.Modal.getOrCreateInstance(modal).show();
+            };
+        </script>
+    </th:block>
+</body>
+</html>

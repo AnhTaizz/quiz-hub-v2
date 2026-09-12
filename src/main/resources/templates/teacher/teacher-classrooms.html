@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuizHub | Quản lý Lớp học</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Nunito+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/dashboard-layout.css}">
+
+    <link rel="stylesheet" th:href="@{/css/teacher/teacher-classrooms.css}">
+</head>
+<body>
+
+
+    <!-- Sidebar Fragment -->
+    <aside th:replace="~{layout/sidebar :: teacher-sidebar('classrooms')}"></aside>
+
+    <!-- Header Fragment -->
+    <header th:replace="~{layout/header :: teacher-header}"></header>
+
+    <main id="main-content">
+        <div class="page-header">
+            <div>
+                <h1 class="page-title">Kho Lớp Học</h1>
+                <p class="page-sub">Quản lý danh sách lớp học và phê duyệt thành viên mới của bạn.</p>
+            </div>
+            <button class="btn-create" data-bs-toggle="modal" data-bs-target="#createClassModal">
+                <i class="bi bi-plus-lg"></i> Tạo lớp học mới
+            </button>
+        </div>
+
+        <div class="class-grid">
+            <div class="class-card" th:each="classroom : ${classrooms}">
+                <div class="class-banner">
+                    <img th:if="${classroom.imageUrl}" th:src="${classroom.imageUrl}" alt="Banner">
+                    <img th:unless="${classroom.imageUrl}" src="https://images.unsplash.com/photo-1501504905252-473c47e087f8?auto=format&fit=crop&w=400&q=80" alt="Default Banner">
+                    <div class="class-status-badge">Đang hoạt động</div>
+                </div>
+                <div class="class-body">
+                    <span class="class-code" th:text="${classroom.code}">CODE123</span>
+                    <a th:href="@{'/teacher/classrooms/' + ${classroom.id}}" class="class-name stretched-link" th:text="${classroom.name}">Lớp học</a>
+                    <p class="class-desc" th:text="${classroom.description}">Mô tả lớp học...</p>
+                    <div class="class-footer">
+                        <span class="text-muted small" style="font-size: 13px; font-weight: 500; position: relative; z-index: 2;">
+                            <i class="bi bi-people-fill me-1 text-primary"></i> 
+                            <span th:text="${memberCounts[classroom.id] != null ? memberCounts[classroom.id] : 0}">0</span> học viên
+                        </span>
+                        <a th:href="@{'/teacher/classrooms/' + ${classroom.id} + '/members'}" class="btn-manage">
+                            Chi tiết <i class="bi bi-chevron-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal và Script giữ nguyên như cũ -->
+    <div class="modal fade" id="createClassModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="border-radius: 20px;">
+                <div class="modal-header border-0 pb-0 pt-4 px-4">
+                    <h5 class="modal-title fw-bold">Tạo lớp học mới</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <form th:action="@{/teacher/classrooms}" method="POST" onsubmit="return validateClassroomForm(event)">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Tên lớp học</label>
+                            <input type="text" name="name" class="form-control rounded-3" placeholder="VD: Lập trình Java" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Mô tả</label>
+                            <textarea name="description" class="form-control rounded-3" rows="3"></textarea>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Ảnh bìa lớp học</label>
+                            <div class="d-flex gap-2 mb-2">
+                                <button type="button" id="tabUpload" onclick="switchImageTab('upload')"
+                                    class="btn btn-sm btn-primary" style="border-radius:8px; font-size:13px;">
+                                    <i class="bi bi-cloud-upload me-1"></i>Tải ảnh lên
+                                </button>
+                                <button type="button" id="tabUrl" onclick="switchImageTab('url')"
+                                    class="btn btn-sm btn-outline-secondary" style="border-radius:8px; font-size:13px;">
+                                    <i class="bi bi-link-45deg me-1"></i>Nhập URL
+                                </button>
+                            </div>
+                            <div id="panelUpload">
+                                <div class="input-group">
+                                    <label class="btn btn-light border-end-0 mb-0 d-flex align-items-center" for="classroomImageFileInput"
+                                        style="border-radius:12px 0 0 12px; border-color:#e2e8f0; background:#f8fafc; cursor:pointer;">
+                                        <i class="bi bi-cloud-upload text-primary me-1"></i>Chọn file
+                                    </label>
+                                    <input type="file" id="classroomImageFileInput" accept="image/*" style="display:none" onchange="handleClassroomImageUpload(this)">
+                                    <input type="text" id="classroomImageDisplay" class="form-control rounded-end-3"
+                                        placeholder="Chưa chọn file..." readonly style="background:#fff; cursor:not-allowed;">
+                                </div>
+                            </div>
+                            <div id="panelUrl" style="display:none;">
+                                <input type="text" id="classroomImageUrlInput" class="form-control rounded-3"
+                                    placeholder="https://example.com/banner.jpg"
+                                    oninput="syncImageUrl(this.value)">
+                                <div id="urlPreviewBox" class="mt-2" style="display:none;">
+                                    <img id="urlPreview" src="" alt="Preview"
+                                        style="max-height:80px; border-radius:8px; object-fit:cover; border:1px solid #e2e8f0;">
+                                </div>
+                            </div>
+                            <input type="hidden" id="classroomImageUrl" name="imageUrl">
+                        </div>
+                        <div class="form-check form-switch mb-4">
+                            <input class="form-check-input" type="checkbox" id="requireApproval" name="requireApproval" checked>
+                            <label class="form-check-label fw-bold" for="requireApproval">Yêu cầu phê duyệt tham gia</label>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100 py-2 fw-bold" style="background: var(--blue); border: none; border-radius: 10px;">Tạo lớp</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Toast flash message (successMessage / errorMessage từ RedirectAttributes) -->
+    <th:block th:replace="~{layout/header :: toast-dependencies}"></th:block>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        (function() {
+            const sm = /*[[${successMessage}]]*/ null;
+            const em = /*[[${errorMessage}]]*/ null;
+            if (sm || em) {
+                document.addEventListener('DOMContentLoaded', function() {
+                    if (sm) toast.success(sm);
+                    if (em) toast.error(em);
+                });
+            }
+        })();
+        /*]]>*/
+    </script>
+
+    <div th:replace="~{layout/header :: changePasswordModal}"></div>
+    <script th:replace="~{layout/header :: change-password-script}"></script>
+
+    <script>
+        function switchImageTab(tab) {
+            const isUpload = tab === 'upload';
+            document.getElementById('panelUpload').style.display = isUpload ? '' : 'none';
+            document.getElementById('panelUrl').style.display   = isUpload ? 'none' : '';
+            document.getElementById('tabUpload').className = 'btn btn-sm ' + (isUpload ? 'btn-primary' : 'btn-outline-secondary');
+            document.getElementById('tabUrl').className    = 'btn btn-sm ' + (!isUpload ? 'btn-primary' : 'btn-outline-secondary');
+            document.getElementById('classroomImageUrl').value = '';
+            if (isUpload) { document.getElementById('classroomImageDisplay').value = ''; }
+            else { document.getElementById('classroomImageUrlInput').value = ''; document.getElementById('urlPreviewBox').style.display = 'none'; }
+        }
+
+        function syncImageUrl(val) {
+            // Chỉ set hidden field khi ảnh load thành công
+            document.getElementById('classroomImageUrl').value = '';
+            const box = document.getElementById('urlPreviewBox');
+            const img = document.getElementById('urlPreview');
+            const urlInput = document.getElementById('classroomImageUrlInput');
+            urlInput.classList.remove('is-valid', 'is-invalid');
+            if (val.trim()) {
+                img.src = val.trim();
+                box.style.display = '';
+                img.onload = () => {
+                    document.getElementById('classroomImageUrl').value = val.trim();
+                    urlInput.classList.remove('is-invalid');
+                    urlInput.classList.add('is-valid');
+                    box.style.display = '';
+                };
+                img.onerror = () => {
+                    box.style.display = 'none';
+                    urlInput.classList.remove('is-valid');
+                    urlInput.classList.add('is-invalid');
+                };
+            } else { box.style.display = 'none'; }
+        }
+
+        function validateClassroomForm(e) {
+            const urlTabActive = document.getElementById('panelUrl').style.display !== 'none';
+            if (urlTabActive) {
+                const urlInput = document.getElementById('classroomImageUrlInput');
+                const hiddenUrl = document.getElementById('classroomImageUrl');
+                if (urlInput.value.trim()) {
+                    hiddenUrl.value = urlInput.value.trim(); // Bỏ qua validate, lấy luôn link user nhập
+                }
+            }
+            return true;
+        }
+
+        async function handleClassroomImageUpload(inputEl) {
+            const file = inputEl.files[0];
+            if (!file) return;
+            const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+            if (!validTypes.includes(file.type)) { alert('Định dạng ảnh không hợp lệ.'); return; }
+            if (file.size > 5 * 1024 * 1024) { alert('Dung lượng ảnh vượt quá 5MB.'); return; }
+            const displayEl   = document.getElementById('classroomImageDisplay');
+            const hiddenUrlEl = document.getElementById('classroomImageUrl');
+            displayEl.value = 'Đang tải lên...';
+            const formData = new FormData();
+            formData.append('file', file);
+            try {
+                const response = await fetch('/api/users/upload-avatar', { method: 'POST', body: formData });
+                if (!response.ok) throw new Error('Lỗi từ server');
+                const data = await response.json();
+                if (data && data.url) { hiddenUrlEl.value = data.url; displayEl.value = file.name; }
+                else { displayEl.value = 'Tải ảnh thất bại'; }
+            } catch (error) { console.error(error); displayEl.value = 'Lỗi kết nối'; }
+        }
+    </script>
+
+</body>
+</html>

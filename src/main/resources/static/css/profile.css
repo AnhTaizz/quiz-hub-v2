@@ -1,0 +1,390 @@
+:root {
+    --blue:       #2563eb;
+    --green:      #28a745;
+    --red:        #dc3545;
+    --text-dark:  #1a1a2e;
+    --text-body:  #4a5568;
+    --text-muted: #718096;
+    --bg-body:    #eef2f7;
+    --border:     #e2e8f0;
+    --shadow:     0 2px 20px rgba(0,0,0,0.07);
+    --radius:     20px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    background: var(--bg-body);
+    font-family: 'Inter', sans-serif;
+    color: var(--text-body);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+h1,h2,h3,h4,h5,h6 {
+    font-family: 'Nunito Sans', sans-serif;
+    font-weight: 800;
+    color: var(--text-dark);
+}
+
+a { text-decoration: none; }
+
+/* ─── TOP BAR ─── */
+.topbar {
+    height: 70px;
+    background: #fff;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 32px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    box-shadow: var(--shadow);
+}
+
+.topbar-brand {
+    font-family: 'Nunito Sans', sans-serif;
+    font-size: 22px;
+    font-weight: 900;
+    color: var(--text-dark);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    letter-spacing: -0.5px;
+}
+
+.topbar-brand i {
+    font-size: 22px;
+    background: linear-gradient(135deg, #60a5fa, #2563eb);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    transition: all 0.3s;
+}
+
+/* Logo gradient theo role */
+.brand-icon-admin   { background: linear-gradient(135deg, #a855f7, #7c3aed) !important; -webkit-background-clip: text !important; -webkit-text-fill-color: transparent !important; }
+.brand-icon-teacher { background: linear-gradient(135deg, #4ade80, #16a34a) !important; -webkit-background-clip: text !important; -webkit-text-fill-color: transparent !important; }
+.brand-icon-student { background: linear-gradient(135deg, #4ade80, #16a34a) !important; -webkit-background-clip: text !important; -webkit-text-fill-color: transparent !important; }
+
+.topbar-brand .hub {
+    background: linear-gradient(90deg, #3b82f6, #7c3aed);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.hub-admin   { background: linear-gradient(90deg, #3b82f6, #7c3aed) !important; -webkit-background-clip: text !important; -webkit-text-fill-color: transparent !important; }
+.hub-teacher { background: linear-gradient(90deg, #10b981, #2563eb) !important; -webkit-background-clip: text !important; -webkit-text-fill-color: transparent !important; }
+.hub-student { background: linear-gradient(90deg, #10b981, #2563eb) !important; -webkit-background-clip: text !important; -webkit-text-fill-color: transparent !important; }
+
+.btn-back {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 18px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: #fff;
+    color: var(--text-body);
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-back:hover {
+    background: #f1f5f9;
+    border-color: var(--blue);
+    color: var(--blue);
+}
+
+/* ─── PAGE CONTENT ─── */
+.page-content {
+    flex: 1;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 40px 24px;
+    gap: 28px;
+    flex-wrap: wrap;
+}
+
+/* ─── AVATAR CARD ─── */
+.avatar-card {
+    background: #fff;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+    padding: 40px 28px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 280px;
+    flex-shrink: 0;
+}
+
+.avatar-wrap {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #2563eb, #7c3aed);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 36px;
+    font-weight: 800;
+    font-family: 'Nunito Sans', sans-serif;
+    overflow: hidden;
+    border: 4px solid #fff;
+    box-shadow: 0 8px 24px rgba(37,99,235,0.25);
+    margin-bottom: 18px;
+}
+
+.avatar-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.avatar-name {
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--text-dark);
+    margin-bottom: 6px;
+    text-align: center;
+    font-family: 'Nunito Sans', sans-serif;
+}
+
+.avatar-email {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+    text-align: center;
+}
+
+.role-badge {
+    padding: 6px 16px;
+    border-radius: 50px;
+    font-size: 12px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #fff;
+}
+
+.role-admin   { background: linear-gradient(135deg, #7c3aed, #5b21b6); }
+.role-teacher { background: linear-gradient(135deg, #2563eb, #1d4ed8); }
+.role-student { background: linear-gradient(135deg, #64748b, #475569); }
+
+.avatar-stat {
+    display: none;
+}
+
+.avatar-stat .stat-val {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-dark);
+}
+
+.avatar-stat .stat-label {
+    font-size: 11px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 700;
+}
+
+/* ─── FORM CARD ─── */
+.form-card {
+    background: #fff;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+    padding: 36px 40px;
+    flex: 1;
+    min-width: 320px;
+    max-width: 580px;
+}
+
+.form-card-header {
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+}
+
+.form-card-header h4 {
+    font-size: 22px;
+    margin-bottom: 4px;
+}
+
+.form-card-header p {
+    color: var(--text-muted);
+    font-size: 14px;
+    margin: 0;
+}
+
+/* ─── FORM FIELDS ─── */
+.field-group {
+    margin-bottom: 22px;
+}
+
+.field-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.field-group label .badge-readonly {
+    background: #f1f5f9;
+    color: var(--text-muted);
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: none;
+    letter-spacing: 0;
+    margin-left: 6px;
+}
+
+.field-wrap {
+    position: relative;
+}
+
+.field-wrap i {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    font-size: 16px;
+    pointer-events: none;
+}
+
+.field-wrap input {
+    width: 100%;
+    padding: 12px 16px 12px 42px;
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    font-size: 15px;
+    font-family: 'Inter', sans-serif;
+    color: var(--text-dark);
+    background: #f8fafc;
+    transition: all 0.25s;
+    outline: none;
+}
+
+.field-wrap input:focus {
+    border-color: var(--blue);
+    background: #fff;
+    box-shadow: 0 0 0 4px rgba(37,99,235,0.08);
+}
+
+.field-wrap input::placeholder {
+    color: #b0bec5;
+}
+
+.field-wrap input:disabled {
+    color: var(--text-muted);
+    cursor: not-allowed;
+    background: #f1f5f9;
+}
+
+/* ─── AVATAR UPLOAD AREA ─── */
+.avatar-upload-row {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.btn-upload-file {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 9px 16px;
+    background: #f1f5f9;
+    border: 1.5px dashed var(--border);
+    border-radius: 10px;
+    color: var(--text-body);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+.btn-upload-file:hover {
+    background: #e0f2fe;
+    border-color: var(--blue);
+    color: var(--blue);
+}
+
+.upload-hint {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 4px;
+}
+
+#upload-progress {
+    display: none;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--blue);
+    font-weight: 600;
+    margin-top: 6px;
+}
+
+/* ─── SUBMIT BUTTON ─── */
+.btn-submit {
+    width: 100%;
+    padding: 14px;
+    background: var(--blue);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 700;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn-submit:hover { background: #1d4ed8; transform: translateY(-1px); box-shadow: 0 6px 18px rgba(37,99,235,0.3); }
+.btn-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+/* ─── PASSWORD SECTION ─── */
+.section-divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 28px 0;
+}
+
+.section-divider span {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    white-space: nowrap;
+}
+
+.section-divider::before,
+.section-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+}

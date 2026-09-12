@@ -1,0 +1,47 @@
+.folder-toggle {
+    cursor: pointer;
+    transition: transform 0.2s;
+    font-size: 0.85rem;
+}
+
+.folder-toggle.open {
+    transform: rotate(90deg);
+}
+
+.category-node-row {
+    transition: all 0.2s;
+    border-radius: 8px;
+    padding: 4px 8px;
+}
+
+.category-node-row:hover {
+    background: #f1f5f9;
+    cursor: pointer;
+}
+
+.category-selectable-name {
+    cursor: pointer;
+    user-select: none;
+    word-break: break-all;
+    white-space: normal;
+    display: inline-block;
+    line-height: 1.4;
+}
+
+.children-node {
+    border-left: 1px dashed #cbd5e1;
+    margin-left: 10px;
+}
+
+/* Speed up all modals for a snappier feel */
+.modal.fade .modal-dialog {
+    transition: transform .15s ease-out !important;
+}
+
+.modal.show .modal-dialog {
+    transform: none !important;
+}
+
+.modal-backdrop.fade {
+    transition: opacity .1s linear !important;
+}

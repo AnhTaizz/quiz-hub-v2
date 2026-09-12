@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Đăng ký | QuizHub</title>
+    <meta name="description" content="Tạo tài khoản QuizHub miễn phí – dành cho học sinh và giáo viên.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Nunito+Sans:wght@400;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Shared stylesheet (auth-card, form-control-auth, btn-auth, auth-footer, toast-item…) -->
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/auth.css}">
+    <link rel="stylesheet" th:href="@{/css/toast.css}">
+
+</head>
+
+<body id="top">
+
+    <!-- ── HEADER (reuse từ index/login) ─────────────────────── -->
+    <header id="header" class="fixed-top">
+        <div class="container d-flex align-items-center justify-content-between">
+            <h1 class="logo mb-0">
+                <a th:href="@{/}">
+                    <i class="bi bi-layers-fill logo-icon"></i>
+                    Quiz<span class="hub">Hub</span>
+                </a>
+            </h1>
+            <nav id="navbar" class="navbar">
+                <ul id="nav-menu">
+                    <li><a class="nav-link scrollto" th:href="@{/#about}">Về chúng tôi</a></li>
+                    <li><a class="nav-link scrollto" th:href="@{/#features}">Tính năng</a></li>
+                    <li class="ms-lg-3"><a th:href="@{/login}" class="nav-btn-login">Đăng nhập</a></li>
+                    <li><a th:href="@{/register}" class="nav-btn-signup">Dùng miễn phí</a></li>
+                </ul>
+                <i class="bi bi-list mobile-nav-toggle" id="mobile-nav-toggle"></i>
+            </nav>
+        </div>
+    </header>
+
+    <!-- ── BACKGROUND (dùng lại hero-section từ style.css) ──── -->
+    <section class="hero-section" style="padding: 0; min-height: 100vh;">
+        <div class="hero-blob hero-blob-1"></div>
+        <div class="hero-blob hero-blob-2"></div>
+
+        <div class="container position-relative auth-wrapper">
+            <div class="auth-card">
+
+                <!-- Step indicator -->
+                <div class="step-dots">
+                    <div class="step-dot active" id="dot-1"></div>
+                    <div class="step-dot" id="dot-2"></div>
+                </div>
+
+                <!-- Toast alert -->
+                
+
+                <!-- ══ STEP 1: Chọn vai trò ══ -->
+                <div class="reg-step active" id="step-1">
+                    <div class="auth-header text-center">
+                        <h2>Bạn là ai?</h2>
+                        <p>Chọn vai trò để có trải nghiệm phù hợp nhất</p>
+                    </div>
+
+                    <div class="role-cards">
+                        <div class="role-card student-card" id="card-student" onclick="selectRole('STUDENT')">
+                            <div class="check-badge"><i class="bi bi-check"></i></div>
+                            <div class="role-icon"><i class="bi bi-mortarboard-fill"></i></div>
+                            <div class="role-name">Học Sinh</div>
+                            <div class="role-desc">Tham gia bài kiểm tra &amp; theo dõi tiến độ</div>
+                        </div>
+                        <div class="role-card teacher-card" id="card-teacher" onclick="selectRole('TEACHER')">
+                            <div class="check-badge"><i class="bi bi-check"></i></div>
+                            <div class="role-icon"><i class="bi bi-person-video3"></i></div>
+                            <div class="role-name">Giáo Viên</div>
+                            <div class="role-desc">Tạo đề thi &amp; quản lý lớp học</div>
+                        </div>
+                    </div>
+
+                    <button id="btn-next" onclick="goStep2()">
+                        Tiếp tục <i class="bi bi-arrow-right ms-1"></i>
+                    </button>
+
+                    <div class="auth-footer">
+                        Đã có tài khoản? <a th:href="@{/login}">Đăng nhập</a>
+                    </div>
+                </div>
+
+                <!-- ══ STEP 2: Điền thông tin ══ -->
+                <div class="reg-step" id="step-2">
+                    <div class="text-center">
+                        <span class="role-back-badge student" id="role-badge" onclick="goStep1()">
+                            <i class="bi bi-arrow-left"></i>
+                            <span id="badge-text">👨‍🎓 Học Sinh</span>
+                        </span>
+                    </div>
+
+                    <div class="auth-header text-center">
+                        <h2>Tạo tài khoản</h2>
+                        <p>Điền thông tin để bắt đầu hành trình của bạn</p>
+                    </div>
+
+                    <form id="register-form" onsubmit="handleRegister(event)" novalidate>
+                        <div class="form-group">
+                            <label for="fullName">Họ và tên</label>
+                            <div class="auth-input-wrapper">
+                                <i class="bi bi-person field-icon"></i>
+                                <input type="text" id="fullName" class="form-control-auth" placeholder="Nguyễn Văn A"
+                                    autocomplete="name" required>
+                            </div>
+                            <div class="invalid-feedback" id="error-fullName"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <div class="auth-input-wrapper">
+                                <i class="bi bi-envelope field-icon"></i>
+                                <input type="email" id="email" class="form-control-auth" placeholder="email@example.com"
+                                    autocomplete="email" required>
+                            </div>
+                            <div class="invalid-feedback" id="error-email"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="password">Mật khẩu</label>
+                            <div class="auth-input-wrapper">
+                                <i class="bi bi-lock field-icon"></i>
+                                <input type="password" id="password" class="form-control-auth"
+                                    placeholder="Tối thiểu 6 ký tự" autocomplete="new-password" required>
+                                <button type="button" class="toggle-pw" onclick="togglePw('password', this)">
+                                    <i class="bi bi-eye-slash"></i>
+                                </button>
+                            </div>
+                            <div class="invalid-feedback" id="error-password"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="confirmPassword">Xác nhận mật khẩu</label>
+                            <div class="auth-input-wrapper">
+                                <i class="bi bi-lock-fill field-icon"></i>
+                                <input type="password" id="confirmPassword" class="form-control-auth"
+                                    placeholder="Nhập lại mật khẩu" autocomplete="new-password" required>
+                                <button type="button" class="toggle-pw" onclick="togglePw('confirmPassword', this)">
+                                    <i class="bi bi-eye-slash"></i>
+                                </button>
+                            </div>
+                            <div class="invalid-feedback" id="error-confirmPassword"></div>
+                        </div>
+
+                        <button type="submit" class="btn-auth" id="btn-submit">
+                            <span class="btn-spinner" id="spinner"></span>
+                            <span id="btn-text">Đăng ký ngay</span>
+                            <i class="bi bi-arrow-right" id="btn-icon"></i>
+                        </button>
+                    </form>
+
+                    <div class="auth-footer">
+                        Đã có tài khoản? <a th:href="@{/login}">Đăng nhập</a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:src="@{/js/toast.js}"></script>
+<script th:src="@{/js/register.js}"></script>
+</body>
+
+</html>

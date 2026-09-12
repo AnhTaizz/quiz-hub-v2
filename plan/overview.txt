@@ -1,0 +1,42 @@
+### 🧑‍💻 DEV A: Module Nền tảng, Lớp học & Giám sát Hệ thống
+*Tập trung vào quản lý con người, tổ chức lớp, xử lý dữ liệu lớn (Excel) và theo dõi vi phạm thi cử.*
+
+*1. Module Xác thực & Quản lý Tài khoản (Auth & User)**
+* **Đăng ký & Kích hoạt:** Đăng ký tài khoản và xử lý luồng gửi mã OTP/Link xác thực qua Email.
+* **Đăng nhập & Hồ sơ:** Đăng nhập an toàn, chức năng quên mật khẩu. Xem và cập nhật thông tin cá nhân.
+* **Quản trị viên (Admin):** Màn hình quản lý toàn bộ User của hệ thống (Khoá/mở tài khoản).
+
+**2. Module Quản lý Tổ chức & Lớp học (Classroom)**
+* **Quản lý Lớp (Giáo viên):** Tạo lớp học (hệ thống tự sinh mã code), quản lý danh sách sinh viên, kích sinh viên khỏi lớp.
+* **Gia nhập Lớp (Học sinh):** Giao diện nhập mã code để xin gia nhập lớp.
+* **Import bằng Excel:** Tính năng tải file Excel danh sách sinh viên lên để tự động thêm tất cả vào lớp (Tính năng ghi điểm CV).
+
+**3. Module Giám sát Gian lận & Báo cáo (Điểm nhấn mới của Dev A)**
+* **Cấu hình Quy tắc Gian lận:** Quản lý các loại vi phạm (VD: `TAB_SWITCH` - Chuyển tab, `ESC_FULLSCREEN` - Thoát toàn màn hình).
+* **Bắt vi phạm Frontend:** Viết script Javascript (nhúng vào phòng thi) để lắng nghe sự kiện `visibilitychange` hoặc mất focus trình duyệt. Bắn tín hiệu về API để lưu lịch sử vi phạm.
+* **Bảng điểm & Cảnh báo:** Màn hình cho giáo viên xem điểm của cả lớp. Những sinh viên có lịch sử gian lận sẽ bị "bôi đỏ" hoặc gắn cờ cảnh báo chi tiết để giáo viên cân nhắc hủy kết quả.
+* **Export Excel:** Xuất bảng điểm của lớp ra file `.xlsx` tải về máy.
+
+---
+
+### 🥷 DEV B: Module Nội dung, Logic Thi cử & Chấm điểm
+*Tập trung hoàn toàn vào nội dung học tập: từ sắp xếp danh mục, tạo kho câu hỏi đến thuật toán đếm ngược và chấm điểm tự động.*
+
+**1. Module Quản lý Danh mục & Ngân hàng Câu hỏi (Content Management)**
+* **Quản lý Danh mục (Mới chuyển sang):** Tạo, sửa, xóa các danh mục môn học (có thể chia cây cha - con) để gán cho câu hỏi.
+* **Tạo Câu hỏi:** Giao diện cho phép nhập câu hỏi, thêm/bớt đáp án linh hoạt (Trắc nghiệm 1 đáp án, nhiều đáp án).
+* **Kho Câu hỏi:** Màn hình danh sách câu hỏi của giáo viên, có tính năng lọc theo Danh mục.
+
+**2. Module Quản lý Đề thi & Phân công (Quiz Builder)**
+* **Ghép Đề thi:** Chọn các câu hỏi từ kho để đóng gói thành một Đề thi hoàn chỉnh.
+* **Giao bài cho Lớp:** Thiết lập ngày mở/đóng đề, giới hạn thời gian (VD: 45 phút), và chọn Lớp học (do Dev A tạo) để giao bài.
+
+**3. Module Phòng thi trực tuyến (The Exam Engine - Cốt lõi)**
+* **Giao diện làm bài:** Màn hình hiện câu hỏi cho học sinh, có đồng hồ đếm ngược Javascript ở góc. (Phòng thi này sẽ được nhúng script bắt gian lận do Dev A viết).
+* **Lưu nháp thời gian thực (Auto-save):** Lắng nghe sự kiện click đáp án để lưu ngầm xuống Database. F5 tải lại trang không bị mất bài.
+* **Thu bài tự động:** Đồng hồ về `00:00` hệ thống tự động khóa chọn đáp án và gọi lệnh nộp bài.
+
+**4. Module Chấm điểm & Trả kết quả**
+* **Chấm điểm tức thì:** Hệ thống so sánh đáp án học sinh với đáp án gốc, tính tổng câu đúng/sai và ra điểm cuối cùng.
+* **Màn hình Kết quả:** Hiện thông báo hoàn thành ngay khi nộp bài.
+* **Xem lại bài giải:** Cho phép học sinh xem lại bài vừa làm để biết câu nào sai và đáp án đúng là gì.

@@ -1,0 +1,149 @@
+.violation-card {
+    background: #fff;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: var(--shadow-card);
+    border: 1px solid var(--border);
+    margin-bottom: 30px;
+}
+
+.log-table {
+    width: 100%;
+}
+
+.log-table th {
+    background: #f8fafc;
+    padding: 15px;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #64748b;
+    border-bottom: 2px solid #f1f5f9;
+}
+
+.log-table td {
+    padding: 20px 15px;
+    border-bottom: 1px solid #f1f5f9;
+    vertical-align: middle;
+}
+
+.student-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.student-info img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.v-type-badge {
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 0.8rem;
+}
+
+.v-TAB_SWITCH {
+    background: #fff7ed;
+    color: #c2410c;
+    border: 1px solid #ffedd5;
+}
+
+.v-WINDOW_BLUR {
+    background: #fef2f2;
+    color: #b91c1c;
+    border: 1px solid #fee2e2;
+}
+
+.v-TAB_CLOSE {
+    background: #450a0a;
+    color: #fecaca;
+}
+
+.v-MANUAL_EXIT {
+    background: #f1f5f9;
+    color: #475569;
+    border: 1px solid #e2e8f0;
+}
+
+.severity-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 6px;
+}
+
+.sev-1 {
+    background: #f59e0b;
+}
+
+.sev-2 {
+    background: #ef4444;
+}
+
+.sev-3 {
+    background: #7f1d1d;
+}
+
+/* Stats Cards */
+.stat-card {
+    background: #fff;
+    border-radius: 20px;
+    padding: 20px;
+    border: 1px solid var(--border);
+    transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-card);
+}
+
+.stat-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+}
+
+.bg-soft-primary {
+    background: #eff6ff;
+    color: #2563eb;
+}
+
+.bg-soft-danger {
+    background: #fef2f2;
+    color: #dc2626;
+}
+
+.bg-soft-warning {
+    background: #fffbeb;
+    color: #d97706;
+}
+
+.bg-soft-success {
+    background: #f0fdf4;
+    color: #16a34a;
+}
+
+.high-risk-row {
+    background-color: #fff1f2 !important;
+}
+
+.badge-count {
+    background: #dc2626;
+    color: #fff;
+    font-size: 0.7rem;
+    padding: 2px 6px;
+    border-radius: 10px;
+    vertical-align: top;
+    margin-left: -10px;
+}

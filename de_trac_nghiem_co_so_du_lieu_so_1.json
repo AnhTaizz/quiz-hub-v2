@@ -1,0 +1,5248 @@
+[
+    {
+        "question": "Cho lược đồ Cơ Sở Dữ liệu sau: NhanVien ( MaNV, HoNV, TenNV, DiaChi, ThanhPho ) KhachHang( MaKH, TenKH, DiaChi, ThanhPho, SoDu, GioiHanTinDung) HoaDon( MaHD, NgayLapHoaDon, MaKH, MaNV) ChiTietHoaDon (MaHD, MaSP, SoLuong,GiaBan ) SanPham(MaSP,MoTa, NhomHang, KhoHang,GiaGoc) Dựa vào lược đồ Cơ Sở Dữ liệu trên, Tạo câu truy vấn để liệt kê danh sách các sản phẩm có giá từ 50000 đến 100000?",
+        "answers": [
+            {
+                "content": "Select * From SanPham Where GiaGoc>=50000",
+                "is_correct": false
+            },
+            {
+                "content": "Select * From SanPham Where GiaGoc<=100000",
+                "is_correct": false
+            },
+            {
+                "content": "Select * From SanPham Where GiaGoc between 50000 and 100000",
+                "is_correct": true
+            },
+            {
+                "content": "Select * From SanPham Where GiaGoc in(50000,100000)",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Cho lược đồ Cơ sở dữ liệu sau: SINHVIEN(MaSV, HoSV, TenSV, Phai, NgaySinh, DiaChi, DienThoai, MaLop) LOP(MaLop, TenLop, MaKhoa, GVCN) KETQUA(MaSV, MaMH, LanThi, Diem) MONHOC(MaMH, TenMH, SoTinChi) Liệt kê danh sách các sinh viên gồm (MaSV, HoSV, TenSV) có điểm thi môn CSDL cao nhất?",
+        "answers": [
+            {
+                "content": "Select K.MaSV, HoSV, TenSV From SinhVien S, KetQua K Where S.MASV=K.MASV And MaMH='CSDL' And Diem>=ALL (Select Diem From KetQua where MaMH ='CSDL')",
+                "is_correct": false
+            },
+            {
+                "content": "Select K.MaSV, HoSV, TenSV From SinhVien S, ketqua K Where S.MASV=K.MASV And MaMH='CSDL' And Diem= (Select max(Diem)From ketqua where MaMH ='CSDL')",
+                "is_correct": false
+            },
+            {
+                "content": "Select top 1 with ties K.MaSV, HoSV, TenSV From SinhVien S, KetQua K Where S.MASV=K.MASV And MaMH='CSDL' order by diem desc",
+                "is_correct": false
+            },
+            {
+                "content": "Tất cả các phương án trên.",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Cho lược đồ CSDL sau: NhanVien (MaNV, HoNV, TenNV, DiaChi, ThanhPho) KhachHang (MaKH, TenKH, DiaChi, ThanhPho, SoDu, GioiHanTinDung) HoaDon (MaHD, NgayLapHoaDon, MaKH, MaNV) ChiTietHoaDon (MaHD, MaSP, SoLuong,GiaBan) SanPham(MaSP,MoTa, NhomHang, KhoHang,GiaGoc) Dựa vào lược đồ Cơ Sở Dữ liệu trên, Liệt kê ra sản phẩm có giá lớn hơn giá trung bình cuả các sản phẩm?",
+        "answers": [
+            {
+                "content": "Select * From SanPham Where GiaGoc>(Select Avg(GiaGoc) From SanPham)",
+                "is_correct": true
+            },
+            {
+                "content": "Select * From SanPham Where GiaGoc>(Select Avg(GiaGoc) From SanPham Group by MaSP)",
+                "is_correct": false
+            },
+            {
+                "content": "Select * From SanPham Where GiaGoc> Avg(GiaGoc)",
+                "is_correct": false
+            },
+            {
+                "content": "Select * From SanPham Group by MaSP Having GiaGoc> Avg(GiaGoc)",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Cho mô hình thực thể kết hợp (Mô hình ER) như hình bên. Hãy chuyển từ mô hình ER sang lược đồ Cơ sở dữ liệu?",
+        "answers": [
+            {
+                "content": "Học Viên (Mã học viên, tên học viên, điạ chỉ, ngày sinh, số điện thoại, ngày nhập học, mã môn học) Môn học(Mã môn học, tên môn học, thời lượng) Khoá chính là Mã môn học Với: khoá chính cuả bảng học viên là Mã học viên và khoá chính cuả bảng môn học là Mã môn học.",
+                "is_correct": false
+            },
+            {
+                "content": "Học Viên (Mã học viên, tên học viên, điạ chỉ, ngày sinh, số điện thoại, ngày nhập học,Mã môn học) Môn học(Mã môn học, tên môn học, thời lượng, Mã học viên) Với: khoá chính cuả bảng học viên là Mã học viên, Mã môn học và khoá chính của bảng môn học là Mã môn học, Mã học viên",
+                "is_correct": false
+            },
+            {
+                "content": "Học Viên (Mã học viên, tên học viên, điạ chỉ, ngày sinh, số điện thoại) Môn học(Mã môn học, tên môn học, thời lượng) Học Viên Mon Hoc(Mã học viên, Mã môn học) Với: khoá chính cuả bảng \"Học Viên\" là Mã học viên Khoá chính cuả bảng \"Môn học\" là Mã môn học. Khoá chính cuả bảng \"Học Viên Mon Hoc\" là Mã học viên, Mã môn học.",
+                "is_correct": true
+            },
+            {
+                "content": "Học Viên (Mã học viên, tên học viên, điạ chỉ, ngày sinh, số điện thoại) Môn học(Mã môn học, tên môn học, thời lượng, Mã học viên) Với: khoá chính cuả bảng học viên là Mã học viên và khoá chính cuả bảng môn học là Mã môn học.",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "_____ của một thực thể trở thành các cột trong một bảng cơ sở dữ liệu",
+        "answers": [
+            {
+                "content": "Các thuộc tính",
+                "is_correct": true
+            },
+            {
+                "content": "Các bộ (tuple)",
+                "is_correct": false
+            },
+            {
+                "content": "Các file dữ liệu",
+                "is_correct": false
+            },
+            {
+                "content": "Các biểu đồ E-R",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "_____ là sự ngăn chặn người dùng không có quyền được truy cập cơ sở dữ liệu.",
+        "answers": [
+            {
+                "content": "Tính độc lập của dữ liệu",
+                "is_correct": false
+            },
+            {
+                "content": "Ràng buộc về tính nguyên vẹn",
+                "is_correct": false
+            },
+            {
+                "content": "Tình trạng dư thừa",
+                "is_correct": false
+            },
+            {
+                "content": "Bảo mật",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "_____ phổ biến bao gồm Access, Oracle, DB2, và SQL Server.",
+        "answers": [
+            {
+                "content": "Các biểu đồ E-R",
+                "is_correct": false
+            },
+            {
+                "content": "Các DBA",
+                "is_correct": false
+            },
+            {
+                "content": "Các file dữ liệu",
+                "is_correct": false
+            },
+            {
+                "content": "Các DBMS",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Ba loại quan hệ 2 ngôi là:",
+        "answers": [
+            {
+                "content": "1:1, 1:N, N:M",
+                "is_correct": true
+            },
+            {
+                "content": "Entity, class, instance.",
+                "is_correct": false
+            },
+            {
+                "content": "Unique, non-unique, associated.",
+                "is_correct": false
+            },
+            {
+                "content": "Tất cả đều sai.",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Bạn đang thiết kế một mô hình cơ sở dữ liệu để quản lý sinh viên. Mỗi sinh viên có thể học nhiều hơn một lớp, mỗi lớp có nhiều sinh viên nhưng chỉ được 1 giáo viên dạy. Bạn có 3 thực thể Lớp, Sinh viên, giáo viên trong cơ sở dữ liệu. Dạng quan hệ nào sau đây phải có trong quan hệ giữa Sinh viên và lớp học?",
+        "answers": [
+            {
+                "content": "Một - Nhiều",
+                "is_correct": false
+            },
+            {
+                "content": "Nhiều - Nhiều",
+                "is_correct": true
+            },
+            {
+                "content": "Một - Một",
+                "is_correct": false
+            },
+            {
+                "content": "Không - Nhiều",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Các bảng tính, tài liệu, và trang Web được lưu trong _____.",
+        "answers": [
+            {
+                "content": "Cơ sở dữ liệu",
+                "is_correct": false
+            },
+            {
+                "content": "Các file",
+                "is_correct": true
+            },
+            {
+                "content": "Các thực thể",
+                "is_correct": false
+            },
+            {
+                "content": "Các thuộc tính",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Các bộ dữ liệu trong một quan hệ phải có tính chất:",
+        "answers": [
+            {
+                "content": "Tất cả các bộ dữ liệu phải khác nhau",
+                "is_correct": false
+            },
+            {
+                "content": "Với hai bộ dữ liệu bất kỳ, chúng phải khác nhau trên một hoặc nhiều cột",
+                "is_correct": false
+            },
+            {
+                "content": "Mỗi quan hệ phải có khóa",
+                "is_correct": false
+            },
+            {
+                "content": "Tất cả các phương án trên.",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Các mối kết hợp có trong mô hình là (Hình bên)?",
+        "answers": [
+            {
+                "content": "NH N VIÊN, QUẢN LÝ TRỰC TIẾP, QUẢN LÝ, THAM GIA, THUỘC",
+                "is_correct": false
+            },
+            {
+                "content": "NH N VIÊN, LĨNH VỰC,QUẢN LÝ, THAM GIA, THUỘC",
+                "is_correct": false
+            },
+            {
+                "content": "QUẢN LÝ, QUẢN LÝ TRỰC TIẾP, THAM GIA, THUỘC",
+                "is_correct": true
+            },
+            {
+                "content": "Tất cả đều sai",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Các yếu tố cơ bản nào được sử dụng trong mô hình E-R?",
+        "answers": [
+            {
+                "content": "Thực thể",
+                "is_correct": false
+            },
+            {
+                "content": "Các thuộc tính tương ứng của thực thể",
+                "is_correct": false
+            },
+            {
+                "content": "Các mối kết hợp giữa các thực thể",
+                "is_correct": false
+            },
+            {
+                "content": "Tất cả các phương án trên.",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Các yếu tố liên quan đến thuộc tính của đối tượng là?",
+        "answers": [
+            {
+                "content": "Tên gọi của thuộc tính",
+                "is_correct": false
+            },
+            {
+                "content": "Miền giá trị của thuộc tính",
+                "is_correct": false
+            },
+            {
+                "content": "Kiểu dữ liệu của thuộc tính",
+                "is_correct": false
+            },
+            {
+                "content": "Tất cả các phương án trên",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Cách nhanh nhất để xác định số dòng trong một bảng là:",
+        "answers": [
+            {
+                "content": "Tạo một kịch bản đưa ra danh sách và hiển thị mỗi dòng.",
+                "is_correct": false
+            },
+            {
+                "content": "Dựa vào số lớn nhất của ID có trong bảng.",
+                "is_correct": true
+            },
+            {
+                "content": "Sử dụng hàm count để đếm trong câu truy vấn.",
+                "is_correct": false
+            },
+            {
+                "content": "Dựa vào thuộc tính trong bảng.",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Câu lệnh nào sau đây sẽ tước quyền của người dùng đối với cơ sở dữ liệu?",
+        "answers": [
+            {
+                "content": "SELECT",
+                "is_correct": false
+            },
+            {
+                "content": "INDEX",
+                "is_correct": false
+            },
+            {
+                "content": "GRANT",
+                "is_correct": false
+            },
+            {
+                "content": "REVOKE",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Câu lệnh SQL sau đây làm gì? Select * From Customer Where Cust_Type = \"Best\"",
+        "answers": [
+            {
+                "content": "Danh sách gồm tất cả các cột trong bảng Customer mà mỗi dòng đều có nhãn khách hàng(Cust_Type) là \"best\".",
+                "is_correct": true
+            },
+            {
+                "content": "Danh sách gồm cột có cột tên là \"*\" trong bảng Customer mà mỗi dòng đều có nhãn khách hàng là \"best\".",
+                "is_correct": false
+            },
+            {
+                "content": "Danh sách gồm tất cả các cột có một dấu \"*\" trong bảng Customer.",
+                "is_correct": false
+            },
+            {
+                "content": "Danh sách gồm tất cả các cột trong bảng Customer mà mỗi dòng đều có nhãn khách hàng là \"*\".",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Câu lệnh truy vấn nào sau đây cho kết quả là cột ProductID trong Table Oder_detail, mỗi ProductID chỉ hiễn thị một lần?",
+        "answers": [
+            {
+                "content": "SELECT DISTINCT ProductID FROM order_details",
+                "is_correct": true
+            },
+            {
+                "content": "SELECT UNIQUE ProductID FROM order_details",
+                "is_correct": false
+            },
+            {
+                "content": "SELECT ProductID FROM order_details",
+                "is_correct": false
+            },
+            {
+                "content": "SELECT ProductID FROM order_details ONLY ONCE",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Câu lệnh truy vấn nào sau đây dùng để xác định các Productname có ProductID là 10, 11 hoặc 42?",
+        "answers": [
+            {
+                "content": "SELECT ProductName FROM products WHERE ProductID IN (10,11,42)",
+                "is_correct": true
+            },
+            {
+                "content": "SELECT ProductName FROM products WHERE ProductID = (10,11,42)",
+                "is_correct": false
+            },
+            {
+                "content": "SELECT ProductName FROM products WHERE ProductID IS (10,11,42)",
+                "is_correct": false
+            },
+            {
+                "content": "SELECT ProductName FROM products WHERE ProductID IN 10 OR 11 OR 42",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Câu lệnh truy vấn nào sau đây dùng để xác định standard prices nhỏ nhất trong table product_v",
+        "answers": [
+            {
+                "content": "select standard_price from min(product_v)",
+                "is_correct": false
+            },
+            {
+                "content": "select standard_price from product_v where standard_price = min",
+                "is_correct": false
+            },
+            {
+                "content": "select min(standard_price) from product_v",
+                "is_correct": true
+            },
+            {
+                "content": "select min(standard_price) from product_v where standard_price = min(standard_price)",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Câu lệnh truy vấn nào sau đây là sai cú pháp?",
+        "answers": [
+            {
+                "content": "SELECT ProductName FROM products WHERE (UnitPrice < 10) , (UnitsInStock > 5)",
+                "is_correct": true
+            },
+            {
+                "content": "SELECT ProductName FROM products WHERE (UnitPrice < 10) OR NOT (UnitsInStock > 5)",
+                "is_correct": false
+            },
+            {
+                "content": "SELECT ProductName FROM products WHERE UnitPrice < 10 OR UnitsInStock > 5",
+                "is_correct": false
+            },
+            {
+                "content": "SELECT ProductName FROM products WHERE UnitPrice < 10 AND UnitsInStock > 5",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Câu lệnh truy vấn nào sau đây là sai?",
+        "answers": [
+            {
+                "content": "SELECT * FROM emp WHERE empid = 493945",
+                "is_correct": false
+            },
+            {
+                "content": "SELECT empid FROM emp",
+                "is_correct": false
+            },
+            {
+                "content": "SELECT empid FROM emp WHERE empid= 493945",
+                "is_correct": false
+            },
+            {
+                "content": "SELECT empid WHERE empid = 56949 AND lastname = 'SMITH'",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Câu nào dưới đây đúng?",
+        "answers": [
+            {
+                "content": "Trong một môi trường hướng file, phi cơ sở dữ liệu, dữ liệu thường bị tách thành một vài hệ thống rời rạc, mỗi hệ thống có một tập hợp các file riêng.",
+                "is_correct": true
+            },
+            {
+                "content": "Dữ liệu người dùng không thể được kết hợp và chia sẻ giữa những người dùng có quyền.",
+                "is_correct": false
+            },
+            {
+                "content": "Những người dùng cơ sở dữ liệu không nên truy cập cùng thông tin.",
+                "is_correct": false
+            },
+            {
+                "content": "Thường có thể loại bỏ tình trạng dư thừa.",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Câu nào sau đây dùng để xoá bảng KhachHang ra khỏi một lược đồ cơ sở dữ liệu?",
+        "answers": [
+            {
+                "content": "Delete table Khachhang",
+                "is_correct": false
+            },
+            {
+                "content": "Drop table Khachhang",
+                "is_correct": true
+            },
+            {
+                "content": "Cả 2 phương án: 1 và 2",
+                "is_correct": false
+            },
+            {
+                "content": "Remove table KhachHang",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Cấu trúc của một mô hình quan hệ được định nghĩa bởi:",
+        "answers": [
+            {
+                "content": "Quan hệ, bộ và thuộc tính",
+                "is_correct": false
+            },
+            {
+                "content": "Bảng, dòng và cột",
+                "is_correct": false
+            },
+            {
+                "content": "Tập tin, mẫu tin và trường",
+                "is_correct": false
+            },
+            {
+                "content": "Tất cả đều đúng",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Câu truy vấn nào sau đây chứa một lỗi?",
+        "answers": [
+            {
+                "content": "SELECT * FROM emp WHERE empid = 493945;",
+                "is_correct": false
+            },
+            {
+                "content": "SELECT empid FROM emp WHERE empid= 493945;",
+                "is_correct": false
+            },
+            {
+                "content": "SELECT empid WHERE empid = 56949 AND lastname = 'SMITH';",
+                "is_correct": true
+            },
+            {
+                "content": "SELECT empid FROM emp;",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Cho lược đồ quan hệ D(H, K, I, Y, Z) và tập phụ thuộc hàm C={H K->I Z, K->Y , Y->H }. Phụ thuộc hàm nào sau đây không được suy diễn từ C:",
+        "answers": [
+            {
+                "content": "H Y->I Z",
+                "is_correct": true
+            },
+            {
+                "content": "K Z->H I",
+                "is_correct": false
+            },
+            {
+                "content": "H K->Y H",
+                "is_correct": false
+            },
+            {
+                "content": "K->H",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Cho 1 bảng với cấu trúc sau: NhanVien(MaNV, TenNV, Luong, NgayBatDauVaoLam), Tạo câu truy vấn SQL để tìm nhân viên có lương cao nhất",
+        "answers": [
+            {
+                "content": "SELECT * FROM NhanVien ORDER BY Luong DESC;",
+                "is_correct": false
+            },
+            {
+                "content": "SELECT top 1 * FROM NhanVien ORDER BY Luong;",
+                "is_correct": false
+            },
+            {
+                "content": "SELECT top 1 * FROM NhanVien ORDER BY Luong DESC;",
+                "is_correct": true
+            },
+            {
+                "content": "SELECT top 1 * FROM NhanVien;",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Cho 1 bảng với cấu trúc sau: NhanVien(MaNV, TenNV, Luong, NgayBatDauVaoLam), Tạo câu truy vấn SQL để tìm tất cả các nhân viên bắt đầu vào làm việc trong năm 2005?",
+        "answers": [
+            {
+                "content": "SELECT * FROM NhanVien WHERE NgayBatDauVaoLam=2005;",
+                "is_correct": false
+            },
+            {
+                "content": "SELECT * FROM NhanVien WHERE NgayBatDauVaoLam>='01/01/2005';",
+                "is_correct": false
+            },
+            {
+                "content": "SELECT * FROM NhanVien WHERE year(NgayBatDauVaoLam)=2005;",
+                "is_correct": true
+            },
+            {
+                "content": "SELECT * FROM NhanVien WHERE NgayBatDauVaoLam< '01/01/2006';",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Cho 1 bảng với cấu trúc sau: NhanVien(MaNV, TenNV, Luong, NgayBatDauVaoLam). Tạo câu truy vấn SQL để tìm tất cả các nhân viên mà có ký tự đầu cuả tên là 'S'?",
+        "answers": [
+            {
+                "content": "SELECT * FROM NhanVien WHERE TenNV IN ['S'];",
+                "is_correct": false
+            },
+            {
+                "content": "SELECT * FROM NhanVien WHERE TenNV LIKE 'S%';",
+                "is_correct": true
+            },
+            {
+                "content": "SELECT * FROM TenNV WHERE NhanVien LIKE 'S*';",
+                "is_correct": false
+            },
+            {
+                "content": "SELECT EmpNo FROM NhanVien WHERE TenNV LIKE 'S';",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Cho 2 bảng sau: PhongBan(MaPB,TenPB,TruongPhong,DonVi, ViTri) NhanVien(MaNV, HoTen, MaPB,CongViec, NamSinh,Luong) Tạo truy vấn để liệt kê danh sách các phòng ban và họ tên trưởng phòng cuả phòng ban đó. Danh sách gồm MaPB, MaNV, HoTen.",
+        "answers": [
+            {
+                "content": "Select n.MaPB, MaNV, Tennv From nhanvien n,phongban p Where n.manv=p.truongphong",
+                "is_correct": true
+            },
+            {
+                "content": "Select n.MaPB, MaNV, Tennv From nhanvien n,phongban p Where n.mapb=p.mapb",
+                "is_correct": false
+            },
+            {
+                "content": "Select n.MaPB, MaNV, Tennv From nhanvien n,phongban p Where n.mapb=p.mapb Group by n.MaPB, MaNV, Tennv",
+                "is_correct": false
+            },
+            {
+                "content": "Select n.MaPB, MaNV, Tennv From nhanvien n,phongban p Where n.mapb=p.mapb Order by n.MaPB",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Cho bảng SanPham(MaSP, TenSP, DonGia) có khóa chính là [MaSP]. Tạo câu truy vấn để xem giá thấp nhất trong bảng SanPham là bao nhiêu?",
+        "answers": [
+            {
+                "content": "Select DonGia from SanPham where DonGia = min;",
+                "is_correct": false
+            },
+            {
+                "content": "Select min(DonGia) from SanPham;",
+                "is_correct": true
+            },
+            {
+                "content": "Select min(DonGia) from SanPham where DonGia = min(DonGia);",
+                "is_correct": false
+            },
+            {
+                "content": "Select DonGia from SanPham where DonGia = min(DonGia);",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Cho bảng sau: DonHang(MaDH,MaSP,SoLuong,GiaBan) Để tạo khoá chính cho bảng Donhang (khoá chính gồm 2 Field là MaDH và MaSP). Câu nào sau đây là đúng?",
+        "answers": [
+            {
+                "content": "Alter table DonHang Add Primary Key (MaDH,MaSP)",
+                "is_correct": true
+            },
+            {
+                "content": "Alter table DonHang Add Primary Key (DonHang,MaDH,MaSP)",
+                "is_correct": false
+            },
+            {
+                "content": "Alter table DonHang Add Primary (MaDH,MaSP)",
+                "is_correct": false
+            },
+            {
+                "content": "Alter table DonHang Add Key (MaDH,MaSP)",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Cho bảng sau: SanPham(MaSP,MoTa, NhomHang, KhoHang,GiaGoc, SoLuongTon) Cho biết có bao nhiêu sản phẩm thuộc nhóm hàng 'HW'?",
+        "answers": [
+            {
+                "content": "Select sum(MaSP) From SanPham Where NhomHang='HW'",
+                "is_correct": false
+            },
+            {
+                "content": "Select Count(*) From SanPham Where NhomHang='HW'",
+                "is_correct": true
+            },
+            {
+                "content": "Select Count From SanPham Where NhomHang='HW'",
+                "is_correct": false
+            },
+            {
+                "content": "Select Count * From SanPham Where NhomHang='HW'",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Cho bảng sau: SanPham(MaSP,MoTa, NhomHang, KhoHang,GiaGoc, SoLuongTon) Liệt kê danh sách các sản phẩm chưá trong kho số 3 và có Số Lượng Tồn lớn hơn 30?",
+        "answers": [
+            {
+                "content": "Select * From SanPham",
+                "is_correct": false
+            },
+            {
+                "content": "Select * From SanPham Where KhoHang=3 and SoLuongTon>30",
+                "is_correct": true
+            },
+            {
+                "content": "Select * From SanPham Where KhoHang=3 or SoLuongTon>30",
+                "is_correct": false
+            },
+            {
+                "content": "Select sum(MaSP) as SLTon From SanPham Where KhoHang=3 Group by MaSP Having SLTon>30",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Cho bảng sau: SanPham(MaSP,MoTa, NhomHang, KhoHang,GiaGoc, SoLuongTon) Liệt kê danh sách các sản phẩm không chưá trong kho số 3?",
+        "answers": [
+            {
+                "content": "Select * From SanPham Where KhoHang<>3",
+                "is_correct": false
+            },
+            {
+                "content": "Select * From SanPham Where KhoHang!=3",
+                "is_correct": false
+            },
+            {
+                "content": "Cả 2 phương án: 1 và 2",
+                "is_correct": true
+            },
+            {
+                "content": "Select * From SanPham here KhoHang not in 3",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Cho bảng sau: SinhVien(MaSV,MaKhoaHoc,SoDu) Liệt kê danh sách các sinh viên có số dư trong tài khoản lớn hơn bằng 100000 và nhỏ hơn bằng 500000?",
+        "answers": [
+            {
+                "content": "Select * From SinhVien Where SoDu like 100000 and 500000",
+                "is_correct": false
+            },
+            {
+                "content": "Select * From SinhVien Where SoDu Between 100000 and 500000",
+                "is_correct": true
+            },
+            {
+                "content": "Select * From SinhVien Where SoDu in 100000 and 500000",
+                "is_correct": false
+            },
+            {
+                "content": "Select * From SinhVien Where SoDu Having 100000 and 500000",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Cho bảng SinhVien(MaSV,TenSV,ChuyenNganh) với khóa chính là [Masv, ChuyenNganh]. Các sinh viên có thể học nhiều chuyên ngành khác nhau. Tạo câu truy vấn liệt kê danh sách các sinh viên không thuộc chuyên ngành CNTT.",
+        "answers": [
+            {
+                "content": "SELECT * FROM SinhVien HAVING ChuyenNganh <> 'CNTT\"",
+                "is_correct": false
+            },
+            {
+                "content": "SELECT * FROM SinhVien GROUP BY ChuyenNganh HAVING ChuyenNganh <> 'CNTT\"",
+                "is_correct": false
+            },
+            {
+                "content": "SELECT * FROM SinhVien WHERE MaSV NOT IN (SELECT MaSV FROM SinhVien WHERE ChuyenNganh = 'CNTT')",
+                "is_correct": true
+            },
+            {
+                "content": "SELECT * FROM SinhVien WHERE MaSV NOT IN (SELECT MaSV FROM SinhVien Having ChuyenNganh = 'CNTT')",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Cho bảng SinhVien(MaSV,TenSV,ThanhPho,ChuyenNganh) với khóa chính là [Masv, ChuyenNganh]. Các sinh viên có thể học nhiều chuyên ngành khác nhau. Cho câu lệnh SELECT của SQL sau: Select MaSV, ChuyenNganh From SinhVien GROUP BY MaSV, ChuyenNganh HAVING ThanhPho='VungTau' Chọn câu trả lời đúng?",
+        "answers": [
+            {
+                "content": "Câu lệnh trên bị lỗi.",
+                "is_correct": true
+            },
+            {
+                "content": "Trả về danh sách gồm MaSV, ChuyenNganh của các sinh viên có thành phố là VungTau.",
+                "is_correct": false
+            },
+            {
+                "content": "Trả về một bảng gồm các chuyên ngành của từng sinh viên.",
+                "is_correct": false
+            },
+            {
+                "content": "Trả về 1 dòng gồm MaSV, ChuyenNganh của sinh viên có thành phố là VungTau.",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Cho bảng T(P,O,C) và các phụ thuộc hàm sau: P->O, P->C, C->O. Loại phụ thuộc hàm tồn tại trong lược đồ CSDL trên:",
+        "answers": [
+            {
+                "content": "Phụ thuộc bắc cầu.",
+                "is_correct": true
+            },
+            {
+                "content": "Phụ thuộc riêng phần.",
+                "is_correct": false
+            },
+            {
+                "content": "Phụ thuộc đầy đủ.",
+                "is_correct": false
+            },
+            {
+                "content": "Phụ thuộc hàm hiển nhiên.",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Cho bảng TT {Q , I , C , E , B } và tập phụ thuộc hàm sau:Q -> E,B; E -> I,C; Q,C -> I; Bao đóng của {I E B} là:",
+        "answers": [
+            {
+                "content": "{I C E B}",
+                "is_correct": true
+            },
+            {
+                "content": "{B E C Q}",
+                "is_correct": false
+            },
+            {
+                "content": "{Q E I C}",
+                "is_correct": false
+            },
+            {
+                "content": "{Q I C E}",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Cho bảng TT {Q , K , J , U , H } và tập phụ thuộc hàm sau: Q -> U,H; U -> K,J; Q,J -> K; Bao đóng của {Q U} là:",
+        "answers": [
+            {
+                "content": "{Q K J U H}",
+                "is_correct": true
+            },
+            {
+                "content": "{K J U H}",
+                "is_correct": false
+            },
+            {
+                "content": "{Q K U H}",
+                "is_correct": false
+            },
+            {
+                "content": "{Q K J U}",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Cho bảng TT {V , S , J , A , E , D , N } và tập phụ thuộc hàm sau: V, S -> D, N; E -> V , S, J; J, D -> A, N; A, N,J -> D; V, N, S -> E; Bao đóng của {V S} là",
+        "answers": [
+            {
+                "content": "{V S J A N E D}",
+                "is_correct": true
+            },
+            {
+                "content": "{V S J N E D}",
+                "is_correct": false
+            },
+            {
+                "content": "{V S J A N E}",
+                "is_correct": false
+            },
+            {
+                "content": "{V J A N E D}",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Cho bảng Z(U, B, Q, T, A) và tập phụ thuộc hàm sau: H={ U->B Q; Q T->A; U Q-A; B->T; A->U B } Có 4 khóa dự tuyển trong Z là:",
+        "answers": [
+            {
+                "content": "U; BQ; Q T; A",
+                "is_correct": true
+            },
+            {
+                "content": "T; Q U; T U; Q",
+                "is_correct": false
+            },
+            {
+                "content": "Q; U B; Q T ; A",
+                "is_correct": false
+            },
+            {
+                "content": "T; B Q U; Q T ; U A",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Cho bảng: NhanVien MaNV TenNV 1 An 2 Hoa Cho câu truy vấn sau SELECT * FROM NhanVien, thứ tự các dòng trả về sẽ dựa trên?",
+        "answers": [
+            {
+                "content": "Không có thứ tự.",
+                "is_correct": false
+            },
+            {
+                "content": "Thứ tự dựa trên khóa chính.",
+                "is_correct": true
+            },
+            {
+                "content": "Theo giá trị của cột MaNV, rồi đến cột TenNV",
+                "is_correct": false
+            },
+            {
+                "content": "Dựa vào thứ tự của các dòng khi chèn vào bảng, dòng nào chèn trước sẽ xếp trước.",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Cho biết kết quả của câu truy vấn bằng SQL sau? Select customer_name, telephone from customers where city in (‘Boston’,’New York’,’Denver’);",
+        "answers": [
+            {
+                "content": "Danh sách các customer_name và telephone của tất cả các khách hàng có trong bảng customers.",
+                "is_correct": false
+            },
+            {
+                "content": "Danh sách các customer_name và telephone của tất cả các khách hàng đang sống ở Boston, New York hoặc Denver.",
+                "is_correct": true
+            },
+            {
+                "content": "Danh sách các customer_name của tất cả các khách hàng đang sống ở Boston, New York hoặc Denver.",
+                "is_correct": false
+            },
+            {
+                "content": "Danh sách các customer_name và telephone của tất cả các khách hàng đang sống ở Boston và New York và Denver.",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Cho biết kết quả của câu truy vấn bằng SQL sau? Select item_no, description from item where weight > 100 and weight < 200;",
+        "answers": [
+            {
+                "content": "Danh sách các item_no và description của tất cả các món mà có trọng lượng (weight) nhỏ hơn 100.",
+                "is_correct": false
+            },
+            {
+                "content": "Danh sách các item_no của tất cả các món mà có trọng lượng từ 101 đến 199..",
+                "is_correct": false
+            },
+            {
+                "content": "Danh sách của tất cả các món mà có trọng lượng lớn hơn 200.",
+                "is_correct": false
+            },
+            {
+                "content": "Danh sách các item_no và description của tất cả các món mà có trọng lượng từ 101 đến 199..",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Cho biết kết quả của câu truy vấn bằng SQL sau? Select min(MoTaSanPham) from SanPham;",
+        "answers": [
+            {
+                "content": "Trả về giá trị nhỏ nhất của cột MoTaSanPham.",
+                "is_correct": false
+            },
+            {
+                "content": "Câu lệnh trên bị lỗi.",
+                "is_correct": false
+            },
+            {
+                "content": "Không có câu nào đúng.",
+                "is_correct": false
+            },
+            {
+                "content": "Trả về dòng có ký tự chữ cái đầu tiên theo thứ tự abc của cột MoTaSanPham trong bảng SanPham.",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Cho biết kết quả của câu truy vấn bằng SQL sau? Select sum(DonGia) as TongDonGia from SanPham where LoaiSanPham = ‘Cotton’;",
+        "answers": [
+            {
+                "content": "Trả về tổng đơn giá của tất cả các sản phẩm mà có lọai sản phẩm là Cotton.",
+                "is_correct": true
+            },
+            {
+                "content": "Trả về tổng đơn giá của tất cả các sản phẩm.",
+                "is_correct": false
+            },
+            {
+                "content": "Trả về đơn giá của bất kỳ sản phẩm nào có trong bảng SanPham.",
+                "is_correct": false
+            },
+            {
+                "content": "Trả về đơn giá của sản phẩm đầu tiên mà có lọai sản phẩm là \"Cotton\" trong bảng SanPham.",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Cho các bảng sau: SinhVien(MaSV,TenSV,DiaChi,MaKhoaHoc) KetQua(MaSV,MaMH,Diem) MonHoc(MaMH,TenMH) Cho câu truy vấn SQL sau: SELECT TenSV, AVG(Diem) FROM SinhVien s,KetQua k WHERE s.MaSV=k.MaSV GROUP BY TenSV HAVING avg(Diem) >70 Kết quả nào sau đây là đúng cho câu truy vấn trên?",
+        "answers": [
+            {
+                "content": "Câu truy vấn trên không đúng cú pháp.",
+                "is_correct": false
+            },
+            {
+                "content": "Câu truy vấn trên trả về tên sinh viên và điểm trung bình cuả sinh viên đó.",
+                "is_correct": false
+            },
+            {
+                "content": "Câu truy vấn trên trả về Tên của những sinh viên có điểm trung bình lớn hơn 70.",
+                "is_correct": true
+            },
+            {
+                "content": "Tất cả đều sai.",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Cho các bảng sau: KhachHang (MaKH, TenKH, ThanhPho) SanPham(MaSP, TenSP, SoLuong, DonGia) DaiLy (MaDL, TenDL, ThanhPho, HueHong) DatHang (MaDH, NgayDH, MaKH, MaDL, MaSP, SoLuong, ThanhTien). Chọn câu lệnh SQL để giải quyết câu truy vấn sau: Tăng giá cuả mỗi sản phẩm trong bảng SanPham lên 10% cho tất cả các sản phẩm mà khách hàng 'C01' đặt mua.",
+        "answers": [
+            {
+                "content": "Update SanPham set DonGia= DonGia * 1.1 where DatHang.MaKH = 'C01';",
+                "is_correct": false
+            },
+            {
+                "content": "Update SanPham, DatHang set SanPham.DonGia = SanPham.DonGia * 10% where DatHang.MaKH = 'C01';",
+                "is_correct": false
+            },
+            {
+                "content": "Update SanPham set DonGia = 1.1 * DonGia where MaSP in (select MaSP from DatHang where MaKH = 'C01');",
+                "is_correct": true
+            },
+            {
+                "content": "Update SanPham set DonGia = 0.1 * DonGia where MaSP in (select MaSP from DatHang where MaKH = 'C01');",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Cho các bảng sau: KhachHang (MaKH, TenKH, ThanhPho) SanPham(MaSP, TenSP, SoLuong, DonGia) DaiLy (MaDL, TenDL, ThanhPho, HueHong) DatHang (MaDH, NgayDH, MaKH, MaDL, MaSP, SoLuong, ThanhTien) Chọn câu lệnh SQL để giải quyết câu query sau. Liệt kê danh sách tên các khách hàng đặt mua sản phẩm 'P02' hoặc đặt mua thông qua đaị lý 'A04'.",
+        "answers": [
+            {
+                "content": "Select TenKH from KhachHang where MaKH in (select MaKH from DatHang where MaSP = 'P02' OR MaDL = 'A04')",
+                "is_correct": true
+            },
+            {
+                "content": "Select TenKH from KhachHang where MaKH in (select o1.MaKH from DatHang o1, DatHang o2 Where o1.MaSP = 'P02' and o2.MaDL = 'A04' and o1.MaSP = o2.MaSP);",
+                "is_correct": false
+            },
+            {
+                "content": "Select TenKH from KhachHang c, DatHang o1, DatHang o2 where c.MaKH = o1.MaKH and c.MaKH = o2.MaKH and MaSP = 'P02' and MaDL = 'A04';",
+                "is_correct": false
+            },
+            {
+                "content": "Select TenKH from KhachHang c, DatHang o1, DatHang o2 where MaSP = 'P02' and MaDL = 'A04';",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Cho các lựơc đồ quan hệ sau: NhaCungCap(MaNCC,TenNCC,ThanhPho) SanPham(MaSP,TenSP,Mau) CungCap(MaNCC,MaSP,SoLuong) Hãy cho biết ý nghĩa của lệnh truy vấn sau: Select TenNCC From NhaCungCap X Where Not Exists (Select * From CungCap Y Where X.MaNCC = Y.MaNCC)",
+        "answers": [
+            {
+                "content": "Trả về tên cuả nhà cung cấp mà không tồn tại trong cơ sở dữ liệu.",
+                "is_correct": false
+            },
+            {
+                "content": "Trả về tên cuả nhà cung cấp mà không cung cấp bất kỳ sản phẩm nào.",
+                "is_correct": true
+            },
+            {
+                "content": "Trả về tên cuả nhà cung cấp mà không cung cấp tất cả các sản phẩm.",
+                "is_correct": false
+            },
+            {
+                "content": "Không có phương án nào.",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Cho các phụ thuộc hàm (H I -> D, D -> P) của lược đồ quan hệ N(H I D P), phụ thuộc hàm H -> P có thể được suy ra nhờ vào:",
+        "answers": [
+            {
+                "content": "Luật phản xạ",
+                "is_correct": false
+            },
+            {
+                "content": "Luật thêm vào",
+                "is_correct": false
+            },
+            {
+                "content": "Luật bắc cầu",
+                "is_correct": false
+            },
+            {
+                "content": "Tất cả điều sai.",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Cho các phụ thuộc hàm sau F= (Z Q -> A N C, Z -> C), của lược đồ quan hệ B = (Z,Q,A,N,C) ta có thể suy ra:",
+        "answers": [
+            {
+                "content": "Z là khóa của lược đồ quan hệ B",
+                "is_correct": false
+            },
+            {
+                "content": "Không có câu nào đúng",
+                "is_correct": false
+            },
+            {
+                "content": "Q C là khóa của lược đồ quan hệ B ồ",
+                "is_correct": false
+            },
+            {
+                "content": "Z Q là khóa của lược đồ quan hệ B",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Cho các phụ thuộc hàm{B Q -> L, L -> H} của lược đồ quan hệ S(B Q L H), phụ thuộc hàm B -> H có thể được suy ra nhờ vào:",
+        "answers": [
+            {
+                "content": "Luật phản xạ",
+                "is_correct": false
+            },
+            {
+                "content": "Luật thêm vào",
+                "is_correct": false
+            },
+            {
+                "content": "Luật bắc cầu",
+                "is_correct": false
+            },
+            {
+                "content": "Tất cả điều sai",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Cho CSDL gồm các bảng sau: SinhVien(MaSV,TenSV,DiaChi,MaKhoaHoc) KetQua(MaSV,MaMH,Diem) MonHoc(MaMH,TenMH) Cho câu truy vấn SQL sau: SELECT TenMH FROM MonHoc s,KetQua k WHERE s.MaMH=k.MaMH GROUP BY TenMH HAVING Diem >70 Chọn câu trả lời đúng?",
+        "answers": [
+            {
+                "content": "Câu truy vấn trên bị lỗi.",
+                "is_correct": true
+            },
+            {
+                "content": "Câu truy vấn trên trả về danh sách tất cả các tên môn học.",
+                "is_correct": false
+            },
+            {
+                "content": "Câu truy vấn trên trả về danh sách tất cả các tên môn học mà sinh viên học có điểm lớn hơn 70.",
+                "is_correct": false
+            },
+            {
+                "content": "Câu truy vấn trên trả về danh sách tất cả các tên môn học mà sinh viên học có điểm trung bình lớn hơn 70.",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Cho CSDL gồm các bảng sau: KhachHang(MaKH, TenKH, ThanhPho) SanPham(MaSP, TenSP, SoLuong, DonGia) DaiLy (MaDL, TenDL, ThanhPho, HueHong) DatHang (MaDH, NgayDH, MaKH, MaDL, MaSP, SoLuong, ThanhTien) Chọn câu lệnh SQL để giải quyết câu truy vấn sau: Liệt kê danh sách tên các khách hàng mua sản phẩm 'P02'",
+        "answers": [
+            {
+                "content": "Select TenKH from KhachHang c, DatHang o where o.MaSP = 'P02';",
+                "is_correct": false
+            },
+            {
+                "content": "Select TenKH from KhachHang c where DatHang.MaSP = 'P02';",
+                "is_correct": false
+            },
+            {
+                "content": "Select TenKH from KhachHang c, DatHang o where c.MaKH = o.MaKH and o.MaSP = 'P02';",
+                "is_correct": true
+            },
+            {
+                "content": "Select TenKH from SanPham where MaSP = 'P02';",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Cho CSDL gồm các bảng sau: SinhVien(MaSV,TenSV,DiaChi,MaKhoaHoc) KetQua(MaSV,MaMH,Diem) MonHoc(MaMH,TenMH) Cho 2 câu truy vấn SQL sau: SELECT MaSV FROM SinhVien WHERE MaSV not in (Select MaSV from KetQua where MaMH='CSDL') SELECT MaSV FROM SinhVien s WHERE not exists (Select MaSV from KetQua d where MaMH='CSDL' and s.masv=d.masv) Chọn câu trả lời đúng?",
+        "answers": [
+            {
+                "content": "Câu truy vấn thứ nhất sẽ trả về số bộ nhiều hơn câu truy vấn thứ hai.",
+                "is_correct": false
+            },
+            {
+                "content": "Câu truy vấn thứ nhất sẽ trả về số bộ ít hơn câu truy vấn thứ hai.",
+                "is_correct": false
+            },
+            {
+                "content": "Cả hai câu truy vấn trên cho cùng một kết quả.",
+                "is_correct": true
+            },
+            {
+                "content": "Câu truy vấn thứ hai bị lỗi.",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Cho CSDL gồm các bảng sau: SinhVien(MaSV,TenSV,DiaChi,MaKhoaHoc) KetQua(MaSV,MaMH,Diem) MonHoc(MaMH,TenMH) Cho câu truy vấn SQL sau: SELECT TenSV FROM SinhVien s,KetQua k WHERE s.MaSV =k.MaSV and Diem is null Chọn câu trả lời đúng?",
+        "answers": [
+            {
+                "content": "Câu truy vấn trên không hợp lệ.",
+                "is_correct": false
+            },
+            {
+                "content": "Nếu sinh viên nào bị trùng tên thì không in ra được kết quả.",
+                "is_correct": false
+            },
+            {
+                "content": "Câu truy vấn trên trả về danh sách các tên sinh viên mà chưa có cho điểm của một hoặc vài môn học nào đó.",
+                "is_correct": true
+            },
+            {
+                "content": "Câu truy vấn trên trả về danh sách các tên sinh viên mà chưa có cho điểm tất cả các môn học nào đó.",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Cho CSDL gồm các bảng sau: SinhVien(MaSV,TenSV,DiaChi,MaKhoaHoc) KetQua(MaSV,MaMH,Diem) MonHoc(MaMH,TenMH) Cho câu truy vấn SQL sau: SELECT TenSV,Avg(Diem) FROM SinhVien s,KetQua k WHERE s.MaSV =k.MaSV Chọn câu trả lời đúng?",
+        "answers": [
+            {
+                "content": "Câu truy vấn trên bị lỗi, không thể thực hiện được.",
+                "is_correct": true
+            },
+            {
+                "content": "Câu truy vấn trên trả về danh sách các tên sinh viên và điểm trung bình của từng sinh viên đó.",
+                "is_correct": false
+            },
+            {
+                "content": "Câu truy vấn trên trả về danh sách các tên sinh viên và điểm của từng môn học.",
+                "is_correct": false
+            },
+            {
+                "content": "Tất cả đều sai.",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Cho CSDL gồm các bảng: SinhVien(MaSV,TenSV,DiaChi,MaKhoaHoc) KetQua(MaSV,MaMH,Diem) MonHoc(MaMH,TenMH) Cho 2 câu truy vấn SQL sau: SELECT MaSV FROM SinhVien WHERE MaSV not in (Select MaSV from KetQua where MaMH='CSDL') SELECT MaSV FROM SinhVien WHERE not exists (Select MaSV from KetQua where MaMH='CSDL' ) Chọn câu trả lời đúng?",
+        "answers": [
+            {
+                "content": "Câu truy vấn thứ nhất sẽ trả về số bộ nhiều hơn câu truy vấn thứ hai.",
+                "is_correct": true
+            },
+            {
+                "content": "Câu truy vấn thứ nhất sẽ trả về số bộ ít hơn câu truy vấn thứ hai.",
+                "is_correct": false
+            },
+            {
+                "content": "Cả hai câu truy vấn trên cho cùng một kết quả.",
+                "is_correct": false
+            },
+            {
+                "content": "Câu truy vấn thứ hai bị lỗi, không thể thực thi được.",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Cho CSDL gồm các bảng: SinhVien(MaSV,TenSV,DiaChi,MaKhoaHoc) KetQua(MaSV,MaMH,Diem) MonHoc(MaMH,TenMH) Cho câu truy vấn SQL sau: SELECT TenMH, count(*) FROM MonHoc s,KetQua k WHERE s.MaMH=k.MaMH And Diem>40 And k.MaMH in(Select MaMH From KetQua Group by MaMH Having count(*)>5) GROUP BY TenMH Chọn câu trả lời đúng?",
+        "answers": [
+            {
+                "content": "Danh sách các tên môn học có trên 5 sinh viên học.",
+                "is_correct": false
+            },
+            {
+                "content": "Trả về tên môn học và số sinh viên tham gia học. Mỗi môn học có nhiều hơn 5 sinh viên học và có điểm lớn hơn 40.",
+                "is_correct": true
+            },
+            {
+                "content": "Câu truy vấn trên bị lỗi.",
+                "is_correct": false
+            },
+            {
+                "content": "Danh sách các tên môn học có trên 5 sinh viên học mà có điểm lớn hơn 40.",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "cho hai quan hệ C (N, W) và A (W, D) và các câu query sau: P: SELECT N FROM C, A WHERE C.W=A.W; và T: SELECT N FROM C WHERE W in (SELECT W From A); Câu nào sau đây là đúng?",
+        "answers": [
+            {
+                "content": "P và T trả về kết quả như nhau.",
+                "is_correct": false
+            },
+            {
+                "content": "P và T trả về kết quả khác nhau.",
+                "is_correct": false
+            },
+            {
+                "content": "Kết quả cuả P luôn luôn chứa kết quả cuả T.",
+                "is_correct": true
+            },
+            {
+                "content": "Kết quả cuả T luôn luôn chứa kết quả cuả P.",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Cho lược đồ B(P, Z, X, E) đạt BCNF, có khóa chính là P. Phụ thuộc hàm nào sau đây không là của B?",
+        "answers": [
+            {
+                "content": "{P} -->{Z, X, E}",
+                "is_correct": false
+            },
+            {
+                "content": "{Z} -->{Z}",
+                "is_correct": false
+            },
+            {
+                "content": "{E}-->{Z}",
+                "is_correct": true
+            },
+            {
+                "content": "{P} --> {P}",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Cho lược đồ Cơ Sở Dữ liệu sau: NhanVien ( MaNV, HoNV, TenNV, DiaChi, ThanhPho ) KhachHang( MaKH, TenKH, DiaChi, ThanhPho, SoDu, GioiHanTinDung) HoaDon( MaHD, NgayLapHoaDon, MaKH, MaNV) ChiTietHoaDon (MaHD, MaSP, SoLuong,GiaBan ) SanPham(MaSP,MoTa, NhomHang, KhoHang,GiaGoc) Dựa vào lược đồ Cơ Sở Dữ liệu trên,Hãy liệt kê tất cả các thông tin Khách hàng có giới hạn tín dụng là 7500.",
+        "answers": [
+            {
+                "content": "SELECT MaNV WHERE GioiHanTinDung=7500",
+                "is_correct": false
+            },
+            {
+                "content": "SELECT KhachHang WHERE GioiHanTinDung=’7500’",
+                "is_correct": false
+            },
+            {
+                "content": "SELECT * From KhachHang WHERE GioiHanTinDung=7500",
+                "is_correct": true
+            },
+            {
+                "content": "SELECT MaKH WHERE GioiHanTinDung=7500",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Cho lược đồ Cơ sở dữ liệu sau: SinhVien(MaSV, HoSV, TenSV, Phai, NgaySinh, DiaChi, DienThoai, MaLop) Lop(MaLop, TenLop, MaKhoa, GVCN) KetQua(MaSV, MaMH, LanThi, Diem) MonHoc(MaMH, TenMH, SoTinChi) Liệt kê danh sách các sinh viên có điểm điểm trung bình cao nhất. Danh sách gồm (MaSV, HoSV, TenSV,DiemTrungBinh)?",
+        "answers": [
+            {
+                "content": "Select Top 1 K.MaSV, HoSV, TenSV,DiemTrungBinh=Avg(Diem) From SinhVien S, KetQua K Where S.MASV=K.MASV Group by K.MaSV, HoSV, TenSV",
+                "is_correct": false
+            },
+            {
+                "content": "Select K.MaSV, HoSV, TenSV,DiemTrungBinh=Avg(Diem) From SinhVien S, KetQua K Where S.MASV=K.MASV And DiemTrungBinh>=ALL(Select Avg(Diem) From KetQua Group by MaSV )",
+                "is_correct": false
+            },
+            {
+                "content": "Select K.MaSV, HoSV, TenSV,DiemTrungBinh=Avg(Diem) From SinhVien S, KetQua K Where S.MASV=K.MASV And DiemTrungBinh>=ALL(Select Avg(Diem) From KetQua Group by MaSV ) Group by K.MaSV, HoSV, TenSV",
+                "is_correct": false
+            },
+            {
+                "content": "Select K.MaSV, HoSV, TenSV,DiemTrungBinh=Avg(Diem) From SinhVien S, KetQua K Where S.MASV=K.MASV Group by K.MaSV, HoSV, TenSV Having avg(diem)>=ALL(Select Avg(Diem) From KetQua Group by MaSV )",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Cho lược đồ Cơ sở dữ liệu sau: SinhVien(MaSV, HoSV, TenSV, Phai, NgaySinh, DiaChi, DienThoai, MaLop) Lop(MaLop, TenLop, MaKhoa, GVCN) KetQua(MaSV, MaMH, LanThi, Diem) MonHoc(MaMH, TenMH, SoTinChi) Tạo query để tính sỉ số thực trên từng lớp. Danh sách bao gồm: MaLop, TenLop và SiSo ?",
+        "answers": [
+            {
+                "content": "Select S.Malop,TenLop,SiSo=Sum(MaSV) From Lop L, SinhVien S Group by S.Malop,TenLop",
+                "is_correct": false
+            },
+            {
+                "content": "Select S.Malop,TenLop,SiSo=Sum(MaSV) From Lop L, SinhVien S Where L.Malop=S.MaLop Group by S.Malop,TenLop",
+                "is_correct": false
+            },
+            {
+                "content": "Select S.Malop,TenLop,SiSo=Count(MaSV) From Lop L, SinhVien S Where L.Malop=S.MaLop Group by S.Malop,TenLop",
+                "is_correct": true
+            },
+            {
+                "content": "Select S.Malop,TenLop,SiSo=Count(SinhVien) From Lop L, SinhVien S Where L.Malop=S.MaLop Group by S.Malop,TenLop",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Cho lược đồ Cơ sở dữ liệu sau: SinhVien(MaSV, HoSV, TenSV, Phai, NgaySinh, DiaChi, DienThoai, MaLop) Lop(MaLop, TenLop, MaKhoa, GVCN) KetQua(MaSV, MaMH, LanThi, Diem) MonHoc(MaMH, TenMH, SoTinChi) Liệt kê danh sách các sinh viên gồm (MaSV, HoSV, TenSV) đăng ký ít nhất là 3 môn học.",
+        "answers": [
+            {
+                "content": "Select K.MaSV, HoSV, TenSV From SinhVien S, KetQua K Where S.MASV=K.MASV And count(MaMH)>=3",
+                "is_correct": false
+            },
+            {
+                "content": "Select K.MaSV, HoSV, TenSV From SinhVien S, KetQua K Where S.MaSV=K.MaSV Having count(MaMH)>=3",
+                "is_correct": false
+            },
+            {
+                "content": "Select K.MaSV, HoSV, TenSV From SinhVien S, KetQua K Where S.MaSV=K.MaSV Group by K.MaSV, HoSV, TenSV Having count(MaMH)>=3",
+                "is_correct": true
+            },
+            {
+                "content": "Select K.MaSV, HoSV, TenSV From SinhVien S, KetQua K Where S.MASV=K.MASV And count(MaMH)>=3 Group by K.MaSV, HoSV, TenSV",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Cho lược đồ CSDL gồm các bảng sau: KhachHang(MaKH, TenKH, ThanhPho) SanPham(MaSP, TenSP, SoLuong, DonGia) DaiLy (MaDL, TenDL, ThanhPho, HueHong) DatHang(MaDH, NgayDH, MaKH, MaDL, MaSP, SoLuong, ThanhTien) Chọn câu lệnh SQL để giải quyết câu truy vấn sau. Liệt kê tên các sản phẩm mà có từ hai khách hàng trở lên đặt hàng.",
+        "answers": [
+            {
+                "content": "Select TenSP from SanPham where MaSP in (select MaSP from DatHang where MaKH = 'c01' and MaKH = 'c02');",
+                "is_correct": false
+            },
+            {
+                "content": "Select TenSP from SanPham where MaSP in (select o1.MaSP from DatHang o1, DatHang o2 where o1.MaKH = 'c01' and o2.MaKH = 'c02' and o1.MaSP =o2.MaSP);",
+                "is_correct": false
+            },
+            {
+                "content": "Select TenSP from SanPham p, DatHang o1, DatHang o2 where p.MaSP =o1.MaSP and p.MaSP = o2.MaSP;",
+                "is_correct": false
+            },
+            {
+                "content": "Select distinct TenSP from SanPham p, DatHang o1, DatHang o2 where p.MaSP = o1.MaSP and p.MaSP = o2.MaSP and o1.MaKH <> o2.MaKH;",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Cho lược đồ CSDL sau: NhanVien ( MaNV, HoNV, TenNV, DiaChi, ThanhPho ) KhachHang( MaKH, TenKH, DiaChi, ThanhPho, SoDu, GioiHanTinDung) HoaDon( MaHD, NgayLapHoaDon, MaKH, MaNV) ChiTietHoaDon (MaHD, MaSP, SoLuong,GiaBan ) SanPham(MaSP,MoTa, NhomHang, KhoHang,GiaGoc) Dựa vào lược đồ Cơ Sở Dữ liệu trên, Liệt kê ra sản phẩm có giá lớn nhất?",
+        "answers": [
+            {
+                "content": "Select * From SanPham Where GiaGoc=Max(GiaGoc)",
+                "is_correct": false
+            },
+            {
+                "content": "Select * From SanPham Where GiaGoc=(Select Max(GiaGoc) From SanPham)",
+                "is_correct": true
+            },
+            {
+                "content": "Select Top 1 * From SanPham Order by GiaGoc",
+                "is_correct": false
+            },
+            {
+                "content": "Tất cả các phương án trên là đúng.",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Cho lược đồ quan hệ R(patient, consultant, hospital, address, date, time) với Khoa chính: (patient, consultant). Xác định dạng chuẩn cao nhất của R?",
+        "answers": [
+            {
+                "content": "Dạng chuẩn 3 (3NF)",
+                "is_correct": false
+            },
+            {
+                "content": "Dạng chuẩn 2 (2NF)",
+                "is_correct": true
+            },
+            {
+                "content": "Dạng chuẩn 1(1NF)",
+                "is_correct": false
+            },
+            {
+                "content": "Dạng chuẩn Boyee-Codd (BCNF)",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Cho lược đồ quan hệ gồm: NhaCungCap(MaNCC,TenNCC,ThanhPho) HangHoa(MaHang,TenHang,MauSac) CungUng(MaNCC,MaHang,SoLuong) Dùng SQL để tạo câu truy vấn sau: Liệt kê danh sách gồm MaHang,TenHang và số nhà cung cấp đến từ Atlanta mà cung cấp các sản phẩm có số lượng >100?",
+        "answers": [
+            {
+                "content": "Select Y.MaHang, Y.TenHang, Count(*) From NhaCungCap X, HangHoa Y, CungUng Z Where X.MaNCC = Z.MaNCC and Z.MaHang = Y.MaHang and X.ThanhPho= 'Atlanta' and Z.SoLuong > 100;",
+                "is_correct": false
+            },
+            {
+                "content": "Select Y.MaHang, Y.TenHang, Count(*) From NhaCungCap X, HangHoa Y, CungUng Z Where X.MaNCC = Z.MaNCC and Z.MaHang = Y.MaHang and X.ThanhPho= 'Atlanta' Group by Y.MaHang, Y.TenHang Having Count(*) > 100 Order by Y.MaHang ;",
+                "is_correct": false
+            },
+            {
+                "content": "Select Y.MaHang, Y.TenHang, Count(*) From NhaCungCap X, HangHoa Y, CungUng Z Where X.MaNCC = Z.MaNCC and Z.MaHang = Y.MaHang and X.ThanhPho= 'Atlanta' and Z.SoLuong > 100 Group by Y.MaHang, Y.TenHang Order by Y.MaHang ;",
+                "is_correct": true
+            },
+            {
+                "content": "Select Y.MaHang, Y.TenHang, Count(*) From NhaCungCap X, HangHoa Y, CungUng Z Where X.MaNCC = Z.MaNCC and Z.MaHang = Y.MaHang and X.ThanhPho= 'Atlanta' and Z.SoLuong > 100 Order by Y.MaHang ;",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Cho lược đồ quan hệ gồm: NhaCungCap(MaNCC,TenNCC,ThanhPho) HangHoa(MaHang,TenHang,MauSac) CungUng(MaNCC,MaHang,SoLuong) Tạo câu truy vấn SQL để tìm các sản phẩm được cung ứng bởi tất cả các nhà cung cấp.",
+        "answers": [
+            {
+                "content": "Select MaHang From CungUng Group By MaHang Having Count(*) = (Select Max(Count(*)) From CungUng Group By MaHang)",
+                "is_correct": false
+            },
+            {
+                "content": "Select Max(X.MaHang) From CungUng X, NhaCungCap Y Where X.MaNCC = Y.MaNCC",
+                "is_correct": false
+            },
+            {
+                "content": "Select P.MaHang From HangHoa P, CungUng S Where P.MaHang = S.MaHang",
+                "is_correct": false
+            },
+            {
+                "content": "Select MaHang From CungUng Group By MaHang Having Count(*) = (Select Count(*) From NhaCungCap)",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Cho lược đồ quan hệ gồm: NhaCungCap(MaNCC,TenNCC,ThanhPho) HangHoa(MaHang,TenHang,MauSac) CungUng(MaNCC,MaHang,SoLuong) Tạo câu truy vấn SQL để tính tổng số lượng của từng sản phẩm đã cung ứng?",
+        "answers": [
+            {
+                "content": "Select MaHang,sum(SoLuong) From CungUng Group By MaHang;",
+                "is_correct": true
+            },
+            {
+                "content": "Select MaNCC, MaHang, sum(SoLuong) From HangHoa H, CungUng C Where H.MaHang = C.MaHang Group by MaNCC, MaHang;",
+                "is_correct": false
+            },
+            {
+                "content": "Select MaHang,SoLuong From CungUng;",
+                "is_correct": false
+            },
+            {
+                "content": "Select sum(SoLuong) From CungUng;",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Cho lược đồ quan hệ gồm: PhongBan(MaPB,TenPB,NganSach) NhanVien(MaNV,TenNV,ThanhPho,Luong,MaPB) Dùng SQL để tạo câu truy vấn sau: Liệt kê tên các phòng ban có ngân sách ít hơn tổng tiền lương của các nhân viên làm việc trong phòng ban đó?",
+        "answers": [
+            {
+                "content": "Select TenPB From PhongBan P, NhanVien N Where N.MaPB=P.MaPB AND NganSach <Luong",
+                "is_correct": false
+            },
+            {
+                "content": "Select TenPB From PhongBan P Where NganSach< (Select sum(Luong) From NhanVien N Where N.MaPB = P.MaPB)",
+                "is_correct": true
+            },
+            {
+                "content": "Select TenPB From PhongBan Where NganSach< (Select sum(Luong) From NhanVien)",
+                "is_correct": false
+            },
+            {
+                "content": "Select TenPB From PhongBan P, NhanVien N Where N.MaPB=P.MaPB AND NganSach <(Select sum(Luong) From NhanVien Group By MaPB)",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Cho lược đồ quan hệ Q(A,B,C,D) và tập phụ thuộc hàm F={AB->C, B->D,BC->A}. Hỏi Q đạt dạng chuẩn nào?",
+        "answers": [
+            {
+                "content": "Dạng chuẩn 1 (1NF)",
+                "is_correct": true
+            },
+            {
+                "content": "Dạng chuẩn 2 (2NF)",
+                "is_correct": false
+            },
+            {
+                "content": "Dạng chuẩn 3 (3NF)",
+                "is_correct": false
+            },
+            {
+                "content": "Dạng chuẩn Boyee-Codd (BCNF)",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Cho lược đồ quan hệ Q(A,B,C,D) và tập phụ thuộc hàm F={AB->C, D->B,C->ABD}. Hỏi Q đạt dạng chuẩn nào?",
+        "answers": [
+            {
+                "content": "Dạng chuẩn 1 (1NF)",
+                "is_correct": false
+            },
+            {
+                "content": "Dạng chuẩn 2 (2NF)",
+                "is_correct": false
+            },
+            {
+                "content": "Dạng chuẩn 3 (3NF)",
+                "is_correct": true
+            },
+            {
+                "content": "Dạng chuẩn Boyee-Codd (BCNF)",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Cho lược đồ quan hệ Q(A,B,C,D) và tập phụ thuộc hàm F={AB->CD, B->C,C->D}. Phụ thuộc hàm nào là dư thừa?",
+        "answers": [
+            {
+                "content": "AB->CD",
+                "is_correct": true
+            },
+            {
+                "content": "B->C",
+                "is_correct": false
+            },
+            {
+                "content": "C->D",
+                "is_correct": false
+            },
+            {
+                "content": "Không có phụ thuộc hàm dư thừa",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Cho lược đồ quan hệ Q(A,B,C,D,E,G) và tập phụ thuộc hàm F={A->BC, C->DE,E- >G}. Hỏi Q đạt dạng chuẩn nào?",
+        "answers": [
+            {
+                "content": "Dạng chuẩn 1 (1NF)",
+                "is_correct": true
+            },
+            {
+                "content": "Dạng chuẩn 2 (2NF)",
+                "is_correct": false
+            },
+            {
+                "content": "Dạng chuẩn 3 (3NF)",
+                "is_correct": false
+            },
+            {
+                "content": "Dạng chuẩn Boyee-Codd (BCNF)",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Cho lược đồ quan hệ Q(A,B,C,D,E,G,H) và tập phụ thuộc hàm F={A->BC,D->E,H- >G}. Hỏi Q đạt dạng chuẩn nào?",
+        "answers": [
+            {
+                "content": "Dạng chuẩn 1 (1NF)",
+                "is_correct": true
+            },
+            {
+                "content": "Dạng chuẩn 2 (2NF)",
+                "is_correct": false
+            },
+            {
+                "content": "Dạng chuẩn 3 (3NF)",
+                "is_correct": false
+            },
+            {
+                "content": "Dạng chuẩn Boyee-Codd (BCNF)",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Cho lược đồ quan hệ Q(A,B,C,D,E,G,H) và tập phụ thuộc hàm F={C->AB,D->E,B- >G}. Hỏi Q đạt dạng chuẩn nào?",
+        "answers": [
+            {
+                "content": "Dạng chuẩn 1 (1NF)",
+                "is_correct": true
+            },
+            {
+                "content": "Dạng chuẩn 2 (2NF)",
+                "is_correct": false
+            },
+            {
+                "content": "Dạng chuẩn 3 (3NF)",
+                "is_correct": false
+            },
+            {
+                "content": "Dạng chuẩn Boyee-Codd (BCNF)",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Cho lược đồ quan hệ Q(A,B,C,D,E,I) và tập phụ thuộc hàm F={ACD->EBI, CE->AD}. Hỏi Q đạt dạng chuẩn nào?",
+        "answers": [
+            {
+                "content": "Dạng chuẩn 1 (1NF)",
+                "is_correct": false
+            },
+            {
+                "content": "Dạng chuẩn 2 (2NF)",
+                "is_correct": false
+            },
+            {
+                "content": "Dạng chuẩn 3 (3NF)",
+                "is_correct": false
+            },
+            {
+                "content": "Dạng chuẩn Boyee-Codd (BCNF)",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Cho lược đồ quan hệ Q(C,S,Z) và tập phụ thuộc hàm F={CS->Z,Z->C}. Hỏi Q đạt dạng chuẩn nào?",
+        "answers": [
+            {
+                "content": "Dạng chuẩn 1 (1NF)",
+                "is_correct": false
+            },
+            {
+                "content": "Dạng chuẩn 2 (2NF)",
+                "is_correct": false
+            },
+            {
+                "content": "Dạng chuẩn 3 (3NF)",
+                "is_correct": true
+            },
+            {
+                "content": "Dạng chuẩn Boyee-Codd (BCNF)",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Cho lược đồ quan hệ R và tập các phụ thuộc hàm F={AB->E, AG->I, BE->I, E->G, GI->H}. Phụ thuộc hàm nào sau đây được suy ra từ F?",
+        "answers": [
+            {
+                "content": "AB->GH",
+                "is_correct": true
+            },
+            {
+                "content": "A->G",
+                "is_correct": false
+            },
+            {
+                "content": "B->I",
+                "is_correct": false
+            },
+            {
+                "content": "A->I",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Cho lược đồ quan hệ R(A,B,C,D) và tập phụ thuộc hàm F={A->BC, B->D,AB->D}. Phụ thuộc hàm nào là dư thưà?",
+        "answers": [
+            {
+                "content": "A->BC",
+                "is_correct": false
+            },
+            {
+                "content": "B->D",
+                "is_correct": false
+            },
+            {
+                "content": "AB->D",
+                "is_correct": true
+            },
+            {
+                "content": "Không có phụ thuộc hàm dư thừa",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Cho lược đồ quan hệ R(B,K,Q,A,O) với tập phụ thuộc hàm F={BK->QO, K->A, A- >B}. Phụ thuộc hàm nào sau đây không được dẫn xuất ra từ F?",
+        "answers": [
+            {
+                "content": "K->AQO",
+                "is_correct": false
+            },
+            {
+                "content": "B->KQO",
+                "is_correct": true
+            },
+            {
+                "content": "A->QO",
+                "is_correct": false
+            },
+            {
+                "content": "K->B",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Cho lược đồ quan hệ R(Emp#,Dept#,City) và khóa K(Emp#,Dept#), tập phụ thuộc hàm F: F = {Emp# -> City, Emp# -> Dept#, Dept# -> City, Emp#,Dept# -> City}, Tập phụ thuộc hàm nào sau đây là phủ tối thiểu của F?",
+        "answers": [
+            {
+                "content": "{Emp#, Dept# -> City, Emp# -> Dept}",
+                "is_correct": false
+            },
+            {
+                "content": "{Emp# -> Dept#, Dept# -> City}",
+                "is_correct": true
+            },
+            {
+                "content": "{Emp# -> City, Dept# -> City}",
+                "is_correct": false
+            },
+            {
+                "content": "{Emp# -> City, Emp# -> Dept#}",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Cho lược đồ quan hệ R(I,V,H,P,O,F,M) với tập phụ thuộc hàm F={IV->FM, O->IVH, HF->PM, HPM->F, IVM->O}. Bao đóng của {I V} là:",
+        "answers": [
+            {
+                "content": "{I H P M O F}",
+                "is_correct": false
+            },
+            {
+                "content": "{I V H P M O F}",
+                "is_correct": true
+            },
+            {
+                "content": "{I V H M O F}",
+                "is_correct": false
+            },
+            {
+                "content": "{I V H P M O}",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Cho lược đồ quan hệ R(J, F, Z, G) với tập phụ thuộc hàm F={J F->Z G, F Z->J G}. Bao đóng của {J F} là:",
+        "answers": [
+            {
+                "content": "{J F Z}",
+                "is_correct": false
+            },
+            {
+                "content": "{G J Z}",
+                "is_correct": false
+            },
+            {
+                "content": "{J F G}",
+                "is_correct": false
+            },
+            {
+                "content": "{F Z J G}",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Cho lược đồ quan hệ R(N,W,R,B,C) với tập phụ thuộc hàm F={N->W, W->R, N->B, C->N, B->C}. Tập thuộc tính nào sau đây không phải là khóa?",
+        "answers": [
+            {
+                "content": "B",
+                "is_correct": false
+            },
+            {
+                "content": "W, R",
+                "is_correct": true
+            },
+            {
+                "content": "N",
+                "is_correct": false
+            },
+            {
+                "content": "C",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Cho lược đồ quan hệ R(P, G, I, F, O) với tập phụ thuộc hàm F={P->G, G->I, GI->P, P->F, O->P, F->O}. Tập thuộc tính nào sau đây không phải là khóa?",
+        "answers": [
+            {
+                "content": "G, I",
+                "is_correct": true
+            },
+            {
+                "content": "F",
+                "is_correct": false
+            },
+            {
+                "content": "P",
+                "is_correct": false
+            },
+            {
+                "content": "O",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Cho lược đồ quan hệ R(V,Z,W,Y,F) với tập phụ thuộc hàm F={UX->VB, X->N, N->U}. Phụ thuộc hàm nào sau đây không được suy diễn từ F:",
+        "answers": [
+            {
+                "content": "VZ->V",
+                "is_correct": false
+            },
+            {
+                "content": "VY->WZ",
+                "is_correct": true
+            },
+            {
+                "content": "ZW->YF",
+                "is_correct": false
+            },
+            {
+                "content": "Z->F",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Cho lược đồ quan hệ R(W,B,F,K,A) với tập phụ thuộc hàm F={WB->F, FK->A, F->W, A->K}. Bao đóng của tập thuộc tính {W, B, A} đối với F là:",
+        "answers": [
+            {
+                "content": "{W B A}",
+                "is_correct": false
+            },
+            {
+                "content": "{W B A K}",
+                "is_correct": false
+            },
+            {
+                "content": "{W B F K A}",
+                "is_correct": true
+            },
+            {
+                "content": "{W B A F}",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Cho lược đồ quan hệ sau: Sach(TenSach,TacGia,NamXB,NhaXB) Chúng ta có thể suy ra phụ thuộc hàm:",
+        "answers": [
+            {
+                "content": "TacGia,NhaXB -> NhaXB",
+                "is_correct": true
+            },
+            {
+                "content": "TacGia -> NhaXB",
+                "is_correct": false
+            },
+            {
+                "content": "TenSach-> TacGia",
+                "is_correct": false
+            },
+            {
+                "content": "NamXB -> NhaXB",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Cho mô hình thực thể kết hợp (Mô hình ER) như hình bên. Hãy chuyển từ mô hình ER sang lược đồ Cơ sở dữ liệu?",
+        "answers": [
+            {
+                "content": "Học Viên (Mã học viên, tên học viên, địa chỉ, ngày sinh, số điện thoại, ngày nhập học, mã môn học) Môn học(Mã môn học, tên môn học, thời lượng) Khóa chính là Mã môn học Với: khoá chính của bảng học viên là Mã học viên và khoá chính của bảng môn học là Mã môn học.",
+                "is_correct": true
+            },
+            {
+                "content": "Học Viên (Mã học viên, tên học viên, địa chỉ, ngày sinh, số điện thoại, ngày nhập học,Mã môn học) Môn học(Mã môn học, tên môn học, thời lượng, Mã học viên) Với: khóa chính của bảng học viên là Mã học viên, Mã môn học và khóa chính của bảng môn học là Mã môn học, Mã học viên.",
+                "is_correct": false
+            },
+            {
+                "content": "Học Viên (Mã học viên, tên học viên, địa chỉ, ngày sinh, số điện thoại, ngày nhập học) Môn học(Mã môn học, tên môn học, thời lượng) GhiDanh(Mã học viên, Mã môn học) Với: khoá chính của bảng học viên là Mã học viên và khoá chính của bảng môn học là Mã môn học.",
+                "is_correct": false
+            },
+            {
+                "content": "Học Viên (Mã học viên, tên học viên, địa chỉ, ngày sinh, số điện thoại, ngày nhập học) Môn học(Mã học viên, tên môn học, thời lượng, Mã học viên) Với: khóa chính của bảng học viên là Mã học viên và khoá chính của bảng môn học là Mã môn học.",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Cho quan hệ student(sno, sname, cname, cno) với tập các khóa của student K={ (sno, cno),(sname, cname)}. Xác định dạng chuẩn cao nhất của student:",
+        "answers": [
+            {
+                "content": "Dạng chuẩn 1 (1NF)",
+                "is_correct": false
+            },
+            {
+                "content": "Dạng chuẩn 2 (2NF)",
+                "is_correct": false
+            },
+            {
+                "content": "BCNF",
+                "is_correct": false
+            },
+            {
+                "content": "3NF",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Cho quan hệ (A,B,C), nếu A -> B, A -> C, và B -> C , câu nào sau đây đúng?",
+        "answers": [
+            {
+                "content": "Quan hệ không ở dạng chuẩn 2NF",
+                "is_correct": true
+            },
+            {
+                "content": "B là 1 khóa chính",
+                "is_correct": false
+            },
+            {
+                "content": "C là 1 định danh",
+                "is_correct": false
+            },
+            {
+                "content": "Quan hệ giữa A và B là 1 khóa chính",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Cho quan hệ CungUng(MaNCC,MaHang,SoLuong) câu truy vấn SQL nào sao đây tương đương với phép chiếu (project) trong đại số quan hệ dựa trên cột MaNCC?",
+        "answers": [
+            {
+                "content": "Select MaNCC From CungUng;",
+                "is_correct": false
+            },
+            {
+                "content": "Select MaNCC From CungUng Order by MaNCC;",
+                "is_correct": false
+            },
+            {
+                "content": "Select * From CungUng;",
+                "is_correct": false
+            },
+            {
+                "content": "Select Distinct MaNCC From CungUng;",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Cho quan hệ CungUng(MaNCC,MaHang,SoLuong) Câu truy vấn SQL nào sao đây tương ứng với phép chiếu (project) và phép chọn (selection) trong đại số quan hệ?",
+        "answers": [
+            {
+                "content": "Select MaNCC From CungUng;",
+                "is_correct": false
+            },
+            {
+                "content": "Select * From CungUng;",
+                "is_correct": false
+            },
+            {
+                "content": "Select Distinct S1.MaNCC From CungUng S1, CungUng S2 Where S1.SoLuong > S2.SoLuong;",
+                "is_correct": false
+            },
+            {
+                "content": "Select Distinct MaNCC From CungUng Where SoLuong> 35;",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Cho quan hệ R([F,Z],C,K,S) ít nhất là đạt dạng chuẩn 3. Phụ thuộc hàm nào sau đây bị vi phạm?",
+        "answers": [
+            {
+                "content": "FC->S",
+                "is_correct": false
+            },
+            {
+                "content": "CK->S",
+                "is_correct": true
+            },
+            {
+                "content": "FZ->C",
+                "is_correct": false
+            },
+            {
+                "content": "FZ->K",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Để giới hạn số dòng bị trùng trong câu truy vấn, Từ khóa nào nào sao đây được sử dụng trong câu lệnh Select?",
+        "answers": [
+            {
+                "content": "Check",
+                "is_correct": false
+            },
+            {
+                "content": "Alter",
+                "is_correct": false
+            },
+            {
+                "content": "Distinct",
+                "is_correct": true
+            },
+            {
+                "content": "Specific",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Để lấy tất cả các dòng trong hai Table A và B ta dùng toán tử?",
+        "answers": [
+            {
+                "content": "product",
+                "is_correct": false
+            },
+            {
+                "content": "intersection",
+                "is_correct": false
+            },
+            {
+                "content": "union",
+                "is_correct": true
+            },
+            {
+                "content": "difference",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Để sửa đổi cấu trúc của bảng ta sử dụng lệnh:",
+        "answers": [
+            {
+                "content": "ALTER DATABASE",
+                "is_correct": false
+            },
+            {
+                "content": "ALTER TABLE",
+                "is_correct": true
+            },
+            {
+                "content": "ALTER COLUMN",
+                "is_correct": false
+            },
+            {
+                "content": "Lựa chọn khác",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Để tạo bảng CSDL ta sử dụng lệnh:",
+        "answers": [
+            {
+                "content": "CREATE DATABASE",
+                "is_correct": false
+            },
+            {
+                "content": "CREATE TABLE",
+                "is_correct": true
+            },
+            {
+                "content": "ALTER TABLE",
+                "is_correct": false
+            },
+            {
+                "content": "Lựa chọn khác",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Để thay đổi dữ liệu hiện thời trong một bảng, bạn sẽ sử dụng lệnh _____.",
+        "answers": [
+            {
+                "content": "DELETE",
+                "is_correct": false
+            },
+            {
+                "content": "CHANGE",
+                "is_correct": false
+            },
+            {
+                "content": "SELECT",
+                "is_correct": false
+            },
+            {
+                "content": "UPDATE",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Đếm (Count), Tổng (Sum), Trung bình (Avg), Tối đa (Max), và Tối thiểu (Min) là một số trong các hàm thống kê (statistics) sẵn có hoặc các hàm _____ có thể được sử dụng trong một truy vấn.",
+        "answers": [
+            {
+                "content": "Accumulated (tổng)",
+                "is_correct": false
+            },
+            {
+                "content": "Allowed (được phép)",
+                "is_correct": false
+            },
+            {
+                "content": "Primary (chính)",
+                "is_correct": false
+            },
+            {
+                "content": "Aggregate (gộp nhóm)",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Điều kiện nào sau đây trong một quan hệ luôn luôn đạt dạng chuẩn 2 (2NF)",
+        "answers": [
+            {
+                "content": "Nếu có phụ thuộc bắc cầu.",
+                "is_correct": false
+            },
+            {
+                "content": "Nếu tất cả các khóa của quan hệ này chỉ gồm một thuộc tính.",
+                "is_correct": true
+            },
+            {
+                "content": "Nếu chỉ có một khóa.",
+                "is_correct": false
+            },
+            {
+                "content": "Nếu tất cả các phụ thuộc hàm là riêng phần.",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Điều kiện để 2 bảng có thể kết (join) với nhau là:",
+        "answers": [
+            {
+                "content": "Hai bảng phải có cùng số cột.",
+                "is_correct": false
+            },
+            {
+                "content": "Hai bảng phải có chung giá trị trong các dòng.",
+                "is_correct": false
+            },
+            {
+                "content": "Hai bảng phải có chung ít nhất một cột.",
+                "is_correct": true
+            },
+            {
+                "content": "Hai bảng phải có khóa chính.",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Dữ liệu mô tả đầy đủ về một đối tượng gọi là?",
+        "answers": [
+            {
+                "content": "Quan hệ",
+                "is_correct": false
+            },
+            {
+                "content": "Bộ dữ liệu",
+                "is_correct": true
+            },
+            {
+                "content": "Lược đồ quan hệ",
+                "is_correct": false
+            },
+            {
+                "content": "Lựa chọn khác",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Giả sử bảng Employee có n dòng dữ liệu (n>1). Hãy cho biết kết quả lệnh truy vấn sau có bao nhiêu dòng? SELECT e1.name, e2.name FROM employee e1, employee e2",
+        "answers": [
+            {
+                "content": "0",
+                "is_correct": false
+            },
+            {
+                "content": ">n",
+                "is_correct": true
+            },
+            {
+                "content": "n",
+                "is_correct": false
+            },
+            {
+                "content": "< n",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Giả sử lược đồ quan hệ R(A,B,C,D) đạt 3NF. Phụ thuộc hàm nào sau đây là không thuộc tâp phụ thuộc hàm F của R?",
+        "answers": [
+            {
+                "content": "BC->D",
+                "is_correct": false
+            },
+            {
+                "content": "C->D",
+                "is_correct": false
+            },
+            {
+                "content": "C->C",
+                "is_correct": false
+            },
+            {
+                "content": "Cả 3 lựa chọn trên",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Giả sử quan hệ R([K, W], U ,I, Z) đạt 3NF. Phụ thuộc hàm nào sau đây là sai?",
+        "answers": [
+            {
+                "content": "K, W->U",
+                "is_correct": false
+            },
+            {
+                "content": "U, I->Z",
+                "is_correct": true
+            },
+            {
+                "content": "Lựa chọn khác",
+                "is_correct": false
+            },
+            {
+                "content": "K, W->I",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Hai thực thể kết hợp với nhau theo mối kết hợp 1-n (không có phát sinh thuộc tính trong mối kết hợp) thì khi chuyển sang quan hệ số quan hệ sẽ là?",
+        "answers": [
+            {
+                "content": "2",
+                "is_correct": true
+            },
+            {
+                "content": "3",
+                "is_correct": false
+            },
+            {
+                "content": "1",
+                "is_correct": false
+            },
+            {
+                "content": "Tất cả đều sai",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Hai thực thể kết hợp với nhau theo mối kết hợp n-n thì khi chuyển sang quan hệ số quan hệ sẽ là?",
+        "answers": [
+            {
+                "content": "2",
+                "is_correct": false
+            },
+            {
+                "content": "3",
+                "is_correct": true
+            },
+            {
+                "content": "1",
+                "is_correct": false
+            },
+            {
+                "content": "Tất cả đều sai",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Hàm dùng để tính tổng các giá trị của cột kiểu number là:",
+        "answers": [
+            {
+                "content": "ADD",
+                "is_correct": false
+            },
+            {
+                "content": "TOTAL",
+                "is_correct": false
+            },
+            {
+                "content": "AVERAGE",
+                "is_correct": false
+            },
+            {
+                "content": "SUM",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Hàm nào sau đây dùng để tính tổng các giá trị của cột thuộc kiểu number?",
+        "answers": [
+            {
+                "content": "TOTAL",
+                "is_correct": false
+            },
+            {
+                "content": "SUM",
+                "is_correct": true
+            },
+            {
+                "content": "ADD",
+                "is_correct": false
+            },
+            {
+                "content": "AVERAGE",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Hãy chuyển từ mô hình ER sang lược đồ Cơ sở dữ liệu? Với mô hình thực thể kết hợp (Mô hình ER) như hình bên.",
+        "answers": [
+            {
+                "content": "Học Viên (Mã học viên, tên học viên, địa chỉ, ngày sinh, số điện thoại, ngày nhập học, mã môn học) Môn học(Mã môn học, tên môn học, thời lượng) Với: khoá chính của bảng học viên là Mã học viên Khoá chính của bảng \"Môn học\" là Mã môn học Khoá chính của bảng \"Phiếu Ghi Danh\" là Mã học viên, Mã môn học",
+                "is_correct": false
+            },
+            {
+                "content": "Học Viên (Mã học viên, tên học viên, điạ chỉ, ngày sinh, số điện thoại) Môn học(Mã môn học, tên môn học, thời lượng) Phiếu Ghi Danh(Mã học viên,Mã môn học,Ngày nhập học ) Với: khoá chính của bảng \"Học Viên\" là Mã học viên Khoá chính của bảng \"Môn học\" là Mã môn học Khoá chính của bảng \"Phiếu Ghi Danh\" là Mã học viên, Mã môn học",
+                "is_correct": true
+            },
+            {
+                "content": "Học Viên (Mã học viên, tên học viên, địa chỉ, ngày sinh, số điện thoại, ngày nhập học, Mã môn học) Môn học(Mã môn học, tên môn học, thời lượng) GhiDanh(Mã học viên, Mã môn học) Với: khoá chính của bảng học viên là Mã học viên Khoá chính của bảng \"Môn học\" là Mã môn học Khoá chính của bảng \"Phiếu Ghi Danh\" là Mã học viên, Mã môn học",
+                "is_correct": false
+            },
+            {
+                "content": "Học Viên (Mã học viên, tên học viên, địa chỉ, ngày sinh, số điện thoại, ngày nhập học) Môn học(Mã môn học, tên môn học, thời lượng, Mã học viên) Với: khóa chính của bảng học viên là Mã học viên Khoá chính của bảng \"Môn học\" là Mã môn học Khoá chính của bảng \"Phiếu Ghi Danh\" là Mã học viên, Mã môn học",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Họ tên, ngày sinh, số CMND của một người là ví dụ cho:",
+        "answers": [
+            {
+                "content": "Thực thể",
+                "is_correct": false
+            },
+            {
+                "content": "Thuộc tính",
+                "is_correct": true
+            },
+            {
+                "content": "Quan hệ",
+                "is_correct": false
+            },
+            {
+                "content": "Lựa chọn khác",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Khi chuyển mô hình ERD ở trên sang mô hình quan hệ thì số quan hệ là? (hình bên)",
+        "answers": [
+            {
+                "content": "5",
+                "is_correct": false
+            },
+            {
+                "content": "6",
+                "is_correct": true
+            },
+            {
+                "content": "7",
+                "is_correct": false
+            },
+            {
+                "content": "4",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Khi chuyển sang mô hình quan hệ mối kết hợp giữa NH N VIÊN và DỰ ÁN thì sẽ có số quan hệ là? (Hình bên)",
+        "answers": [
+            {
+                "content": "3",
+                "is_correct": true
+            },
+            {
+                "content": "2",
+                "is_correct": false
+            },
+            {
+                "content": "4",
+                "is_correct": false
+            },
+            {
+                "content": "5",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Khi chuyển sang mô hình quan hệ toàn bộ mô hình ERD ở trên thì sẽ có số quan hệ là (Hình bên)?",
+        "answers": [
+            {
+                "content": "3",
+                "is_correct": false
+            },
+            {
+                "content": "6",
+                "is_correct": false
+            },
+            {
+                "content": "4",
+                "is_correct": true
+            },
+            {
+                "content": "5",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Khi hai hoặc nhiều bảng kết với nhau thì có bao nhiêu lần từ khóa WHERE được dùng?",
+        "answers": [
+            {
+                "content": "Mỗi bảng 1 lần. n bảng sẽ có n từ khóa WHERE được sử dụng.",
+                "is_correct": false
+            },
+            {
+                "content": "Hai.",
+                "is_correct": false
+            },
+            {
+                "content": "Một.",
+                "is_correct": true
+            },
+            {
+                "content": "Tất cả đều sai.",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Khi mỗi một thuộc tính không khoá đều được xác định bởi cả khoá chính, thì quan hệ này ít nhất cũng thuộc dạng chuẩn sau:",
+        "answers": [
+            {
+                "content": "Dạng chuẩn 1 (1NF)",
+                "is_correct": false
+            },
+            {
+                "content": "Dạng chuẩn 2 (2NF)",
+                "is_correct": true
+            },
+            {
+                "content": "Dạng chuẩn 3 (3NF)",
+                "is_correct": false
+            },
+            {
+                "content": "Dạng chuẩn Boyee-Codd (BCNF)",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Khi ta nói đến một quan hệ gồm có n-bộ (tuple), n ở đây có nghĩa là:",
+        "answers": [
+            {
+                "content": "Số bộ trong quan hệ.",
+                "is_correct": true
+            },
+            {
+                "content": "Số byte trong một bộ.",
+                "is_correct": false
+            },
+            {
+                "content": "Số thuộc tính trong quan hệ.",
+                "is_correct": false
+            },
+            {
+                "content": "Số quan hệ trong Cơ sở dữ liệu.",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Khi tạo một khóa ngoại, chúng ta cũng tạo một?",
+        "answers": [
+            {
+                "content": "Ràng buộc tham chiếu khóa ngoại",
+                "is_correct": true
+            },
+            {
+                "content": "Ràng buộc kiểu con",
+                "is_correct": false
+            },
+            {
+                "content": "Ràng buộc khóa ngoại",
+                "is_correct": false
+            },
+            {
+                "content": "ràng buộc khóa chính",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Khi thực hiện câu lệnh SQL để xóa cấu trúc của một bảng, điều gì xảy ra đối với dữ liệu chứa trong bảng đó?",
+        "answers": [
+            {
+                "content": "Nếu bảng bị xóa là bảng cha, thì dữ liệu sẽ được đưa vào bảng con tương ứng.",
+                "is_correct": false
+            },
+            {
+                "content": "Nếu bảng bị xóa là bảng con, thì dữ liệu sẽ đưa vào bảng cha tương ứng.",
+                "is_correct": false
+            },
+            {
+                "content": "Không thể xóa được. Chỉ xóa được cấu trúc của bảng khi tất cả dữ liệu trong bảng đó đã bị xóa.",
+                "is_correct": false
+            },
+            {
+                "content": "Dữ liệu trong bảng đó cũng bị xóa theo.",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Khoá _____ của một bảng là cột hoặc một tập hợp các cột mà các cột này chỉ xác định một dòng đã cho trong bảng đó.",
+        "answers": [
+            {
+                "content": "Primary (chính)",
+                "is_correct": true
+            },
+            {
+                "content": "Secondary (phụ)",
+                "is_correct": false
+            },
+            {
+                "content": "Foreign (ngoại)",
+                "is_correct": false
+            },
+            {
+                "content": "Minor (nhỏ)",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Khoá được định nghiã trên một thuộc tính hoặc một tập thuộc tính như sau:",
+        "answers": [
+            {
+                "content": "Là một tập hợp nhỏ nhất các thuộc tính",
+                "is_correct": false
+            },
+            {
+                "content": "Bao đóng chưá tất cả các thuộc tính cuả bảng đó",
+                "is_correct": false
+            },
+            {
+                "content": "Là tập hợp nhỏ nhất các thuộc tính mà nó xác định được tất cả các thuộc tính còn lại trong bảng đó.",
+                "is_correct": true
+            },
+            {
+                "content": "Nó xác định giá trị cuả tất cả các thuộc tính còn lại trong bảng.",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Không có mệnh đề Where trong một câu lệnh Delete có ảnh hưởng gì?",
+        "answers": [
+            {
+                "content": "Câu lệnh Delete sẽ lỗi do không có dòng nào được xóa.",
+                "is_correct": false
+            },
+            {
+                "content": "Câu lệnh Delete sẽ thông báo cho người sử dụng nhập điều kiện để xóa.",
+                "is_correct": false
+            },
+            {
+                "content": "Câu lệnh Delete sẽ xóa tất cả các mẩu tin trong bảng.",
+                "is_correct": true
+            },
+            {
+                "content": "Câu lệnh Delete sẽ lỗi do sai cú pháp.",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Ký hiệu X->Y được đọc là?",
+        "answers": [
+            {
+                "content": "X xác định Y",
+                "is_correct": false
+            },
+            {
+                "content": "Y phụ thuộc X",
+                "is_correct": false
+            },
+            {
+                "content": "Cả 2 phương án: 1 và 2",
+                "is_correct": true
+            },
+            {
+                "content": "Lựa chọn khác",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Ký tự nào sau đây được dùng để thay thế cho tất cả các cột trong mệnh đề SELECT:",
+        "answers": [
+            {
+                "content": "&",
+                "is_correct": false
+            },
+            {
+                "content": "@",
+                "is_correct": false
+            },
+            {
+                "content": "#",
+                "is_correct": false
+            },
+            {
+                "content": "*",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Lệnh nào sau đây được dùng để thiết lập khóa ngoại:",
+        "answers": [
+            {
+                "content": "Add foreign key MaPB to table NhanVien",
+                "is_correct": false
+            },
+            {
+                "content": "Insert MaPB into table NhanVien",
+                "is_correct": false
+            },
+            {
+                "content": "Create foreign key (MaPB) references NhanVien",
+                "is_correct": false
+            },
+            {
+                "content": "Alter table NhanVien add foreign key (MaPB) references PhongBan(MaPB)",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Cho bảng NhanVien(MaNV, HoTenNV, MaPB, Luong). Liệt kê danh sách tất cả các nhân viên và được sắp xếp giảm dần theo lương?",
+        "answers": [
+            {
+                "content": "SELECT * FROM NhanVien SORT BY Luong DESCENDING;",
+                "is_correct": false
+            },
+            {
+                "content": "SELECT * FROM NhanVien IN ORDER OF Luong;",
+                "is_correct": false
+            },
+            {
+                "content": "SELECT * FROM NhanVien ORDER BY Luong DESC;",
+                "is_correct": true
+            },
+            {
+                "content": "SELECT * FROM NhanVien ORDER BY Luong;",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Lược đồ ER giúp chúng ta trong việc?",
+        "answers": [
+            {
+                "content": "Thiết kế hàm",
+                "is_correct": false
+            },
+            {
+                "content": "Thiết kế cơ sở dữ liệu",
+                "is_correct": true
+            },
+            {
+                "content": "Thiết kế modul",
+                "is_correct": false
+            },
+            {
+                "content": "Thiết kế thủ tục",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Lược đồ quan hệ (Relation Schema) là:",
+        "answers": [
+            {
+                "content": "Một tập hợp các bộ.",
+                "is_correct": false
+            },
+            {
+                "content": "Tập hợp tất cả các thuộc tính cần quản lý cuả một đối tượng cùng với mối quan hệ giữa chúng.",
+                "is_correct": true
+            },
+            {
+                "content": "Một tập hợp giá trị dữ liệu.",
+                "is_correct": false
+            },
+            {
+                "content": "Mô hình thực thể kết hợp.",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Lược đồ quan hệ R đạt dạng chuẩn 3 nếu:",
+        "answers": [
+            {
+                "content": "R đạt dạng chuẩn 2 và mọi thuộc tính không khoá cuả R đều không phụ thuộc bắc cầu vào khoá chính.",
+                "is_correct": true
+            },
+            {
+                "content": "Mỗi thuộc tính không khoá cuả R đều phụ thuộc đầy đủ vào khoá",
+                "is_correct": false
+            },
+            {
+                "content": "Tất cuả các thuộc tính cuả R có miền giá trị.",
+                "is_correct": false
+            },
+            {
+                "content": "R chứa chỉ 3 khoá.",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Mệnh đề FROM trong ngôn ngữ truy vấn dữ liệu SQL có tác dụng:",
+        "answers": [
+            {
+                "content": "Giới hạn số dòng trong kết quả",
+                "is_correct": false
+            },
+            {
+                "content": "Thiết lập điều kiện",
+                "is_correct": false
+            },
+            {
+                "content": "Xác định nguồn dữ liệu trong truy vấn",
+                "is_correct": true
+            },
+            {
+                "content": "Lựa chọn khác",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Mệnh đề gì để giới hạn giá trị đã thống kê của một cột nào đó cho lớn hơn một giá trị cho trước? Kết quả thống kê là các giá trị có thuộc tính là số.",
+        "answers": [
+            {
+                "content": "SELECT",
+                "is_correct": false
+            },
+            {
+                "content": "GROUP BY",
+                "is_correct": false
+            },
+            {
+                "content": "HAVING",
+                "is_correct": true
+            },
+            {
+                "content": "WHERE",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Mệnh đề nào sau đây được dùng để đặt điều kiện chọn nhóm trong câu lệnh truy vấn dữ liệu:",
+        "answers": [
+            {
+                "content": "Select",
+                "is_correct": false
+            },
+            {
+                "content": "Where",
+                "is_correct": false
+            },
+            {
+                "content": "Find",
+                "is_correct": false
+            },
+            {
+                "content": "Having",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Mệnh đề nào sau đây được dùng để nhập dữ liệu vào bảng publishers",
+        "answers": [
+            {
+                "content": "insert into publishers data ('0010', 'Pragmatics', '4 4th ln.', 'Chicago', 'IL')",
+                "is_correct": false
+            },
+            {
+                "content": "insert into publishers entities ('0010', 'Pragmatics', '4 4th ln.', 'Chicago', 'IL')",
+                "is_correct": false
+            },
+            {
+                "content": "insert into publishers values ('0010', 'Pragmatics', '4 4th ln.', 'Chicago', 'IL')",
+                "is_correct": true
+            },
+            {
+                "content": "insert into publishers tuples ('0010', 'Pragmatics', '4 4th ln.', 'Chicago', 'IL')",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Mệnh đề nào trong câu truy vấn giới hạn số cột sẽ trả về?",
+        "answers": [
+            {
+                "content": "SELECT",
+                "is_correct": true
+            },
+            {
+                "content": "ORDER BY",
+                "is_correct": false
+            },
+            {
+                "content": "FROM",
+                "is_correct": false
+            },
+            {
+                "content": "WHERE",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Mệnh đề Order By trong câu lệnh SQL dùng để sắp sếp dữ liệu kết quả truy vấn. Ta có những phương pháp sắp xếp nào?",
+        "answers": [
+            {
+                "content": "ACS/DECS",
+                "is_correct": false
+            },
+            {
+                "content": "ASC/DESC",
+                "is_correct": true
+            },
+            {
+                "content": "ABS/DESC",
+                "is_correct": false
+            },
+            {
+                "content": "Lựa chọn khác",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Mệnh đề SELECT trong ngôn ngữ truy vấn dữ liệu SQL có tác dụng:",
+        "answers": [
+            {
+                "content": "Giới hạn số dòng trong kết quả",
+                "is_correct": false
+            },
+            {
+                "content": "Giới hạn số cột trong kết quả",
+                "is_correct": true
+            },
+            {
+                "content": "Thiết lập điều kiện",
+                "is_correct": false
+            },
+            {
+                "content": "Lựa chọn khác",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Mệnh đề WHERE trong ngôn ngữ truy vấn dữ liệu SQL có tác dụng:",
+        "answers": [
+            {
+                "content": "Giới hạn số cột trong kết quả",
+                "is_correct": false
+            },
+            {
+                "content": "Thiết lập điều kiện",
+                "is_correct": true
+            },
+            {
+                "content": "Xác định nguồn dữ liệu trong truy vấn",
+                "is_correct": false
+            },
+            {
+                "content": "Lựa chọn khác",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Mô hình chuẩn để thiết kế hệ thống thông tin là mô hình nào sau đây?",
+        "answers": [
+            {
+                "content": "Mô hình E-R",
+                "is_correct": true
+            },
+            {
+                "content": "Mô hình dữ liệu quan hệ",
+                "is_correct": false
+            },
+            {
+                "content": "Lựa chọn khác",
+                "is_correct": false
+            },
+            {
+                "content": "Tất cả lựa chọn trên",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Mô hình dữ liệu sử dụng trong các hệ quản trị cơ sở dữ liệu là mô hình nào?",
+        "answers": [
+            {
+                "content": "Mô hình thực thể mối kết hợp",
+                "is_correct": false
+            },
+            {
+                "content": "Mô hình dữ liệu quan hệ",
+                "is_correct": true
+            },
+            {
+                "content": "Cả hai mô hình trên",
+                "is_correct": false
+            },
+            {
+                "content": "Lựa chọn khác",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Mối kết hợp “Quản lý trực tiếp” được gọi là (Hình bên)?",
+        "answers": [
+            {
+                "content": "Mối kết hợp được sinh ra từ một mối kết hợp khác",
+                "is_correct": false
+            },
+            {
+                "content": "Nhiều mối kết hợp khác nhau trên một cặp thực thể",
+                "is_correct": false
+            },
+            {
+                "content": "Mối kết hợp đệ qui",
+                "is_correct": true
+            },
+            {
+                "content": "Tất cả đều sai",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Mối kết hợp “Quản lý trực tiếp” là mối kết hợp (Hình bên)",
+        "answers": [
+            {
+                "content": "1-0",
+                "is_correct": false
+            },
+            {
+                "content": "0-n",
+                "is_correct": false
+            },
+            {
+                "content": "1-1",
+                "is_correct": true
+            },
+            {
+                "content": "1-n",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Mối kết hợp “Quản lý” là mối kết hợp (Hình bên)?",
+        "answers": [
+            {
+                "content": "0-1",
+                "is_correct": false
+            },
+            {
+                "content": "0-n",
+                "is_correct": false
+            },
+            {
+                "content": "1-1",
+                "is_correct": false
+            },
+            {
+                "content": "1-n",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Mối kết hợp “Tham gia” là mối kết hợp (Hình bên)?",
+        "answers": [
+            {
+                "content": "1-n",
+                "is_correct": false
+            },
+            {
+                "content": "n-1",
+                "is_correct": false
+            },
+            {
+                "content": "1-1",
+                "is_correct": false
+            },
+            {
+                "content": "n-n",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Mối kết hợp “Thuộc” là mối kết hợp (Hình bên)?",
+        "answers": [
+            {
+                "content": "1-1",
+                "is_correct": false
+            },
+            {
+                "content": "1-n",
+                "is_correct": true
+            },
+            {
+                "content": "n-n",
+                "is_correct": false
+            },
+            {
+                "content": "n-1",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Mối kết hợp giữa hai thực thể NH N VIÊN và LĨNH VỰC là mối kết hợp(Hình bên)",
+        "answers": [
+            {
+                "content": "1-1",
+                "is_correct": false
+            },
+            {
+                "content": "1-n",
+                "is_correct": false
+            },
+            {
+                "content": "n-n",
+                "is_correct": false
+            },
+            {
+                "content": "Tất cả đều sai",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Mối kết hợp giữa hai thực thể SINH VIÊN và MÔN HỌC được diễn giải như sau: mỗi sinh viên phải đăng ký ít nhất một môn học và có thể đăng ký nhiều môn. Mỗi môn học có thể có nhiều sinh viên đăng ký, nhưng có thể không có sinh viên nào đăng ký. Như vậy mối kết hợp giữa SINH VIÊN và MÔN HỌC là ?",
+        "answers": [
+            {
+                "content": "1-1",
+                "is_correct": false
+            },
+            {
+                "content": "1-n",
+                "is_correct": false
+            },
+            {
+                "content": "n-n",
+                "is_correct": true
+            },
+            {
+                "content": "0-n",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Mối kết hợp giữa SÁCH và TÁC GIẢ là mối kết hợp? (hình bên)",
+        "answers": [
+            {
+                "content": "1-n",
+                "is_correct": false
+            },
+            {
+                "content": "1-1",
+                "is_correct": false
+            },
+            {
+                "content": "n-1",
+                "is_correct": false
+            },
+            {
+                "content": "n-n",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Một lược đồ quan hệ đạt BCNF thì sẽ đạt chuẩn:",
+        "answers": [
+            {
+                "content": "Dạng chuẩn 3 (3NF)",
+                "is_correct": false
+            },
+            {
+                "content": "Dạng chuẩn Boyce-Codd (BCNF)",
+                "is_correct": false
+            },
+            {
+                "content": "Cả 2 phương án: 1 và 2",
+                "is_correct": true
+            },
+            {
+                "content": "Lựa chọn khác",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Một _____ có thể gán các mật khẩu cho những người dùng có quyền, và chỉ những người dùng đó mới có thể truy cập cơ sở dữ liệu khi nhập mật khẩu được chấp nhận.",
+        "answers": [
+            {
+                "content": "DBA",
+                "is_correct": true
+            },
+            {
+                "content": "người thiết kế cơ sở dữ liệu",
+                "is_correct": false
+            },
+            {
+                "content": "Switchboard (bảng mạch chuyển đổi)",
+                "is_correct": false
+            },
+            {
+                "content": "biểu đồ E-R",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Một bảng có một khoá duy nhất (unique key). Một câu truy vấn thực hiện một phép kết bằng trên bảng này với chính nó thông qua khoá này. Bảng này có n dòng. Một dòng có giá trị khoá là rỗng (null). Kết quả cuả câu truy vấn trả về bao nhiêu dòng?",
+        "answers": [
+            {
+                "content": "ít hơn n dòng.",
+                "is_correct": true
+            },
+            {
+                "content": "Nhiều hơn n dòng.",
+                "is_correct": false
+            },
+            {
+                "content": "Không có dòng nào cả.",
+                "is_correct": false
+            },
+            {
+                "content": "n dòng",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Một bảng có một khoá duy nhất. Một câu truy vấn thực hiện thao tác kết trên bảng sử dụng khoá này. Bảng có n hàng. Một hàng có 1 giá trị cuả khoá là rỗng ('null') . Query trả về kết quả là bao nhiêu dòng?",
+        "answers": [
+            {
+                "content": "Ít hơn n dòng.",
+                "is_correct": true
+            },
+            {
+                "content": "Không có dòng nào",
+                "is_correct": false
+            },
+            {
+                "content": "n dòng",
+                "is_correct": false
+            },
+            {
+                "content": "Nhiều hơn n dòng.",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Một bảng đạt dạng chuẩn 1 (1NF):",
+        "answers": [
+            {
+                "content": "Không có sự lặp lại các thuộc tính và các nhóm trị.",
+                "is_correct": true
+            },
+            {
+                "content": "Không rỗng.",
+                "is_correct": false
+            },
+            {
+                "content": "Không rỗng và toàn bộ các thuộc tính cuả mọi bộ đều mang giá trị đơn.",
+                "is_correct": false
+            },
+            {
+                "content": "Không rỗng và chỉ chứa các trị nguyên tố.",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Một bảng đạt dạng chuẩn 3 (3NF):",
+        "answers": [
+            {
+                "content": "Toàn bộ các thuộc tính cuả mọi bộ đều mang giá trị đơn.",
+                "is_correct": false
+            },
+            {
+                "content": "Không phụ thuộc bắc cầu.",
+                "is_correct": false
+            },
+            {
+                "content": "tất cả các lựa chọn trên.",
+                "is_correct": true
+            },
+            {
+                "content": "Tất cả các thuộc tính không khoá đều phụ thuộc đầy đủ vào khoá chính",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Một bảng đạt dạng chuẩn BC (BCNF) nếu:",
+        "answers": [
+            {
+                "content": "Không có phụ thuộc hàm bắc cầu",
+                "is_correct": false
+            },
+            {
+                "content": "Bảng này đạt dạng chuẩn 3",
+                "is_correct": false
+            },
+            {
+                "content": "Bảng này đạt dạng chuẩn 2",
+                "is_correct": false
+            },
+            {
+                "content": "Mỗi phụ thuộc hàm đều có phiá bên trái cuả phụ thuộc hàm là siêu khoá",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Một bảng đạt dạng chuẩn thứ nhất (1NF) nếu _____. 1. Nó không chứa các nhóm lặ",
+        "answers": [
+            {
+                "content": "Nó không chứa các nhóm lặp",
+                "is_correct": true
+            },
+            {
+                "content": "Nó không chứa một khoá ngoại",
+                "is_correct": false
+            },
+            {
+                "content": "Nó không chứa một khoá chính",
+                "is_correct": false
+            },
+            {
+                "content": "Nó không chứa các khoá dự tuyển.",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Một bảng mà không có sự lặp lại ở một nhóm trị, với khoá chính chỉ có một thuộc tính, và có một phụ thuộc bắc cầu vi phạm. Vậy bảng này ở dạng chuẩn nào?",
+        "answers": [
+            {
+                "content": "Dạng chuẩn 1 (1NF)",
+                "is_correct": false
+            },
+            {
+                "content": "Dạng chuẩn 2 (2NF)",
+                "is_correct": true
+            },
+            {
+                "content": "Dạng chuẩn 3 (3NF)",
+                "is_correct": false
+            },
+            {
+                "content": "Dạng chuẩn Boyce-Codd (BCNF)",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Một cơ sở dữ liệu có _____ nếu dữ liệu trong nó thoả mãn tất cả các ràng buộc về tính nguyên vẹn nhất định.",
+        "answers": [
+            {
+                "content": "Tình trạng dư thừa",
+                "is_correct": false
+            },
+            {
+                "content": "Tính nguyên vẹn",
+                "is_correct": true
+            },
+            {
+                "content": "Tính độc lập của dữ liệu",
+                "is_correct": false
+            },
+            {
+                "content": "Thiết kế cơ sở dữ liệu",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Một cột không là khóa chính trong lược đồ quan hệ này mà là khóa chính trong lược đồ quan hệ khác gọi là:",
+        "answers": [
+            {
+                "content": "quan hệ",
+                "is_correct": false
+            },
+            {
+                "content": "khóa",
+                "is_correct": false
+            },
+            {
+                "content": "khóa ngoại",
+                "is_correct": true
+            },
+            {
+                "content": "khóa dự tuyển",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Một cột không phải là cột khoá nếu nó _____.",
+        "answers": [
+            {
+                "content": "Không phải là một phần của khoá chính.",
+                "is_correct": true
+            },
+            {
+                "content": "Là một phần của khoá chính.",
+                "is_correct": false
+            },
+            {
+                "content": "Nằm trong dạng chuẩn 1 (1NF)",
+                "is_correct": false
+            },
+            {
+                "content": "Nằm trong dạng chuẩn 2 (2NF)",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Một field dùng để định danh 1 dòng dữ liệu trong bảng gọi là?",
+        "answers": [
+            {
+                "content": "Định danh query",
+                "is_correct": false
+            },
+            {
+                "content": "Khóa chính",
+                "is_correct": true
+            },
+            {
+                "content": "Dòng",
+                "is_correct": false
+            },
+            {
+                "content": "Tiêu đề",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Một giá trị 'null' được gán vào một thuộc tính nào đó hàm ý là:",
+        "answers": [
+            {
+                "content": "Thuộc tính đó là khoá chính hoặc khoá ngoại.",
+                "is_correct": false
+            },
+            {
+                "content": "Thuộc tính giới hạn ràng buộc cơ sở dữ liệu.",
+                "is_correct": false
+            },
+            {
+                "content": "Giá trị thực không quan trọng ở thời điểm hiện tại.",
+                "is_correct": true
+            },
+            {
+                "content": "Giá trị cuả thuộc tính này chỉ có người thiết kế CSDL mới biết.",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Một hệ quản trị cơ sở dữ liệu là phần mềm:",
+        "answers": [
+            {
+                "content": "Phải quy định những đặc điểm nổi bậc cuả một từ điển dữ liệu.",
+                "is_correct": false
+            },
+            {
+                "content": "Cung cấp các dịch vụ phục hồi và xử lý dữ liệu.",
+                "is_correct": false
+            },
+            {
+                "content": "Tất cả điều đúng",
+                "is_correct": true
+            },
+            {
+                "content": "Cung cấp miền giá trị để lưu trữ dữ liệu.",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Một kết hợp giữa các thực thể được gọi là một _____.",
+        "answers": [
+            {
+                "content": "mối quan hệ",
+                "is_correct": true
+            },
+            {
+                "content": "Ràng buộc về tính nguyên vẹn",
+                "is_correct": false
+            },
+            {
+                "content": "Cơ sở dữ liệu",
+                "is_correct": false
+            },
+            {
+                "content": "File dữ liệu",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Một khoá tối tiểu mà có thể thay thế cho khoá chính của một bảng được gọi là gì?",
+        "answers": [
+            {
+                "content": "Khoá chính",
+                "is_correct": false
+            },
+            {
+                "content": "Khoá dự tuyển",
+                "is_correct": true
+            },
+            {
+                "content": "Khoá ngoại",
+                "is_correct": false
+            },
+            {
+                "content": "Thuộc tính khoá",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Một loại query được đặc trong mệnh đề WHERE hoặc HAVING cuả một câu Query khác được gọi là:",
+        "answers": [
+            {
+                "content": "master query.",
+                "is_correct": false
+            },
+            {
+                "content": "subquery.",
+                "is_correct": true
+            },
+            {
+                "content": "multi-query.",
+                "is_correct": false
+            },
+            {
+                "content": "superquery.",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Một lược đồ quan hệ có khóa là một thuộc tính thì ít nhất là đạt chuẩn:",
+        "answers": [
+            {
+                "content": "Dạng chuẩn 1 (1NF)",
+                "is_correct": false
+            },
+            {
+                "content": "Dạng chuẩn 2 (2NF)",
+                "is_correct": true
+            },
+            {
+                "content": "Dạng chuẩn 3 (3NF)",
+                "is_correct": false
+            },
+            {
+                "content": "Dạng chuẩn Boyce-Codd (BCNF)",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Một lược đồ quan hệ đạt 2NF thì sẽ đạt chuẩn:",
+        "answers": [
+            {
+                "content": "Dạng chuẩn 1 (1NF)",
+                "is_correct": true
+            },
+            {
+                "content": "Dạng chuẩn 3 (3NF)",
+                "is_correct": false
+            },
+            {
+                "content": "BCNF",
+                "is_correct": false
+            },
+            {
+                "content": "Các lựa chọn trên đều đúng",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Một lược đồ quan hệ đạt 3NF thì sẽ đạt chuẩn:",
+        "answers": [
+            {
+                "content": "BCNF",
+                "is_correct": false
+            },
+            {
+                "content": "Dạng chuẩn 2 (2NF)",
+                "is_correct": true
+            },
+            {
+                "content": "Cả 2 phương án: 1 và 2",
+                "is_correct": false
+            },
+            {
+                "content": "Lựa chọn khác",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Một lược đồ quan hệ gồm:",
+        "answers": [
+            {
+                "content": "Tập hợp các giá trị",
+                "is_correct": false
+            },
+            {
+                "content": "Tập hợp các bộ dữ liệu",
+                "is_correct": false
+            },
+            {
+                "content": "Tên lược đồ và các thuộc tính của nó",
+                "is_correct": true
+            },
+            {
+                "content": "Lựa chọn khác",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Một lược đồ quan hệ mà các thuôc tính đều mang giá trị đơn thì sẽ đạt chuẩn:",
+        "answers": [
+            {
+                "content": "Dạng chuẩn 1 (1NF)",
+                "is_correct": true
+            },
+            {
+                "content": "Dạng chuẩn 2 (2NF)",
+                "is_correct": false
+            },
+            {
+                "content": "Dạng chuẩn 3 (3NF)",
+                "is_correct": false
+            },
+            {
+                "content": "Dạng chuẩn Boyce-Codd (BCNF)",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Một lược đồ quan hệ mà các thuộc tính không khóa đều phụ thuộc đầy đủ vào khóa thì sẽ đạt chuẩn:",
+        "answers": [
+            {
+                "content": "Dạng chuẩn 1 (1NF)",
+                "is_correct": false
+            },
+            {
+                "content": "Dạng chuẩn 2 (2NF)",
+                "is_correct": true
+            },
+            {
+                "content": "Dạng chuẩn 3 (3NF)",
+                "is_correct": false
+            },
+            {
+                "content": "Dạng chuẩn Boyce-Codd (BCNF)",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Một lược đồ quan hệ mà các thuộc tính không khóa không phụ thuộc bắc cầu vào khóa thì sẽ đạt chuẩn:",
+        "answers": [
+            {
+                "content": "Dạng chuẩn 1 (1NF)",
+                "is_correct": false
+            },
+            {
+                "content": "Dạng chuẩn 2 (2NF)",
+                "is_correct": false
+            },
+            {
+                "content": "Dạng chuẩn 3 (3NF)",
+                "is_correct": true
+            },
+            {
+                "content": "Dạng chuẩn Boyce-Codd (BCNF)",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Một nhân viên quản lý một nhân viên khác là ví dụ tốt nhất của?",
+        "answers": [
+            {
+                "content": "Thực thể phụ thuộc",
+                "is_correct": false
+            },
+            {
+                "content": "Quan hệ ba ngôi",
+                "is_correct": false
+            },
+            {
+                "content": "Quan hệ một ngôi",
+                "is_correct": true
+            },
+            {
+                "content": "Quan hệ hai ngôi",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Một nhược điểm của một hệ thống cơ sở dữ liệu là _____.",
+        "answers": [
+            {
+                "content": "một cỡ file lớn hơn",
+                "is_correct": true
+            },
+            {
+                "content": "Khiến cho dữ liệu bị phụ thuộc",
+                "is_correct": false
+            },
+            {
+                "content": "Tính nguyên vẹn bị giảm",
+                "is_correct": false
+            },
+            {
+                "content": "Năng suất giảm",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Một số mô hình dữ liệu sử dụng cho hệ thống cơ sở dữ liệu là?",
+        "answers": [
+            {
+                "content": "Mô hình E-R",
+                "is_correct": false
+            },
+            {
+                "content": "Mô hình dữ liệu quan hệ",
+                "is_correct": false
+            },
+            {
+                "content": "Mô hình dữ liệu mạng, phân cấp, hướng đối tượng",
+                "is_correct": false
+            },
+            {
+                "content": "Tất cả các phương án trên.",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Một thuộc tính nguyên tố là một thuộc tính mà:",
+        "answers": [
+            {
+                "content": "Là thành phần cuả một khoá ngoại",
+                "is_correct": false
+            },
+            {
+                "content": "Là một giá trị đơn",
+                "is_correct": false
+            },
+            {
+                "content": "Là thành phần cuả ít nhất một khoá dự tuyển.",
+                "is_correct": true
+            },
+            {
+                "content": "Là thành phần cuả khoá chính.",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Một truy vấn làm thay đổi dữ liệu là một truy vấn _____.",
+        "answers": [
+            {
+                "content": "Addition (thêm)",
+                "is_correct": false
+            },
+            {
+                "content": "Update (cập nhật)",
+                "is_correct": true
+            },
+            {
+                "content": "Select (lựa chọn)",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Nếu có các phụ thuộc hàm sau (A->B, B->C) trong lược đồ CSDL R(A,B) và S(B,C) thì phép kết giữa R và S sẽ:",
+        "answers": [
+            {
+                "content": "Không bảo toàn thông tin.",
+                "is_correct": false
+            },
+            {
+                "content": "Mất dữ liệu.",
+                "is_correct": false
+            },
+            {
+                "content": "Bảo toàn thông tin.",
+                "is_correct": true
+            },
+            {
+                "content": "Tất cả đều sai.",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Nếu không có thuộc tính không khóa nào là không phụ thuộc vào một phần của khóa chính, thì quan hệ đó phải ở dạng chuẩn:",
+        "answers": [
+            {
+                "content": "Dạng chuẩn 1 (1NF)",
+                "is_correct": false
+            },
+            {
+                "content": "Dạng chuẩn 2 (2NF)",
+                "is_correct": true
+            },
+            {
+                "content": "Dạng chuẩn 3 (3NF)",
+                "is_correct": false
+            },
+            {
+                "content": "Tất cả các câu đều sai.",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Nếu lược đồ R(A,B,C), có phụ thuộc hàm A->B và B->C. Thuộc tính nào mang ý nghĩa quyết định?",
+        "answers": [
+            {
+                "content": "B, C",
+                "is_correct": false
+            },
+            {
+                "content": "A, B",
+                "is_correct": false
+            },
+            {
+                "content": "A",
+                "is_correct": true
+            },
+            {
+                "content": "A, B, C",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Nếu một lược đồ quan hệ có 5 thuộc tính, khóa của lược đồ gồm 3 thuộc tính. Khi đó ta sẽ có bao nhiêu siêu khóa:",
+        "answers": [
+            {
+                "content": "2",
+                "is_correct": false
+            },
+            {
+                "content": "5",
+                "is_correct": false
+            },
+            {
+                "content": "4",
+                "is_correct": true
+            },
+            {
+                "content": "3",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Nếu NK->ME là một phụ thuộc hàm của lược đồ quan hệ H(N,K,M,E), thì:",
+        "answers": [
+            {
+                "content": "NK là khóa của H",
+                "is_correct": false
+            },
+            {
+                "content": "NK là khóa chính của H",
+                "is_correct": false
+            },
+            {
+                "content": "Không thể tồn tại 2 bộ trong H mà có cùng giá trị của N và K",
+                "is_correct": true
+            },
+            {
+                "content": "Tất cả các câu đều đúng",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Nếu quan hệ R được phân rã thành {R1, R2, R3, …,Rn} và sự phân rã này bảo toàn thông tin thì:",
+        "answers": [
+            {
+                "content": "Phép kết tự nhiên giữa R1, R2, ..., Rn sẽ trả về số bộ bằng với số bộ của quan hệ R ban đầu",
+                "is_correct": false
+            },
+            {
+                "content": "Mỗi quan hệ R1, R2, ...,Rn đều đạt dạng chuẩn 3NF",
+                "is_correct": false
+            },
+            {
+                "content": "Phép kết tự nhiên giữa R1, R2, ..., Rn sẽ trả về số bộ nhiều hơn số bộ của quan hệ R ban đầu",
+                "is_correct": true
+            },
+            {
+                "content": "Không có câu nào đúng",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Người sử dụng có thể hiểu được một cơ sở dữ liệu thông qua một tập hợp các bảng, đó gọi là mô hình gì?",
+        "answers": [
+            {
+                "content": "Quan hệ",
+                "is_correct": true
+            },
+            {
+                "content": "Phân cấp",
+                "is_correct": false
+            },
+            {
+                "content": "Mạng",
+                "is_correct": false
+            },
+            {
+                "content": "Hướng đối tượng",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Nguyên tắc chỉ đạo trong thiết kế CSDL là:",
+        "answers": [
+            {
+                "content": "Giảm thiểu sự bất thường khi thêm hoặc xoá dữ liệu",
+                "is_correct": false
+            },
+            {
+                "content": "Giảm thiểu sự bất thường khi cập nhật dữ liệu",
+                "is_correct": false
+            },
+            {
+                "content": "Giảm thiểu dư thừa dữ liệu",
+                "is_correct": false
+            },
+            {
+                "content": "Tất cả điều đúng",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Nguyên tắc chỉ đạo trong việc chuẩn hoá CSDL:",
+        "answers": [
+            {
+                "content": "Giảm thiểu sự bất thường khi thêm hoặc xoá dữ liệu.",
+                "is_correct": false
+            },
+            {
+                "content": "Giảm thiểu sự bất thường khi cập nhật dữ liệu.",
+                "is_correct": false
+            },
+            {
+                "content": "Giảm thiểu dư thừa dữ liệu.",
+                "is_correct": false
+            },
+            {
+                "content": "Tất cả điều đúng.",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Những đặc tính cơ bản để phân biệt DBMS với các hệ thống lập trình khác?",
+        "answers": [
+            {
+                "content": "Khả năng quản lý dữ liệu",
+                "is_correct": false
+            },
+            {
+                "content": "Khả năng truy xuất dữ liệu",
+                "is_correct": false
+            },
+            {
+                "content": "Quản lý giao tác",
+                "is_correct": false
+            },
+            {
+                "content": "Tất cả các phương án trên",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Nơi có thể lưu trữ dữ liệu của các ứng dụng. Trong hệ thống CSDL gọi là:",
+        "answers": [
+            {
+                "content": "DBMS",
+                "is_correct": false
+            },
+            {
+                "content": "Database",
+                "is_correct": true
+            },
+            {
+                "content": "CPU",
+                "is_correct": false
+            },
+            {
+                "content": "Hard drive",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Phát biểu nào sau đây không phải là một lược đồ quan hệ?",
+        "answers": [
+            {
+                "content": "Y(D, E, F)",
+                "is_correct": false
+            },
+            {
+                "content": "Z(J, K(L, M))",
+                "is_correct": true
+            },
+            {
+                "content": "X(B, C)",
+                "is_correct": false
+            },
+            {
+                "content": "W(A)",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Phép toán nào sau đây trong đại số quan hệ yêu cầu tất cả các bảng phải có cùng tập thuộc tính?",
+        "answers": [
+            {
+                "content": "Phép kết (Join), Phép chiếu (Projection), Phép kết tự nhiên (natural join)",
+                "is_correct": false
+            },
+            {
+                "content": "Phép chia (Division), Phép giao (Intersection), Phép nhân(Multiplication)",
+                "is_correct": false
+            },
+            {
+                "content": "Phép chia (Division), Phép giao (Intersection), Phép trừ (Minus)",
+                "is_correct": false
+            },
+            {
+                "content": "Phép hợp (Union), Phép giao (Intersection), Phép trừ (Minus)",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Phép toán nào trong đại số học (algebra) bao gồm từ OVER, tiếp đó là một danh sách các cột?",
+        "answers": [
+            {
+                "content": "DELETE (Phép Xoá)",
+                "is_correct": false
+            },
+            {
+                "content": "PROJECT (Phép chiếu)",
+                "is_correct": true
+            },
+            {
+                "content": "INTERSECT (Phép giao)",
+                "is_correct": false
+            },
+            {
+                "content": "Union (Phép hợp)",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Phép toán nào trong đại số học quan hệ lấy một tập hợp con dọc của một bảng?",
+        "answers": [
+            {
+                "content": "SELECT",
+                "is_correct": false
+            },
+            {
+                "content": "DELETE",
+                "is_correct": false
+            },
+            {
+                "content": "PROGRAM",
+                "is_correct": false
+            },
+            {
+                "content": "PROJECT (Phép chiếu)",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Phép toán nào trong đại số quan hệ được sử dụng để lấy một tập kết hợp gồm mọi dòng trong bảng thứ nhất với mọi dòng trong bảng thứ hai.",
+        "answers": [
+            {
+                "content": "Union (Phép hợp)",
+                "is_correct": false
+            },
+            {
+                "content": "Difference (Phép trừ)",
+                "is_correct": false
+            },
+            {
+                "content": "Product (Phép tích Descartes)",
+                "is_correct": true
+            },
+            {
+                "content": "Intersection (Phép giao)",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Quan hệ (Relation), bộ (Tuple), thuộc tính (Attribute) thì đồng nghĩa tương ứng theo thứ tự sau:",
+        "answers": [
+            {
+                "content": "Bảng (Table), cột(column), dòng(row)",
+                "is_correct": false
+            },
+            {
+                "content": "Mẫu tin (Record), tập tin (File), trường(Field)",
+                "is_correct": false
+            },
+            {
+                "content": "Tập tin (File), mẫu tin (record), trường (field)",
+                "is_correct": true
+            },
+            {
+                "content": "Dòng(row), cột(column) và giá trị (Value).",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Quan hệ nhiều-nhiều (n-n) trong lược đồ ERD có thể được trình bày trong mô hình quan hệ bởi:",
+        "answers": [
+            {
+                "content": "Một khoá chính",
+                "is_correct": false
+            },
+            {
+                "content": "Một thuộc tính duy nhất",
+                "is_correct": false
+            },
+            {
+                "content": "Một miền giá trị",
+                "is_correct": false
+            },
+            {
+                "content": "Một quan hệ với hai khoá ngoại",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Ràng buộc CHECK có thể được cài đặt trong câu lệnh nào sau đây?",
+        "answers": [
+            {
+                "content": "Create table",
+                "is_correct": false
+            },
+            {
+                "content": "Alter table",
+                "is_correct": false
+            },
+            {
+                "content": "Cả 2 phương án: 1 và 2",
+                "is_correct": true
+            },
+            {
+                "content": "Drop table",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Ràng buộc tòan vẹn nào sao đây sẽ tự động tạo ra một chỉ mục (index) khi được định nghĩa?",
+        "answers": [
+            {
+                "content": "Ràng buộc khóa ngoại (Foreign keys)",
+                "is_correct": false
+            },
+            {
+                "content": "Ràng buộc miền giá trị (Check Constraint)",
+                "is_correct": false
+            },
+            {
+                "content": "Ràng buộc khóa chính (Primary keys)",
+                "is_correct": true
+            },
+            {
+                "content": "Ràng buộc NOT NULL",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "SinhVien (MaSV, HoSV, TenSV, DiaChi, ThanhPho,MaVung) Dựa vào lược đồ quan hệ trên, Liệt kê danh sách các sinh viên có tên bắt đầu là N?",
+        "answers": [
+            {
+                "content": "Select * From SinhVien Where TenSV like 'N%'",
+                "is_correct": false
+            },
+            {
+                "content": "Select * From SinhVien Where left(TenSV,1)= 'N",
+                "is_correct": false
+            },
+            {
+                "content": "Select * From SinhVien Where TenSV in (select tensv from SinhVien Where tensv like 'N%' )",
+                "is_correct": false
+            },
+            {
+                "content": "Tất cả các phương án trên",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "SinhVien (MaSV, HoSV, TenSV, DiaChi, ThanhPho,MaVung) Dựa vào lược đồ quan hệ trên, Liệt kê tất cả các thông tin cuả sinh viên mà có mã sinh viên từ 1100 đến 1200?",
+        "answers": [
+            {
+                "content": "Select * From SinhVien",
+                "is_correct": false
+            },
+            {
+                "content": "Select * From SinhVien Where MaSV between 1100 and 1200",
+                "is_correct": true
+            },
+            {
+                "content": "Select SinhVien Where MaSV between 1100 and 1200",
+                "is_correct": false
+            },
+            {
+                "content": "Select Masv From SinhVien Where MaSV >=1100",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "SinhVien (MaSV, HoSV, TenSV, DiaChi, ThanhPho,MaVung) Dựa vào lược đồ quan hệ trên, thay đổi mã vùng cuả của sinh viên ở Tp.HCM thành 08?",
+        "answers": [
+            {
+                "content": "Update SinhVien Set MaVung='08' Where ThanhPho='Tp.HCM'",
+                "is_correct": true
+            },
+            {
+                "content": "Update MaVung='08' Where ThanhPho='Tp.HCM'",
+                "is_correct": false
+            },
+            {
+                "content": "Update SinhVien Where ThanhPho='Tp.HCM' And MaVung='08'",
+                "is_correct": false
+            },
+            {
+                "content": "Tất cả các phương án trên",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Sự phân biệt giữa dữ liệu và thông tin nào sau đây là chính xác nhất?",
+        "answers": [
+            {
+                "content": "Dữ liệu và thông tin về bản chất là hoàn toàn giống nhau",
+                "is_correct": false
+            },
+            {
+                "content": "Dữ liệu được lưu trữ ở mức thô, thông tin là đã được qua xử lý",
+                "is_correct": true
+            },
+            {
+                "content": "Không có sự phân biệt giữa dữ liệu và thông tin",
+                "is_correct": false
+            },
+            {
+                "content": "Lựa chọn khác",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Sự thể hiện (Bảng hai chiều) của lược đồ quan hệ Q tại thời điểm bất kỳ gọi là?",
+        "answers": [
+            {
+                "content": "Quan hệ",
+                "is_correct": true
+            },
+            {
+                "content": "Bộ dữ liệu",
+                "is_correct": false
+            },
+            {
+                "content": "Lược đồ quan hệ",
+                "is_correct": false
+            },
+            {
+                "content": "Lựa chọn khác",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Tạo lập một Cơ Sở dữ liệu là quá trình:",
+        "answers": [
+            {
+                "content": "Cấu trúc Cơ Sở dữ liệu",
+                "is_correct": false
+            },
+            {
+                "content": "Xử lý Cơ Sở dữ liệu",
+                "is_correct": false
+            },
+            {
+                "content": "Thiết kế Cơ Sở dữ liệu",
+                "is_correct": true
+            },
+            {
+                "content": "Truy vấn Cơ Sở dữ liệu",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Tập tất cả các thuộc tính của đối tượng cùng với các mối liên hệ giữa chúng gọi là?",
+        "answers": [
+            {
+                "content": "Quan hệ",
+                "is_correct": false
+            },
+            {
+                "content": "Bộ dữ liệu",
+                "is_correct": false
+            },
+            {
+                "content": "Lược đồ quan hệ",
+                "is_correct": true
+            },
+            {
+                "content": "Lựa chọn khác",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Tất cả các hàm sau đây được xây dựng sẳn trong SQL, ngoại trừ:",
+        "answers": [
+            {
+                "content": "COUNT",
+                "is_correct": false
+            },
+            {
+                "content": "TOTAL",
+                "is_correct": true
+            },
+            {
+                "content": "AVG",
+                "is_correct": false
+            },
+            {
+                "content": "MIN",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Phép toán nào sau đây, chỉ có hiệu lực khi thực hiện trên các quan hệ trong cùng lược đồ CSDL",
+        "answers": [
+            {
+                "content": "Intersection (Phép giao)",
+                "is_correct": true
+            },
+            {
+                "content": "Không có phương án nào",
+                "is_correct": false
+            },
+            {
+                "content": "Equi-Join (Phép kết bằng)",
+                "is_correct": false
+            },
+            {
+                "content": "Cartesian product (Tích Descartes)",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Thuộc tính mà xác định duy nhất một bộ trong một quan hệ được gọi là:",
+        "answers": [
+            {
+                "content": "Khoá ngoại.",
+                "is_correct": false
+            },
+            {
+                "content": "Khoá dự tuyển và khoá chính.",
+                "is_correct": true
+            },
+            {
+                "content": "Khoá chính",
+                "is_correct": false
+            },
+            {
+                "content": "Khoá dự tuyển",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Phép toán nào sau đây dùng để lấy các dòng dữ liệu có trong cả hai Table A và B",
+        "answers": [
+            {
+                "content": "union (Phép hợp)",
+                "is_correct": false
+            },
+            {
+                "content": "Intersection (Phép giao)",
+                "is_correct": true
+            },
+            {
+                "content": "product (Phép tích)",
+                "is_correct": false
+            },
+            {
+                "content": "difference (Phép trừ)",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Trong câu lệnh truy vấn dữ liệu, để đặt bí danh (alias) cho bảng, cột ta sử dụng từ khóa gì?",
+        "answers": [
+            {
+                "content": "=",
+                "is_correct": false
+            },
+            {
+                "content": "as",
+                "is_correct": true
+            },
+            {
+                "content": "&",
+                "is_correct": false
+            },
+            {
+                "content": "->",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Trong câu lệnh truy vấn dữ liệu, mệnh đề nào dùng để giới hạn số cột?",
+        "answers": [
+            {
+                "content": "Select",
+                "is_correct": true
+            },
+            {
+                "content": "From",
+                "is_correct": false
+            },
+            {
+                "content": "Where",
+                "is_correct": false
+            },
+            {
+                "content": "Having",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Trong lệnh cập nhật dữ liệu, nếu ta không dùng mệnh đề WHERE thì:",
+        "answers": [
+            {
+                "content": "Sẽ không thực hiện lệnh cập nhật",
+                "is_correct": false
+            },
+            {
+                "content": "Chỉ một số dòng được cập nhật",
+                "is_correct": false
+            },
+            {
+                "content": "Không có dòng nào được cập nhật",
+                "is_correct": false
+            },
+            {
+                "content": "Tất cả các dòng sẽ được cập nhật",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Trong mô hình dữ liệu quan hệ, các đặc trưng riêng của đối tượng được gọi là?",
+        "answers": [
+            {
+                "content": "Thuộc tính",
+                "is_correct": true
+            },
+            {
+                "content": "đặc trưng riêng",
+                "is_correct": false
+            },
+            {
+                "content": "quan hệ",
+                "is_correct": false
+            },
+            {
+                "content": "Lựa chọn khác",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Trong SQL để định nghĩa một số DECIMAL có tối đa 7 số, có 4 chữ số thập phân. Ta khai báo:",
+        "answers": [
+            {
+                "content": "DECIMAL (7,3)",
+                "is_correct": false
+            },
+            {
+                "content": "DECIMAL (4,3)",
+                "is_correct": false
+            },
+            {
+                "content": "DECIMAL (7,4)",
+                "is_correct": true
+            },
+            {
+                "content": "DECIMAL (8,3)",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Trong SQL, tên bảng (Table Name) phải duy nhất",
+        "answers": [
+            {
+                "content": "cho tất cả các người sử dụng",
+                "is_correct": false
+            },
+            {
+                "content": "trong phạm vi của một database",
+                "is_correct": true
+            },
+            {
+                "content": "cho tất cả các database",
+                "is_correct": false
+            },
+            {
+                "content": "trong tất cả các bảng mà được tạo ra bởi một người sử dụng nào đó",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Xét hai quan hệ R và S. Hãy cho biết kết quả của lệnh truy vấn sau: Select A From R Where B = ANY (Select B From S) R A B C ----------- a1 b1 c1 a1 b2 c2 a2 b1 c1 a2 b3 c2 a2 b3 c3 a4 b3 c3 S B C --------- b1 c1 b2 c2 b4 c3 b5 c2",
+        "answers": [
+            {
+                "content": "Một bảng gồm 1 cột A có 3 dòng (a1), (a1) và (a2) ồ",
+                "is_correct": true
+            },
+            {
+                "content": "Một bảng gồm 1 cột B và 2 dòng (b1) và (b2)",
+                "is_correct": false
+            },
+            {
+                "content": "Một bảng gồm 1 cột A có 3 dòng (a1), (a1) và (a4)",
+                "is_correct": false
+            },
+            {
+                "content": "Một bảng gồm 1 cột A có 5 dòng (a1), (a1), (a2), (a2) và (a2)",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Xét lược đồ quan hệ R(T,V,X,P,K) với tập phụ hàm F={T V - >X, X P - >K, X - >T, K ->P} .Bao đóng của tậpf {T, V, K} là:",
+        "answers": [
+            {
+                "content": "{T V K P}",
+                "is_correct": false
+            },
+            {
+                "content": "{T V X P K}",
+                "is_correct": true
+            },
+            {
+                "content": "{T V K X}",
+                "is_correct": false
+            },
+            {
+                "content": "{T V K}",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Xét lược đồ quan hệ R = (I ,A,N,G,X) với tập phụ thuộc hàm F= {I A -> N G X , I -> X} .Khóa của R là:",
+        "answers": [
+            {
+                "content": "I",
+                "is_correct": false
+            },
+            {
+                "content": "A X",
+                "is_correct": false
+            },
+            {
+                "content": "I A",
+                "is_correct": true
+            },
+            {
+                "content": "lựa chọn khác",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Xét lược đồ quan hệ R(A,B,C,D) với tập phụ hàm F={A->BC, B->D}. Gỉa sử tập khóa K={A}. R sẽ đạt thấp nhất là dạng chuẩn nào?",
+        "answers": [
+            {
+                "content": "Dạng chuẩn 1 (1NF)",
+                "is_correct": false
+            },
+            {
+                "content": "Dạng chuẩn 2 (2NF)",
+                "is_correct": true
+            },
+            {
+                "content": "Dạng chuẩn 3 (3NF)",
+                "is_correct": false
+            },
+            {
+                "content": "Dạng chuẩn Boyce-Codd (BCNF)",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Xét lược đồ quan hệ R(A,B,C,D) với tập phụ hàm F={A->BCD}. Gỉa sử tập khóa K={A}. R sẽ đạt thấp nhất là dạng chuẩn nào?",
+        "answers": [
+            {
+                "content": "Dạng chuẩn 1 (1NF)",
+                "is_correct": false
+            },
+            {
+                "content": "Dạng chuẩn 2 (2NF)",
+                "is_correct": false
+            },
+            {
+                "content": "Dạng chuẩn 3 (3NF)",
+                "is_correct": true
+            },
+            {
+                "content": "Dạng chuẩn Boyce-Codd (BCNF)",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Xét quan hệ R với tâp thuộc tính B C V K M. Với tập phụ thuộc hàm: B->C, C V->M và M K->B. Hãy xác định tất cả các khóa của R",
+        "answers": [
+            {
+                "content": "B V K, C V K và V K M",
+                "is_correct": true
+            },
+            {
+                "content": "B V M, C V K và V K M",
+                "is_correct": false
+            },
+            {
+                "content": "V K, B Kvà V K M",
+                "is_correct": false
+            },
+            {
+                "content": "B V, C K và V M",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Xét quan hệ R(A B C D E F H) với tập phụ thuộc hàm: A -> D, AE -> H, DF -> BC, E -> C, H -> E Phân rã R thành 3 quan hệ: (AD) (EC) (ABEFH). Phép phân rã đạt chuẩn:",
+        "answers": [
+            {
+                "content": "Dạng chuẩn Boyce-Codd (BCNF)",
+                "is_correct": false
+            },
+            {
+                "content": "Dạng chuẩn 3 (3NF)",
+                "is_correct": false
+            },
+            {
+                "content": "Lựa chọn khác",
+                "is_correct": false
+            },
+            {
+                "content": "Dạng chuẩn 1 (1NF)",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Xét quan hệ student(sno, sname, cname, cno). Gỉa sử các khóa của Student là (sno, cno) , (sname, cname) . Xác định dạng chuẩn của student:",
+        "answers": [
+            {
+                "content": "Dạng chuẩn 1 (1NF)",
+                "is_correct": false
+            },
+            {
+                "content": "Dạng chuẩn Boyce-Codd (BCNF)",
+                "is_correct": false
+            },
+            {
+                "content": "Dạng chuẩn 3 (3NF)",
+                "is_correct": true
+            },
+            {
+                "content": "Dạng chuẩn 2 (2NF)",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Xét R(A,B,C) với tập phụ thuộc hàm F={A->BC; A->C; B->C}. Phụ thuộc hàm nào trrong F là dư thừa?",
+        "answers": [
+            {
+                "content": "A->BC",
+                "is_correct": false
+            },
+            {
+                "content": "A->C",
+                "is_correct": true
+            },
+            {
+                "content": "B->C",
+                "is_correct": false
+            },
+            {
+                "content": "Lựa chọn khác",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Xét R(A,B,C,D) có khóa chính là A, là 2NF nhưng không đạt 3NF. Phụ thuộc hàm nào sau đây là không đúng:",
+        "answers": [
+            {
+                "content": "B->C",
+                "is_correct": false
+            },
+            {
+                "content": "A->B",
+                "is_correct": false
+            },
+            {
+                "content": "C->A",
+                "is_correct": true
+            },
+            {
+                "content": "A->C",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Xét R(E,J,C,Q,G). Phụ thuộc hàm sau đây trong tập F= {E -> J; E Q -> C; Q J -> G; J -> C} là dư thừa:",
+        "answers": [
+            {
+                "content": "J -> C",
+                "is_correct": false
+            },
+            {
+                "content": "Q J -> G",
+                "is_correct": false
+            },
+            {
+                "content": "E Q-> C",
+                "is_correct": true
+            },
+            {
+                "content": "E -> J",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Xét R(K,G,B,H,Z,C) Với tập phụ thuộc hàm F={K -> G, K -> B, B H -> Z, B H -> C, G -> Z}. Phụ thuộc hàm nào sau đây không được suy ra từ F?",
+        "answers": [
+            {
+                "content": "K -> Z",
+                "is_correct": false
+            },
+            {
+                "content": "B H -> Z C",
+                "is_correct": false
+            },
+            {
+                "content": "K H -> C",
+                "is_correct": false
+            },
+            {
+                "content": "G -> B H",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Xét R{K , O , U , F , T } với tập phụ thuộc hàm F={ K -> F,T ;F-> O,U; K,U -> O }. Xác định dạng chuẩn của R?",
+        "answers": [
+            {
+                "content": "Dạng chuẩn 1 (1NF)",
+                "is_correct": false
+            },
+            {
+                "content": "Dạng chuẩn 2 (2NF)",
+                "is_correct": true
+            },
+            {
+                "content": "Dạng chuẩn 3 (3NF)",
+                "is_correct": false
+            },
+            {
+                "content": "Dạng chuẩn Boyce-Codd (BCNF)",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Cho lược đồ quan hệ NhanVien(MaNV, HoTenNV, Luong, MaPB, NguoiQL, NgaySinh) và tập phụ thuộc hàm {MaNV->HoTenNV, Luong, MaPB, MaTruongPhong, NgaySinh; MaPB->MaTruongPhong}. Xác định dạng chuẩn cao nhất cuả bảng nhân viên.",
+        "answers": [
+            {
+                "content": "Dạng chuẩn 1 (1NF)",
+                "is_correct": false
+            },
+            {
+                "content": "Dạng chuẩn 2 (2NF)",
+                "is_correct": true
+            },
+            {
+                "content": "Dạng chuẩn 3 (3NF)",
+                "is_correct": false
+            },
+            {
+                "content": "Dạng chuẩn Boyce-Codd (BCNF)",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Cho lược đồ quan hệ R(A,B,C,D) và tập phụ thuộc hàm F={AB->C,D->B,C->ABD}. Xác định dạng chuẩn cao nhất cuả lược đồ quan hệ R.",
+        "answers": [
+            {
+                "content": "Dạng chuẩn 1 (1NF)",
+                "is_correct": false
+            },
+            {
+                "content": "Dạng chuẩn 2 (2NF)",
+                "is_correct": false
+            },
+            {
+                "content": "Dạng chuẩn 3 (3NF)",
+                "is_correct": true
+            },
+            {
+                "content": "Dạng chuẩn Boyce-Codd (BCNF)",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Cho lược đồ quan hệ R(A,B,C,D,E,H) và tập phụ thuộc hàm F={A->E,C->D,E- >DH}. Xác định dạng chuẩn cao nhất cuả lược đồ quan hệ R.",
+        "answers": [
+            {
+                "content": "Dạng chuẩn 1 (1NF)",
+                "is_correct": true
+            },
+            {
+                "content": "Dạng chuẩn 2 (2NF)",
+                "is_correct": false
+            },
+            {
+                "content": "Dạng chuẩn 3 (3NF)",
+                "is_correct": false
+            },
+            {
+                "content": "Dạng chuẩn Boyce-Codd (BCNF)",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Cho lược đồ quan hệ R(A,B,C,D,E,I) và tập phụ thuộc hàm F={ACD->EBI,CE- >AD}. Xác định dạng chuẩn cao nhất cuả lược đồ quan hệ R.",
+        "answers": [
+            {
+                "content": "Dạng chuẩn 1 (1NF)",
+                "is_correct": false
+            },
+            {
+                "content": "Dạng chuẩn 2 (2NF)",
+                "is_correct": false
+            },
+            {
+                "content": "Dạng chuẩn 3 (3NF)",
+                "is_correct": false
+            },
+            {
+                "content": "Dạng chuẩn Boyce-Codd (BCNF)",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Cho lược đồ quan hệ R(B,F,D,H,I) và tập phụ thuộc hàm T={B->HI,H->FD,BD->F}. Tìm bao đóng cuả tập thuộc tính {BH}.",
+        "answers": [
+            {
+                "content": "{FDHI}",
+                "is_correct": false
+            },
+            {
+                "content": "{BFDH}",
+                "is_correct": false
+            },
+            {
+                "content": "{BFDHI}",
+                "is_correct": true
+            },
+            {
+                "content": "{BFHI}",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Cho lược đồ quan hệ R(B,P,V,L,H) và tập phụ thuộc hàm F={B->P, P->V, PV->B,B- >L,H->B, L->H}. Tập thuộc tính nào sau đây không phải là khoá?",
+        "answers": [
+            {
+                "content": "L",
+                "is_correct": false
+            },
+            {
+                "content": "B",
+                "is_correct": false
+            },
+            {
+                "content": "H",
+                "is_correct": false
+            },
+            {
+                "content": "Tất cả các phương án trên đều là khoá",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Cho lược đồ quan hệ R(C,A,M,I,Z) và tập phụ thuộc hàm T={C->IZ,I->AM,CM->A}. Tìm bao đóng cuả tập thuộc tính {AIZ}.",
+        "answers": [
+            {
+                "content": "{CAMI}",
+                "is_correct": false
+            },
+            {
+                "content": "{AMIZ}",
+                "is_correct": true
+            },
+            {
+                "content": "{CIAM}",
+                "is_correct": false
+            },
+            {
+                "content": "{ZIMC}",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Cho lược đồ quan hệ R(C,F,O,A,K) và tập phụ thuộc hàm T={C->AK,A->FO,CO- >F}. Xác định dạng chuẩn cao nhất cuả lược đồ quan hệ R.",
+        "answers": [
+            {
+                "content": "Dạng chuẩn 1 (1NF)",
+                "is_correct": false
+            },
+            {
+                "content": "Dạng chuẩn 2 (2NF)",
+                "is_correct": true
+            },
+            {
+                "content": "Dạng chuẩn 3 (3NF)",
+                "is_correct": false
+            },
+            {
+                "content": "Dạng chuẩn Boyce-Codd (BCNF)",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Cho lược đồ quan hệ R(E,S,J,W,N) và tập phụ thuộc hàm F={ES->JN, S->W, W- >E}. Phụ thuộc hàm nào sau đây không được suy diễn ra từ tập F?",
+        "answers": [
+            {
+                "content": "SJ->WN",
+                "is_correct": false
+            },
+            {
+                "content": "S->N",
+                "is_correct": false
+            },
+            {
+                "content": "ES->E",
+                "is_correct": false
+            },
+            {
+                "content": "EW->JN",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Cho lược đồ quan hệ R(F,B,K,C,I) và tập phụ thuộc hàm T={FB->KI, B->C, C->F}. Phụ thuộc hàm nào sau đây không được suy diễn ra từ tập T?",
+        "answers": [
+            {
+                "content": "FC->KI",
+                "is_correct": true
+            },
+            {
+                "content": "B->I",
+                "is_correct": false
+            },
+            {
+                "content": "BK->CI",
+                "is_correct": false
+            },
+            {
+                "content": "FB->F",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Cho lược đồ quan hệ R(G,M,V,N,H,P) và tập phụ thuộc hàm F={G->M,G->N, G->H, G->P , M->V, NHP->M}. Xác định dạng chuẩn cao nhất cuả lược đồ quan hệ R.",
+        "answers": [
+            {
+                "content": "Dạng chuẩn 1 (1NF)",
+                "is_correct": false
+            },
+            {
+                "content": "Dạng chuẩn 2 (2NF)",
+                "is_correct": true
+            },
+            {
+                "content": "Dạng chuẩn 3 (3NF)",
+                "is_correct": false
+            },
+            {
+                "content": "Dạng chuẩn Boyce-Codd (BCNF)",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Cho lược đồ quan hệ R(I,Q,N,C,H) và tập phụ thuộc hàm F={IQ->NH, Q->C, C->I}. Phụ thuộc hàm nào sau đây không được suy diễn ra từ tập F?",
+        "answers": [
+            {
+                "content": "QN->CH",
+                "is_correct": false
+            },
+            {
+                "content": "IC->NH",
+                "is_correct": true
+            },
+            {
+                "content": "IQ->I",
+                "is_correct": false
+            },
+            {
+                "content": "Q->H",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Cho lược đồ quan hệ R(N,G,P,M) và tập phụ thuộc hàm F={NGP->M, M->P}. Xác định dạng chuẩn cao nhất cuả lược đồ quan hệ R",
+        "answers": [
+            {
+                "content": "Dạng chuẩn 1 (1NF)",
+                "is_correct": false
+            },
+            {
+                "content": "Dạng chuẩn 2 (2NF)",
+                "is_correct": false
+            },
+            {
+                "content": "Dạng chuẩn 3 (3NF)",
+                "is_correct": true
+            },
+            {
+                "content": "4. Dạng chuẩn Boyce-Codd (BCNF)",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Cho lược đồ quan hệ R(S,G,F,Y,N) và tập phụ thuộc hàm T={S->G, G->F, GF->S,S- >Y,S->N,N->S}. Tập thuộc tính nào sau đây không phải là khoá?",
+        "answers": [
+            {
+                "content": "N",
+                "is_correct": false
+            },
+            {
+                "content": "GF",
+                "is_correct": false
+            },
+            {
+                "content": "Y",
+                "is_correct": true
+            },
+            {
+                "content": "S",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "SQL cung cấp một số các hàm thống kê theo nhóm. Hàm nào sau đây không có trong SQL?",
+        "answers": [
+            {
+                "content": "MIN",
+                "is_correct": false
+            },
+            {
+                "content": "MAX",
+                "is_correct": false
+            },
+            {
+                "content": "COUNT",
+                "is_correct": false
+            },
+            {
+                "content": "Average",
+                "is_correct": true
+            }
+        ]
+    }
+]

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>QuizHub | Ngân hàng đề thi</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Nunito+Sans:wght@700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/dashboard-layout.css}">
+    <link rel="stylesheet" th:href="@{/css/student/student-categories-public.css}">
+</head>
+
+<body>
+
+    <header th:replace="~{layout/header :: student-header(activePage='qbank')}"></header>
+
+    <main class="container page-fade-in" style="padding-top: 100px; padding-bottom: 50px;">
+        <div class="explore-shell">
+            <div class="explore-header" id="exploreHeader">
+                <h1 class="explore-title">Khám Phá Ngân Hàng Câu hỏi</h1>
+            </div>
+
+            <div class="explore-breadcrumb" id="breadcrumb" style="display:none;">
+                <!-- Breadcrumb injected here -->
+            </div>
+
+            <div id="exploreContent">
+                <!-- Loading Skeletons -->
+                <div class="cat-grid">
+                    <div class="skeleton skeleton-cat"></div>
+                    <div class="skeleton skeleton-cat"></div>
+                    <div class="skeleton skeleton-cat"></div>
+                    <div class="skeleton skeleton-cat"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="toastWrap"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:src="@{/js/script.js}"></script>
+    <script th:src="@{/js/student/student-categories-public.js}"></script>
+
+    <!-- Sub-Modal: Preview Questions List -->
+    <div class="modal fade" id="previewQuestionsModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: 20px; overflow: hidden;">
+                <div class="practice-modal-header d-flex align-items-center justify-content-between">
+                    <div>
+                        <h5 class="fw-bold text-white mb-1" style="font-size: 1.1rem;">
+                            <i class="bi bi-eye me-2"></i>Xem trước câu hỏi
+                        </h5>
+                        <div class="text-white text-opacity-75" style="font-size: 0.85rem; font-weight: 500;">Bạn có thể
+                            xem trước các câu hỏi thuộc dải câu đã chọn</div>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="form-check form-switch d-flex align-items-center gap-2 m-0 p-0">
+                            <label class="form-check-label text-white fw-semibold small m-0" for="previewShowAnswers"
+                                style="cursor: pointer;">
+                                Hiển thị đáp án đúng
+                            </label>
+                            <input class="form-check-input ms-0" type="checkbox" id="previewShowAnswers"
+                                onchange="togglePreviewAnswers()"
+                                style="width: 2.8em; height: 1.45em; cursor: pointer; background-color: rgba(255,255,255,0.25); border-color: rgba(255,255,255,0.4);">
+                        </div>
+                        <button type="button" class="btn-close btn-close-white ms-3" data-bs-dismiss="modal"></button>
+                    </div>
+                </div>
+                <div class="modal-body px-4 py-3" style="max-height: 55vh; overflow-y: auto;" id="previewQuestionsBody">
+                    <!-- Injected via JS -->
+                </div>
+                <div class="modal-footer border-0 px-4 pb-4 pt-2 d-flex justify-content-center gap-3">
+                    <button type="button" class="btn btn-light rounded-pill px-4 fw-bold" data-bs-dismiss="modal">
+                        Đóng
+                    </button>
+                    <button type="button" class="btn btn-primary rounded-pill px-4 fw-bold"
+                        style="background: linear-gradient(135deg, #4f46e5, #3b82f6); border:none;"
+                        onclick="bootstrap.Modal.getInstance(document.getElementById('previewQuestionsModal')).hide(); submitStartPractice();">
+                        <i class="bi bi-play-fill me-1"></i> Bắt đầu luyện tập ngay
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

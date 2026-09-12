@@ -1,0 +1,13 @@
+html {
+    zoom: 85%;
+    scrollbar-gutter: stable;
+}
+
+html,
+body {
+    background: #0f0c29 !important;
+}
+
+.hero-section {
+    min-height: 118vh !important;
+}

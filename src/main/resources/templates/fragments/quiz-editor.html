@@ -1,0 +1,950 @@
+<!-- Fragment: Full Quiz Editor UI (Metadata + Question Selection) -->
+<div th:fragment="quiz-editor-ui(userType)" class="d-flex flex-column gap-4 mx-auto" style="max-width: 1400px; width: 100%;">
+    <!-- Top Card: 1. Thông tin chung -->
+    <div class="card-panel shadow-sm border-0"
+        style="border-radius: 24px; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); padding: 24px;">
+        <div class="d-flex align-items-center mb-4">
+            <div class="icon-box me-3"
+                style="background: #e0e7ff; color: #4338ca; width: 48px; height: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center;">
+                <i class="bi bi-info-circle-fill fs-5"></i>
+            </div>
+            <div>
+                <h5 class="fw-bold mb-0" style="color: #1e1b4b;">1. Thông tin chung</h5>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label class="form-label small fw-bold text-secondary mb-1">Tiêu đề đề thi <span
+                            class="text-danger">*</span></label>
+                    <input type="text" id="quiz-title" class="fc form-control-lg"
+                        placeholder="Ví dụ: Ôn tập kiến thức chương 1" required>
+                </div>
+
+                <div class="mb-0">
+                    <label class="form-label small fw-bold text-secondary mb-1">Mô tả chi tiết</label>
+                    <input type="text" id="quiz-desc" class="fc form-control-lg"
+                        placeholder="Ghi chú nội dung hoặc hướng dẫn làm bài...">
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label class="form-label small fw-bold text-secondary mb-1">Danh mục lưu trữ <span
+                            class="text-danger">*</span></label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-light border-end-0"
+                            style="border-radius: 12px 0 0 12px; border-color: #e2e8f0;">
+                            <i class="bi bi-folder2-open text-primary"></i>
+                        </span>
+                        <input type="text" id="quiz-category-display"
+                            class="form-control fc bg-white cursor-pointer border-start-0" placeholder="Chọn danh mục..."
+                            readonly onclick="openCategoryTreePicker('quiz')"
+                            style="border-radius:0 12px 12px 0; width: auto; flex: 1;">
+                    </div>
+                    <input type="hidden" id="quiz-category">
+                </div>
+
+                <div class="mb-0">
+                    <label class="form-label small fw-bold text-secondary mb-1">Ảnh minh họa</label>
+                    <!-- Tab chọn hình thức nhập ảnh -->
+                    <div class="d-flex gap-2 mb-2">
+                        <button type="button" id="quizTabUpload" onclick="switchQuizImageTab('upload')"
+                            class="btn btn-sm btn-primary" style="border-radius:8px; font-size:12px;">
+                            <i class="bi bi-cloud-upload me-1"></i>Tải ảnh lên
+                        </button>
+                        <button type="button" id="quizTabUrl" onclick="switchQuizImageTab('url')"
+                            class="btn btn-sm btn-outline-secondary" style="border-radius:8px; font-size:12px;">
+                            <i class="bi bi-link-45deg me-1"></i>Nhập URL
+                        </button>
+                    </div>
+                    <!-- Panel upload file -->
+                    <div id="quizPanelUpload">
+                        <div class="input-group mb-2">
+                            <label class="btn btn-light border-end-0 mb-0 d-flex align-items-center" for="quizImageFileInput"
+                                style="border-radius:12px 0 0 12px; border-color:#e2e8f0; background:#f8fafc; cursor:pointer;">
+                                <i class="bi bi-cloud-upload text-indigo me-1"></i>Chọn file
+                            </label>
+                            <input type="file" id="quizImageFileInput" accept="image/*" style="display:none" onchange="handleQuizImageUpload(this)">
+                            <input type="text" id="quiz-image-display" class="form-control fc bg-white"
+                                placeholder="Chưa chọn file..." readonly
+                                style="border-radius:0 12px 12px 0; width:auto; flex:1; border-color:#e2e8f0;">
+                        </div>
+                    </div>
+                    <!-- Panel nhập URL -->
+                    <div id="quizPanelUrl" style="display:none;">
+                        <input type="text" id="quizImageUrlInput" class="form-control fc mb-1"
+                            placeholder="https://example.com/image.jpg"
+                            oninput="syncQuizImageUrl(this.value)"
+                            style="border-radius:12px; border-color:#e2e8f0;">
+                        <div id="quizUrlPreviewBox" class="mt-1" style="display:none;">
+                            <img id="quizUrlPreview" src="" alt="Preview"
+                                style="max-height:70px; border-radius:8px; object-fit:cover; border:1px solid #e2e8f0;">
+                        </div>
+                    </div>
+                    <input type="hidden" id="quiz-image">
+                    <input type="hidden" id="quiz-isExam" value="false">
+                    <input type="hidden" id="quiz-isDraft" value="false">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Card: 2. Chọn câu hỏi -->
+    <div class="card-panel shadow-sm border-0"
+        style="border-radius: 24px; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); padding: 24px;">
+        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+            <div class="d-flex align-items-center">
+                <div class="icon-box me-3"
+                    style="background: #eef2ff; color: #6366f1; width: 48px; height: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center;">
+                    <i class="bi bi-collection-play-fill fs-5"></i>
+                </div>
+                <div class="d-flex align-items-center gap-2 flex-wrap">
+                    <h5 class="fw-bold mb-0" style="color: #1e1b4b;">2. Chọn câu hỏi</h5>
+                    <span class="badge bg-indigo text-white rounded-pill px-2 py-1" id="selected-count" style="font-size: 0.75rem; background: #6366f1;">Đã chọn 0 câu hỏi</span>
+                </div>
+            </div>
+            <div class="d-flex flex-column gap-1 align-items-end">
+                <div class="d-flex gap-2">
+                    <button type="button" class="btn btn-sm btn-outline-success fw-bold px-3 py-2"
+                        onclick="openRandomGenerateModal()"
+                        style="border-radius:12px; border-color:#ecfdf5 !important; color:#059669 !important; background: #ecfdf5;">
+                        <i class="bi bi-shuffle me-1"></i>Sinh ngẫu nhiên
+                    </button>
+                    <button type="button" class="btn btn-sm btn-outline-primary fw-bold px-3 py-2"
+                        onclick="openQuestionEditor()"
+                        style="border-radius:12px; border-color:#e0e7ff !important; color:#4f46e5 !important; background: #f5f7ff;">
+                        <i class="bi bi-plus-circle me-1"></i>Soạn thủ công
+                    </button>
+                    <button type="button" class="btn btn-sm btn-indigo text-white fw-bold px-3 py-2"
+                        onclick="previewQuiz()" style="border-radius:12px; background: #4338ca;">
+                        <i class="bi bi-eye me-1"></i>Xem đề
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter Section -->
+        <div class="p-3 mb-4" style="background: #f8fafc; border-radius: 18px; border: 1px solid #f1f5f9;">
+            <div class="row g-2 mb-2">
+                <div class="col-md-7">
+                    <div class="input-group">
+                        <span class="input-group-text bg-white border-end-0"
+                            style="border-radius: 10px 0 0 10px; border-color: #e2e8f0;">
+                            <i class="bi bi-search text-muted"></i>
+                        </span>
+                        <input type="text" id="q-search" class="form-control fc border-start-0"
+                            placeholder="Tìm câu hỏi..." onkeyup="loadQuestions()">
+                    </div>
+                </div>
+                <div class="col-md-5">
+                    <select id="q-source" class="form-select fc" onchange="loadQuestions()">
+                        <option value="mine" selected>Kho cá nhân</option>
+                        <option th:if="${userType == 'teacher'}" value="public">Kho công cộng</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row g-2">
+                <div class="col-md-5">
+                    <select id="q-type" class="form-select fc" onchange="loadQuestions()">
+                        <option value="">Tất cả loại câu</option>
+                        <option value="SINGLE_CHOICE">Trắc nghiệm (1)</option>
+                        <option value="MULTIPLE_CHOICE">Trắc nghiệm (N)</option>
+                        <option value="FILL_IN_BLANK">Điền khuyết</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <select id="q-level" class="form-select fc" onchange="filterLocalQuestions()">
+                        <option value="">Mọi độ khó</option>
+                        <option value="EASY">Dễ</option>
+                        <option value="MEDIUM">Trung bình</option>
+                        <option value="HARD">Khó</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <button type="button" class="btn btn-light w-100 fw-bold text-muted border-0 mb-1"
+                        onclick="openCategoryTreePicker('filter')" style="border-radius:10px;">
+                        <i class="bi bi-funnel"></i> Lọc CM
+                    </button>
+                    <input type="text" id="q-category-filter-display"
+                        class="form-control fc small text-muted border-0 bg-transparent p-0 text-center"
+                        value="Tất cả danh mục" readonly style="font-size: 0.75rem;">
+                    <input type="hidden" id="q-category-filter">
+                </div>
+            </div>
+        </div>
+
+        <div class="right-scroller pe-3" id="questions-wrapper"
+            style="max-height: 480px; overflow-y: auto; overflow-x: hidden;">
+            <!-- Populate via JS -->
+        </div>
+    </div>
+</div>
+
+<!-- Fragment: Modals for Quiz Editor -->
+<div th:fragment="quiz-editor-modals" th:remove="tag">
+    <!-- Preview Question Modal -->
+    <div class="modal fade" id="previewQuestionModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content"
+                style="border-radius: 24px; border: none; box-shadow: 0 20px 60px rgba(0,0,0,0.15);">
+                <div class="modal-header border-0 px-4 pt-4">
+                    <h5 class="modal-title fw-bold"><i class="bi bi-eye-fill me-2 text-primary"></i>Chi tiết câu hỏi
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body px-4 py-3">
+                    <div id="preview-q-badges" class="mb-3 d-flex gap-2"></div>
+                    <div id="preview-q-text" class="fw-bold mb-4 fs-5" style="color: #1e1b4b; line-height: 1.6;"></div>
+                    <div id="preview-ans-wrapper" class="d-flex flex-column gap-2"></div>
+                </div>
+                <div class="modal-footer border-0 px-4 pb-4">
+                    <button type="button" class="btn btn-light px-4" data-bs-dismiss="modal"
+                        style="border-radius:12px;">Đóng</button>
+                    <button type="button" id="btn-modal-select-toggle" class="btn btn-primary px-4 fw-bold"
+                        onclick="toggleSelectionInModal()" style="border-radius:12px;">
+                        Chọn câu hỏi
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Shared Question Editor Modal -->
+    <div th:replace="~{fragments/question-editor :: question-editor-modal}"></div>
+
+    <!-- Quiz Preview Modal (Whole Quiz) -->
+    <div class="modal fade" id="previewQuizModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+            <div class="modal-content" style="border-radius: 24px; border: none;">
+                <div class="modal-header border-0 px-4 pt-4 bg-light" style="border-radius: 24px 24px 0 0;">
+                    <div>
+                        <h5 class="modal-title fw-bold" id="preview-quiz-title">Tên đề thi</h5>
+                        <p class="text-muted small mb-0" id="preview-quiz-meta">0 câu hỏi</p>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body px-4 py-4">
+                    <div id="preview-quiz-desc" class="mb-4 p-3 bg-light rounded-3 italic text-muted small"></div>
+                    <div id="preview-quiz-questions-list" class="d-flex flex-column gap-4">
+                        <!-- Populated via JS -->
+                    </div>
+                </div>
+                <div class="modal-footer border-0 px-4 pb-4">
+                    <button type="button" class="btn btn-indigo w-100 fw-bold py-2" data-bs-dismiss="modal"
+                        style="border-radius:12px;">Đóng Xem Trước</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div th:replace="~{fragments/category-explorer-private :: category-create-modal}"></div>
+
+    <!-- Random Generate Modal in Quiz Editor -->
+    <div class="modal fade" id="randomGenerateModal" tabindex="-1" aria-hidden="true" style="z-index: 1060;">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content border-0 shadow" style="border-radius: 20px;">
+                <div class="modal-header border-0 pb-0 pt-4 px-4">
+                    <h5 class="modal-title fw-bold text-success">
+                        <i class="bi bi-shuffle me-2"></i>Sinh ngẫu nhiên
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-muted small text-uppercase">Danh mục câu hỏi</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0 rounded-start-3" style="border-radius: 12px 0 0 12px; border-color: #cbd5e1;">
+                                <i class="bi bi-folder2 text-muted"></i>
+                            </span>
+                            <input type="text" id="randomGenCategoryDisplay" class="form-control bg-light border-start-0 rounded-end-3 cursor-pointer" placeholder="Chọn danh mục..." readonly onclick="openCategoryTreePicker('randomGen')" required style="border-radius: 0 12px 12px 0; border-color: #cbd5e1;">
+                        </div>
+                        <input type="hidden" id="randomGenCategoryId">
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label fw-bold text-muted small text-uppercase">Số lượng câu hỏi</label>
+                        <input type="number" id="randomGenAmount" class="form-control rounded-3" value="10" min="1" max="100" required style="border-radius: 12px; border-color: #cbd5e1;">
+                        <small class="text-muted mt-2 d-block"><i class="bi bi-info-circle me-1"></i>Hệ thống sẽ bốc ngẫu nhiên số lượng câu hỏi trong danh mục đã chọn.</small>
+                    </div>
+                    <div class="form-check mb-4">
+                        <input class="form-check-input" type="checkbox" id="clearPreviousQuestions" checked style="cursor: pointer;">
+                        <label class="form-check-label text-muted" for="clearPreviousQuestions" style="cursor: pointer; user-select: none;">
+                            Xóa các câu hỏi đã chọn trước đó
+                        </label>
+                    </div>
+                    <button type="button" onclick="confirmRandomGenerate()" class="btn btn-success w-100 py-2 fw-bold text-white"
+                        style="border-radius: 12px; box-shadow: 0 4px 12px rgba(16,185,129,0.2); background: #10b981; border: none;">
+                        <i class="bi bi-check2-circle me-1"></i> Xác nhận sinh đề
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Fragment: Quiz Editor Logic Scripts -->
+<div th:fragment="quiz-editor-scripts(userType)" th:remove="tag">
+    <script th:inline="javascript">
+        (function () {
+            const USER_TYPE = /*[[${userType}]]*/ 'student';
+            const BASE_API = USER_TYPE === 'teacher' ? '/api/teacher' : '/api/student';
+            const QUIZ_API = USER_TYPE === 'teacher' ? '/api/teacher/quizzes' : '/api/student/quiz';
+            const REDIRECT_URL = USER_TYPE === 'teacher' ? '/teacher/categories?type=mine' : '/student/categories?type=mine';
+
+            const quizIdEl = document.getElementById('quizIdInput');
+            const catIdEl = document.getElementById('categoryIdInput');
+            const quizId = quizIdEl ? quizIdEl.value : null;
+            const initialCategoryId = catIdEl ? catIdEl.value : null;
+            const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+
+            let questionsList = [];
+            let selectedQuestionIds = new Set();
+            let fullSelectedQuestionsMap = new Map();
+            let categorySelectTarget = 'quiz';
+            let previewingQuestionId = null;
+
+            // Helper functions
+            function esc(s) {
+                if (!s) return '';
+                const d = document.createElement('div');
+                d.textContent = s;
+                return d.innerHTML;
+            }
+
+            function showToast(msg, type = 'ok') {
+                if (type === 'err' || type === 'error') toast.error(msg);
+                else if (type === 'warn' || type === 'warning') toast.warning(msg);
+                else toast.success(msg);
+            }
+
+            window.handleQuizImageUpload = async function(input) {
+                const file = input.files[0];
+                if (!file) return;
+
+                if (!file.type.startsWith('image/')) {
+                    showToast('Chỉ chấp nhận file ảnh!', 'err');
+                    input.value = '';
+                    return;
+                }
+                if (file.size > 5 * 1024 * 1024) {
+                    showToast('File ảnh không được vượt quá 5MB!', 'err');
+                    input.value = '';
+                    return;
+                }
+
+                document.getElementById('quiz-image-display').value = 'Đang tải lên...';
+
+                try {
+                    const formData = new FormData();
+                    formData.append('file', file);
+
+                    const res = await fetch('/api/users/upload-avatar', {
+                        method: 'POST',
+                        headers: { Authorization: `Bearer ${token}` },
+                        body: formData
+                    });
+                    const data = await res.json();
+                    if (!res.ok) throw new Error(data.error || 'Tải ảnh thất bại');
+
+                    document.getElementById('quiz-image').value = data.url;
+                    document.getElementById('quiz-image-display').value = file.name;
+                    showToast('Tải ảnh lên thành công!', 'ok');
+                } catch (err) {
+                    showToast(err.message, 'err');
+                    document.getElementById('quiz-image-display').value = 'Lỗi tải ảnh';
+                }
+            };
+
+            window.switchQuizImageTab = function(tab) {
+                const isUpload = tab === 'upload';
+                document.getElementById('quizPanelUpload').style.display = isUpload ? '' : 'none';
+                document.getElementById('quizPanelUrl').style.display   = isUpload ? 'none' : '';
+                document.getElementById('quizTabUpload').className = 'btn btn-sm ' + (isUpload ? 'btn-primary' : 'btn-outline-secondary');
+                document.getElementById('quizTabUrl').className    = 'btn btn-sm ' + (!isUpload ? 'btn-primary' : 'btn-outline-secondary');
+                document.getElementById('quiz-image').value = '';
+                if (isUpload) { document.getElementById('quiz-image-display').value = ''; }
+                else {
+                    document.getElementById('quizImageUrlInput').value = '';
+                    document.getElementById('quizUrlPreviewBox').style.display = 'none';
+                }
+            };
+
+            window.syncQuizImageUrl = function(val) {
+                document.getElementById('quiz-image').value = '';
+                const box = document.getElementById('quizUrlPreviewBox');
+                const img = document.getElementById('quizUrlPreview');
+                const urlInput = document.getElementById('quizImageUrlInput');
+                urlInput.classList.remove('is-valid', 'is-invalid');
+                if (val.trim()) {
+                    box.style.display = '';
+                    img.onload = () => {
+                        document.getElementById('quiz-image').value = val.trim();
+                        urlInput.classList.remove('is-invalid');
+                        urlInput.classList.add('is-valid');
+                        box.style.display = '';
+                    };
+                    img.onerror = () => {
+                        box.style.display = 'none';
+                        urlInput.classList.remove('is-valid');
+                        urlInput.classList.add('is-invalid');
+                    };
+                    img.src = val.trim();
+                } else { box.style.display = 'none'; }
+            };
+
+            document.addEventListener('DOMContentLoaded', async () => {
+                try {
+                    await fetchCategories();
+                } catch (e) {
+                    console.error('Failed to load categories', e);
+                }
+
+                if (quizId) {
+                    try {
+                        await fetchQuizToEdit();
+                    } catch (e) {
+                        console.error('Failed to load quiz details', e);
+                    }
+                } else if (initialCategoryId) {
+                    const matched = findCategoryById(window.myCategories, parseInt(initialCategoryId));
+                    const quizCatEl = document.getElementById('quiz-category');
+                    const quizCatDispEl = document.getElementById('quiz-category-display');
+                    if (matched) {
+                        if (quizCatEl) quizCatEl.value = matched.id;
+                        if (quizCatDispEl) quizCatDispEl.value = matched.name;
+                    }
+                    loadQuestions();
+                } else {
+                    loadQuestions();
+                }
+            });
+
+            async function fetchCategories() {
+                try {
+                    const [m, p] = await Promise.all([
+                        fetch(`${BASE_API}/categories/mine`, { headers: { Authorization: `Bearer ${token}` } }),
+                        fetch(`${BASE_API}/categories/public`, { headers: { Authorization: `Bearer ${token}` } })
+                    ]);
+                    const mJson = await m.json();
+                    const pJson = await p.json();
+                    window.myCategories = Array.isArray(mJson) ? mJson : [];
+                    window.publicCategories = Array.isArray(pJson) ? pJson : [];
+                } catch (e) { 
+                    console.error('Failed to load categories', e); 
+                    window.myCategories = [];
+                    window.publicCategories = [];
+                }
+            }
+
+            async function fetchQuizToEdit() {
+                try {
+                    console.log('Loading quiz details to edit for quizId:', quizId);
+                    const res = await fetch(`${QUIZ_API}/${quizId}`, {
+                        headers: { Authorization: `Bearer ${token}` }
+                    });
+                    if (res.ok) {
+                        const q = await res.json();
+                        console.log('Fetched quiz details:', q);
+                        
+                        const titleEl = document.getElementById('quiz-title');
+                        const descEl = document.getElementById('quiz-desc');
+                        const imgEl = document.getElementById('quiz-image');
+                        const isExamEl = document.getElementById('quiz-isExam');
+                        const isDraftEl = document.getElementById('quiz-isDraft');
+                        const catIdEl = document.getElementById('quiz-category');
+                        const catDispEl = document.getElementById('quiz-category-display');
+                        
+                        if (titleEl) titleEl.value = q.title || '';
+                        if (descEl) descEl.value = q.description || '';
+                        if (imgEl) {
+                            imgEl.value = q.imageUrl || '';
+                        }
+                        if (isExamEl) isExamEl.value = String(q.isExam || false);
+                        if (isDraftEl) isDraftEl.value = String(q.isDraft || false);
+                        
+                        if (q.categoryId) {
+                            if (catIdEl) catIdEl.value = q.categoryId;
+                            if (catDispEl) catDispEl.value = q.categoryName || 'Mặc định';
+                        }
+                        
+                        const imgDispEl = document.getElementById('quiz-image-display');
+                        if (imgDispEl && q.imageUrl) {
+                            imgDispEl.value = 'Đã tải ảnh lên';
+                        }
+                        
+                        selectedQuestionIds.clear();
+                        fullSelectedQuestionsMap.clear();
+                        const questions = q.questions || [];
+                        questions.forEach(qi => {
+                            fullSelectedQuestionsMap.set(Number(qi.id), qi);
+                            selectedQuestionIds.add(Number(qi.id));
+                        });
+                        if (selectedQuestionIds.size === 0) {
+                            const ids = q.questionIds || [];
+                            ids.forEach(id => selectedQuestionIds.add(Number(id)));
+                        }
+                        updateSelectedCount();
+                        loadQuestions();
+                    } else {
+                        console.error('Failed to load quiz, status code:', res.status);
+                    }
+                } catch (e) { console.error('Failed to load quiz details', e); }
+            }
+
+            window.loadQuestions = async function () {
+                const search = document.getElementById('q-search').value;
+                const source = document.getElementById('q-source').value;
+                const type = document.getElementById('q-type').value;
+                const catId = document.getElementById('q-category-filter').value;
+
+                // Construct URL correctly based on API type
+                const url = `${BASE_API}/questions?keyword=${encodeURIComponent(search)}&type=${type}&isPublicTab=${source === 'public'}${catId ? '&categoryId=' + catId : ''}&size=150`;
+                const wrapper = document.getElementById('questions-wrapper');
+                wrapper.innerHTML = '<div class="text-center py-5"><div class="spinner-border text-primary" role="status"></div></div>';
+
+                try {
+                    const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
+                    const data = await res.json();
+                    let fetchedList = data.content || [];
+                    
+                    // Add any selected questions that are not in the fetched list so they are always visible
+                    const fetchedIds = new Set(fetchedList.map(q => Number(q.id)));
+                    fullSelectedQuestionsMap.forEach((q, id) => {
+                        if (!fetchedIds.has(id)) {
+                            fetchedList.unshift(q);
+                        }
+                    });
+                    
+                    questionsList = fetchedList;
+                    
+                    questionsList.forEach(q => {
+                        if (selectedQuestionIds.has(Number(q.id))) {
+                            fullSelectedQuestionsMap.set(Number(q.id), q);
+                        }
+                    });
+                    filterLocalQuestions();
+                } catch (e) { wrapper.innerHTML = '<div class="text-center text-danger">Lỗi tải dữ liệu</div>'; }
+            }
+
+            window.filterLocalQuestions = function () {
+                const level = document.getElementById('q-level').value;
+                const filtered = questionsList.filter(q => !level || q.level === level);
+                renderQuestions(filtered);
+            }
+
+            function renderQuestions(list) {
+                const wrapper = document.getElementById('questions-wrapper');
+                if (list.length === 0) {
+                    wrapper.innerHTML = '<div class="text-center py-5 text-muted">Không tìm thấy câu hỏi nào</div>';
+                    return;
+                }
+                wrapper.innerHTML = list.map(q => {
+                    const isSelected = selectedQuestionIds.has(q.id);
+                    return `
+                        <div class="question-card shadow-sm mb-3 ${isSelected ? 'selected' : ''}"
+                             onclick="toggleQuestionSelection(${q.id})">
+                            <div class="d-flex align-items-center justify-content-between p-3">
+                                <div class="d-flex align-items-center gap-3" style="min-width: 0; flex: 1;">
+                                    <div class="custom-check" style="flex-shrink: 0; display: flex; align-items: center;">
+                                        <input type="checkbox" class="form-check-input" ${isSelected ? 'checked' : ''} style="pointer-events:none;">
+                                    </div>
+                                    <div style="min-width: 0; flex: 1;">
+                                        <div class="d-flex gap-2 mb-1 flex-wrap">
+                                            <span class="qbadge qbadge-type" style="flex-shrink: 0;">${q.type === 'SINGLE_CHOICE' ? 'Trắc nghiệm' : (q.type === 'MULTIPLE_CHOICE' ? 'Nhiều đ/á' : 'Điền khuyết')}</span>
+                                            <span class="qbadge qbadge-level" style="flex-shrink: 0;">${q.level === 'EASY' ? 'Dễ' : (q.level === 'MEDIUM' ? 'T.Bình' : 'Khó')}</span>
+                                        </div>
+                                        <div class="fw-semibold text-dark mb-1" style="word-break: break-word; font-size: 0.98rem; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden;">${esc(q.text)}</div>
+                                    </div>
+                                </div>
+                                <div class="ms-2" style="flex-shrink: 0;">
+                                    <button type="button" class="btn btn-sm btn-light rounded-circle" onclick="openPreviewModal(${q.id}, event)" style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            window.toggleQuestionSelection = function (id) {
+                const numId = Number(id);
+                if (selectedQuestionIds.has(numId)) {
+                    selectedQuestionIds.delete(numId);
+                    fullSelectedQuestionsMap.delete(numId);
+                } else {
+                    selectedQuestionIds.add(numId);
+                    const qObj = questionsList.find(x => Number(x.id) === numId);
+                    if (qObj) {
+                        fullSelectedQuestionsMap.set(numId, qObj);
+                    }
+                }
+                updateSelectedCount();
+                filterLocalQuestions();
+            }
+
+            function updateSelectedCount() {
+                document.getElementById('selected-count').textContent = `Đã chọn ${selectedQuestionIds.size} câu hỏi`;
+            }
+
+            window.openPreviewModal = function (id, e) {
+                if (e) e.stopPropagation();
+                const q = questionsList.find(x => x.id === id);
+                if (!q) return;
+
+                previewingQuestionId = id;
+                document.getElementById('preview-q-text').textContent = q.text;
+                
+                // Human friendly type and level badges
+                const typeText = q.type === 'SINGLE_CHOICE' ? 'Trắc nghiệm (1 đáp án)' : (q.type === 'MULTIPLE_CHOICE' ? 'Trắc nghiệm (Nhiều đáp án)' : 'Điền vào chỗ trống');
+                const levelText = q.level === 'EASY' ? 'Dễ' : (q.level === 'MEDIUM' ? 'Trung bình' : 'Khó');
+                
+                document.getElementById('preview-q-badges').innerHTML = `
+                    <span class="qbadge qbadge-type">${typeText}</span>
+                    <span class="qbadge qbadge-level">${levelText}</span>
+                `;
+
+                const wrap = document.getElementById('preview-ans-wrapper');
+                wrap.innerHTML = q.answers.map((a, i) => `
+                    <div class="preview-ans-item ${a.isCorrect ? 'correct' : ''}">
+                        <span class="preview-ans-letter">${String.fromCharCode(65 + i)}</span>
+                        <span class="preview-ans-text">${esc(a.text)}</span>
+                        ${a.isCorrect ? '<i class="bi bi-check-circle-fill ms-auto text-success fs-5"></i>' : ''}
+                    </div>
+                `).join('');
+
+                const btn = document.getElementById('btn-modal-select-toggle');
+                const isSelected = selectedQuestionIds.has(id);
+                btn.textContent = isSelected ? 'Bỏ chọn' : 'Chọn câu hỏi';
+                btn.className = isSelected ? 'btn btn-outline-danger px-4 fw-bold rounded-3' : 'btn btn-primary px-4 fw-bold rounded-3';
+
+                bootstrap.Modal.getOrCreateInstance(document.getElementById('previewQuestionModal')).show();
+            }
+
+            window.toggleSelectionInModal = function () {
+                if (previewingQuestionId) {
+                    toggleQuestionSelection(previewingQuestionId);
+                    bootstrap.Modal.getInstance(document.getElementById('previewQuestionModal')).hide();
+                }
+            }
+
+            window.saveQuiz = async function () {
+                const urlTabActive = document.getElementById('quizPanelUrl').style.display !== 'none';
+                const urlInputValue = document.getElementById('quizImageUrlInput').value.trim();
+                
+                let finalImageUrl = document.getElementById('quiz-image').value.trim();
+                if (urlTabActive && urlInputValue) {
+                    finalImageUrl = urlInputValue; // Lấy luôn URL do người dùng nhập bất kể preview lỗi hay không
+                }
+                
+                const title = document.getElementById('quiz-title').value.trim();
+                const categoryId = document.getElementById('quiz-category').value;
+                if (!title || !categoryId) { showToast('Nhập tiêu đề và chọn danh mục!', 'err'); return; }
+                if (selectedQuestionIds.size === 0) { showToast('Hãy chọn ít nhất 1 câu hỏi!', 'err'); return; }
+
+                const payload = {
+                    title,
+                    description: document.getElementById('quiz-desc').value.trim(),
+                    imageUrl: finalImageUrl,
+                    categoryId: parseInt(categoryId),
+                    isExam: document.getElementById('quiz-isExam').value === 'true',
+                    isDraft: document.getElementById('quiz-isDraft').value === 'true',
+                    questionIds: Array.from(selectedQuestionIds)
+                };
+
+                const method = quizId ? 'PUT' : 'POST';
+                const url = quizId ? `${QUIZ_API}/${quizId}` : QUIZ_API;
+
+                try {
+                    const res = await fetch(url, {
+                        method,
+                        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+                        body: JSON.stringify(payload)
+                    });
+                    if (res.ok) {
+                        showToast(quizId ? 'Cập nhật thành công!' : 'Lưu đề thi thành công!');
+                        setTimeout(() => window.location.href = REDIRECT_URL, 1000);
+                    } else {
+                        let msg = 'Lỗi lưu đề thi';
+                        try {
+                            const err = await res.json();
+                            msg = err.message || msg;
+                        } catch (e) { }
+                        showToast(msg, 'err');
+                    }
+                } catch (e) { showToast('Lỗi kết nối!', 'err'); }
+            };
+
+            window.removeQuestionFromPreview = function (id) {
+                const numId = Number(id);
+                selectedQuestionIds.delete(numId);
+                fullSelectedQuestionsMap.delete(numId);
+                updateSelectedCount();
+                filterLocalQuestions();
+                previewQuiz(); // Re-render preview modal immediately
+            };
+
+            window.previewQuiz = function () {
+                const title = document.getElementById('quiz-title').value || 'Chưa đặt tiêu đề';
+                const desc = document.getElementById('quiz-desc').value || 'Chưa có mô tả';
+
+                const selected = [];
+                selectedQuestionIds.forEach(id => {
+                    const numId = Number(id);
+                    if (fullSelectedQuestionsMap.has(numId)) {
+                        selected.push(fullSelectedQuestionsMap.get(numId));
+                    }
+                });
+
+                document.getElementById('preview-quiz-title').textContent = title;
+                document.getElementById('preview-quiz-meta').textContent = `${selected.length} câu hỏi đã chọn`;
+                document.getElementById('preview-quiz-desc').textContent = desc;
+
+                const listWrap = document.getElementById('preview-quiz-questions-list');
+                if (selected.length === 0) {
+                    listWrap.innerHTML = '<div class="text-center py-4 text-muted">Chưa có câu hỏi nào được chọn hoặc đang tải...</div>';
+                } else {
+                    listWrap.innerHTML = selected.map((q, idx) => `
+                         <div class="pb-4 mb-4 border-bottom">
+                             <div class="d-flex justify-content-between align-items-start gap-3 mb-3">
+                                 <div class="fw-bold fs-6 d-flex align-items-start gap-2" style="min-width: 0; flex: 1;">
+                                     <span class="badge bg-indigo text-white rounded-pill px-2 py-1" style="font-size: 0.75rem; flex-shrink: 0; background: #6366f1;">Câu ${idx + 1}</span>
+                                     <span style="word-break: break-word; line-height: 1.5;">${esc(q.text)}</span>
+                                 </div>
+                                 <button type="button" class="btn btn-sm btn-outline-danger d-inline-flex align-items-center gap-1 px-2.5 py-1.5" 
+                                     onclick="removeQuestionFromPreview(${q.id})" 
+                                     style="border-radius: 8px; font-size: 0.75rem; flex-shrink: 0; font-weight: 600;">
+                                     <i class="bi bi-trash3-fill"></i> Bỏ chọn
+                                 </button>
+                             </div>
+                             <div class="d-flex flex-column gap-2 ps-2">
+                                 ${q.answers ? q.answers.map((a, i) => `
+                                     <div class="preview-ans-item ${a.isCorrect ? 'correct' : ''}" style="padding: 10px 14px; border-radius: 12px; margin-bottom: 0;">
+                                         <span class="preview-ans-letter" style="width: 22px; height: 22px; font-size: 0.85rem; margin-right: 8px;">${String.fromCharCode(65 + i)}</span>
+                                         <span class="preview-ans-text" style="font-size: 0.9rem;">${esc(a.text)}</span>
+                                         ${a.isCorrect ? '<i class="bi bi-check-circle-fill ms-auto text-success"></i>' : ''}
+                                     </div>
+                                 `).join('') : ''}
+                             </div>
+                         </div>
+                     `).join('');
+                }
+
+                bootstrap.Modal.getOrCreateInstance(document.getElementById('previewQuizModal')).show();
+            };
+
+
+            // Category Tree Picker Logic
+
+            // Unified opening logic is now in category-explorer-private-scripts
+
+            // --- Explicit routing for shared Category Picker results ---
+            window.handleCategorySelection = function(id, name, currentTarget) {
+                if (currentTarget === 'quiz') {
+                    const idEl = document.getElementById('quiz-category');
+                    const dispEl = document.getElementById('quiz-category-display');
+                    if (idEl) idEl.value = (id === -1 || id === null) ? '' : id;
+                    if (dispEl) dispEl.value = name || 'Chọn danh mục...';
+                } else if (currentTarget === 'filter') {
+                    const idEl = document.getElementById('q-category-filter');
+                    const dispEl = document.getElementById('q-category-filter-display');
+                    if (idEl) idEl.value = (id === null) ? '' : id;
+                    if (dispEl) {
+                        dispEl.value = name || 'Tất cả danh mục';
+                        dispEl.style.color = id ? '#4338ca' : '#6c757d'; // Add visual cue if active
+                    }
+                    loadQuestions(); // Trigger auto-reload
+                } else if (currentTarget === 'randomGen') {
+                    const idEl = document.getElementById('randomGenCategoryId');
+                    const dispEl = document.getElementById('randomGenCategoryDisplay');
+                    if (idEl) idEl.value = (id === -1 || id === null) ? '' : id;
+                    if (dispEl) dispEl.value = name || 'Chọn danh mục...';
+                }
+            };
+
+            window.clearCategoryFilterSelection = function () {
+                const idEl = document.getElementById('q-category-filter');
+                const dispEl = document.getElementById('q-category-filter-display');
+                if (idEl) idEl.value = '';
+                if (dispEl) {
+                    dispEl.value = 'Tất cả danh mục';
+                    dispEl.style.color = '#6c757d';
+                }
+                loadQuestions();
+            }
+
+            function findCategoryById(nodes, id) {
+                if (!nodes || !Array.isArray(nodes)) return null;
+                for (const n of nodes) {
+                    if (n.id === id) return n;
+                    if (n.children) {
+                        const f = findCategoryById(n.children, id);
+                        if (f) return f;
+                    }
+                }
+                return null;
+            }
+
+            // Handle question saved from the shared editor
+            window.onQuestionSaved = function(newQ, isEdit, oldIdStr) {
+                const numId = Number(newQ.id);
+                const oldNumId = oldIdStr ? Number(oldIdStr) : numId;
+                
+                if (isEdit) {
+                    // Update in lists if present using the old ID
+                    const idx = questionsList.findIndex(q => Number(q.id) === oldNumId);
+                    if (idx !== -1) questionsList[idx] = newQ;
+                    
+                    if (selectedQuestionIds.has(oldNumId)) {
+                        selectedQuestionIds.delete(oldNumId);
+                        fullSelectedQuestionsMap.delete(oldNumId);
+                        
+                        selectedQuestionIds.add(numId);
+                        fullSelectedQuestionsMap.set(numId, newQ);
+                    }
+                    filterLocalQuestions();
+                } else {
+                    // Prepend new question and auto-select it
+                    questionsList.unshift(newQ);
+                    selectedQuestionIds.add(numId);
+                    fullSelectedQuestionsMap.set(numId, newQ);
+                    updateSelectedCount();
+                    filterLocalQuestions();
+                }
+            };
+
+            window.handleQuizEditorExcelImport = async function(event) {
+                const file = event.target.files[0];
+                if (!file) return;
+                event.target.value = ''; // reset
+
+                const targetCategoryId = document.getElementById('quiz-category').value || '';
+
+                const formData = new FormData();
+                formData.append('file', file);
+                if (targetCategoryId) formData.append('categoryId', targetCategoryId);
+
+                showToast('Đang phân tích file...', 'success');
+                
+                const uploadUrl = USER_TYPE === 'teacher' ? '/api/teacher/questions/import' : ''; 
+                if (!uploadUrl) return;
+
+                try {
+                    const res = await fetch(uploadUrl, {
+                        method: 'POST',
+                        headers: { 'Authorization': 'Bearer ' + token },
+                        body: formData
+                    });
+                    
+                    if (!res.ok) throw new Error('Không thể nạp file.');
+                    
+                    const result = await res.json();
+                    const count = result.successCount || 0;
+                    const list = result.importedQuestions || [];
+                    
+                    if (count > 0) {
+                        showToast(`Đã nhập và chọn ${count} câu hỏi!`, 'success');
+                        // 1. Thêm các câu mới vào đầu mảng QuestionsList
+                        list.reverse().forEach(q => {
+                            const numId = Number(q.id);
+                            questionsList.unshift(q);
+                            selectedQuestionIds.add(numId);
+                            fullSelectedQuestionsMap.set(numId, q);
+                        });
+                        // 2. Cập nhật đếm và render
+                        updateSelectedCount();
+                        renderQuestions(questionsList);
+                    } else {
+                        showToast('Không tìm thấy câu hỏi hợp lệ.', 'error');
+                    }
+                    
+                    if (result.errorCount > 0) {
+                        console.warn('Excel Errors:', result.errors);
+                        showToast('Một số dòng bị lỗi:\n' + result.errors.slice(0, 3).join('\n') + (result.errors.length > 3 ? '\n...' : ''), 'error');
+                    }
+                } catch(e) {
+                    showToast('Lỗi: ' + e.message, 'error');
+                }
+            };
+
+            // Heartbeat to visually echo chosen Category Name under the Excel upload button
+            setInterval(function() {
+                const badge = document.getElementById('import-target-badge');
+                if (!badge) return;
+                const displayInput = document.getElementById('quiz-category-display');
+                const currentVal = displayInput ? displayInput.value : '';
+                const name = (currentVal && currentVal !== 'Chọn danh mục...') ? currentVal : 'Mặc định';
+                
+                // Only update text if changed to prevent annoying repaint jitters
+                const expectedHTML = `<i class="bi bi-box-arrow-in-down me-1"></i>Lưu vào: ${name}`;
+                if (badge.innerHTML !== expectedHTML) {
+                    badge.innerHTML = expectedHTML;
+                }
+            }, 600);
+
+            window.openRandomGenerateModal = function() {
+                const modalEl = document.getElementById('randomGenerateModal');
+                if (modalEl && modalEl.parentElement !== document.body) {
+                    document.body.appendChild(modalEl);
+                }
+
+                const randomGenCatId = document.getElementById('randomGenCategoryId');
+                const randomGenCatDisp = document.getElementById('randomGenCategoryDisplay');
+                if (randomGenCatId) randomGenCatId.value = '';
+                if (randomGenCatDisp) randomGenCatDisp.value = '';
+                document.getElementById('randomGenAmount').value = '10';
+
+                bootstrap.Modal.getOrCreateInstance(modalEl).show();
+            };
+
+            window.confirmRandomGenerate = async function() {
+                const catId = document.getElementById('randomGenCategoryId').value;
+                const amount = parseInt(document.getElementById('randomGenAmount').value) || 10;
+                if (!catId) {
+                    showToast('Vui lòng chọn danh mục câu hỏi!', 'warning');
+                    return;
+                }
+
+                try {
+                    // Gọi API mới: truyền luôn `amount` để Backend tự shuffle và bốc đúng số lượng
+                    const forGenRes = await fetch(`${BASE_API}/questions/for-generation?categoryId=${catId}&amount=${amount}`, {
+                        headers: { Authorization: `Bearer ${token}` }
+                    });
+                    if (!forGenRes.ok) throw new Error('API error');
+                    const chosen = await forGenRes.json();
+
+                    if (chosen.length === 0) {
+                        showToast('Danh mục này không có câu hỏi hợp lệ nào!', 'error');
+                        return;
+                    }
+
+                    const clearPrevious = document.getElementById('clearPreviousQuestions').checked;
+                    if (clearPrevious) {
+                        selectedQuestionIds.clear();
+                        fullSelectedQuestionsMap.clear();
+                    }
+
+                    // Thêm vào selection của editor
+                    chosen.forEach(q => {
+                        const numId = Number(q.id);
+                        selectedQuestionIds.add(numId);
+                        fullSelectedQuestionsMap.set(numId, q);
+                    });
+
+                    updateSelectedCount();
+                    loadQuestions();
+
+                    const modalEl = document.getElementById('randomGenerateModal');
+                    const modalInstance = bootstrap.Modal.getInstance(modalEl);
+                    if (modalInstance) modalInstance.hide();
+                    showToast(`Đã bốc ngẫu nhiên ${chosen.length} câu hỏi thành công!`, 'success');
+                } catch (e) {
+                    showToast('Lỗi kết nối: ' + e.message, 'error');
+                }
+            };
+
+        })();
+    </script>
+    <div th:replace="~{fragments/question-editor :: question-editor-scripts(${userType})}"></div>
+    <div th:replace="~{fragments/category-explorer-private :: category-explorer-private-scripts(${userType})}"></div>
+</div>

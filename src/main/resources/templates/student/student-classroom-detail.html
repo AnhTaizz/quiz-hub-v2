@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuizHub | Chi tiết Lớp học</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Nunito+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/student.css}">
+</head>
+<body>
+
+    <header th:replace="~{layout/header :: student-header(activePage='classrooms')}"></header>
+
+    <main class="container py-4">
+        <!-- Page Title & Header -->
+        <section class="mb-4">
+            <a href="/student/classrooms" class="text-decoration-none fw-bold text-primary d-inline-block mb-3">
+                <i class="bi bi-arrow-left"></i> Trở về danh sách lớp học
+            </a>
+            <div class="card p-4 border-0 shadow-sm" style="border-radius:20px; background:linear-gradient(135deg, #1e1b4b 0%, #312e81 100%); color:white;">
+                <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+                    <div>
+                        <h1 class="fw-black mb-1 text-white" th:text="${classroom.name}">Lập trình Java Nâng cao</h1>
+                        <p class="mb-0 opacity-75" th:text="${classroom.description}">Mô tả ngắn gọn về lớp học này...</p>
+                    </div>
+                    <div class="d-flex align-items-center gap-3">
+                        <img th:src="${classroom.creator.avatarUrl != null && !classroom.creator.avatarUrl.isEmpty() ? classroom.creator.avatarUrl : 'https://ui-avatars.com/api/?name=' + classroom.creator.fullName + '&background=28a745&color=fff'}" class="rounded-circle border border-white" style="width:50px; height:50px; object-fit:cover;" alt="Teacher">
+                        <div>
+                            <p class="mb-0 small opacity-75">Giảng viên</p>
+                            <h6 class="mb-0 fw-bold text-white" th:text="${classroom.creator.fullName}">Thầy Nguyễn Văn A</h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Topics Section -->
+        <section class="mb-5">
+            <h4 class="fw-bold mb-3 d-flex align-items-center gap-2" style="color: #1e1b4b;">
+                <i class="bi bi-tags text-primary"></i> Chủ đề bài học
+            </h4>
+            <div th:if="${#lists.isEmpty(topics)}" class="text-center py-4 bg-light rounded-3">
+                <p class="text-muted mb-0">Chưa có chủ đề bài học nào.</p>
+            </div>
+            <div class="row g-3" th:unless="${#lists.isEmpty(topics)}">
+                <div class="col-12 col-sm-6 col-md-4" th:each="topic : ${topics}">
+                    <div class="card border-0 shadow-sm h-100 p-4 bg-white" style="border-radius:18px; cursor:pointer;" th:data-id="${topic.id}" th:data-name="${topic.name}" onclick="openTopicDetailsModal(this.getAttribute('data-id'), this.getAttribute('data-name'))">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <span class="badge bg-primary bg-opacity-10 text-primary px-2 py-1 rounded" style="font-size:11px; font-weight:700;">CHỦ ĐỀ</span>
+                            <i class="bi bi-folder-fill fs-4 text-primary"></i>
+                        </div>
+                        <h5 class="fw-bold mb-1" style="color: #1e1b4b;" th:text="${topic.name}">Tên chủ đề</h5>
+                        <p class="text-muted small mb-0">Nhấn để xem các đề thi thuộc chủ đề này</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- All Quizzes / General Section -->
+        <section class="mb-5">
+            <h4 class="fw-bold mb-3 d-flex align-items-center gap-2" style="color: #1e1b4b;">
+                <i class="bi bi-journal-text text-primary"></i> Đề thi & Bài tập đã giao
+            </h4>
+            <div th:if="${#lists.isEmpty(assignedQuizzes)}" class="text-center py-5 bg-white shadow-sm rounded-4" style="border-radius:20px;">
+                <i class="bi bi-clipboard-x text-muted mb-2 d-block" style="font-size: 3rem;"></i>
+                <p class="text-muted fw-semibold mb-0">Hiện tại chưa có đề thi nào được giao trong lớp này.</p>
+            </div>
+            <div class="row g-4" th:unless="${#lists.isEmpty(assignedQuizzes)}">
+                <div class="col-12 col-md-6 assigned-card" th:each="assigning : ${assignedQuizzes}" th:data-topic-id="${assigning.topic != null ? assigning.topic.id : ''}">
+                    <div class="card h-100 border-0 shadow-sm p-4 bg-white" style="border-radius:20px; transition:all 0.3s;" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 15px 35px rgba(0,0,0,0.06)';" onmouseout="this.style.transform='none'; this.style.boxShadow='0 .125rem .25rem rgba(0,0,0,.075)';">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <span class="badge bg-success bg-opacity-10 text-success px-2 py-1 rounded badge-status" style="font-size:11px; font-weight:700;" th:text="${assigning.quiz != null && assigning.quiz.category != null ? assigning.quiz.category.name : 'Đề thi'}">Đề thi</span>
+                            <span th:if="${assigning.topic != null}" class="badge bg-light text-secondary px-2 py-1 rounded" style="font-size:11px;" th:text="${assigning.topic.name}">Tên Topic</span>
+                        </div>
+                        <h5 class="fw-black mb-3 assigned-title" style="color:#1e1b4b;" th:text="${assigning.quiz != null ? assigning.quiz.title : 'Đề thi'}">Lập trình Java Căn bản</h5>
+                        <div class="mb-3 assigned-meta" style="font-size: 13.5px; color:#475569;">
+                            <div class="mb-1"><i class="bi bi-clock me-1 text-primary"></i> <strong>Thời gian:</strong> <span th:text="${assigning.durationInMins}">45</span> phút</div>
+                            <div class="mb-1"><i class="bi bi-calendar-check me-1 text-primary"></i> <strong>Bắt đầu:</strong> <span th:text="${assigning.startDate != null ? #temporals.format(assigning.startDate, 'dd/MM/yyyy HH:mm') : '--/--/----'}">--</span></div>
+                            <div class="mb-1"><i class="bi bi-calendar-x me-1 text-primary"></i> <strong>Hạn chót:</strong> <span th:text="${assigning.dueDate != null ? #temporals.format(assigning.dueDate, 'dd/MM/yyyy HH:mm') : '--/--/----'}">--</span></div>
+                            <div><i class="bi bi-arrow-repeat me-1 text-primary"></i> <strong>Số lần tối đa:</strong> <span th:text="${assigning.maxAttempt}">1</span> lần</div>
+                        </div>
+                        <div class="border-top pt-3 mt-auto d-flex flex-wrap justify-content-between align-items-center gap-2">
+                            <span class="text-muted small"><i class="bi bi-calendar-check me-1"></i> Giao ngày: <span th:text="${assigning.createdAt != null ? #temporals.format(assigning.createdAt, 'dd/MM/yyyy') : '--/--/----'}">--</span></span>
+                            
+                            <div class="d-flex gap-2 assigned-actions" th:with="now=${T(java.time.LocalDateTime).now()}">
+                                <!-- Case 1: Not started yet -->
+                                <button th:if="${assigning.startDate != null && now.isBefore(assigning.startDate)}" class="btn btn-sm btn-secondary rounded-pill px-4 fw-bold" disabled>
+                                    Chưa bắt đầu <i class="bi bi-clock-history ms-1"></i>
+                                </button>
+                                
+                                <!-- Case 2: In progress -->
+                                <a th:if="${assigning.quiz != null && (assigning.startDate == null || !now.isBefore(assigning.startDate)) && (assigning.dueDate == null || !now.isAfter(assigning.dueDate))}" 
+                                   th:href="@{'/student/quiz/play/' + ${assigning.id}}" 
+                                   class="btn btn-sm btn-primary rounded-pill px-4 fw-bold">
+                                    Làm bài <i class="bi bi-pencil-square ms-1"></i>
+                                </a>
+
+                                <!-- Case 3: Ended -->
+                                <button th:if="${assigning.dueDate != null && now.isAfter(assigning.dueDate)}" class="btn btn-sm btn-outline-danger rounded-pill px-4 fw-bold" disabled>
+                                    Đã kết thúc <i class="bi bi-calendar-x ms-1"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal: Xem chi tiết các Đề thi trong Topic -->
+    <div class="modal fade" id="viewTopicQuizzesModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content" style="border-radius: 20px; border:none; box-shadow:0 15px 40px rgba(0,0,0,0.18);">
+                <div class="modal-header border-0 px-4 pt-4 bg-light" style="border-top-left-radius:20px; border-top-right-radius:20px;">
+                    <div>
+                        <h5 class="modal-title fw-bold" id="topicModalTitle" style="color:#1e1b4b;"></h5>
+                        <p class="text-muted small mb-0">Tất cả đề thi thuộc chủ đề này.</p>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body px-4 py-3" style="max-height: 60vh; overflow-y: auto;" id="topicModalBody">
+                    <!-- Quizzes belonging to this topic listed here -->
+                </div>
+                <div class="modal-footer border-0 px-4 pb-4">
+                    <button type="button" class="btn btn-light fw-bold" data-bs-dismiss="modal" style="border-radius:12px; padding:10px 24px;">Đóng</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:src="@{/js/student/student-classroom-detail.js}"></script>
+</body>
+</html>

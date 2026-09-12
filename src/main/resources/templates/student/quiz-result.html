@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kết quả bài thi | QuizHub</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Nunito+Sans:wght@700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/student/quiz-result.css}">
+</head>
+<body th:data-attempt-id="${attemptId}">
+
+    <div id="resultLoading">
+        <div class="loader-spinner mb-3"></div>
+        <p class="fw-bold text-muted">Đang tải kết quả bài thi...</p>
+    </div>
+
+    <nav class="practice-nav">
+        <h1 class="logo mb-0">
+            <a href="/student">
+                <i class="bi bi-layers-fill logo-icon"></i>
+                Quiz<span class="hub">Hub</span>
+            </a>
+        </h1>
+        <div class="practice-title-wrap">
+            <p class="practice-category" id="topCategoryName">Kết quả bài thi</p>
+            <h1 class="practice-session-title" id="headerQuizTitle">Đang tải...</h1>
+        </div>
+        <div class="practice-actions d-flex gap-2">
+            <a href="/student" class="btn-exit" style="text-decoration: none;">
+                <i class="bi bi-box-arrow-left"></i> <span>Về trang chủ</span>
+            </a>
+        </div>
+    </nav>
+
+    <div class="container" style="margin-top: 110px; margin-bottom: 50px;">
+        <!-- Summary Section -->
+        <div class="summary-card">
+            <div class="score-circle">
+                <span class="score-value" id="scoreValue">0.0</span>
+                <span class="score-label">Điểm</span>
+            </div>
+            <h2 class="fw-bold mb-4" id="quizTitle">Tên bài thi</h2>
+            
+            <div class="d-flex gap-3 justify-content-center flex-wrap mb-4">
+                <div class="stat-box">
+                    <div class="stat-value text-success" id="correctCount">0</div>
+                    <div class="stat-label">Câu đúng</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value text-danger" id="incorrectCount">0</div>
+                    <div class="stat-label">Câu sai</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" id="timeSpent">0 ph</div>
+                    <div class="stat-label">Thời gian làm bài</div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Review Section -->
+        <h4 class="review-title">Xem lại chi tiết</h4>
+        <div id="questionsReviewList">
+            <!-- Questions rendered here -->
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:src="@{/js/student/quiz-result.js}"></script>
+</body>
+</html>

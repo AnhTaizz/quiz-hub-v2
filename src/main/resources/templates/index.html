@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>quizHub. | Nền tảng Thi Trắc nghiệm &amp; Đánh giá Năng lực</title>
+    <meta name="description"
+        content="Hệ thống thi trắc nghiệm trực tuyến quizHub – Tự động hóa thi cử, chống gian lận, chấm điểm tức thì cho giáo viên và sinh viên.">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Nunito+Sans:wght@400;600;700;800;900&display=swap"
+        rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <!-- Bootstrap Grid (layout only) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/index.css}">
+</head>
+
+<body id="top">
+
+    <!-- =============================================
+     HEADER
+============================================== -->
+    <header id="header" class="fixed-top">
+        <div class="container d-flex align-items-center justify-content-between">
+            <h1 class="logo mb-0">
+                <a th:href="@{/}">
+                    <i class="bi bi-layers-fill logo-icon"></i>
+                    Quiz<span class="hub">Hub</span>
+                </a>
+            </h1>
+
+            <nav id="navbar" class="navbar">
+                <ul id="nav-menu">
+                    <li><a class="nav-link scrollto" href="#about">Về chúng tôi</a></li>
+                    <li><a class="nav-link scrollto" href="#features">Tính năng</a></li>
+                    <li><a class="nav-link scrollto" href="#workflow">Quy trình</a></li>
+                    <li class="ms-lg-3"><a th:href="@{/login}" class="nav-btn-login">Đăng nhập</a></li>
+                    <li><a th:href="@{/register}" class="nav-btn-signup">Dùng miễn phí</a></li>
+                </ul>
+                <i class="bi bi-list mobile-nav-toggle" id="mobile-nav-toggle"></i>
+            </nav>
+        </div>
+    </header>
+
+    <!-- =============================================
+     HERO  – Premium Edition
+============================================== -->
+    <section class="hero-section" id="hero" style="padding-bottom: 120px;">
+        <div class="hero-blob hero-blob-1"></div>
+        <div class="hero-blob hero-blob-2"></div>
+
+        <div class="container position-relative">
+
+            <div id="heroCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="4500">
+
+                <div class="carousel-indicators" style="bottom: -70px; gap: 14px;">
+                    <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active"
+                        aria-current="true"
+                        style="width: 14px; height: 14px; border-radius: 50%; border: 2px solid transparent; transition: all 0.3s;"></button>
+                    <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1"
+                        style="width: 14px; height: 14px; border-radius: 50%; border: 2px solid transparent; transition: all 0.3s;"></button>
+                    <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2"
+                        style="width: 14px; height: 14px; border-radius: 50%; border: 2px solid transparent; transition: all 0.3s;"></button>
+                    <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="3"
+                        style="width: 14px; height: 14px; border-radius: 50%; border: 2px solid transparent; transition: all 0.3s;"></button>
+                </div>
+
+                <div class="carousel-inner">
+
+                    <div class="carousel-item active">
+                        <div class="row align-items-center g-5">
+                            <div class="col-lg-6">
+                                <div class="hero-content">
+                                    <div class="hero-announce">
+                                        <span class="badge bg-warning text-dark me-2">MỚI</span> Bảng điều khiển ra mắt
+                                    </div>
+                                    <h1 class="hero-title mb-4">
+                                        Quản lý tổng quan<br>
+                                        với một <span style="color:#4ade80;">Dashboard</span><br>
+                                        thông minh
+                                    </h1>
+                                    <p class="hero-sub mb-4" style="font-size: 1.15rem; color: rgba(255,255,255,0.85);">
+                                        Tạo lớp học, xây dựng ngân hàng câu hỏi và tổ chức thi cử với hệ thống giám sát.
+                                        Theo dõi tiến độ kỳ thi trực tiếp.
+                                    </p>
+                                    <div class="hero-actions d-flex gap-3">
+                                        <a th:href="@{/register}" class="btn-green">Bắt đầu ngay</a>
+                                        <a href="#features" class="btn-outline-dark"
+                                            style="border-color:rgba(255,255,255,.3); color: #fff;">Xem demo</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 d-none d-lg-block">
+                                <div class="hero-screen shadow-lg"
+                                    style="border-radius: 16px; border: 1px solid rgba(255,255,255,0.15); overflow: hidden;">
+                                    <div class="screen-bar"
+                                        style="background: rgba(0,0,0,0.5); backdrop-filter: blur(8px); border-bottom: 1px solid rgba(255,255,255,0.1); padding: 12px 16px;">
+                                        <div class="screen-dots d-flex gap-2">
+                                            <span
+                                                style="width:12px; height:12px; border-radius:50%; background:#ff5f57;"></span>
+                                            <span
+                                                style="width:12px; height:12px; border-radius:50%; background:#ffbd2e;"></span>
+                                            <span
+                                                style="width:12px; height:12px; border-radius:50%; background:#28ca41;"></span>
+                                        </div>
+                                    </div>
+                                    <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=1000&auto=format"
+                                        class="d-block w-100"
+                                        style="height: 440px; object-fit: cover; object-position: left top;"
+                                        alt="Dashboard">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="carousel-item">
+                        <div class="row align-items-center g-5">
+                            <div class="col-lg-6">
+                                <div class="hero-content">
+                                    <div class="hero-announce">
+                                        <span class="badge bg-danger text-white me-2">BẢO MẬT</span> Công nghệ giám sát
+                                        24/7
+                                    </div>
+                                    <h1 class="hero-title mb-4">
+                                        Hệ thống<br>
+                                        <span style="color:#f87171;">Anti-Cheat</span><br>
+                                        độc quyền
+                                    </h1>
+                                    <p class="hero-sub mb-4" style="font-size: 1.15rem; color: rgba(255,255,255,0.85);">
+                                        Phát hiện ngay lập tức các hành vi gian lận như chuyển tab, thoát toàn màn hình.
+                                        Mọi vi phạm đều được ghi log theo thời gian thực.
+                                    </p>
+                                    <div class="hero-actions d-flex gap-3">
+                                        <a th:href="@{/register}" class="btn-green">Tạo bài thi an toàn</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 d-none d-lg-block">
+                                <div class="hero-screen shadow-lg"
+                                    style="border-radius: 16px; border: 1px solid rgba(255,255,255,0.15); overflow: hidden;">
+                                    <div class="screen-bar"
+                                        style="background: rgba(0,0,0,0.5); backdrop-filter: blur(8px); border-bottom: 1px solid rgba(255,255,255,0.1); padding: 12px 16px;">
+                                        <div class="screen-dots d-flex gap-2">
+                                            <span
+                                                style="width:12px; height:12px; border-radius:50%; background:#ff5f57;"></span>
+                                            <span
+                                                style="width:12px; height:12px; border-radius:50%; background:#ffbd2e;"></span>
+                                            <span
+                                                style="width:12px; height:12px; border-radius:50%; background:#28ca41;"></span>
+                                        </div>
+                                    </div>
+                                    <img src="https://images.unsplash.com/photo-1555949963-aa79dcee981c?q=80&w=1000&auto=format"
+                                        class="d-block w-100" style="height: 440px; object-fit: cover;"
+                                        alt="Anti Cheat">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="carousel-item">
+                        <div class="row align-items-center g-5">
+                            <div class="col-lg-6">
+                                <div class="hero-content">
+                                    <div class="hero-announce">
+                                        <span class="badge bg-info text-dark me-2">TỐC ĐỘ</span> Kết quả trả về trong
+                                        0ms
+                                    </div>
+                                    <h1 class="hero-title mb-4">
+                                        Chấm điểm<br>
+                                        <span style="color:#38bdf8;">tự động</span><br>
+                                        chính xác tuyệt đối
+                                    </h1>
+                                    <p class="hero-sub mb-4" style="font-size: 1.15rem; color: rgba(255,255,255,0.85);">
+                                        Thuật toán đối chiếu cực nhanh với đáp án. Trả điểm số cho sinh viên ngay khi
+                                        hoàn thành bài thi mà không cần chờ đợi.
+                                    </p>
+                                    <div class="hero-actions d-flex gap-3">
+                                        <a th:href="@{/register}" class="btn-green">Trải nghiệm tốc độ</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 d-none d-lg-block">
+                                <div class="hero-screen shadow-lg"
+                                    style="border-radius: 16px; border: 1px solid rgba(255,255,255,0.15); overflow: hidden;">
+                                    <div class="screen-bar"
+                                        style="background: rgba(0,0,0,0.5); backdrop-filter: blur(8px); border-bottom: 1px solid rgba(255,255,255,0.1); padding: 12px 16px;">
+                                        <div class="screen-dots d-flex gap-2">
+                                            <span
+                                                style="width:12px; height:12px; border-radius:50%; background:#ff5f57;"></span>
+                                            <span
+                                                style="width:12px; height:12px; border-radius:50%; background:#ffbd2e;"></span>
+                                            <span
+                                                style="width:12px; height:12px; border-radius:50%; background:#28ca41;"></span>
+                                        </div>
+                                    </div>
+                                    <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=1000&auto=format"
+                                        class="d-block w-100" style="height: 440px; object-fit: cover;" alt="Chấm điểm">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="carousel-item">
+                        <div class="row align-items-center g-5">
+                            <div class="col-lg-6">
+                                <div class="hero-content">
+                                    <div class="hero-announce">
+                                        <span class="badge bg-success text-white me-2">PHÂN TÍCH</span> Báo cáo phổ điểm
+                                    </div>
+                                    <h1 class="hero-title mb-4">
+                                        Báo cáo<br>
+                                        <span style="color:#fcd34d;">Thống kê</span><br>
+                                        trực quan
+                                    </h1>
+                                    <p class="hero-sub mb-4" style="font-size: 1.15rem; color: rgba(255,255,255,0.85);">
+                                        Hệ thống tự động phân tích phổ điểm, tính toán tỷ lệ đúng sai theo từng câu hỏi
+                                        và xuất báo cáo chi tiết.
+                                    </p>
+                                    <div class="hero-actions d-flex gap-3">
+                                        <a th:href="@{/register}" class="btn-green">Dùng thử ngay</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 d-none d-lg-block">
+                                <div class="hero-screen shadow-lg"
+                                    style="border-radius: 16px; border: 1px solid rgba(255,255,255,0.15); overflow: hidden;">
+                                    <div class="screen-bar"
+                                        style="background: rgba(0,0,0,0.5); backdrop-filter: blur(8px); border-bottom: 1px solid rgba(255,255,255,0.1); padding: 12px 16px;">
+                                        <div class="screen-dots d-flex gap-2">
+                                            <span
+                                                style="width:12px; height:12px; border-radius:50%; background:#ff5f57;"></span>
+                                            <span
+                                                style="width:12px; height:12px; border-radius:50%; background:#ffbd2e;"></span>
+                                            <span
+                                                style="width:12px; height:12px; border-radius:50%; background:#28ca41;"></span>
+                                        </div>
+                                    </div>
+                                    <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=1000&auto=format"
+                                        class="d-block w-100" style="height: 440px; object-fit: cover;" alt="Báo cáo">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <button class="carousel-control-prev custom-nav-btn" type="button" data-bs-target="#heroCarousel"
+                    data-bs-slide="prev">
+                    <span class="nav-icon"><i class="bi bi-chevron-left"></i></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next custom-nav-btn" type="button" data-bs-target="#heroCarousel"
+                    data-bs-slide="next">
+                    <span class="nav-icon"><i class="bi bi-chevron-right"></i></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <main id="main">
+
+        <!-- =============================================
+     TRUSTED BY (HackerEarth section)
+============================================== -->
+        <section class="logos-section">
+            <div class="container">
+                <h6>Được tin dùng tại các trường đại học và trung tâm đào tạo</h6>
+                <div class="logos-row">
+                    <div class="logo-badge"><i class="bi bi-mortarboard-fill"></i> PTIT</div>
+                    <div class="logo-badge"><i class="bi bi-mortarboard-fill"></i> HUST</div>
+                    <div class="logo-badge"><i class="bi bi-mortarboard-fill"></i> VNU-UET</div>
+                    <div class="logo-badge"><i class="bi bi-mortarboard-fill"></i> FPT Edu</div>
+                    <div class="logo-badge"><i class="bi bi-mortarboard-fill"></i> NEU</div>
+                    <div class="logo-badge"><i class="bi bi-mortarboard-fill"></i> HCMUTE</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- =============================================
+     FEATURES  (eStartup card style)
+============================================== -->
+        <section id="features" class="features-section">
+            <div class="container">
+
+                <div class="section-head reveal">
+                    <div class="section-label">Tính năng nổi bật</div>
+                    <h2>Kiểm tra <span>Dịch vụ</span> của chúng tôi</h2>
+                    <p>Được thiết kế phục vụ sát nhất với nhu cầu thực tế của các cơ sở giáo dục hiện đại</p>
+                </div>
+
+                <div class="row g-4">
+
+                    <div class="col-lg-4 col-md-6">
+                        <div class="feat-card reveal">
+                            <div class="feat-icon"><i class="bi bi-diagram-3-fill"></i></div>
+                            <h4>Quản lý Lớp học</h4>
+                            <p>Giáo viên khởi tạo không gian lớp học ảo. Sinh viên tham gia qua mã Class Code do giảng
+                                viên cấp – đơn giản, nhanh chóng.</p>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-6">
+                        <div class="feat-card reveal" style="transition-delay:.08s">
+                            <div class="feat-icon"><i class="bi bi-collection-fill"></i></div>
+                            <h4>Ngân hàng Câu hỏi</h4>
+                            <p>Xây dựng kho câu hỏi theo cấu trúc cây danh mục. Hỗ trợ nhiều loại câu hỏi, dễ dàng truy
+                                xuất để tạo đề thi.</p>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-6">
+                        <div class="feat-card reveal" style="transition-delay:.16s">
+                            <div class="feat-icon"><i class="bi bi-shield-exclamation"></i></div>
+                            <h4>Hệ thống Anti-Cheat</h4>
+                            <p>Theo dõi sự kiện trình duyệt real-time. Cảnh báo và lưu vào database mọi hành vi bất
+                                thường (TAB_SWITCH, ESC_FULLSCREEN…).</p>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-6">
+                        <div class="feat-card reveal" style="transition-delay:.08s">
+                            <div class="feat-icon"><i class="bi bi-stopwatch-fill"></i></div>
+                            <h4>Giao bài &amp; Đếm ngược</h4>
+                            <p>Thiết lập thời gian làm bài và hạn nộp. Phòng thi đếm ngược an toàn, tự động khóa bài khi
+                                hết giờ.</p>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-6">
+                        <div class="feat-card reveal" style="transition-delay:.16s">
+                            <div class="feat-icon"><i class="bi bi-cloud-check-fill"></i></div>
+                            <h4>Lưu Nháp Tự Động</h4>
+                            <p>Sinh viên không lo rớt mạng. Đáp án được lưu nháp liên tục, đảm bảo khôi phục 100% dữ
+                                liệu khi trình duyệt được mở lại.</p>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-6">
+                        <div class="feat-card reveal" style="transition-delay:.24s">
+                            <div class="feat-icon"><i class="bi bi-bar-chart-line-fill"></i></div>
+                            <h4>Chấm Điểm Real-time</h4>
+                            <p>Thuật toán đối chiếu đáp án siêu tốc. Trả về kết quả, số câu đúng/sai và điểm số ngay lập
+                                tức sau khi nộp bài.</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- =============================================
+     ABOUT  (eStartup "WHO WE ARE")
+============================================== -->
+        <section id="about" class="about-section">
+            <div class="container">
+                <div class="row align-items-center g-5">
+
+                    <!-- Image grid like eStartup -->
+                    <div class="col-lg-6 reveal">
+                        <div class="about-imgs">
+                            <img class="about-img-main"
+                                src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=800&auto=format"
+                                alt="Nhóm làm việc quizHub">
+                            <img class="about-img-sm1"
+                                src="https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?q=80&w=400&auto=format"
+                                alt="Sinh viên làm bài thi">
+                            <img class="about-img-sm2"
+                                src="https://images.unsplash.com/photo-1606326608606-aa0b62935f2b?q=80&w=400&auto=format"
+                                alt="Giáo viên kiểm tra kết quả">
+                        </div>
+                    </div>
+
+                    <!-- Text -->
+                    <div class="col-lg-6">
+                        <div class="about-text reveal">
+                            <div class="section-label">Về chúng tôi</div>
+                            <h2>Giải quyết triệt để bài toán<br>thi cử trực tuyến</h2>
+                            <p>
+                                Việc tổ chức thi trắc nghiệm truyền thống tốn kém thời gian chấm điểm và khó
+                                kiểm soát. <strong>QuizHub</strong> được xây dựng với nền tảng Backend mạnh mẽ
+                                (Java Spring Boot, Spring Data JPA, JWT Security), mang lại khả năng xử lý
+                                đồng thời lượng lớn sinh viên mà vẫn đảm bảo tính toàn vẹn dữ liệu.
+                            </p>
+
+                            <ul class="check-list">
+                                <li>
+                                    <span class="ci"><i class="bi bi-check-lg"></i></span>
+                                    Tách biệt phân quyền chặt chẽ (Role: TEACHER &amp; STUDENT)
+                                </li>
+                                <li>
+                                    <span class="ci"><i class="bi bi-check-lg"></i></span>
+                                    Cơ chế Auto-save lưu trạng thái bài thi theo từng cú click chuột
+                                </li>
+                                <li>
+                                    <span class="ci"><i class="bi bi-check-lg"></i></span>
+                                    RESTful API chuẩn xác, dễ dàng tích hợp và mở rộng hệ thống
+                                </li>
+                                <li>
+                                    <span class="ci"><i class="bi bi-check-lg"></i></span>
+                                    Anti-cheat engine ghi log vi phạm real-time vào database
+                                </li>
+                            </ul>
+
+                            <a th:href="@{/register}" class="btn-green">
+                                <i class="bi bi-rocket-takeoff-fill"></i>
+                                Bắt đầu ngay hôm nay
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- =============================================
+     WORKFLOW / STEPS
+============================================== -->
+        <section id="workflow" class="workflow-section">
+            <div class="container">
+
+                <div class="section-head reveal">
+                    <div class="section-label">Quy trình vận hành</div>
+                    <h2>Đơn giản như <span>1, 2, 3</span></h2>
+                    <p>Trải nghiệm người dùng mượt mà qua 3 bước cốt lõi, không cần hướng dẫn phức tạp</p>
+                </div>
+
+                <div class="steps-row reveal">
+
+                    <div class="step-card">
+                        <div class="step-num">1</div>
+                        <h4>Khởi tạo</h4>
+                        <p>Giáo viên tạo Lớp học (Classroom) và nạp câu hỏi vào Ngân hàng dữ liệu phân loại theo môn học
+                            và chủ đề.</p>
+                    </div>
+
+                    <div class="step-card">
+                        <div class="step-num">2</div>
+                        <h4>Giao bài</h4>
+                        <p>Tạo Bài kiểm tra (Quiz), cấu hình thời gian làm bài, bật chế độ chống gian lận và Assign cho
+                            lớp học mục tiêu.</p>
+                    </div>
+
+                    <div class="step-card">
+                        <div class="step-num">3</div>
+                        <h4>Thu hoạch</h4>
+                        <p>Sinh viên làm bài trên giao diện an toàn. Hệ thống tự động thu bài, chấm điểm và báo cáo vi
+                            phạm tức thì.</p>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- =============================================
+     CTA
+============================================== -->
+        <section class="cta-section">
+            <div class="container">
+                <div class="cta-inner reveal">
+                    <h2>Số hóa ngay hôm nay với quizHub</h2>
+                    <p>Nền tảng kiểm tra và đánh giá năng lực đáng tin cậy. Dễ dàng triển khai, tối ưu hiệu suất.</p>
+
+                    <a th:href="@{/register}" class="btn-cta-white">
+                        <i class="bi bi-rocket-takeoff-fill"></i>
+                        Tạo tài khoản miễn phí
+                    </a>
+
+                    <div class="cta-perks">
+                        <div class="cta-perk"><i class="bi bi-check-circle-fill"></i> Không cần thẻ tín dụng</div>
+                        <div class="cta-perk"><i class="bi bi-check-circle-fill"></i> Hoàn toàn miễn phí</div>
+                        <div class="cta-perk"><i class="bi bi-check-circle-fill"></i> Hỗ trợ 24/7</div>
+                        <div class="cta-perk"><i class="bi bi-check-circle-fill"></i> Bảo mật tuyệt đối</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- =============================================
+     FOOTER
+============================================== -->
+    <footer id="footer">
+        <div class="container">
+            <div class="row g-4 mb-3">
+
+                <div class="col-lg-4 col-md-6">
+                    <div class="footer-logo">quizHub<span>.</span></div>
+                    <p class="footer-desc">
+                        Hệ thống thi trắc nghiệm trực tuyến mã nguồn mở. Cung cấp bộ API mạnh mẽ
+                        với Spring Boot và giao diện hiện đại, tối ưu cho môi trường giáo dục Việt Nam.
+                    </p>
+                </div>
+
+                <div class="col-lg-2 col-md-3 col-6">
+                    <div class="footer-col-title">Tính năng</div>
+                    <ul class="footer-links">
+                        <li><a href="#features"><i class="bi bi-chevron-right"></i> Quản lý Lớp học</a></li>
+                        <li><a href="#features"><i class="bi bi-chevron-right"></i> Ngân hàng Câu hỏi</a></li>
+                        <li><a href="#features"><i class="bi bi-chevron-right"></i> Anti-cheat</a></li>
+                        <li><a href="#features"><i class="bi bi-chevron-right"></i> Báo cáo &amp; Thống kê</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-lg-2 col-md-3 col-6">
+                    <div class="footer-col-title">Tài nguyên</div>
+                    <ul class="footer-links">
+                        <li><a href="#"><i class="bi bi-chevron-right"></i> Tài liệu API</a></li>
+                        <li><a href="#"><i class="bi bi-chevron-right"></i> Hướng dẫn sử dụng</a></li>
+                        <li><a href="#"><i class="bi bi-chevron-right"></i> Quy chế hoạt động</a></li>
+                        <li><a href="#"><i class="bi bi-chevron-right"></i> Câu hỏi thường gặp</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-lg-4 col-md-12">
+                    <div class="footer-col-title">Liên hệ</div>
+                    <div class="footer-contact">
+                        <p><i class="bi bi-geo-alt-fill"></i> Học viện Công nghệ Bưu chính Viễn thông, Hà Đông, Hà Nội
+                        </p>
+                        <p><i class="bi bi-envelope-fill"></i> support@quizhub.edu.vn</p>
+                        <p><i class="bi bi-telephone-fill"></i> +84 28 3838 0000</p>
+                    </div>
+                </div>
+            </div>
+
+            <hr class="footer-hr">
+
+            <div class="footer-bottom">
+                <div class="footer-copy">&copy; 2026 <strong>quizHub Platform</strong>. Phát triển bởi Sinh viên CNTT.
+                </div>
+                <div class="footer-socials">
+                    <a href="#" aria-label="GitHub"><i class="bi bi-github"></i></a>
+                    <a href="#" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
+                    <a href="#" aria-label="YouTube"><i class="bi bi-youtube"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scroll to top -->
+    <div id="scrolltop" class="position-fixed bottom-0 end-0 p-3">
+        <a href="#top" aria-label="Scroll to top"><i class="bi bi-chevron-up"></i></a>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:src="@{/js/script.js}"></script>
+
+    <div th:replace="~{layout/header :: changePasswordModal}"></div>
+    <script th:replace="~{layout/header :: change-password-script}"></script>
+
+</body>
+
+</html>

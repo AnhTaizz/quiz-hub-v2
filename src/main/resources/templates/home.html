@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuizHub - Không gian Học tập</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Nunito+Sans:wght@700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/home.css}">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="nav-left">
+            <div class="logo">
+                <i class="fa-solid fa-q" style="color: var(--success);"></i> QuizHub
+            </div>
+            <ul class="nav-links">
+                <li><a href="/home" class="active">Trang chủ</a></li>
+                <li><a href="/my-classes">Lớp học của tôi</a></li>
+                <li><a href="/history">Lịch sử làm bài</a></li>
+            </ul>
+        </div>
+
+        <div class="nav-right">
+            <button class="btn-join-class" onclick="showJoinClassModal()">
+                <i class="fa-solid fa-plus"></i> Nhập mã lớp
+            </button>
+            <i class="fa-regular fa-bell" style="font-size: 20px; color: var(--text-muted); cursor: pointer; position: relative;">
+                <span style="position: absolute; top: -2px; right: -2px; width: 8px; height: 8px; background: var(--danger); border-radius: 50%;"></span>
+            </i>
+            <div class="user-menu">
+                <img src="https://ui-avatars.com/api/?name=Hoc+Sinh&background=2563eb&color=fff" alt="Avatar" class="avatar">
+                <div>
+                    <div style="font-weight: 700; font-size: 14px; color: var(--text-dark);" th:text="${currentUser != null ? currentUser.fullName : 'Anh Tài'}">Anh Tài</div>
+                    <div style="font-size: 12px; color: var(--text-muted); font-weight: 500;">Học sinh</div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
+
+        <div class="welcome-banner">
+            <div class="welcome-text">
+                <h1>👋 Chào buổi sáng, <span th:text="${currentUser != null ? currentUser.fullName : 'Anh Tài'}">Anh Tài</span>!</h1>
+                <p>Bạn đang có <strong>2 bài kiểm tra</strong> sắp đến hạn. Cố gắng hoàn thành tốt nhé!</p>
+
+                <div class="stats-row">
+                    <div class="stat-pill">
+                        <i class="fa-solid fa-fire" style="color: #fbbf24;"></i>
+                        <span>Đã làm: 15 Bài</span>
+                    </div>
+                    <div class="stat-pill">
+                        <i class="fa-solid fa-star" style="color: #fbbf24;"></i>
+                        <span>Điểm TB: 8.5</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-grid">
+
+            <div class="left-column">
+                <div class="section-title">
+                    <h2>🎯 Việc cần làm (Bài thi chưa làm)</h2>
+                    <a href="/my-quizzes">Xem tất cả <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+
+                <div class="task-card">
+                    <div class="task-info">
+                        <div class="task-icon icon-orange">
+                            <i class="fa-brands fa-java"></i>
+                        </div>
+                        <div class="task-details">
+                            <h3>Kiểm tra giữa kỳ - Lập trình Java Nâng cao</h3>
+                            <div class="task-meta">
+                                <span><i class="fa-regular fa-clock"></i> 45 Phút</span>
+                                <span><i class="fa-solid fa-list-check"></i> 40 Câu</span>
+                                <span class="deadline"><i class="fa-solid fa-triangle-exclamation"></i> Hết hạn lúc 23:59 hôm nay</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn-take-quiz">Làm bài ngay</button>
+                </div>
+
+                <div class="task-card">
+                    <div class="task-info">
+                        <div class="task-icon icon-blue">
+                            <i class="fa-solid fa-database"></i>
+                        </div>
+                        <div class="task-details">
+                            <h3>Bài tập Trắc nghiệm SQL Server</h3>
+                            <div class="task-meta">
+                                <span><i class="fa-regular fa-clock"></i> 30 Phút</span>
+                                <span><i class="fa-solid fa-list-check"></i> 25 Câu</span>
+                                <span style="color: var(--success);"><i class="fa-solid fa-calendar-day"></i> Còn 3 ngày</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn-take-quiz" style="background: var(--bg-body); color: var(--primary); box-shadow: none; border: 2px solid var(--primary-light);">Chi tiết</button>
+                </div>
+            </div>
+
+            <div class="right-column">
+                <div class="section-title">
+                    <h2>🏫 Lớp học của bạn</h2>
+                </div>
+
+                <div class="class-card">
+                    <h4>Lập trình Java - N01</h4>
+                    <p>Mã lớp: JAVA2026</p>
+                    <div class="teacher-name">
+                        <img src="https://ui-avatars.com/api/?name=Teacher&background=10b981&color=fff" alt="">
+                        GV: Nguyễn Thị Thương
+                    </div>
+                </div>
+
+                <div class="class-card" style="border-left-color: var(--success);">
+                    <h4>Cơ sở dữ liệu - Nhóm 3</h4>
+                    <p>Mã lớp: CSDL_N3</p>
+                    <div class="teacher-name">
+                        <img src="https://ui-avatars.com/api/?name=Admin&background=f59e0b&color=fff" alt="">
+                        GV: Trần Văn Minh
+                    </div>
+                </div>
+
+                <div style="text-align: center; margin-top: 10px;">
+                    <a href="/my-classes" style="font-size: 14px; font-weight: 700; color: var(--primary);">Quản lý lớp học <i class="fa-solid fa-angle-right"></i></a>
+                </div>
+            </div>
+
+        </div>
+
+        <div style="margin-top: 20px;">
+            <div class="section-title">
+                <h2>🚀 Góc tự luyện tập</h2>
+                <a href="/categories">Khám phá kho đề thi <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+            <p style="color: var(--text-muted); font-weight: 500;">Hệ thống cung cấp hàng ngàn câu hỏi trắc nghiệm miễn phí giúp bạn ôn tập kiến thức.</p>
+
+            <div class="practice-grid">
+                <div class="practice-card">
+                    <i class="fa-solid fa-language"></i>
+                    <h4>Ngoại ngữ (TOEIC)</h4>
+                    <p>1,200+ Câu hỏi</p>
+                </div>
+                <div class="practice-card">
+                    <i class="fa-solid fa-laptop-code" style="color: #3b82f6; background: #eff6ff;"></i>
+                    <h4>Lập trình Web</h4>
+                    <p>850+ Câu hỏi</p>
+                </div>
+                <div class="practice-card">
+                    <i class="fa-solid fa-network-wired" style="color: #10b981; background: #ecfdf5;"></i>
+                    <h4>Mạng máy tính</h4>
+                    <p>400+ Câu hỏi</p>
+                </div>
+                <div class="practice-card">
+                    <i class="fa-solid fa-brain" style="color: #f59e0b; background: #fffbeb;"></i>
+                    <h4>Trí tuệ nhân tạo</h4>
+                    <p>230+ Câu hỏi</p>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+</body>
+</html>

@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>QuizHub | Kho Đề Thi</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Nunito+Sans:wght@700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" th:href="@{/css/admin/admin-categories.css}">
+</head>
+
+<body>
+    <script>(function () { if (localStorage.getItem('sidebar-collapsed') === 'true') document.body.classList.add('sidebar-collapsed'); })()</script>
+    <input type="hidden" id="categoryTypeInput" th:value="${categoryType}">
+    <aside th:replace="~{layout/sidebar :: admin-sidebar('categories')}"></aside>
+
+    <header th:replace="~{layout/header :: admin-header}"></header>
+
+    <main id="main-content">
+        <div class="page-title-box">
+            <h4>Danh mục Hệ thống</h4>
+            <p>Quản lý cấu trúc cây danh mục công khai chung của toàn hệ thống và điều phối câu hỏi.</p>
+        </div>
+
+        <!-- File Explorer -->
+        <div class="explorer-shell">
+            <!-- Tree -->
+            <div class="tree-panel" id="treePanel">
+                <div class="tree-hdr d-flex justify-content-between align-items-center"
+                    ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)"
+                    ondrop="handleDrop(event, null)">
+                    <p class="tree-hdr-title mb-0" id="treeLabel">Danh mục của tôi</p>
+                    <div class="tree-hdr-actions" id="treeGlobalActions" style="display:flex; gap:4px;">
+                        <button class="tree-act-btn" title="Thêm thư mục gốc" onclick="openCatModal(null)">
+                            <i class="bi bi-folder-plus"></i>
+                        </button>
+                    </div>
+                </div>
+                <div style="padding: 10px 14px 0px;">
+                    <input type="text" id="treeSearchInput" class="form-control" placeholder="Tìm kiếm thư mục..."
+                        style="font-size:0.85rem; border-radius:10px; border-color:#e2e8f0; padding:6px 12px;">
+                </div>
+                <div class="tree-scroll" id="treeScroll">
+                    <div style="padding:8px;">
+                        <div class="skeleton" style="height:36px;margin-bottom:6px;"></div>
+                        <div class="skeleton" style="height:36px;margin-bottom:6px;opacity:.7;"></div>
+                        <div class="skeleton" style="height:36px;opacity:.4;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="resize-handle" id="resizeHandle"></div>
+
+            <!-- Content -->
+            <div class="content-panel">
+                <div class="explorer-toolbar">
+                    <div class="breadcrumb-nav" id="breadcrumb">
+                        <span class="bc-item active" onclick="navigateToRoot()"><i class="bi bi-house-fill"></i>
+                            Gốc</span>
+                    </div>
+                    <div class="toolbar-actions" id="toolbarActions">
+                        <button class="btn-tool btn-new-folder" id="btnNewFolder" onclick="openCatModal(null)">
+                            <i class="bi bi-folder-plus"></i> Thêm thư mục
+                        </button>
+                        <!-- Dropdown tạo câu hỏi — chỉ hiện khi đứng trong 1 danh mục -->
+                        <div class="dropdown" id="dropdownCreateQuestion" style="display:none;">
+                            <button class="btn-tool dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false"
+                                style="background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff;border:none;gap:6px;">
+                                <i class="bi bi-plus-circle-fill"></i> Tạo câu hỏi
+                            </button>
+                            <ul class="dropdown-menu shadow border-0 rounded-4 mt-2 p-2" style="width:270px; animation:fadeIn 0.2s ease;">
+                                <li>
+                                    <a class="dropdown-item p-3 rounded-3 d-flex align-items-center gap-3 mb-1"
+                                       href="javascript:void(0)" onclick="openCreateQuestionModal()">
+                                        <div style="background:#eff6ff;color:#3b82f6;width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;">
+                                            <i class="bi bi-pencil-square"></i>
+                                        </div>
+                                        <div>
+                                            <div class="fw-bold text-dark" style="font-size:0.8rem;">Soạn thủ công</div>
+                                            <div class="text-muted" style="font-size:0.65rem;">Tạo từng câu hỏi, lưu ngay PUBLIC</div>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item p-3 rounded-3 d-flex align-items-center gap-3 mb-1"
+                                       href="javascript:void(0)" onclick="openImportExcelModal()">
+                                        <div style="background:#f0fdf4;color:#16a34a;width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;">
+                                            <i class="bi bi-file-earmark-excel-fill"></i>
+                                        </div>
+                                        <div>
+                                            <div class="fw-bold text-dark" style="font-size:0.8rem;">Import Excel</div>
+                                            <div class="text-muted" style="font-size:0.65rem;">Nhập hàng loạt từ file .xlsx</div>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item p-3 rounded-3 d-flex align-items-center gap-3"
+                                       href="javascript:void(0)" onclick="openAdminAiModal()">
+                                        <div style="background:#faf5ff;color:#7c3aed;width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;">
+                                            <i class="bi bi-robot"></i>
+                                        </div>
+                                        <div>
+                                            <div class="fw-bold text-dark" style="font-size:0.8rem;">Tạo bằng AI (Gemini)</div>
+                                            <div class="text-muted" style="font-size:0.65rem;">Nhập tài liệu, AI sinh câu hỏi</div>
+                                        </div>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="content-scroll" id="contentScroll">
+                    <div class="empty-root" id="rootLanding">
+                        <div class="empty-root-icon"><i class="bi bi-folder2-open"></i></div>
+                        <h3>Chọn một danh mục</h3>
+                        <p id="rootHint">Chọn thư mục bên trái hoặc tạo danh mục mới để bắt đầu.</p>
+                    </div>
+                    <div id="dynamicContent" style="display:none;"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Create / Edit Category Modal -->
+    <div class="modal fade" id="catModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header border-0 pt-4 pb-0 px-4">
+                    <h5 class="modal-hdr" id="catModalTitle">Tạo danh mục mới</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body px-4 py-3">
+                    <input type="hidden" id="catEditId">
+                    <input type="hidden" id="catParentId">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold" style="color:#475569;">Tên danh mục <span
+                                class="text-danger">*</span></label>
+                        <input class="fc" type="text" id="catNameInput"
+                            placeholder="VD: Lập trình Java, Toán cao cấp...">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold" style="color:#475569;">Mô tả</label>
+                        <textarea class="fc" id="catDescInput" rows="2" placeholder="Ghi chú..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 pb-4 px-4">
+                    <button class="btn btn-light" data-bs-dismiss="modal"
+                        style="border-radius:10px;font-weight:600;">Hủy</button>
+                    <button class="btn btn-submit" onclick="submitCategory()">Lưu</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Category Confirm -->
+    <div class="modal fade" id="delCatModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content text-center p-4">
+                <div style="font-size:2.5rem;margin-bottom:8px;">🗑️</div>
+                <h6 class="fw-bold mb-1">Xóa danh mục?</h6>
+                <p class="text-muted small mb-3">Các danh mục con sẽ được tách ra và đề thi bên trong sẽ không bị xóa.
+                </p>
+                <input type="hidden" id="delCatId">
+                <div class="d-flex gap-2">
+                    <button class="btn btn-light w-50" data-bs-dismiss="modal"
+                        style="border-radius:10px;font-weight:600;">Hủy</button>
+                    <button class="btn btn-danger w-50" onclick="confirmDelCat()"
+                        style="border-radius:10px;">Xóa</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Question Modal -->
+    <div class="modal fade" id="deleteQuestionModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content text-center p-4"
+                style="border-radius:20px; border:none; box-shadow:0 10px 30px rgba(0,0,0,0.1);">
+                <div style="font-size:2.5rem;margin-bottom:8px;">🗑️</div>
+                <h6 class="fw-bold mb-1" style="font-size:1.1rem; color:#1e293b;">Xóa câu hỏi?</h6>
+                <p class="text-muted small mb-3">Hành động này sẽ xóa vĩnh viễn câu hỏi này khỏi hệ thống công khai.</p>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-light w-50" data-bs-dismiss="modal"
+                        style="border-radius:12px;font-weight:600;height:42px;">Hủy</button>
+                    <button class="btn btn-danger w-50 fw-bold" onclick="doDeleteQuestion()"
+                        style="border-radius:12px;height:42px;">Xóa</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Quiz Modal -->
+    <div class="modal fade" id="delQuizModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content text-center p-4"
+                style="border-radius:20px; border:none; box-shadow:0 10px 30px rgba(0,0,0,0.1);">
+                <div style="font-size:2.5rem;margin-bottom:8px;">🗑️</div>
+                <h6 class="fw-bold mb-1" style="font-size:1.1rem; color:#1e293b;">Xóa đề thi?</h6>
+                <p class="text-muted small mb-3">Đề thi sẽ bị xóa và không thể khôi phục.</p>
+                <input type="hidden" id="delQuizId">
+                <div class="d-flex gap-2">
+                    <button class="btn btn-light w-50" data-bs-dismiss="modal"
+                        style="border-radius:12px;font-weight:600;height:42px;">Hủy</button>
+                    <button class="btn btn-danger w-50 fw-bold" onclick="doDeleteQuiz()"
+                        style="border-radius:12px;height:42px;">Xóa</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Move Question Modal -->
+    <div class="modal fade" id="moveQuestionModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content p-4"
+                style="border-radius:20px; border:none; box-shadow:0 10px 30px rgba(0,0,0,0.1);">
+                <div class="modal-header border-0 p-0 mb-3">
+                    <h5 class="modal-title fw-bold" style="color:#1e293b;"><i
+                            class="bi bi-folder-symlink-fill me-1 text-primary"></i> Chuyển danh mục câu hỏi</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-0 mb-3">
+                    <input type="hidden" id="moveQuestionId">
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-muted mb-1">Chọn danh mục công khai đích</label>
+                        <div class="category-selector-box p-3 border d-flex justify-content-between align-items-center"
+                            style="border-radius:12px; cursor:pointer; background:#f8fafc;"
+                            onclick="openCategoryExplorer('moveQuestion', 'public')">
+                            <span id="moveQuestionCategoryName" class="text-muted fw-semibold">-- Chưa chọn danh mục
+                                --</span>
+                            <input type="hidden" id="moveQuestionCategoryId">
+                            <i class="bi bi-chevron-down text-muted"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-light w-50" data-bs-dismiss="modal"
+                        style="border-radius:12px;font-weight:600;height:42px;">Hủy</button>
+                    <button class="btn btn-primary w-50 fw-bold" onclick="doMoveQuestion()"
+                        style="border-radius:12px;height:42px; background-color: #4f46e5; border-color: #4f46e5;">Xác
+                        nhận</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Question Modal -->
+    <div class="modal fade" id="editQuestionModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content" style="border-radius:20px; border:none; box-shadow:0 10px 40px rgba(0,0,0,0.15);">
+                <div class="modal-header border-0 pt-4 pb-0 px-4" style="background: linear-gradient(135deg, #4f46e5, #7c3aed); border-radius:20px 20px 0 0;">
+                    <h5 class="modal-title fw-bold text-white">
+                        <i class="bi bi-pencil-square me-2"></i>Sửa câu hỏi công khai
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body px-4 py-4">
+                    <input type="hidden" id="editQuestionId">
+                    <input type="hidden" id="editQuestionCategoryId">
+
+                    <!-- Question text -->
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold" style="color:#475569;">Nội dung câu hỏi <span class="text-danger">*</span></label>
+                        <textarea class="form-control" id="editQuestionText" rows="3"
+                            placeholder="Nhập nội dung câu hỏi..."
+                            style="border-radius:12px; border:1.5px solid #e2e8f0; font-size:0.95rem; resize:vertical;"></textarea>
+                    </div>
+
+                    <!-- Type & Level -->
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold" style="color:#475569;">Loại câu hỏi <span class="text-danger">*</span></label>
+                            <select class="form-select" id="editQuestionType" onchange="onEditTypeChange()"
+                                style="border-radius:12px; border:1.5px solid #e2e8f0;">
+                                <option value="SINGLE_CHOICE">Một đáp án (A/B/C/D)</option>
+                                <option value="MULTIPLE_CHOICE">Nhiều đáp án</option>
+                                <option value="FILL_IN_BLANK">Điền khuyết</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold" style="color:#475569;">Mức độ</label>
+                            <select class="form-select" id="editQuestionLevel"
+                                style="border-radius:12px; border:1.5px solid #e2e8f0;">
+                                <option value="EASY">Dễ</option>
+                                <option value="MEDIUM">Trung bình</option>
+                                <option value="HARD">Khó</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Answers -->
+                    <div class="mb-2 d-flex justify-content-between align-items-center">
+                        <label class="form-label fw-semibold mb-0" style="color:#475569;">Danh sách đáp án <span class="text-danger">*</span></label>
+                        <button type="button" class="btn btn-sm btn-outline-primary fw-semibold" style="border-radius:10px;" onclick="addEditAnswer()">
+                            <i class="bi bi-plus-circle me-1"></i>Thêm đáp án
+                        </button>
+                    </div>
+                    <div id="editAnswerList" style="display:flex; flex-direction:column; gap:10px;"></div>
+                    <div id="editAnswerHint" class="text-muted small mt-2" style="display:none;"></div>
+                </div>
+                <div class="modal-footer border-0 pb-4 px-4 pt-0">
+                    <button class="btn btn-light fw-semibold" data-bs-dismiss="modal" style="border-radius:12px; padding:10px 24px;">Hủy</button>
+                    <button class="btn fw-bold text-white" id="btnSaveEditQuestion" onclick="submitEditQuestion()"
+                        style="border-radius:12px; padding:10px 28px; background:linear-gradient(135deg,#4f46e5,#7c3aed); border:none;">
+                        <i class="bi bi-floppy-fill me-1"></i>Lưu thay đổi
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="toastWrap"></div>
+
+    <!-- ═══════════════════════════════════════════
+         MODAL 1: TẠO CÂU HỎI THỦ CÔNG (Admin)
+    ═══════════════════════════════════════════ -->
+    <div class="modal fade" id="createQuestionModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content" style="border-radius:20px; border:none; box-shadow:0 10px 40px rgba(0,0,0,0.15);">
+                <div class="modal-header border-0 pt-4 pb-0 px-4" style="background:linear-gradient(135deg,#4f46e5,#7c3aed); border-radius:20px 20px 0 0;">
+                    <h5 class="modal-title fw-bold text-white">
+                        <i class="bi bi-plus-circle-fill me-2"></i>Tạo câu hỏi công khai mới
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body px-4 py-4">
+                    <input type="hidden" id="createQuestionCategoryId">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold" style="color:#475569;">Nội dung câu hỏi <span class="text-danger">*</span></label>
+                        <textarea class="form-control" id="createQuestionText" rows="3"
+                            placeholder="Nhập nội dung câu hỏi..."
+                            style="border-radius:12px; border:1.5px solid #e2e8f0; font-size:0.95rem; resize:vertical;"></textarea>
+                    </div>
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold" style="color:#475569;">Loại câu hỏi <span class="text-danger">*</span></label>
+                            <select class="form-select" id="createQuestionType" onchange="onCreateTypeChange()"
+                                style="border-radius:12px; border:1.5px solid #e2e8f0;">
+                                <option value="SINGLE_CHOICE">Một đáp án (A/B/C/D)</option>
+                                <option value="MULTIPLE_CHOICE">Nhiều đáp án</option>
+                                <option value="FILL_IN_BLANK">Điền khuyết</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold" style="color:#475569;">Mức độ</label>
+                            <select class="form-select" id="createQuestionLevel"
+                                style="border-radius:12px; border:1.5px solid #e2e8f0;">
+                                <option value="EASY">Dễ</option>
+                                <option value="MEDIUM" selected>Trung bình</option>
+                                <option value="HARD">Khó</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mb-2 d-flex justify-content-between align-items-center">
+                        <label class="form-label fw-semibold mb-0" style="color:#475569;">Danh sách đáp án <span class="text-danger">*</span></label>
+                        <button type="button" class="btn btn-sm btn-outline-primary fw-semibold" style="border-radius:10px;" onclick="addCreateAnswer()">
+                            <i class="bi bi-plus-circle me-1"></i>Thêm đáp án
+                        </button>
+                    </div>
+                    <div id="createAnswerList" style="display:flex; flex-direction:column; gap:10px;"></div>
+                    <div id="createAnswerHint" class="text-muted small mt-2" style="display:none;"></div>
+                </div>
+                <div class="modal-footer border-0 pb-4 px-4 pt-0">
+                    <button class="btn btn-light fw-semibold" data-bs-dismiss="modal" style="border-radius:12px; padding:10px 24px;">Hủy</button>
+                    <button class="btn fw-bold text-white" id="btnSaveCreateQuestion" onclick="submitCreateQuestion()"
+                        style="border-radius:12px; padding:10px 28px; background:linear-gradient(135deg,#4f46e5,#7c3aed); border:none;">
+                        <i class="bi bi-cloud-upload-fill me-1"></i>Lưu vào kho công khai
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════
+         MODAL 2: IMPORT EXCEL (Admin)
+    ═══════════════════════════════════════════ -->
+    <div class="modal fade" id="importExcelModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="border-radius:20px; border:none; box-shadow:0 10px 40px rgba(0,0,0,0.15);">
+                <div class="modal-header border-0 pt-4 pb-0 px-4" style="background:linear-gradient(135deg,#16a34a,#15803d); border-radius:20px 20px 0 0;">
+                    <h5 class="modal-title fw-bold text-white">
+                        <i class="bi bi-file-earmark-excel-fill me-2"></i>Import câu hỏi từ Excel
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body px-4 py-4">
+                    <input type="hidden" id="importExcelCategoryId">
+                    <div class="alert alert-info d-flex align-items-start gap-2" style="border-radius:12px; font-size:0.85rem;">
+                        <i class="bi bi-info-circle-fill mt-1" style="flex-shrink:0;"></i>
+                        <div>
+                            Tất cả câu hỏi import sẽ được tạo với trạng thái <strong>PUBLIC</strong> ngay lập tức vào danh mục hiện tại.
+                            <a href="/static/templates/mau_import_cau_hoi.xlsx" class="d-block mt-1 fw-semibold">
+                                <i class="bi bi-download me-1"></i>Tải xuống file mẫu (.xlsx)
+                            </a>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold" style="color:#475569;">Chọn file Excel <span class="text-danger">*</span></label>
+                        <input type="file" class="form-control" id="importExcelFile" accept=".xlsx,.xls"
+                            style="border-radius:12px; border:1.5px solid #e2e8f0;">
+                    </div>
+                    <div id="importExcelResult" style="display:none;" class="mt-3"></div>
+                </div>
+                <div class="modal-footer border-0 pb-4 px-4 pt-0">
+                    <button class="btn btn-light fw-semibold" data-bs-dismiss="modal" style="border-radius:12px; padding:10px 24px;">Hủy</button>
+                    <button class="btn fw-bold text-white" id="btnDoImportExcel" onclick="doImportExcel()"
+                        style="border-radius:12px; padding:10px 28px; background:linear-gradient(135deg,#16a34a,#15803d); border:none;">
+                        <i class="bi bi-upload me-1"></i>Import ngay
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════
+         MODAL 3: TẠO BẰNG AI (Admin)
+    ═══════════════════════════════════════════ -->
+    <div class="modal fade" id="adminAiModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl">
+            <div class="modal-content" style="border-radius:20px; border:none; box-shadow:0 10px 40px rgba(0,0,0,0.15);">
+                <div class="modal-header border-0 pt-4 pb-0 px-4" style="background:linear-gradient(135deg,#7c3aed,#4f46e5); border-radius:20px 20px 0 0;">
+                    <h5 class="modal-title fw-bold text-white">
+                        <i class="bi bi-robot me-2"></i>Tạo câu hỏi bằng AI (Gemini)
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" onclick="closeAdminAiModal()"></button>
+                </div>
+                <div class="modal-body px-4 py-4">
+                    <input type="hidden" id="adminAiCategoryId">
+
+                    <!-- Step 1: Input -->
+                    <div id="admin-ai-step-input">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold text-secondary small">Nội dung bài giảng / Tài liệu tham khảo <span class="text-danger">*</span></label>
+                            <textarea class="form-control" id="admin-ai-input-text" rows="7"
+                                placeholder="Hãy dán nội dung bài học, chương sách hoặc chủ đề chi tiết vào đây để AI đọc và tạo câu hỏi bám sát nội dung..."
+                                style="border-radius:12px; border:1.5px solid #e2e8f0; font-size:0.9rem; resize:vertical;"></textarea>
+                        </div>
+                        <div class="row g-3 mb-2">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold text-secondary small">Số lượng câu hỏi</label>
+                                <select id="admin-ai-num-questions" class="form-select" style="border-radius:12px; border:1.5px solid #e2e8f0; font-size:0.95rem;">
+                                    <option value="5">5 câu hỏi</option>
+                                    <option value="10" selected>10 câu hỏi</option>
+                                    <option value="15">15 câu hỏi</option>
+                                    <option value="20">20 câu hỏi</option>
+                                    <option value="25">25 câu hỏi</option>
+                                    <option value="30">30 câu hỏi</option>
+                                    <option value="40">40 câu hỏi</option>
+                                    <option value="50">50 câu hỏi</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold text-secondary small">Mức độ khó</label>
+                                <select id="admin-ai-level" class="form-select" style="border-radius:12px; border:1.5px solid #e2e8f0; font-size:0.95rem;">
+                                    <option value="EASY">🟢 Dễ</option>
+                                    <option value="MEDIUM" selected>🟡 Trung bình</option>
+                                    <option value="HARD">🔴 Khó</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Loading -->
+                    <div id="admin-ai-loading" style="display:none; text-align:center; padding:48px 0;">
+                        <div class="spinner-border text-primary mb-3" style="width:3rem;height:3rem;"></div>
+                        <p class="fw-semibold text-muted">AI đang phân tích và tạo câu hỏi, vui lòng chờ...</p>
+                    </div>
+
+                    <!-- Step 2: Preview -->
+                    <div id="admin-ai-step-preview" style="display:none;">
+                        <div class="d-flex align-items-center justify-content-between mb-3 pb-2" style="border-bottom:1px solid #e2e8f0;">
+                            <p class="fw-bold mb-0" style="color:#1e293b;">
+                                <i class="bi bi-check-circle-fill text-success me-1"></i>
+                                AI đã tạo <span id="admin-ai-preview-count" class="text-primary">0</span> câu hỏi
+                            </p>
+                            <span class="badge bg-success">Sẵn sàng lưu vào kho công khai</span>
+                        </div>
+                        <div id="admin-ai-preview-container" style="max-height:420px; overflow-y:auto;"></div>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 pb-4 px-4 pt-0">
+                    <!-- Footer Step 1 -->
+                    <div id="admin-ai-footer-input" style="display:flex; gap:10px; width:100%; justify-content:flex-end;">
+                        <button class="btn btn-light fw-semibold" onclick="closeAdminAiModal()" style="border-radius:12px; padding:10px 24px;">Hủy</button>
+                        <button class="btn fw-bold text-white" onclick="submitAdminAiGenerate()"
+                            style="border-radius:12px; padding:10px 28px; background:linear-gradient(135deg,#7c3aed,#4f46e5); border:none;">
+                            <i class="bi bi-stars me-1"></i>Tạo câu hỏi với AI
+                        </button>
+                    </div>
+                    <!-- Footer Step 2 -->
+                    <div id="admin-ai-footer-preview" style="display:none; gap:10px; width:100%; justify-content:flex-end;">
+                        <button class="btn btn-light fw-semibold" onclick="backToAdminAiInput()" style="border-radius:12px; padding:10px 24px;">
+                            <i class="bi bi-arrow-left me-1"></i>Tạo lại
+                        </button>
+                        <button class="btn fw-bold text-white" id="btn-admin-ai-save" onclick="saveAdminAiQuestions()"
+                            style="border-radius:12px; padding:10px 28px; background:linear-gradient(135deg,#4f46e5,#7c3aed); border:none;">
+                            <i class="bi bi-cloud-upload-fill me-1"></i>Lưu tất cả vào kho công khai
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script th:src="@{/js/admin/admin-categories.js}"></script>
+    <div th:replace="~{fragments/category-explorer-public :: category-explorer-public-modal}"></div>
+    <div th:replace="~{fragments/category-explorer-private :: category-explorer-private-modal}"></div>
+    <th:block th:replace="~{fragments/category-explorer-private :: category-explorer-private-scripts('admin')}">
+    </th:block>
+    <div th:replace="~{layout/header :: changePasswordModal}"></div>
+    <script th:replace="~{layout/header :: change-password-script}"></script>
+</body>
+
+
+</html>

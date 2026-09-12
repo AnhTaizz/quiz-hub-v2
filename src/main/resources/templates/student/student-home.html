@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>QuizHub | Bảng điều khiển Học sinh</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Nunito+Sans:wght@600;700;800;900&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+
+    <link rel="stylesheet" th:href="@{/css/student.css}">
+
+</head>
+
+<body>
+
+    <header th:replace="~{layout/header :: student-header(activePage='dashboard')}"></header>
+
+    <main class="container">
+        <!-- Dashboard Hero Section -->
+        <section class="dashboard-hero mb-5 reveal">
+            <div class="dash-blob dash-blob-1"></div>
+            <div class="dash-blob dash-blob-2"></div>
+
+            <div
+                class="hero-content d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-4">
+                <div>
+                    <h1 class="hero-title"><span th:text="${greeting}"
+                            style="color: #ffffff !important; -webkit-text-fill-color: #ffffff !important;">Chào buổi
+                            sáng</span>, <span
+                            style="background: linear-gradient(90deg, #a78bfa, #38bdf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"
+                            th:text="${currentUser != null ? currentUser.fullName : 'Học sinh'}">Học sinh</span>
+                        👋
+                    </h1>
+                    <p class="hero-subtitle">Mọi thứ đang đi đúng hướng! Bạn có <strong
+                            th:text="${pendingThisWeekCount != null ? pendingThisWeekCount : 0}">0</strong> bài kiểm tra
+                        sắp đến
+                        hạn trong tuần này. Hãy hoàn thành sớm để giữ vững phong độ nhé.</p>
+
+                    <div class="hero-stats-row">
+                        <div class="hero-stat-glass">
+                            <i class="bi bi-check2-circle text-success"></i> Đã làm: <span
+                                th:text="${totalCompleted != null ? totalCompleted : 0}">0</span> Bài thi
+                        </div>
+                        <div class="hero-stat-glass">
+                            <i class="bi bi-graph-up text-info"></i> TB Luyện tập: <span
+                                th:text="${practiceAvg != null ? practiceAvg : '0.0'}">0.0</span>
+                        </div>
+                        <div class="hero-stat-glass">
+                            <i class="bi bi-award text-warning"></i> TB Kiểm tra: <span
+                                th:text="${quizAvg != null ? quizAvg : '0.0'}">0.0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="typo-clock-widget d-none d-lg-flex">
+                    <div class="typo-time">
+                        <span class="typo-hours-mins" id="t-hour">--</span>
+                        <span class="typo-colon">:</span>
+                        <span class="typo-hours-mins" id="t-minute">--</span>
+                        <span class="typo-ampm" id="t-ampm">AM</span>
+                    </div>
+                    <div class="typo-date" id="t-date">---, --/--/----</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Content Grid -->
+        <div class="row g-4">
+            <!-- Left Column: Pending Tasks -->
+            <div class="col-lg-8 reveal" style="transition-delay: 0.1s;">
+                <div class="d-flex justify-content-between align-items-end mb-4">
+                    <div>
+                        <div class="section-label text-orange"
+                            style="color: #fd7e14; background: rgba(253,126,20,0.1);">Nhiệm vụ</div>
+                        <h2 class="section-title mb-0">Bài thi đang chờ</h2>
+                    </div>
+                    <a th:href="@{/student/quizzes}" class="text-decoration-none fw-bold text-primary">Xem tất cả <i
+                            class="bi bi-arrow-right"></i></a>
+                </div>
+
+                <!-- Empty State -->
+                <div th:if="${assignedQuizzes == null || assignedQuizzes.isEmpty()}"
+                    class="dash-card py-5 text-center bg-white bg-opacity-50 border-dashed mb-4">
+                    <i class="bi bi-emoji-smile fs-1 text-muted d-block mb-3"></i>
+                    <p class="text-muted mb-0">Tuyệt vời! Bạn không còn bài thi nào đang chờ.</p>
+                </div>
+
+                <!-- Task Items -->
+                <div th:each="info : ${assignedQuizzes}" class="dash-card task-card mb-4 task-primary">
+                    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-4">
+                        <div class="d-flex gap-3 align-items-center">
+                            <div class="dash-icon-box bg-opacity-10 bg-primary text-primary">
+                                <i class="bi bi-file-earmark-text"></i>
+                            </div>
+                            <div>
+                                <h4 class="task-title" th:text="${info.assigning.quiz.title}">Tên bài thi</h4>
+                                <div class="task-chips">
+                                    <div class="info-chip"><i class="bi bi-clock"></i> <span
+                                            th:text="${info.assigning.durationInMins}">0</span> Phút</div>
+                                    <div class="info-chip"><i class="bi bi-list-check"></i> <span
+                                            th:text="${info.assigning.quiz.questions != null ? info.assigning.quiz.questions.size() : 0}">0</span>
+                                        Câu</div>
+                                    <div class="info-chip"
+                                        th:classappend="${info.attemptsMade > 0 ? 'text-primary border-primary' : ''}">
+                                        <i class="bi bi-person-walking"></i>
+                                        Lượt: <span th:text="${info.attemptsMade}">0</span> / <span
+                                            th:text="${info.assigning.maxAttempt != null && info.assigning.maxAttempt > 0 ? info.assigning.maxAttempt : '∞'}">∞</span>
+                                    </div>
+                                    <div class="info-chip safe">
+                                        <i class="bi bi-calendar-event"></i>
+                                        Hạn: <span
+                                            th:text="${info.assigning.dueDate != null ? #temporals.format(info.assigning.dueDate, 'HH:mm dd/MM/yyyy') : 'Không thời hạn'}">--/--/----</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex gap-2 flex-wrap w-100 w-md-auto mt-2 mt-md-0">
+                            <a th:href="@{'/student/quiz/history/' + ${info.assigning.id}}"
+                                class="btn btn-outline-primary rounded-pill px-4 text-nowrap text-decoration-none d-flex align-items-center justify-content-center flex-grow-1 flex-md-grow-0">
+                                <i class="bi bi-clock-history me-1"></i>
+                                <span>Lịch sử</span>
+                            </a>
+                            <a th:href="@{/student/quiz/play/{id}(id=${info.assigning.id})}"
+                                class="btn-green rounded-pill px-4 text-nowrap text-decoration-none d-flex align-items-center justify-content-center flex-grow-1 flex-md-grow-0">
+                                <i class="bi bi-pencil-square me-1"></i>
+                                <span>Làm bài</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Quick Actions -->
+            <div class="col-lg-4 reveal" style="transition-delay: 0.2s;">
+                <div class="mb-4">
+                    <div class="section-label" style="color: #0d6efd; background: rgba(13,110,253,0.1);">Cá Nhân</div>
+                    <h2 class="section-title mb-0">Thao tác nhanh</h2>
+                </div>
+                <div class="dash-card mb-5">
+                    <div class="quick-actions">
+                        <a th:href="@{/student/categories(type='public')}" class="btn-quick">
+                            <i class="bi bi-globe2 text-info"></i> Luyện tập nhanh
+                        </a>
+                        <a th:href="@{/student/categories(type='mine')}" class="btn-quick">
+                            <i class="bi bi-journals text-warning"></i> Đề thi của tôi
+                        </a>
+                        <a th:href="@{/student/quiz/ai-create}" class="btn-quick">
+                            <i class="bi bi-robot text-purple" style="color: #7c3aed !important;"></i> Tạo đề thi bằng AI
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:src="@{/js/script.js}"></script>
+    <script th:src="@{/js/student/student-home.js}"></script>
+</body>
+
+</html>

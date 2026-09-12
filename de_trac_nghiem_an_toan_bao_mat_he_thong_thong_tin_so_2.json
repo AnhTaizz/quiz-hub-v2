@@ -1,0 +1,6231 @@
+[
+    {
+        "question": "Những chữ đầu của nhóm từ ACL là tên viết tắt của:",
+        "answers": [
+            {
+                "content": "Arbitrary Code Language",
+                "is_correct": false
+            },
+            {
+                "content": "Access Control Library",
+                "is_correct": false
+            },
+            {
+                "content": "Access Control List",
+                "is_correct": true
+            },
+            {
+                "content": "Allowed Computer List",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Nên cài mức truy cập mặc định là mức nào sau đây?",
+        "answers": [
+            {
+                "content": "Full access",
+                "is_correct": false
+            },
+            {
+                "content": "No access",
+                "is_correct": true
+            },
+            {
+                "content": "Read access",
+                "is_correct": false
+            },
+            {
+                "content": "Write access",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Sau khi một user được định danh và xác thực hệ thống, để cho phép user sử dụng tài nguyên bạn phải thực hiện điều gì?",
+        "answers": [
+            {
+                "content": "Phải được ủy quyền",
+                "is_correct": true
+            },
+            {
+                "content": "Được truyền lại",
+                "is_correct": false
+            },
+            {
+                "content": "Được mã hóa",
+                "is_correct": false
+            },
+            {
+                "content": "Được enable",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Quyền truy cập nào cho phép ta lưu giữ một tập tin?",
+        "answers": [
+            {
+                "content": "Đọc",
+                "is_correct": false
+            },
+            {
+                "content": "Sao chép",
+                "is_correct": false
+            },
+            {
+                "content": "Hiệu chỉnh",
+                "is_correct": false
+            },
+            {
+                "content": "Ghi",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Quyền truy cập nào cho phép ta hiệu chỉnh thuộc tính của một tập tin?",
+        "answers": [
+            {
+                "content": "Hiệu chỉnh (Modify)",
+                "is_correct": true
+            },
+            {
+                "content": "Sao chép (Copy)",
+                "is_correct": false
+            },
+            {
+                "content": "Thay đổi (Change)",
+                "is_correct": false
+            },
+            {
+                "content": "Biên tập ( Edit)",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Các quyền truy cập tối đa nên dành cho user là gì ?",
+        "answers": [
+            {
+                "content": "Ít nhất là quyền đọc và ghi",
+                "is_correct": false
+            },
+            {
+                "content": "Không có quyền truy cập",
+                "is_correct": false
+            },
+            {
+                "content": "Đủ để thực hiện công việc theo chức trách",
+                "is_correct": true
+            },
+            {
+                "content": "Toàn quyền",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Chính sách tài khoản nào nên được thiết lập để ngăn chặn các cuộc tấn công ác ý vào tài khoản của user?",
+        "answers": [
+            {
+                "content": "Disable tài khoản không dùng đến",
+                "is_correct": false
+            },
+            {
+                "content": "Hạn chế thời gian",
+                "is_correct": false
+            },
+            {
+                "content": "Ngày hết hạn tài khoản",
+                "is_correct": false
+            },
+            {
+                "content": "Giới hạn số lần logon",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Sau khi một user đã được định danh (identifed), điều gì cần phải làm trước khi họ log vào một mạng máy tính ?",
+        "answers": [
+            {
+                "content": "Xác thực với mật khẩu",
+                "is_correct": true
+            },
+            {
+                "content": "Họ phải nhập user ID đã được mã hóa",
+                "is_correct": false
+            },
+            {
+                "content": "Được phép truy cập với mức ưu tiên được thiết lập",
+                "is_correct": false
+            },
+            {
+                "content": "Người quản trị phải enable để gõ vào",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Chiều dài tối thiểu của mật khẩu cần phải là :",
+        "answers": [
+            {
+                "content": "12 đến 15 ký tự",
+                "is_correct": false
+            },
+            {
+                "content": "3 đến 5 ký tự",
+                "is_correct": false
+            },
+            {
+                "content": "8 ký tự",
+                "is_correct": true
+            },
+            {
+                "content": "1 đến 3 ký tự",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Điều gì cần được thực hiện đối với tập tin mật khẩu để ngăn chặn một người dùng trái phép crack vào các nội dung ?",
+        "answers": [
+            {
+                "content": "Hủy bỏ tất cả các quyền truy cập",
+                "is_correct": false
+            },
+            {
+                "content": "Mã hóa tập tin mật khẩu",
+                "is_correct": true
+            },
+            {
+                "content": "Di chuyển ngoại tuyến đến một đĩa mềm",
+                "is_correct": false
+            },
+            {
+                "content": "Sao chép đến một tập tin bù nhìn với một tên khác",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Một IP flood theo các host phát tán trực tiếp đến một Web server là một ví dụ của loại tấn công gì ?",
+        "answers": [
+            {
+                "content": "Trojan Hors",
+                "is_correct": false
+            },
+            {
+                "content": "Sâu",
+                "is_correct": false
+            },
+            {
+                "content": "Tấn công IP",
+                "is_correct": false
+            },
+            {
+                "content": "DoS phân tán (DDoS)",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Để ngăn tấn công DoS, một quản trị mạng chặn nguồn IP với tường lửa, nhưng tấn công vẫn tiếp diễn. Điều gì có khả năng xảy ra nhất ?",
+        "answers": [
+            {
+                "content": "Sâu DoS đã lây nhiễm cục bộ",
+                "is_correct": false
+            },
+            {
+                "content": "Tấn công đang đến từ nhiều host (DDoS)",
+                "is_correct": true
+            },
+            {
+                "content": "Một tường lửa không thể ngăn chặn tấn công DoS",
+                "is_correct": false
+            },
+            {
+                "content": "Phần mềm Antivirus cần được cài đặt trên máy chủ đích",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Cách bảo vệ nào sau đây là tốt nhất để chống lại tấn công DoS kiểu làm tràn băng thông và bộ đệm của hệ thống",
+        "answers": [
+            {
+                "content": "Subnet mask",
+                "is_correct": false
+            },
+            {
+                "content": "Cài đặt phần mềm bảo vệ Antivirus",
+                "is_correct": false
+            },
+            {
+                "content": "Disable web server",
+                "is_correct": false
+            },
+            {
+                "content": "Chặn giao thức ICMP",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Các loại khoá mật mã nào sau đây dễ bị crack nhất ?",
+        "answers": [
+            {
+                "content": "128 bit",
+                "is_correct": false
+            },
+            {
+                "content": "40 bit",
+                "is_correct": true
+            },
+            {
+                "content": "256 bit",
+                "is_correct": false
+            },
+            {
+                "content": "56 bit",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Cách nào sau đây là tốt nhất để chống lại điểm yếu bảo mật trong phần mềm HĐH ?",
+        "answers": [
+            {
+                "content": "Cài đặt bản service pack mới nhất",
+                "is_correct": true
+            },
+            {
+                "content": "Cài đặt lại HĐH thông dụng",
+                "is_correct": false
+            },
+            {
+                "content": "Sao lưu hệ thống thường xuyên",
+                "is_correct": false
+            },
+            {
+                "content": "Shut down hệ thống khi không sử dụng",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Các mật khẩu nào sau đây là khó phá nhất đối với một hacker ?",
+        "answers": [
+            {
+                "content": "password83",
+                "is_correct": false
+            },
+            {
+                "content": "reception",
+                "is_correct": false
+            },
+            {
+                "content": "!$aLtNb83",
+                "is_correct": true
+            },
+            {
+                "content": "LaT3r",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Một người dùng đã mua một máy tính xách tay đã nhiễm virus.Trên máy không chứa phần mềm Antivirus và chưa được kết nối với mạng.Cách tốt nhất để sửa chữa máy tính xách tay là gì ?",
+        "answers": [
+            {
+                "content": "Nối mạng máy tính xách tay và download phần mềm antivirus từ máy chủ",
+                "is_correct": false
+            },
+            {
+                "content": "Khởi động máy tính xách tay với đĩa antivirus",
+                "is_correct": true
+            },
+            {
+                "content": "Nối mạng máy tính xách tay và download phần mềm antivirus từ Internet",
+                "is_correct": false
+            },
+            {
+                "content": "Kết nối máy tính xách tay đến một máy tính cá nhân khác và diệt virus từ đó",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Các tập tin nào sau đây có khả năng chứa virus nhất ?",
+        "answers": [
+            {
+                "content": "database.dat",
+                "is_correct": false
+            },
+            {
+                "content": "bigpic.jpeg",
+                "is_correct": false
+            },
+            {
+                "content": "note.txt",
+                "is_correct": false
+            },
+            {
+                "content": "picture.gif.exe",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Loại mã nguồn độc hại nào có thể được cài đặt song không gây tác hại cho đến khi một hoạt động nào đó được kích hoạt ?",
+        "answers": [
+            {
+                "content": "Sâu",
+                "is_correct": false
+            },
+            {
+                "content": "Ngựa trojan",
+                "is_correct": true
+            },
+            {
+                "content": "Logic bomb",
+                "is_correct": false
+            },
+            {
+                "content": "Stealth virus",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Trong suốt quá trình kiểm định một bản ghi hệ thống máy chủ, các mục nào sau đây có thể được xem như là một khả năng đe dọa bảo mật ?",
+        "answers": [
+            {
+                "content": "Năm lần nổ lực login thất bại trên tài khoản “jsmith”",
+                "is_correct": false
+            },
+            {
+                "content": "Hai lần login thành công với tài khoản Administrator",
+                "is_correct": true
+            },
+            {
+                "content": "Năm trăm ngàn công việc in được gởi đến một máy in",
+                "is_correct": false
+            },
+            {
+                "content": "Ba tập tin mới được lưu trong tài khoản thư mục bởi người sử dụng là “finance”",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Phương pháp thông tin truy cập từ xa nào được xem như kết nối điển hình đến Internet mọi lúc, nó làm gia tăng rủi ro bảo mật do luôn mở đối với mọi cuộc tấn công ?",
+        "answers": [
+            {
+                "content": "Cable modem & DSL",
+                "is_correct": true
+            },
+            {
+                "content": "Dial-up",
+                "is_correct": false
+            },
+            {
+                "content": "Wireless",
+                "is_correct": false
+            },
+            {
+                "content": "SSH",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Tính năng bảo mật nào có thể được sử dụng đối với một máy trạm quay số truy cập từ xa sử dụng một username và mật khẩu ?",
+        "answers": [
+            {
+                "content": "Mã hóa số điện thoại",
+                "is_correct": false
+            },
+            {
+                "content": "Kiểm tra chuỗi modem",
+                "is_correct": false
+            },
+            {
+                "content": "Hiển thị gọi",
+                "is_correct": false
+            },
+            {
+                "content": "Gọi lại ( Call back)",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Tiện ích nào sau đây là một phương thức bảo mật truy cập từ xa tốt hơn telnet ?",
+        "answers": [
+            {
+                "content": "SSL",
+                "is_correct": false
+            },
+            {
+                "content": "SSH",
+                "is_correct": true
+            },
+            {
+                "content": "IPSec",
+                "is_correct": false
+            },
+            {
+                "content": "VPN",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Các giao thức đường hầm nào sau đây chỉ làm việc trên các mạng IP ?",
+        "answers": [
+            {
+                "content": "SLIP",
+                "is_correct": false
+            },
+            {
+                "content": "IPX",
+                "is_correct": false
+            },
+            {
+                "content": "L2TP",
+                "is_correct": true
+            },
+            {
+                "content": "PPTP",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Mục đích của một máy chủ RADIUS là",
+        "answers": [
+            {
+                "content": "Packet Sniffing",
+                "is_correct": false
+            },
+            {
+                "content": "Mã hóa",
+                "is_correct": false
+            },
+            {
+                "content": "Xác thực",
+                "is_correct": true
+            },
+            {
+                "content": "Thỏa thuận tốc độ kết nối",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Các giao thức xác thực nào sau đây được sử dụng trong các mạng không dây ?",
+        "answers": [
+            {
+                "content": "802.1X",
+                "is_correct": false
+            },
+            {
+                "content": "802.11b",
+                "is_correct": true
+            },
+            {
+                "content": "802.11a",
+                "is_correct": false
+            },
+            {
+                "content": "803.1",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Các giao thức nào sau đây làm việc trên lớp IP để bảo vệ thông tin IP trên mạng?",
+        "answers": [
+            {
+                "content": "IPX",
+                "is_correct": false
+            },
+            {
+                "content": "IPSec",
+                "is_correct": true
+            },
+            {
+                "content": "SSH",
+                "is_correct": false
+            },
+            {
+                "content": "TACACS+",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "LAC ( L2TP Access Control) và LNS ( L2TP Network Server)) là các thành phần của giao thức đường hầm nào ?",
+        "answers": [
+            {
+                "content": "IPSec",
+                "is_correct": false
+            },
+            {
+                "content": "PPP",
+                "is_correct": false
+            },
+            {
+                "content": "PPTP",
+                "is_correct": false
+            },
+            {
+                "content": "L2TP",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Giao thức được sử dụng rộng rãi nhất để truy cập kiểu quay số đến một máy chủ từ xa là",
+        "answers": [
+            {
+                "content": "SLIP",
+                "is_correct": false
+            },
+            {
+                "content": "PPP",
+                "is_correct": false
+            },
+            {
+                "content": "RAS",
+                "is_correct": true
+            },
+            {
+                "content": "Telnet",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Kỹ thuật nào được sử dụng để bảo đảm thông tin liên lạc qua một mạng không được bảo mật ?",
+        "answers": [
+            {
+                "content": "Telnet",
+                "is_correct": false
+            },
+            {
+                "content": "SLIP",
+                "is_correct": false
+            },
+            {
+                "content": "VPN",
+                "is_correct": true
+            },
+            {
+                "content": "PPP",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Các thiết bị nào sau đây có thể sử dụng được trên mạng không dây ?",
+        "answers": [
+            {
+                "content": "Máy vi tính để bàn",
+                "is_correct": false
+            },
+            {
+                "content": "Máy tính xách tay",
+                "is_correct": false
+            },
+            {
+                "content": "PDA",
+                "is_correct": false
+            },
+            {
+                "content": "Tất cả các loại trên",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Thiết bị nào được sử dụng để cho phép các máy trạm không dây truy cập vào một mạng LAN rộng ?",
+        "answers": [
+            {
+                "content": "802.11b",
+                "is_correct": false
+            },
+            {
+                "content": "Tường lửa",
+                "is_correct": false
+            },
+            {
+                "content": "Điểm truy cập không dây (Wiless Access Point)",
+                "is_correct": true
+            },
+            {
+                "content": "VPN",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Các chuẩn giao thức mạng không dây nào sau đây phân phối nội dung Wireless Markup Language (WML) đến các ứng dụng Web trên các thiết bị cầm tay (PDA)?",
+        "answers": [
+            {
+                "content": "WAP",
+                "is_correct": true
+            },
+            {
+                "content": "WEP",
+                "is_correct": false
+            },
+            {
+                "content": "802.11g",
+                "is_correct": false
+            },
+            {
+                "content": "SSL",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Các chuẩn giao thức mạng không dây IEEE nào sau đây là phổ biến nhất ?",
+        "answers": [
+            {
+                "content": "803.11b",
+                "is_correct": false
+            },
+            {
+                "content": "802.11g",
+                "is_correct": true
+            },
+            {
+                "content": "802.11a",
+                "is_correct": false
+            },
+            {
+                "content": "802.11b",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Mức mã hóa WEP nào nên được thiết lập trên một mạng 802.11b ?",
+        "answers": [
+            {
+                "content": "128 bit",
+                "is_correct": true
+            },
+            {
+                "content": "40 bit",
+                "is_correct": false
+            },
+            {
+                "content": "28 bit",
+                "is_correct": false
+            },
+            {
+                "content": "16 bit",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Cơ cấu bảo mật mạng không dây nào sau đây là ít an toàn nhất ?",
+        "answers": [
+            {
+                "content": "VPN",
+                "is_correct": false
+            },
+            {
+                "content": "Mã hóa WEP 40 bit",
+                "is_correct": true
+            },
+            {
+                "content": "Bảo mật định danh mạng",
+                "is_correct": false
+            },
+            {
+                "content": "Mã hóa WEP 128 bit",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Bộ lọc địa chỉ MAC được định nghĩa như :",
+        "answers": [
+            {
+                "content": "Được phép truy cập đến một địa chỉ MAC nhất định.",
+                "is_correct": false
+            },
+            {
+                "content": "Ngăn chặn truy cập từ một địa chỉ MAC nhất định.",
+                "is_correct": true
+            },
+            {
+                "content": "Mã hóa địa chỉ MAC của thiết bị không dây.",
+                "is_correct": false
+            },
+            {
+                "content": "Tường lửa cá nhân",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Phương pháp điều khiển truy cập có hiệu quả và an toàn nhất đối với mạng không dây là:",
+        "answers": [
+            {
+                "content": "Mã hóa WEP 40 bit",
+                "is_correct": false
+            },
+            {
+                "content": "VPN",
+                "is_correct": false
+            },
+            {
+                "content": "Mã hóa WEP kết hợp với lọc địa chỉ MAC",
+                "is_correct": true
+            },
+            {
+                "content": "Nhận dạng bảo mật mạng",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Cơ cấu bảo mật nào sau đây được sử dụng với chuẩn không dây WAP ?",
+        "answers": [
+            {
+                "content": "WTLS",
+                "is_correct": true
+            },
+            {
+                "content": "SSL",
+                "is_correct": false
+            },
+            {
+                "content": "HTTPS",
+                "is_correct": false
+            },
+            {
+                "content": "Mã hóa WEP",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Thiết bị nào sử dụng bộ lọc gói và các quy tắc truy cập để kiểm soát truy cập đến các mạng riêng từ các mạng công cộng , như là Internet ?",
+        "answers": [
+            {
+                "content": "Điểm truy cập không dây",
+                "is_correct": false
+            },
+            {
+                "content": "Router",
+                "is_correct": false
+            },
+            {
+                "content": "Tường lửa",
+                "is_correct": true
+            },
+            {
+                "content": "Switch",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Thiết bị nào cho phép ta kết nối đến một mạng LAN của công ty qua Internet thông qua một kênh được mã hóa an toàn ?",
+        "answers": [
+            {
+                "content": "VPN",
+                "is_correct": true
+            },
+            {
+                "content": "WEP",
+                "is_correct": false
+            },
+            {
+                "content": "Modem",
+                "is_correct": false
+            },
+            {
+                "content": "Telnet",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Ứng dụng mạng nào có thể được sử dụng để phân tích và kiểm tra lưu lượng mạng ?",
+        "answers": [
+            {
+                "content": "IDS",
+                "is_correct": false
+            },
+            {
+                "content": "FTP",
+                "is_correct": false
+            },
+            {
+                "content": "Router",
+                "is_correct": false
+            },
+            {
+                "content": "Sniffer",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Cần phải làm gì để bảo vệ dữ liệu trên một máy tính xách tay nếu nó bị lấy cắp ?",
+        "answers": [
+            {
+                "content": "Khóa đĩa mềm",
+                "is_correct": false
+            },
+            {
+                "content": "Enable khi login và tạo mật khẩu trên HĐH",
+                "is_correct": false
+            },
+            {
+                "content": "Lưu trữ đều đặn trên CD-ROM",
+                "is_correct": false
+            },
+            {
+                "content": "Mã hóa dữ liệu",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Ta phải làm gì để ngăn chặn một ai đó tình cờ ghi đè lên dữ liệu trên một băng từ ?",
+        "answers": [
+            {
+                "content": "Xóa nó bằng nam châm",
+                "is_correct": false
+            },
+            {
+                "content": "Dán nhãn cẩn thận",
+                "is_correct": false
+            },
+            {
+                "content": "Thiết lập tab “Write-protect ”",
+                "is_correct": true
+            },
+            {
+                "content": "Lưu giữ nó tại chỗ",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Phương tiện nào sau đây không bị ảnh hưởng bởi từ tính ?",
+        "answers": [
+            {
+                "content": "Đĩa mềm",
+                "is_correct": false
+            },
+            {
+                "content": "CD-ROM",
+                "is_correct": true
+            },
+            {
+                "content": "Flash card",
+                "is_correct": false
+            },
+            {
+                "content": "Băng từ",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Yếu tố nào cần được sử dụng kết hợp với một thẻ thông minh để xác thực ?",
+        "answers": [
+            {
+                "content": "PIN",
+                "is_correct": true
+            },
+            {
+                "content": "Quét võng mạc",
+                "is_correct": false
+            },
+            {
+                "content": "Mã hóa khóa",
+                "is_correct": false
+            },
+            {
+                "content": "Thẻ nhớ",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Loại media nào sau đây không phải là một thiết bị cơ động được ?",
+        "answers": [
+            {
+                "content": "Đĩa mềm",
+                "is_correct": false
+            },
+            {
+                "content": "Ổ đĩa đĩa CD",
+                "is_correct": true
+            },
+            {
+                "content": "Thẻ thông minh",
+                "is_correct": false
+            },
+            {
+                "content": "Băng từ",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Các thiết bị hay các ứng dụng bảo mật nào sau đây nên được sử dụng để theo dõi và cảnh báo các quản trị mạng về truy cập trái phép ?",
+        "answers": [
+            {
+                "content": "Chương trình Antivirus",
+                "is_correct": false
+            },
+            {
+                "content": "Switch",
+                "is_correct": false
+            },
+            {
+                "content": "Hệ thống phát hiện xâm nhập (IDS)",
+                "is_correct": true
+            },
+            {
+                "content": "Dụng cụ phân tích mạng",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Vùng nào của cấu trúc liên kết bảo mật mạng chứa các máy chủ Intenet, như là web, FTP, và các máy chủ email ?",
+        "answers": [
+            {
+                "content": "DMZ",
+                "is_correct": true
+            },
+            {
+                "content": "VLAN",
+                "is_correct": false
+            },
+            {
+                "content": "VPN",
+                "is_correct": false
+            },
+            {
+                "content": "Intranet",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Loại mạng nào mô tả cấu hình mạng bên trong của một công ty dùng cho mô hình kinh doanh B2B ( Business to Business) ?",
+        "answers": [
+            {
+                "content": "VLAN",
+                "is_correct": false
+            },
+            {
+                "content": "Intranet",
+                "is_correct": true
+            },
+            {
+                "content": "Extranet",
+                "is_correct": false
+            },
+            {
+                "content": "VPN",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Dịch vụ mạng nào cho phép các địa chỉ mạng bên trong được “che dấu”( hidden) khỏi các mạng bên ngoài và cho phép vài host của mạng bên trong sử dụng các địa chỉ trùng với mạng bên ngoài ?",
+        "answers": [
+            {
+                "content": "NAT",
+                "is_correct": true
+            },
+            {
+                "content": "VPN",
+                "is_correct": false
+            },
+            {
+                "content": "VLAN",
+                "is_correct": false
+            },
+            {
+                "content": "IP spoofing",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Công nghệ nào được sử dụng để chia một mạng bên trong thành mạng logic nhỏ hơn, dễ sử dụng hơn ?",
+        "answers": [
+            {
+                "content": "NAT",
+                "is_correct": false
+            },
+            {
+                "content": "Tunneling",
+                "is_correct": false
+            },
+            {
+                "content": "VPN",
+                "is_correct": false
+            },
+            {
+                "content": "VLAN",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Không sử dụng một liên kết chuyên dụng , phương pháp tốt nhất để kết nối hai mạng được định vị trong các văn phòng có khoảng cách địa lý xa nhau là gì ?",
+        "answers": [
+            {
+                "content": "VLAN",
+                "is_correct": false
+            },
+            {
+                "content": "Tường lửa",
+                "is_correct": false
+            },
+            {
+                "content": "DMZ",
+                "is_correct": false
+            },
+            {
+                "content": "VPN",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Sau khi cố gắng login đến một trạm làm việc trong 3 lần, một user thấy đã bị khóa bên ngoài hệ thống và không thể thực hiện bất kỳ nổ lực nào hơn nữa. Vấn đề này phù hợp nhất với điều gì ?",
+        "answers": [
+            {
+                "content": "Cổng mạng disable",
+                "is_correct": false
+            },
+            {
+                "content": "Tường lửa disable khi truy cập đến host",
+                "is_correct": false
+            },
+            {
+                "content": "User quên mật khẩu của họ",
+                "is_correct": false
+            },
+            {
+                "content": "Hệ thống phát hiện xâm nhập disable tài khoản của user",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Đặc tính nào của các thiết bị mạng như router hay switch, cho phép điều khiển truy cập dữ liệu trên mạng ?",
+        "answers": [
+            {
+                "content": "Giao thức DNS",
+                "is_correct": false
+            },
+            {
+                "content": "Cập nhật vi chương trình ( Firmware)",
+                "is_correct": false
+            },
+            {
+                "content": "Tường lửa",
+                "is_correct": false
+            },
+            {
+                "content": "Danh sách điều khiển truy cập (ACL)",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Phần nào của một thiết bị phần cứng có thể được nâng cấp để cung cấp khả năng bảo mật tốt hơn và đáng tin hơn ?",
+        "answers": [
+            {
+                "content": "Vi chương trình (firmware)",
+                "is_correct": false
+            },
+            {
+                "content": "Quét cổng",
+                "is_correct": true
+            },
+            {
+                "content": "Flash memory",
+                "is_correct": false
+            },
+            {
+                "content": "Cấu hình tập tin",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Giao thức nào sau đây cần xóa trên thiết bị mạng quan trọng như router ?",
+        "answers": [
+            {
+                "content": "TCP/IP",
+                "is_correct": false
+            },
+            {
+                "content": "ICMP",
+                "is_correct": true
+            },
+            {
+                "content": "IPX/SPX",
+                "is_correct": false
+            },
+            {
+                "content": "RIP",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Các giao thức nào sau đây cần xóa trên một máy chủ email để ngăn chặn một user trái phép khai thác các điểm yếu bảo mật từ phần mềm giám sát mạng ?",
+        "answers": [
+            {
+                "content": "IMAP",
+                "is_correct": false
+            },
+            {
+                "content": "POP3",
+                "is_correct": false
+            },
+            {
+                "content": "TCP/IP",
+                "is_correct": false
+            },
+            {
+                "content": "SNMP",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Điều gì cần được thực hiện với một email server để ngăn chặn user bên ngoài gởi email thông qua nó ?",
+        "answers": [
+            {
+                "content": "Cài đặt phần mềm antivirus và antispam.",
+                "is_correct": false
+            },
+            {
+                "content": "Hạn chế chuyên tiếp tín hiệu SMTP.",
+                "is_correct": true
+            },
+            {
+                "content": "Xoá quyền truy cập POP3 và IMAP",
+                "is_correct": false
+            },
+            {
+                "content": "Enable login được mã hóa",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Điều gì có thể được thiết lập trên một server DHCP để ngăn chặn các máy trạm trái phép lấy được một địa chỉ IP từ server ?",
+        "answers": [
+            {
+                "content": "Quét cổng",
+                "is_correct": false
+            },
+            {
+                "content": "Thiết lập “Danh sách truy cập thư mục LDAP”",
+                "is_correct": true
+            },
+            {
+                "content": "Phát hiện xâm nhập",
+                "is_correct": false
+            },
+            {
+                "content": "DNS",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Văn bản sau khi được mã hóa, được gọi là gì ?",
+        "answers": [
+            {
+                "content": "Chứng chỉ",
+                "is_correct": false
+            },
+            {
+                "content": "Mật mã đối xứng",
+                "is_correct": false
+            },
+            {
+                "content": "Khóa công khai",
+                "is_correct": false
+            },
+            {
+                "content": "Văn bản mã",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Đặc tính nào sau đây không thuộc chức năng bảo mật thông tin trong các hệ thống mật mã ?",
+        "answers": [
+            {
+                "content": "Hiệu quả",
+                "is_correct": true
+            },
+            {
+                "content": "Bảo mật",
+                "is_correct": false
+            },
+            {
+                "content": "Toàn vẹn",
+                "is_correct": false
+            },
+            {
+                "content": "Không chối từ",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Ở hệ mật mã nào người gửi và người nhận thông điệp sử dụng cùng một khóa mã khi mã hóa và giải mã ?",
+        "answers": [
+            {
+                "content": "Không đối xứng",
+                "is_correct": false
+            },
+            {
+                "content": "Đối xứng",
+                "is_correct": true
+            },
+            {
+                "content": "RSA",
+                "is_correct": false
+            },
+            {
+                "content": "Diffie-Hellman",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Chuẩn nào sau đây được chính phủ Mỹ sử dụng thay thế cho DES như là một chuẩn mã hoá dữ liệu?",
+        "answers": [
+            {
+                "content": "DSA",
+                "is_correct": false
+            },
+            {
+                "content": "ECC",
+                "is_correct": false
+            },
+            {
+                "content": "3DES",
+                "is_correct": false
+            },
+            {
+                "content": "AES",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Ở hệ mật mã nào người gửi và người nhận thông điệp sử dụng các khóa khác nhau khi mã hóa và giải mã ?",
+        "answers": [
+            {
+                "content": "Skipjack",
+                "is_correct": false
+            },
+            {
+                "content": "Blowfish",
+                "is_correct": false
+            },
+            {
+                "content": "Không đối xứng",
+                "is_correct": true
+            },
+            {
+                "content": "Đối xứng",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Các giao thức mã hóa và các thuật toán nào sau đây được sử dụng như là nền tảng của hạ tầng cơ sở hạ tầng khóa công khai (PKI)?",
+        "answers": [
+            {
+                "content": "MD4",
+                "is_correct": false
+            },
+            {
+                "content": "SHA",
+                "is_correct": false
+            },
+            {
+                "content": "Diffie-Hellman",
+                "is_correct": true
+            },
+            {
+                "content": "Skipjack",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Khi giá trị hàm băm của hai thông điệp khác nhau có giá trị tương tự nhau, ta gọi hiện tượng này là gì ?",
+        "answers": [
+            {
+                "content": "Tấn công vào ngày sinh",
+                "is_correct": false
+            },
+            {
+                "content": "Xung đột",
+                "is_correct": true
+            },
+            {
+                "content": "Chữ ký số",
+                "is_correct": false
+            },
+            {
+                "content": "Khóa công khai",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Thực thể nào sau đây cho phép phát hành , quản lý, và phân phối các chứng chỉ số ?",
+        "answers": [
+            {
+                "content": "Quyền cấp chứng chỉ (Certificate Authority)",
+                "is_correct": true
+            },
+            {
+                "content": "Quyền đang ký (Registation Authority)",
+                "is_correct": false
+            },
+            {
+                "content": "Chính phủ (NSA)",
+                "is_correct": false
+            },
+            {
+                "content": "PKI",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Tính hợp lệ của một chứng chỉ dựa vào điều gì ?",
+        "answers": [
+            {
+                "content": "Tính hợp lệ của Quyền cấp chứng chỉ (CA)",
+                "is_correct": true
+            },
+            {
+                "content": "Tính hợp lệ của người sở hữu",
+                "is_correct": false
+            },
+            {
+                "content": "Tính hợp lệ của khóa công khai",
+                "is_correct": false
+            },
+            {
+                "content": "Giai đoạn chứng chỉ được sử dụng",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Trong một mô hình phân cấp ủy thác giữa các tổ chức chứng thực và các người dùng cuối, mô hình nào sau đây được coi là xu hướng chung của việc phát hành chứng chỉ?",
+        "answers": [
+            {
+                "content": "Các chính sách thu hồi chứng chỉ",
+                "is_correct": false
+            },
+            {
+                "content": "Các ngày hợp lệ",
+                "is_correct": false
+            },
+            {
+                "content": "Khóa cá nhân",
+                "is_correct": false
+            },
+            {
+                "content": "Chứng thực gốc ( Root Certificate)",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Khi ta lưu giữ một khóa cá nhân trên đĩa cứng cục bộ, làm thế nào để bảo đảm là nó được bảo mật ?",
+        "answers": [
+            {
+                "content": "Cần bảo vệ bằng mật khẩu",
+                "is_correct": true
+            },
+            {
+                "content": "Lưu trữ dữ liệu sao lưu vào đĩa mềm",
+                "is_correct": false
+            },
+            {
+                "content": "Lưu trữ bản sao trong bì thư",
+                "is_correct": false
+            },
+            {
+                "content": "Lưu trữ nó trong một thư mục tương tự như khóa công khai",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Cách nào sau đây được coi là an toàn nhất để lưu trữ một khóa cá nhân ?",
+        "answers": [
+            {
+                "content": "Lưu nó trên ổ cứng ở dạng bản rõ",
+                "is_correct": false
+            },
+            {
+                "content": "Niêm phong nó trong một bao thư và để nó trong ngăn bàn",
+                "is_correct": false
+            },
+            {
+                "content": "Mã hóa nó trên một thẻ thông minh",
+                "is_correct": true
+            },
+            {
+                "content": "Lưu nó trên một thiết bị USB di dộng ở dạng bản rõ",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Một quản trị mạng mới đây đã bị sa thải khỏi công ty. Cần phải làm gì với chứng chỉ hiện hành của họ ?",
+        "answers": [
+            {
+                "content": "Làm mới lại đối với người quản trị mới",
+                "is_correct": false
+            },
+            {
+                "content": "Thu hồi lại chứng chỉ",
+                "is_correct": true
+            },
+            {
+                "content": "Đình chỉ tạm thời",
+                "is_correct": false
+            },
+            {
+                "content": "Hết hiệu lực",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Các phương pháp sinh trắc học nào sau đây được coi là an toàn nhất ?",
+        "answers": [
+            {
+                "content": "Phân tích chữ ký",
+                "is_correct": false
+            },
+            {
+                "content": "Quét tiếng nói",
+                "is_correct": false
+            },
+            {
+                "content": "Lấy dấu bàn tay / Lấy dấu ngón tay",
+                "is_correct": true
+            },
+            {
+                "content": "Không quan trọng",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Khi kết thúc công việc trên máy tính xách tay và ra ngoài khoảng 1 tiếng vào buổi trưa. Ta nên làm gì trước khi ra ngoài ?",
+        "answers": [
+            {
+                "content": "Nói với đồng nghiệp để mắt đến máy tính xách tay",
+                "is_correct": false
+            },
+            {
+                "content": "Log out khỏi máy tính xách tay",
+                "is_correct": false
+            },
+            {
+                "content": "Shut down và đóng máy lại",
+                "is_correct": false
+            },
+            {
+                "content": "Chắc chắn rằng máy tính xách tay của ta được bảo vệ trên bàn làm việc hay được khóa trong cabin",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Một user gọi điện đến cho ta (với tư cách là người quản lý) thông báo họ bị mất mật khẩu và cần truy cập ngay lập tức. Ta nên làm gì ?",
+        "answers": [
+            {
+                "content": "Cung cấp truy cập ngay lập tức, và sau đó kiểm tra chứng cứ của họ",
+                "is_correct": false
+            },
+            {
+                "content": "Tạo một login và mật khẩu tạm thời để họ sử dụng",
+                "is_correct": false
+            },
+            {
+                "content": "Xác minh định danh của họ trước khi cấp quyền truy cập",
+                "is_correct": true
+            },
+            {
+                "content": "Cho họ một mật khẩu riêng tạm thời",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Trong khoảng thời gian nguồn điện bị sụt áp do quá tải bất thường, các thiết bị nào sau đây là hữu dụng nhất trong việc duy trì các mức nguồn điện thích hợp ?",
+        "answers": [
+            {
+                "content": "Dự phòng nguồn điện của máy phát điện",
+                "is_correct": false
+            },
+            {
+                "content": "UPS",
+                "is_correct": false
+            },
+            {
+                "content": "Ổn áp",
+                "is_correct": true
+            },
+            {
+                "content": "Thanh nguồn điện",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Quản trị văn phòng của bạn đang được huấn luyện để thực hiện sao lưu máy chủ. Phương pháp xác thực nào là lý tưởng đối với tình huống này ?",
+        "answers": [
+            {
+                "content": "MAC",
+                "is_correct": true
+            },
+            {
+                "content": "DAC",
+                "is_correct": false
+            },
+            {
+                "content": "RBAC",
+                "is_correct": false
+            },
+            {
+                "content": "Các mã thông báo bảo mật",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Phương pháp xác thực nào sử dụng một KDC để thực hiện xác thực ?",
+        "answers": [
+            {
+                "content": "Chap",
+                "is_correct": false
+            },
+            {
+                "content": "Kerberos",
+                "is_correct": true
+            },
+            {
+                "content": "Sinh trắc học",
+                "is_correct": false
+            },
+            {
+                "content": "Thẻ thông minh",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Phương pháp xác thực nào gởi trả lại một “yêu cầu” (request) cho máy trạm và” yêu cầu” đó được mã hóa và gởi trở lại máy chủ ?",
+        "answers": [
+            {
+                "content": "Kerberos",
+                "is_correct": false
+            },
+            {
+                "content": "Các mã thông báo bảo mật",
+                "is_correct": false
+            },
+            {
+                "content": "DAC",
+                "is_correct": false
+            },
+            {
+                "content": "CHAP",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Qui trình xác thực nào sử dụng nhiều hơn một yếu tố xác thực để logon ?",
+        "answers": [
+            {
+                "content": "Đa yếu tố ( multi-factor)",
+                "is_correct": true
+            },
+            {
+                "content": "Sinh trắc học",
+                "is_correct": false
+            },
+            {
+                "content": "Thẻ thông minh",
+                "is_correct": false
+            },
+            {
+                "content": "Keberos",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Các giao thức hay các dịch vụ nào sau đây nên loại bỏ trong mạng nếu có thể ?",
+        "answers": [
+            {
+                "content": "Email",
+                "is_correct": false
+            },
+            {
+                "content": "Telnet",
+                "is_correct": false
+            },
+            {
+                "content": "WWW",
+                "is_correct": false
+            },
+            {
+                "content": "ICMP",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Mạng nào sau đây không phải là một vùng bảo mật ?",
+        "answers": [
+            {
+                "content": "Internet",
+                "is_correct": false
+            },
+            {
+                "content": "Intranet",
+                "is_correct": false
+            },
+            {
+                "content": "Extranet",
+                "is_correct": false
+            },
+            {
+                "content": "NAT",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Các giao thức nào sau đây cho phép một tổ chức đưa một địa chỉ TCP/IP đơn lên Internet ?",
+        "answers": [
+            {
+                "content": "NAT",
+                "is_correct": true
+            },
+            {
+                "content": "VLAN",
+                "is_correct": false
+            },
+            {
+                "content": "DMZ",
+                "is_correct": false
+            },
+            {
+                "content": "Extranet",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Phương pháp quét võng mạc thích hợp nhất đối với các dịch vụ nào sau đây ?",
+        "answers": [
+            {
+                "content": "Kiểm định",
+                "is_correct": false
+            },
+            {
+                "content": "Xác thực",
+                "is_correct": false
+            },
+            {
+                "content": "Kiểm soát truy cập",
+                "is_correct": true
+            },
+            {
+                "content": "Bảo mật dữ liệu",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Công nghệ nào sau đây dựa vào thuộc tính vật lý của user để xác thực ?",
+        "answers": [
+            {
+                "content": "Thẻ thông minh",
+                "is_correct": false
+            },
+            {
+                "content": "Sinh trắc học",
+                "is_correct": true
+            },
+            {
+                "content": "Xác thực lẫn nhau",
+                "is_correct": false
+            },
+            {
+                "content": "Các mã thông báo",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Kỹ thuật cho phép tạo kết nối ảo giữa hai mạng sử dụng một giao thức bảo mật được gọi là gì ?",
+        "answers": [
+            {
+                "content": "Tunelling",
+                "is_correct": false
+            },
+            {
+                "content": "VLAN",
+                "is_correct": true
+            },
+            {
+                "content": "Internet",
+                "is_correct": false
+            },
+            {
+                "content": "Extranet",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Qui trình quyết định giá trị của thông tin hay thiết bị trong một tổ chức được gọi là gì?",
+        "answers": [
+            {
+                "content": "Đánh giá tài nguyên thông tin",
+                "is_correct": true
+            },
+            {
+                "content": "Đánh giá rủi ro",
+                "is_correct": false
+            },
+            {
+                "content": "Nhận dạng chuỗi",
+                "is_correct": false
+            },
+            {
+                "content": "Quét các điểm yếu",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Khi được hỏi về các mối đe dọa cho công ty từ phía các hacker. Loại thông tin nào sau đây sẽ giúp ích nhiều nhất ?",
+        "answers": [
+            {
+                "content": "Xác minh tài sản sở hữu",
+                "is_correct": false
+            },
+            {
+                "content": "Đánh giá rủi ro",
+                "is_correct": false
+            },
+            {
+                "content": "Nhận dạng mối đe dọa",
+                "is_correct": false
+            },
+            {
+                "content": "Các điểm yếu",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Khi một user báo cáo rằng hệ thống của anh ta đã phát hiện một virus mới. Điều gì sau đây cần làm như là bước đầu tiên để xử lý tình huống này ?",
+        "answers": [
+            {
+                "content": "Kiểm tra lại tập tin diệt virus hiện hành",
+                "is_correct": false
+            },
+            {
+                "content": "Định dạng lại đĩa cứng",
+                "is_correct": false
+            },
+            {
+                "content": "Cài đặt lại hệ điều hành",
+                "is_correct": false
+            },
+            {
+                "content": "Disable tài khoản email của anh ta",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Yếu tố nào sau đây được coi là hữu ích nhất trong việc kiểm soát truy cập khi bị tấn công từ bên ngoài ?",
+        "answers": [
+            {
+                "content": "Đăng nhập hệ thống ( System logs)",
+                "is_correct": true
+            },
+            {
+                "content": "Phần mềm antivirus",
+                "is_correct": false
+            },
+            {
+                "content": "Kerberos",
+                "is_correct": false
+            },
+            {
+                "content": "Sinh trắc học",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Ta muốn cài đặt một máy chủ cung cấp các dịch vụ Web đến các máy trạm thông qua Internet. Ta không muốn để lộ mạng bên trong để tránh rủi ro. Phương pháp nào để thực hiện điều này ?",
+        "answers": [
+            {
+                "content": "Cài đặt máy chủ trong mạng Intranet",
+                "is_correct": false
+            },
+            {
+                "content": "Cài đặt máy chủ trong một DMZ",
+                "is_correct": true
+            },
+            {
+                "content": "Cài đặt máy chủ trong một VLAN",
+                "is_correct": false
+            },
+            {
+                "content": "Cài đặt máy chủ trong mạng Extranet",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Phương pháp xác thực nào cung cấp tài liệu đáng tin cậy có hiệu lực trong suốt một phiên làm việc đơn ?",
+        "answers": [
+            {
+                "content": "Các mã thông báo",
+                "is_correct": false
+            },
+            {
+                "content": "Chứng chỉ",
+                "is_correct": true
+            },
+            {
+                "content": "Thẻ thông minh",
+                "is_correct": false
+            },
+            {
+                "content": "Kerberos",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Loại tấn công nào làm việc truy cập của user đến các tài nguyên mạng bị từ chối?",
+        "answers": [
+            {
+                "content": "DoS",
+                "is_correct": true
+            },
+            {
+                "content": "Sâu",
+                "is_correct": false
+            },
+            {
+                "content": "Logic Bomb (bomb ngập lụt đường truyền)",
+                "is_correct": false
+            },
+            {
+                "content": "Social engineering (Khai thác giao tiếp)",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Loại tấn công nào sử dụng nhiều hơn một máy tính để tấn công nạn nhân ?",
+        "answers": [
+            {
+                "content": "DoS",
+                "is_correct": false
+            },
+            {
+                "content": "DDoS",
+                "is_correct": true
+            },
+            {
+                "content": "Sâu",
+                "is_correct": false
+            },
+            {
+                "content": "Tấn công UDP",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Một máy chủ trên mạng có một chương trình đang chạy vượt quá thẩm quyền. Loại tấn công nào đã xảy ra ?",
+        "answers": [
+            {
+                "content": "DoS",
+                "is_correct": false
+            },
+            {
+                "content": "DDoS",
+                "is_correct": false
+            },
+            {
+                "content": "Back door",
+                "is_correct": true
+            },
+            {
+                "content": "Social engineering (Khai thác giao tiếp)",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Nổ lực tấn công để can thiệp vào một phiên liên lạc bằng việc thêm vào một máy tính giữa hai hệ thống được gọi là một …….?",
+        "answers": [
+            {
+                "content": "Tấn công dạng “Man in the middle”",
+                "is_correct": true
+            },
+            {
+                "content": "Tấn công cửa sau",
+                "is_correct": false
+            },
+            {
+                "content": "Sâu",
+                "is_correct": false
+            },
+            {
+                "content": "TCP/IP hijacking",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Ta đã phát hiện ra một chứng chỉ đã hết hiệu lực vẫn đang được sử dụng nhiều lần để giành được quyền logon. Đây là loại tấn công nào ?",
+        "answers": [
+            {
+                "content": "Tấn công dạng “Man in the middle”",
+                "is_correct": false
+            },
+            {
+                "content": "Tấn công cửa sau",
+                "is_correct": false
+            },
+            {
+                "content": "Tấn công chuyển tiếp (Relay Attack)",
+                "is_correct": false
+            },
+            {
+                "content": "TCP/IP hijacking",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Một kẻ tấn công cố gắng dùng địa chỉ IP để tạo một hệ thống khác trong mạng của ta nhằm giành quyền kiểm soát truy cập . Đây là loại tấn công nào ?",
+        "answers": [
+            {
+                "content": "Tấn công dạng “Man in the middle”",
+                "is_correct": false
+            },
+            {
+                "content": "Tấn công cửa sau",
+                "is_correct": false
+            },
+            {
+                "content": "Sâu",
+                "is_correct": false
+            },
+            {
+                "content": "TCP/IP hijacking",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Một máy chủ trên mạng không chấp nhận các kết nối TCP nữa. Máy chủ thông báo rằng nó đã vượt quá giới hạn của phiên làm việc. Loại tấn công nào có thể đang xảy ra ?",
+        "answers": [
+            {
+                "content": "Tấn công TCP ACK (tấn công kiểu SYNACK)",
+                "is_correct": true
+            },
+            {
+                "content": "Tấn công smurf",
+                "is_correct": false
+            },
+            {
+                "content": "Tấn công virus",
+                "is_correct": false
+            },
+            {
+                "content": "TCP/IP hijacking",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Tấn công smurf sử dụng giao thức nào để kiểm soát ?",
+        "answers": [
+            {
+                "content": "TCP",
+                "is_correct": false
+            },
+            {
+                "content": "IP",
+                "is_correct": false
+            },
+            {
+                "content": "UDP",
+                "is_correct": false
+            },
+            {
+                "content": "ICMP",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Tổ đặc trách thông báo rằng họ đã nhận một cuộc gọi khẩn cấp từ phó chủ tịch đêm qua yêu cầu logon vào ID và mật khẩu của ông ta. Đây là loại tấn công gì ?",
+        "answers": [
+            {
+                "content": "Giả mạo",
+                "is_correct": true
+            },
+            {
+                "content": "Tấn công chuyển tiếp",
+                "is_correct": false
+            },
+            {
+                "content": "Social engineering (Khai thác giao tiếp)",
+                "is_correct": false
+            },
+            {
+                "content": "Trojan",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Hệ thống của bạn đã ngừng phản ứng lại với các lệnh của bàn phím. Lưu ý rằng điều này xảy ra khi mở bảng tính và đã quay số qua internet. Loại tấn công nào có thể đã xảy ra ?",
+        "answers": [
+            {
+                "content": "Logic Bomb",
+                "is_correct": false
+            },
+            {
+                "content": "Sâu",
+                "is_correct": false
+            },
+            {
+                "content": "Virus",
+                "is_correct": false
+            },
+            {
+                "content": "Tấn công ACK",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Loại virus tự che giấu nó bằng cách ẩn trong mã nguồn của các phần mềm antivirus được gọi là gì ?",
+        "answers": [
+            {
+                "content": "Armored virus",
+                "is_correct": false
+            },
+            {
+                "content": "Polymorphic virus",
+                "is_correct": true
+            },
+            {
+                "content": "Sâu",
+                "is_correct": false
+            },
+            {
+                "content": "Stealth virus (Virus ẩn danh)",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Một virus được đính kèm chính nó vào boot sector của đĩa cứng và thông báo thông tin sai về kích thước các tập tin được gọi là gì ?",
+        "answers": [
+            {
+                "content": "Virus Trojan",
+                "is_correct": false
+            },
+            {
+                "content": "Stealth virus (virus ẩn danh)",
+                "is_correct": true
+            },
+            {
+                "content": "Sâu",
+                "is_correct": false
+            },
+            {
+                "content": "Polymorphic virus",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Một chương trình nằm trong một chương trình khác được cài vào hệ thống gọi là một …….",
+        "answers": [
+            {
+                "content": "Trojan Horse",
+                "is_correct": true
+            },
+            {
+                "content": "Polymorphic virus",
+                "is_correct": false
+            },
+            {
+                "content": "Sâu",
+                "is_correct": false
+            },
+            {
+                "content": "Armored virus",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Các user nội bộ báo cáo hệ thống của họ bị lây nhiễm nhiều lần. Trong mọi trường hợp virus có vẻ là cùng một loại. Thủ phạm thích hợp nhất là gì ?",
+        "answers": [
+            {
+                "content": "Máy chủ có thể là vật mang virus",
+                "is_correct": true
+            },
+            {
+                "content": "Ta có một sâu virus",
+                "is_correct": false
+            },
+            {
+                "content": "Phần mềm antivirus của ta bị sự cố",
+                "is_correct": false
+            },
+            {
+                "content": "Tấn công DoS đang thực hiện",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Các log file trên hệ thống của bạn phát hiện một nổ lực giành quyền truy cập đến một tài khoản đơn. Nổ lực này đã không thành công vào thời điểm đó. Theo kinh nghiệm của bạn thì loại tấn công thích hợp nhất là gì ?",
+        "answers": [
+            {
+                "content": "Tấn công đoán mật khẩu (Password Guessing)",
+                "is_correct": true
+            },
+            {
+                "content": "Tấn công cửa sau",
+                "is_correct": false
+            },
+            {
+                "content": "Tấn công bằng sâu",
+                "is_correct": false
+            },
+            {
+                "content": "TCP/IP hijacking",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Một user báo cáo là anh ta đang nhận một lỗi chỉ ra rằng địa chỉ TCP/IP của anh ta đã bị sử dụng khi anh ta bật máy tính. Tấn công nào có thể đang thực hiện ?",
+        "answers": [
+            {
+                "content": "Tấn công dạng “Man in the middle”",
+                "is_correct": false
+            },
+            {
+                "content": "Tấn công cửa sau",
+                "is_correct": false
+            },
+            {
+                "content": "Sâu",
+                "is_correct": false
+            },
+            {
+                "content": "TCP/IP hijacking",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Một đêm làm việc khuya và bạn phát hiện rằng ổ cứng của bạn hoạt động rất tích cực mặc dù bạn không thực hiện bất kỳ thao tác nào trên máy tính. Bạn nghi ngờ điều gì?",
+        "answers": [
+            {
+                "content": "Khả năng ổ đĩa ngừng hoạt động sắp xảy ra",
+                "is_correct": false
+            },
+            {
+                "content": "Một virus đang phát tán rộng trong hệ thống",
+                "is_correct": true
+            },
+            {
+                "content": "Hệ thống của bạn đang chịu tác động của tấn công DoS",
+                "is_correct": false
+            },
+            {
+                "content": "Tấn công TCP/IP hijacking đang cố gắng thực hiện",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Bản ghi lỗi hệ thống email của bạn báo cáo một số lượng lớn các nổ lực logon không thành công. Loại tấn công nào có thể đang xảy ra ?",
+        "answers": [
+            {
+                "content": "Tấn công khai thác phần mềm (Software exploitation attack)",
+                "is_correct": false
+            },
+            {
+                "content": "Tấn công cửa sau ( Back door Attack))",
+                "is_correct": false
+            },
+            {
+                "content": "Sâu (Worm)",
+                "is_correct": false
+            },
+            {
+                "content": "TCP/IP hijacking",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Bộ lọc gói thực hiện chức năng nào ?",
+        "answers": [
+            {
+                "content": "Ngăn chặn các gói trái phép đi vào từ mạng bên ngoài",
+                "is_correct": true
+            },
+            {
+                "content": "Cho phép tất cả các gói rời mạng",
+                "is_correct": false
+            },
+            {
+                "content": "Cho phép tất cả các gói đi vào mạng",
+                "is_correct": false
+            },
+            {
+                "content": "Loại trừ sự xung đột trong mạng",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Thiết bị nào lưu trữ thông tin về đích đến trong mạng ?",
+        "answers": [
+            {
+                "content": "Hub",
+                "is_correct": false
+            },
+            {
+                "content": "Modem",
+                "is_correct": false
+            },
+            {
+                "content": "Firewall",
+                "is_correct": false
+            },
+            {
+                "content": "Router",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Giao thức nào được sử dụng rộng rãi hiện nay như là một giao thức truyền tải đối với các kết nối quay số trên Internet ?",
+        "answers": [
+            {
+                "content": "SLIP",
+                "is_correct": true
+            },
+            {
+                "content": "PPP",
+                "is_correct": false
+            },
+            {
+                "content": "PPTP",
+                "is_correct": false
+            },
+            {
+                "content": "L2TP",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Giao thức nào sau đây không phù hợp đối với các kết nối VPN WAN ?",
+        "answers": [
+            {
+                "content": "PPP",
+                "is_correct": true
+            },
+            {
+                "content": "PPTP",
+                "is_correct": false
+            },
+            {
+                "content": "L2TP",
+                "is_correct": false
+            },
+            {
+                "content": "IPSec",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Giao thức nào sau đây tuy không phải là một giao thức đường hầm nhưng nó sử dụng các giao thức đường hầm để bảo mật trên mạng?",
+        "answers": [
+            {
+                "content": "IPSec",
+                "is_correct": true
+            },
+            {
+                "content": "PPTP",
+                "is_correct": false
+            },
+            {
+                "content": "L2TP",
+                "is_correct": false
+            },
+            {
+                "content": "L2F",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Một socket là sự kết hợp của các thành phần nào ?",
+        "answers": [
+            {
+                "content": "TCP và port number",
+                "is_correct": false
+            },
+            {
+                "content": "UDP và port number",
+                "is_correct": false
+            },
+            {
+                "content": "IP và session number",
+                "is_correct": false
+            },
+            {
+                "content": "IP và port number",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Thiết bị nào giám sát lưu lượng mạng theo cách thụ động ?",
+        "answers": [
+            {
+                "content": "Sniffer",
+                "is_correct": true
+            },
+            {
+                "content": "IDS",
+                "is_correct": false
+            },
+            {
+                "content": "Firewall",
+                "is_correct": false
+            },
+            {
+                "content": "Web browser",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Hệ thống nào chủ động thực hiện việc giám sát mạng, phân tích và có thể thực hiện các bước phòng ngừa , bảo vệ mạng ?",
+        "answers": [
+            {
+                "content": "IDS",
+                "is_correct": true
+            },
+            {
+                "content": "Sniffer",
+                "is_correct": false
+            },
+            {
+                "content": "Router",
+                "is_correct": false
+            },
+            {
+                "content": "Switch",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Hệ thống nào được cài đặt trên Host để cung cấp một tính năng IDS ?",
+        "answers": [
+            {
+                "content": "Network sniffer",
+                "is_correct": false
+            },
+            {
+                "content": "N-IDS (Network-based IDS)",
+                "is_correct": false
+            },
+            {
+                "content": "H-IDS (Host-based IDS)",
+                "is_correct": true
+            },
+            {
+                "content": "VPN",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Khi kết nối giữa các thiết bị không dây đã hoàn tất , giao thức nào được sử dụng?",
+        "answers": [
+            {
+                "content": "WEP",
+                "is_correct": false
+            },
+            {
+                "content": "WTLS",
+                "is_correct": false
+            },
+            {
+                "content": "WAP",
+                "is_correct": true
+            },
+            {
+                "content": "WOP",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Giao thức nào hoạt động trên 2.4GHz và có một dải băng thông rộng 1Mbps hay 2Mbps ?",
+        "answers": [
+            {
+                "content": "802.11 //1Mbps hoặc 2Mbps với băng thông 2.4GHz",
+                "is_correct": true
+            },
+            {
+                "content": "802.11a //54Mbps trong dải tần 5GHz",
+                "is_correct": false
+            },
+            {
+                "content": "802.11b //11Mbps trong băng thông 2.4GHz WIFI",
+                "is_correct": false
+            },
+            {
+                "content": "802.11g //Tốc độ hơn 20Mbps trên băng thông 2.4GHz",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Giao thức nào được thiết kế để cung cấp bảo mật cho mạng không dây tương đương với việc bảo mật của một mạng diện rộng ?",
+        "answers": [
+            {
+                "content": "WAP",
+                "is_correct": false
+            },
+            {
+                "content": "WTLS",
+                "is_correct": false
+            },
+            {
+                "content": "WEP",
+                "is_correct": true
+            },
+            {
+                "content": "IR",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Điểm yếu nào sau đây là chủ yếu của môi trường mạng không dây ?",
+        "answers": [
+            {
+                "content": "Phần mềm giải mã (Decryption software)",
+                "is_correct": false
+            },
+            {
+                "content": "IP spoofing (Giả mạo IP)",
+                "is_correct": false
+            },
+            {
+                "content": "A gap in the WAP (Một khe hở trong WAP)",
+                "is_correct": false
+            },
+            {
+                "content": "Định vị nơi làm việc (Site survey)",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Nếu ta muốn xác thực chữ ký của một người khác, khóa nào phải được sử dụng?",
+        "answers": [
+            {
+                "content": "Khóa công khai của bạn",
+                "is_correct": false
+            },
+            {
+                "content": "Khoá cá nhân của bạn",
+                "is_correct": false
+            },
+            {
+                "content": "Khoá cá nhân của người cần xác thực",
+                "is_correct": false
+            },
+            {
+                "content": "Khoá công khai của người cần xác thực",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Chữ ký số được sử dụng cho mục đích gì?",
+        "answers": [
+            {
+                "content": "Để bảo mật tài liệu sao cho người ngoài không đọc được",
+                "is_correct": false
+            },
+            {
+                "content": "Để kiểm tra định danh người gửi",
+                "is_correct": true
+            },
+            {
+                "content": "Cung cấp chứng chỉ",
+                "is_correct": false
+            },
+            {
+                "content": "Thu hồi một chứng chỉ",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Nếu muốn xem một tài liệu “bảo mật”được mã hóa trên hệ mật bất đối xứng do người khác gởi đến , bạn phải sử dụng khóa nào để giải mật tài liệu?",
+        "answers": [
+            {
+                "content": "Khoá công khai của bạn",
+                "is_correct": false
+            },
+            {
+                "content": "Khoá công khai của bên gửi",
+                "is_correct": false
+            },
+            {
+                "content": "Khoá cá nhân của bên gửi",
+                "is_correct": false
+            },
+            {
+                "content": "Khoá cá nhân của bạn",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Nếu ta muốn ký một tài liệu và sau đó gởi đến một người khác, khóa nào phải được sử dụng?",
+        "answers": [
+            {
+                "content": "Khoá công khai của bạn",
+                "is_correct": false
+            },
+            {
+                "content": "Khoá công khai của bên nhận",
+                "is_correct": false
+            },
+            {
+                "content": "Khoá cá nhân của bên nhận",
+                "is_correct": false
+            },
+            {
+                "content": "Khoá cá nhân của bạn",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Bạn nhận được một email từ Microsoft, trong đó có một file đính kèm. Trong thư nói rằng có một số lỗi đã được phát hiện và sửa chữa , bạn phải chạy chương trình được đính kèm trong thư để sửa những lỗi đó. Trong trường hợp này bạn sẽ làm gì để bảo đảm an toàn?",
+        "answers": [
+            {
+                "content": "Lưu chương trình đó lại và dùng chương trình diệt virus để quét, nếu không phát hiện thấy virus, sẽ chạy chương trình đó để sửa lỗi.",
+                "is_correct": false
+            },
+            {
+                "content": "Mở chương trình và chạy nó ngay. Chương trình đó thật sự an toàn vì nó được gửi từ Microsoft",
+                "is_correct": false
+            },
+            {
+                "content": "Xoá email đó ngay. Mocrosoft và các nhà cung cấp không bao giờ gửi chương trình sửa lỗi qua email.",
+                "is_correct": true
+            },
+            {
+                "content": "xxx",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Hệ mật DES sử dụng khối khoá được tạo bởi :",
+        "answers": [
+            {
+                "content": "56 bit ngẫu nhiên",
+                "is_correct": false
+            },
+            {
+                "content": "64 bit ngẫu nhiên",
+                "is_correct": false
+            },
+            {
+                "content": "128 bit ngẫu nhiên",
+                "is_correct": false
+            },
+            {
+                "content": "56 bit ngẫu nhiên và 8 bit kiểm tra “Parity”",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Hệ mật DES xử lý từng khối “ plain text ” có độ dài :",
+        "answers": [
+            {
+                "content": "56 bit",
+                "is_correct": false
+            },
+            {
+                "content": "32 bit",
+                "is_correct": false
+            },
+            {
+                "content": "64 bit",
+                "is_correct": true
+            },
+            {
+                "content": "48 bit",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Thuật giải SHA là :",
+        "answers": [
+            {
+                "content": "Hàm băm một chiều",
+                "is_correct": false
+            },
+            {
+                "content": "Dùng trong thuật giải tạo chữ ký số",
+                "is_correct": false
+            },
+            {
+                "content": "Cho giá trị băm 160 bit",
+                "is_correct": false
+            },
+            {
+                "content": "Tất cả đều đúng",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "DSA là thuật giải :",
+        "answers": [
+            {
+                "content": "Lấy dấu tay “PrintingFinger”",
+                "is_correct": false
+            },
+            {
+                "content": "Tạo chữ ký số (DS)",
+                "is_correct": true
+            },
+            {
+                "content": "Phân phối khoá trước",
+                "is_correct": false
+            },
+            {
+                "content": "Bảo mật thông điệp",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Thuật giải MD5 cho ta một giá trị băm có độ dài :",
+        "answers": [
+            {
+                "content": "156 bit",
+                "is_correct": false
+            },
+            {
+                "content": "256 bit",
+                "is_correct": false
+            },
+            {
+                "content": "128 bit",
+                "is_correct": true
+            },
+            {
+                "content": "512 bit",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Trong các cặp khoá sau đây của hệ mật RSA với p=5 ; q=7 , cặp khóa nào có khả năng đúng nhất :",
+        "answers": [
+            {
+                "content": "(e = 12 , d =11)",
+                "is_correct": false
+            },
+            {
+                "content": "(e = 4 , d =11)",
+                "is_correct": false
+            },
+            {
+                "content": "( e = 7 , d =23)",
+                "is_correct": true
+            },
+            {
+                "content": "( e = 3 , d =18)",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Thuật giải Difie Hellman dùng để :",
+        "answers": [
+            {
+                "content": "Bảo mật thông điệp",
+                "is_correct": false
+            },
+            {
+                "content": "Xác thực thông điệp",
+                "is_correct": false
+            },
+            {
+                "content": "Phân phối khoá trước cho hệ mật đối xứng",
+                "is_correct": true
+            },
+            {
+                "content": "Lấy chữ ký sô",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "MAC là một từ cấu tạo bằng những chữ đầu của một nhóm nào liên quan đến mật mã ?",
+        "answers": [
+            {
+                "content": "Kiểm soát truy cập phương tiện (Media access control)",
+                "is_correct": false
+            },
+            {
+                "content": "Kiểm soát truy cập bắt buộc (Mandatory access control)",
+                "is_correct": false
+            },
+            {
+                "content": "Mã xác thực thông điệp (Message authentication code)",
+                "is_correct": true
+            },
+            {
+                "content": "Các ủy ban đa tư vấn (Multiple advisory committees)",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Nội dung nào sau đây không cần sử dụng mật mã ?",
+        "answers": [
+            {
+                "content": "Bảo mật",
+                "is_correct": false
+            },
+            {
+                "content": "Xác thực",
+                "is_correct": false
+            },
+            {
+                "content": "Toàn vẹn",
+                "is_correct": true
+            },
+            {
+                "content": "Truy cập",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "PKC được thực hiện bằng cách sử dụng các chức năng nào ?",
+        "answers": [
+            {
+                "content": "Chuyển giao các khóa công khai an toàn",
+                "is_correct": true
+            },
+            {
+                "content": "Chuy��n giao các khóa cá nhân an toàn",
+                "is_correct": false
+            },
+            {
+                "content": "Bảo mật dữ liệu ở hai đầu mút",
+                "is_correct": false
+            },
+            {
+                "content": "Sử dụng hai khóa khác nhau để mã hóa và giải mã",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Khái niệm nào sau đây được sử dụng để mô tả sự không thể chối từ của người gửi khi gửi thông điệp ?",
+        "answers": [
+            {
+                "content": "Toàn vẹn",
+                "is_correct": false
+            },
+            {
+                "content": "Tính không chối từ ( non-repudiation)",
+                "is_correct": true
+            },
+            {
+                "content": "Xác thực",
+                "is_correct": false
+            },
+            {
+                "content": "Bảo mật",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Khái niệm nào sau đây được dùng để xác định chuẩn thực thi các hệ thống mã hóa diện rộng?",
+        "answers": [
+            {
+                "content": "PKE",
+                "is_correct": false
+            },
+            {
+                "content": "PKI",
+                "is_correct": true
+            },
+            {
+                "content": "Đối xứng",
+                "is_correct": false
+            },
+            {
+                "content": "Không đối xứng",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Tổ chức chính cấp phát chứng chỉ được gọi là :",
+        "answers": [
+            {
+                "content": "CA",
+                "is_correct": true
+            },
+            {
+                "content": "RA",
+                "is_correct": false
+            },
+            {
+                "content": "LRA",
+                "is_correct": false
+            },
+            {
+                "content": "CRL",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Hầu hết định dạng chứng chỉ công cộng được sử dụng trong môi trường PKI là gì ?",
+        "answers": [
+            {
+                "content": "X.509",
+                "is_correct": true
+            },
+            {
+                "content": "X.508",
+                "is_correct": false
+            },
+            {
+                "content": "PKE",
+                "is_correct": false
+            },
+            {
+                "content": "RSA",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Quy trình mã hoá nào sử dụng cùng một khoá mã ở cả hai phía của một phiên làm việc ?",
+        "answers": [
+            {
+                "content": "Symmetrical",
+                "is_correct": true
+            },
+            {
+                "content": "Asymmetrical",
+                "is_correct": false
+            },
+            {
+                "content": "PKCS",
+                "is_correct": false
+            },
+            {
+                "content": "Split key",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "PKCS sử dụng cặp khoá nào để mã hoá?",
+        "answers": [
+            {
+                "content": "Symmetric",
+                "is_correct": false
+            },
+            {
+                "content": "Public/private",
+                "is_correct": true
+            },
+            {
+                "content": "Asymmetric/symmetric",
+                "is_correct": false
+            },
+            {
+                "content": "Private/private",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Giao thức nào sau đây tương tự như SSL và được đề nghị sử dụng bổ sung vào các giao thức bảo mật ?",
+        "answers": [
+            {
+                "content": "TLS",
+                "is_correct": false
+            },
+            {
+                "content": "SSH",
+                "is_correct": true
+            },
+            {
+                "content": "RSH",
+                "is_correct": false
+            },
+            {
+                "content": "X.509",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Vấn đề gì nảy sinh khi sử dụng qui trình sinh khóa mã tập trung ?",
+        "answers": [
+            {
+                "content": "Bảo mật mạng",
+                "is_correct": false
+            },
+            {
+                "content": "Truyền khóa",
+                "is_correct": true
+            },
+            {
+                "content": "Thu hồi chứng chỉ",
+                "is_correct": false
+            },
+            {
+                "content": "Bảo mật khóa cá nhân",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Giao thức nào sau đây cung cấp dịch vụ bảo mật cho các phiên làm việc trên thiết bị đầu cuối của hệ thống UNIX từ xa ?",
+        "answers": [
+            {
+                "content": "SSL",
+                "is_correct": false
+            },
+            {
+                "content": "TLS",
+                "is_correct": false
+            },
+            {
+                "content": "SSH",
+                "is_correct": true
+            },
+            {
+                "content": "PKI",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Dịch vụ nào sau đây là một dịch vụ đơn hay một máy phục vụ để lưu trữ, phân phối, và quản lý các khóa phiên mật mã ?",
+        "answers": [
+            {
+                "content": "KDC",
+                "is_correct": true
+            },
+            {
+                "content": "KEA",
+                "is_correct": false
+            },
+            {
+                "content": "PKI",
+                "is_correct": false
+            },
+            {
+                "content": "PKCS",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Bạn có một fille dữ liệu trên đĩa cứng , phương pháp nào theo bạn là tốt nhất để bảo mật dữ liệu đó",
+        "answers": [
+            {
+                "content": "RSA",
+                "is_correct": true
+            },
+            {
+                "content": "DES",
+                "is_correct": false
+            },
+            {
+                "content": "DSA",
+                "is_correct": false
+            },
+            {
+                "content": "SHA",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Thuật giải SHA-1 dùng để :",
+        "answers": [
+            {
+                "content": "Tạo khoá đối xứng",
+                "is_correct": false
+            },
+            {
+                "content": "Tạo chữ ký số",
+                "is_correct": false
+            },
+            {
+                "content": "Tạo một giá trị băm có độ dài cố định 160 bit",
+                "is_correct": true
+            },
+            {
+                "content": "Tạo một giá trị băm có độ dài cố định 256 bit",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Thuật giải MD5 dùng để :",
+        "answers": [
+            {
+                "content": "Bảo mật một thông điệp",
+                "is_correct": false
+            },
+            {
+                "content": "Xác thực một thông điệp",
+                "is_correct": false
+            },
+            {
+                "content": "Phân phối khoá mật mã",
+                "is_correct": false
+            },
+            {
+                "content": "Kiểm tra tính toàn vẹn dữ liệu",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Trong DES mỗi hàm chọn Si được dùng để :",
+        "answers": [
+            {
+                "content": "Biến đổi khối dữ liệu mã 48 bit thành 32 bit",
+                "is_correct": false
+            },
+            {
+                "content": "Biến đổi khối dữ liệu mã 6 bít thành 4 bít",
+                "is_correct": true
+            },
+            {
+                "content": "Biến đổi khối dữ liệu mã 16 bít thành 4 bít",
+                "is_correct": false
+            },
+            {
+                "content": "Biến đổi khối dữ liệu mã 32 bít thành 4 bít",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Trong hệ mã công khai RSA , để tạo một chữ ký điện tử của văn bản M ta dùng:",
+        "answers": [
+            {
+                "content": "S = E( ek ,M)",
+                "is_correct": false
+            },
+            {
+                "content": "S = D( dk ,M)",
+                "is_correct": false
+            },
+            {
+                "content": "S = D(ek,M)",
+                "is_correct": false
+            },
+            {
+                "content": "S = E ( dk ,M)",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Trong hệ mã công khai RSA , để chứng thực chữ ký điện tử S của văn bản M ta dùng:",
+        "answers": [
+            {
+                "content": "M = E( ek , S)",
+                "is_correct": false
+            },
+            {
+                "content": "M = D( dk ,S)",
+                "is_correct": false
+            },
+            {
+                "content": "M = D(ek , S)",
+                "is_correct": true
+            },
+            {
+                "content": "M = E (dk ,S)",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Điều nào sau đây là điểm yếu của IP ?",
+        "answers": [
+            {
+                "content": "Mã nguồn độc hại",
+                "is_correct": false
+            },
+            {
+                "content": "Giả mạo IP",
+                "is_correct": false
+            },
+            {
+                "content": "Tấn công dạng “Man in the middle”",
+                "is_correct": true
+            },
+            {
+                "content": "Tấn công chuyển tiếp",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Qui trình xác định topology của mạng được gọi là gì ?",
+        "answers": [
+            {
+                "content": "In dấu chân",
+                "is_correct": false
+            },
+            {
+                "content": "Quét mạng",
+                "is_correct": true
+            },
+            {
+                "content": "Thiết bị làm nhiễu",
+                "is_correct": false
+            },
+            {
+                "content": "Liệt kê",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Qui trình xác định vị trí và các thông tin mạng được gọi là gì ?",
+        "answers": [
+            {
+                "content": "In dấu chân",
+                "is_correct": true
+            },
+            {
+                "content": "Quét",
+                "is_correct": false
+            },
+            {
+                "content": "Thiết bị làm nhiễu",
+                "is_correct": false
+            },
+            {
+                "content": "Liệt kê",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Qui trình chiếm quyền truy cập đến tài nguyên mạng (đặc biệt như là các tập tin user và nhóm) được gọi là gì ?",
+        "answers": [
+            {
+                "content": "In dấu chân",
+                "is_correct": false
+            },
+            {
+                "content": "Quét",
+                "is_correct": false
+            },
+            {
+                "content": "Thiết bị làm nhiễu",
+                "is_correct": false
+            },
+            {
+                "content": "Liệt kê",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Qui trình phá vỡ một phiên làm việc IM được gọi là gì ?",
+        "answers": [
+            {
+                "content": "Thiết bị làm nhiễu",
+                "is_correct": true
+            },
+            {
+                "content": "Truyền rộng rãi",
+                "is_correct": false
+            },
+            {
+                "content": "Phản ứng với rắc rối",
+                "is_correct": false
+            },
+            {
+                "content": "Khảo sát định vị",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Bạn mới nhận cuộc gọi từ một user IM trong văn phòng mà user này đang ghé thăm một website quảng cáo. User này đang phàn nàn rằng hệ thống của anh ta không phản ứng và hàng triệu trang web đang mở trên màn hình của anh ta. Loại tấn công này là gì ?",
+        "answers": [
+            {
+                "content": "DoS",
+                "is_correct": true
+            },
+            {
+                "content": "Mã nguồn độc hại",
+                "is_correct": false
+            },
+            {
+                "content": "Giả mạo IP",
+                "is_correct": false
+            },
+            {
+                "content": "Khảo sát định vị",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Có thể sử dụng mật mã để nhận biết tài liệu đã bị thay đổi hay không?",
+        "answers": [
+            {
+                "content": "Có",
+                "is_correct": true
+            },
+            {
+                "content": "Không",
+                "is_correct": false
+            },
+            {
+                "content": ".",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Nguyên tắc đảm bảo an toàn thông tin, hệ thống và mạng là:",
+        "answers": [
+            {
+                "content": "Sử dụng các phần cứng hệ thống và mạng đắt tiền",
+                "is_correct": false
+            },
+            {
+                "content": "Sử dụng tường lửa và các phần mềm quét virus",
+                "is_correct": false
+            },
+            {
+                "content": "Sử dụng các hệ thống ngăn chặn và phát hiện tấn công, đột nhập",
+                "is_correct": false
+            },
+            {
+                "content": "Sử dụng nhiều lớp bảo vệ có chiều sâu",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Đâu là một phương pháp mã hóa:",
+        "answers": [
+            {
+                "content": "Thay thế",
+                "is_correct": false
+            },
+            {
+                "content": "Đổi chỗ/ hoán vị",
+                "is_correct": false
+            },
+            {
+                "content": "Vernam",
+                "is_correct": false
+            },
+            {
+                "content": "Tất cả các phương án trên",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Giao thức bảo mật SSL đảm bảo tính bí mật, toàn vẹn và xác thực thông điệp bằng các kỹ thuật nào sau đây:",
+        "answers": [
+            {
+                "content": "Mã hóa khóa bí mật và hàm băm có khóa MAC",
+                "is_correct": true
+            },
+            {
+                "content": "Mã hóa khóa bí mật và chữ ký số",
+                "is_correct": false
+            },
+            {
+                "content": "Mã hóa khóa bí mật và mã hóa khóa công khai",
+                "is_correct": false
+            },
+            {
+                "content": "Mã hóa khóa bí mật và hàm băm không khóa MDC",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Các hệ mã hóa khóa công khai sử dụn một cặp khóa: public key và private key. Các yêu cầu đối với public key và private key là:",
+        "answers": [
+            {
+                "content": "Cả public key và private key đều cần giữ bí mật",
+                "is_correct": false
+            },
+            {
+                "content": "Có thể công khai public key và cần giữ bí mật private key",
+                "is_correct": false
+            },
+            {
+                "content": "Có thể công khai private key và cần giữ bí mật public key",
+                "is_correct": false
+            },
+            {
+                "content": "Có thể công khai public key nhưng phải đảm bảo tính xác thực và cần giữ bí mật private key",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Sâu SQL Slammer là sâu tấn công các hệ thống mạng lợi dụng lỗ hổng tràn bộ đệm ở:",
+        "answers": [
+            {
+                "content": "Máy chủ CSDL Microsoft SQL Server 2008",
+                "is_correct": false
+            },
+            {
+                "content": "Hệ điều hành Microsoft Windows 2003",
+                "is_correct": false
+            },
+            {
+                "content": "Máy chủ CSDL Microsoft SQL Server 2005",
+                "is_correct": false
+            },
+            {
+                "content": "Máy chủ CSDL Microsoft SQL Server 2000",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Kích thức khóa có thể của hệ mã hóa AES là:",
+        "answers": [
+            {
+                "content": "128, 160 và 192 bit",
+                "is_correct": true
+            },
+            {
+                "content": "64, 128 và 192 bit",
+                "is_correct": false
+            },
+            {
+                "content": "128, 256 và 512 bit",
+                "is_correct": false
+            },
+            {
+                "content": "128, 256 và 384 bit",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Các lỗ hổng tồn tại phổ biến trong hệ điều hành và các phần mềm ứng dụng là:",
+        "answers": [
+            {
+                "content": "Lỗi tràn bộ đệm và lỗi không kiểm tra đầu vào",
+                "is_correct": true
+            },
+            {
+                "content": "Lỗi tràn bộ đệm và cấu hình",
+                "is_correct": false
+            },
+            {
+                "content": "Lỗi cài đặt và quản trị",
+                "is_correct": false
+            },
+            {
+                "content": "Lỗi cài đặt và cấu hình",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Phát biểu nào sau đây mô tả đúng nhất về kỹ thuật tấn công Smurf:",
+        "answers": [
+            {
+                "content": "Giả mạo địa chỉ IP nguồn trong gói tin ICMP là địa chỉ máy đích và chúng gửi đến tất cả các máy trong mạng",
+                "is_correct": false
+            },
+            {
+                "content": "Giả mạo địa chỉ IP nguồn trong gói tin ICMP là địa chỉ máy đích và chúng gửi đến địa chỉ quảng bá của mạng",
+                "is_correct": true
+            },
+            {
+                "content": "Giả mạo địa chỉ IP nguồn trong gói tin ICMP là địa chỉ quảng bá và chúng gửi đến máy đích",
+                "is_correct": false
+            },
+            {
+                "content": "Tạo và gửi rất nhiều gòi tin ICMP giả mạo có kích thước lớn đến máy đích",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "An toàn hệ thống thông tin là việc làm đảm bảo các thuộc tính an ninh, an toàn nào của hệ thống thông tin:",
+        "answers": [
+            {
+                "content": "Bí mật, xác thực và điều khiển",
+                "is_correct": false
+            },
+            {
+                "content": "Bí mật, toàn vẹn và không chối bỏ",
+                "is_correct": false
+            },
+            {
+                "content": "Bí mật, xác thực và không chối bỏ",
+                "is_correct": false
+            },
+            {
+                "content": "Bí mật, toàn vẹn và sẵn dùng",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Trong quá trình thiết lập một phiên kết nối TCP (TCP three-way handshake) thứ tự các gói tin được gửi đi như thế nào?",
+        "answers": [
+            {
+                "content": "SYN, URG, ACK",
+                "is_correct": false
+            },
+            {
+                "content": "SYN, ACK, SYN-ACK",
+                "is_correct": false
+            },
+            {
+                "content": "SYN, SYN-ACK, ACK",
+                "is_correct": true
+            },
+            {
+                "content": "FIN, FIN-ACK, ACK",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Khi một website tồn tại lỗ hổng SQL Injection, nguy cơ cao nhất có thể xảy ra là:",
+        "answers": [
+            {
+                "content": "Chiếm quyền điều khiển hệ thống",
+                "is_correct": true
+            },
+            {
+                "content": "Chèn, xóa hoặc sửa đổi dữ liệu",
+                "is_correct": false
+            },
+            {
+                "content": "Đánh cắp các thông tin trong CSDL",
+                "is_correct": false
+            },
+            {
+                "content": "Tấn công thay đổi hình ảnh giao diện",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Đặc trưng cơ bản khác biệ của worm với virus là:",
+        "answers": [
+            {
+                "content": "Có khả năng phá hoại lớn hơn so với virus",
+                "is_correct": false
+            },
+            {
+                "content": "Có khả năng tự lay lan mà không cần vật chủ hoặc tác nhân",
+                "is_correct": true
+            },
+            {
+                "content": "Có khả năng lây lan nhanh chóng bằng nhiều phương pháp khác nhau",
+                "is_correct": false
+            },
+            {
+                "content": "Có khả năng chiếm quyền điều khiển hệ thống",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Sự khác biệt giữa hệ chữ ký số RSA và DSA là:",
+        "answers": [
+            {
+                "content": "RSA an toàn hơn DSA",
+                "is_correct": true
+            },
+            {
+                "content": "DSA an toàn hơn RSA",
+                "is_correct": false
+            },
+            {
+                "content": "DSA có chi phí tính toán thấp hơn RSA",
+                "is_correct": false
+            },
+            {
+                "content": "Giải thuật DSA đơn giản hơn giải thuật RSA",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Kích thước khóa hiệu dụng của hệ mã hóa DES là:",
+        "answers": [
+            {
+                "content": "64 bit",
+                "is_correct": false
+            },
+            {
+                "content": "48 bit",
+                "is_correct": false
+            },
+            {
+                "content": "56 bit",
+                "is_correct": true
+            },
+            {
+                "content": "128 bit",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Phần xử lý chính của SHA1 làm việc trên một chuỗi được gọi là state. Kích thước của state là:",
+        "answers": [
+            {
+                "content": "160 bit",
+                "is_correct": true
+            },
+            {
+                "content": "170 bit",
+                "is_correct": false
+            },
+            {
+                "content": "150 bit",
+                "is_correct": false
+            },
+            {
+                "content": "180 bit",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Sự khác biệt cơ bản giữa tấn công DoS và tấn công DDoS là:",
+        "answers": [
+            {
+                "content": "DoS chỉ gây ngập lụt đường truyền",
+                "is_correct": false
+            },
+            {
+                "content": "DDoS chỉ làm cạn kiệt tài nguyên máy chủ",
+                "is_correct": false
+            },
+            {
+                "content": "Số hosts tham gia tấn công",
+                "is_correct": true
+            },
+            {
+                "content": "Cơ chế tấn công DDoS phức tạp hơn",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Số lượng vòng lặp chuyển đổi cần thực hiện để chuyển bản rõ thành bản mã trong hệ mã hóa AES khóa 128 bit là:",
+        "answers": [
+            {
+                "content": "14",
+                "is_correct": false
+            },
+            {
+                "content": "10",
+                "is_correct": true
+            },
+            {
+                "content": "16",
+                "is_correct": false
+            },
+            {
+                "content": "12",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Loại tấn công nào sau đây cung cấp cho tin tặc những thông tin hữu ích về các dịch vụ đang chạy trên hệ thống?",
+        "answers": [
+            {
+                "content": "Vulnerability Scan",
+                "is_correct": false
+            },
+            {
+                "content": "Session Hijacking",
+                "is_correct": false
+            },
+            {
+                "content": "Port Scan",
+                "is_correct": true
+            },
+            {
+                "content": "IP sweep",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Bước MixColumns (trộn cột) trong vòng lặp chuyển đổi trong hệ mã hóa AES thực hiện việc:",
+        "answers": [
+            {
+                "content": "Trộn hai cột kề nhau của ma trận state",
+                "is_correct": false
+            },
+            {
+                "content": "Mỗi cột của ma trận state được nhân với một đa thức",
+                "is_correct": true
+            },
+            {
+                "content": "Trộn các cột tương ứng của ma trận state với khóa",
+                "is_correct": false
+            },
+            {
+                "content": "Trộn các dòng tương ứng của ma trận state với khóa",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Tấn công dựa trên từ điển là:",
+        "answers": [
+            {
+                "content": "Sử dụng từ điển để tấn công đánh cắp mật khẩu của người dùng",
+                "is_correct": false
+            },
+            {
+                "content": "Tấn công vào thói quen sử dụng các từ đơn giản có trong từ điển làm mật khẩu",
+                "is_correct": true
+            },
+            {
+                "content": "Nghe trộm để đánh cắp mật khẩu",
+                "is_correct": false
+            },
+            {
+                "content": "Thử tất cả các khả năng kiểu vét cạn để tìm mật khẩu của người dùng",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Các phần mềm độc hại nào sau đây có khả năng tự nhân bản:",
+        "answers": [
+            {
+                "content": "Virus, worm, adware",
+                "is_correct": false
+            },
+            {
+                "content": "Virus, backdoor, worm",
+                "is_correct": false
+            },
+            {
+                "content": "Virus, worm, zombie",
+                "is_correct": true
+            },
+            {
+                "content": "Virus, trojan horse, worm",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "SET là giao thức bảo mật dùng trong các giao dịch điện tử. Với SET, những bên nào tham gia giao dịch phải có chứng chỉ số:",
+        "answers": [
+            {
+                "content": "Tất cả các bên",
+                "is_correct": true
+            },
+            {
+                "content": "Khách hàng",
+                "is_correct": false
+            },
+            {
+                "content": "Cổng giao dịch",
+                "is_correct": false
+            },
+            {
+                "content": "Người bán",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Phát biểu nào sau đây đúng với cơ chế điều khiển truy cập MAC:",
+        "answers": [
+            {
+                "content": "MAC cấp quyền truy cập dựa trên tính nhạy cảm của những thông tin và chính sách quản trị",
+                "is_correct": true
+            },
+            {
+                "content": "MAC là cơ chế điều khiển truy cập được sử dụng rộng rãi nhất",
+                "is_correct": false
+            },
+            {
+                "content": "MAC cho phép người tạo ra đối tượng có thể cấp quyền truy cập cho người dùng khác",
+                "is_correct": false
+            },
+            {
+                "content": "MAC quản lý truyền quy cập chặt chẽ hơn các cơ chế khác",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Phát biểu nào sau đây đúng với kỹ thuật mã hóa khóa bí mật",
+        "answers": [
+            {
+                "content": "Mã hóa khóa bí mật an toàn hơn mã hóa khóa công khai",
+                "is_correct": false
+            },
+            {
+                "content": "Mã hóa khóa bí mật chỉ hoạt động theo chế độ mã hóa khối",
+                "is_correct": false
+            },
+            {
+                "content": "Mã hóa khóa bí mật sử dụng một mã (key) cho cả quá trình mã hóa và giải mã",
+                "is_correct": true
+            },
+            {
+                "content": "Mã hóa khóa bí mật có thuật toán đơn giản hơn mã hóa khóa công khai",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Phát biểu nào sau đây đúng với cơ chế điều khiển truy cập RBAC:",
+        "answers": [
+            {
+                "content": "RBAC cho phép người tạo ra đối tượng có thể cấp quyền truy cập cho người dùng khác",
+                "is_correct": false
+            },
+            {
+                "content": "RBAC cấp quyền truy cập dựa trên tính nhạy cảm của thông tin và chính sách quản trị",
+                "is_correct": false
+            },
+            {
+                "content": "RBAC cấp quyền truy cập dựa trên vai trò của người dùng trong tổ chức",
+                "is_correct": true
+            },
+            {
+                "content": "RBAC là cơ chế điều khiển truy cập được sử dụng rộng rãi nhất",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "An toàn thông tin (Information Security) là:",
+        "answers": [
+            {
+                "content": "Việc đảm bảo an toàn cho hệ thống máy tính",
+                "is_correct": true
+            },
+            {
+                "content": "Việc phòng chống tấn công, đột nhập vào hệ thống máy tính và mạng",
+                "is_correct": false
+            },
+            {
+                "content": "Việc bảo vệ chống truy nhập, sử dụng, tiết lộ, sử đổi, hoặc phá hủy thông tin một cách trái phép",
+                "is_correct": false
+            },
+            {
+                "content": "Việc đảm bảo an toàn cho hệ thống mạng",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Nguyên nhân chính của lỗ hổng an ninh cho phép tấn công thực hiện mã từ xa là:",
+        "answers": [
+            {
+                "content": "Lỗi thiết kế phần mềm",
+                "is_correct": false
+            },
+            {
+                "content": "Lỗi quản trị hệ thống",
+                "is_correct": false
+            },
+            {
+                "content": "Lỗi lập trình phần mềm",
+                "is_correct": true
+            },
+            {
+                "content": "Lỗi tích hợp hệ thống",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Danh sách điều khiển truy nhập ACL thực hiện việc cấp quyền truy cập đến các đối tượng cho người dùng bằng cách:",
+        "answers": [
+            {
+                "content": "Các quyền truy cập vào đối tượng cho mỗi người dùng được quản lý riêng rẽ",
+                "is_correct": false
+            },
+            {
+                "content": "Mỗi người dùng được gán một danh sách các đối tượng kèm theo quyền truy cập",
+                "is_correct": false
+            },
+            {
+                "content": "Các quyền truy cập vào đối tượng cho mỗi người dùng được quản lý trong một ma trận",
+                "is_correct": false
+            },
+            {
+                "content": "Mỗi đối tượng được gán một danh sách người dùng kèm theo quyền truy cập",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Phát biểu nào sau đây đúng với cơ chế điều khiển truy cập DAC:",
+        "answers": [
+            {
+                "content": "DAC cho phép người tạo ra đối tượng có thể cấp quyền quy cập ch o người dùng khác",
+                "is_correct": true
+            },
+            {
+                "content": "DAC cấp quyền truy cập dựa trên tính nhạy cảm của thông tin và chính sách quản trị",
+                "is_correct": false
+            },
+            {
+                "content": "DAC quản lý quyền truy cập chặt chẽ hơn các cơ chế khác",
+                "is_correct": false
+            },
+            {
+                "content": "DAC là cơ chế điều khiển truy cập được sử dụng rộng rãi nhất",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Loại tấn công nào sau đây chiếm quyền truy cập đến tài nguyên lợi dụng cơ chế điều khiển truy cập DAC?",
+        "answers": [
+            {
+                "content": "Phishing",
+                "is_correct": false
+            },
+            {
+                "content": "DAC cấp quyền truy cập dựa trên tính nhạy cảm của thông tin và Trojan horse",
+                "is_correct": true
+            },
+            {
+                "content": "Spoofing",
+                "is_correct": false
+            },
+            {
+                "content": "Man in the middle",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Phương pháp xác thực nào dưới đây cung cấp khả năng xác thực có độ an toàn cao nhất?",
+        "answers": [
+            {
+                "content": "Sử dụng mật khẩu",
+                "is_correct": false
+            },
+            {
+                "content": "Sử dụng Smartcard",
+                "is_correct": false
+            },
+            {
+                "content": "Sử dụng chứng chỉ số",
+                "is_correct": false
+            },
+            {
+                "content": "Sử dụng vân tay",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Macro virus là virus lây nhiễm trong:",
+        "answers": [
+            {
+                "content": "Các file tài liệu dạng PDF",
+                "is_correct": false
+            },
+            {
+                "content": "Các file tài liệu của bộ chương trình Open Office",
+                "is_correct": false
+            },
+            {
+                "content": "Các file ảnh dạng JPG",
+                "is_correct": false
+            },
+            {
+                "content": "Các file tài liệu của bộ chương trình MS Office",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Phát biểu nào sau đây đúng với tường lửa",
+        "answers": [
+            {
+                "content": "Tường lửa không thể ngăn chặn các tấn công hướng dữ liệu",
+                "is_correct": true
+            },
+            {
+                "content": "Tường lửa có thể ngăn chặn mọi loại tấn công, đột nhập",
+                "is_correct": false
+            },
+            {
+                "content": "Tường lửa có thể ngăn chặn mọi virus và phần mềm độc hại",
+                "is_correct": false
+            },
+            {
+                "content": "Tường lửa có thể ngăn chặn các loại thư rác",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Trong quá trình xử lý dữ liệu tạo chuỗi băm, số lượng vòng xử lý của SHA1 là:",
+        "answers": [
+            {
+                "content": "60",
+                "is_correct": false
+            },
+            {
+                "content": "70",
+                "is_correct": false
+            },
+            {
+                "content": "80",
+                "is_correct": true
+            },
+            {
+                "content": "90",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Một trong các biện pháp hiệu quả phòng chống tấn công SQL Injection là:",
+        "answers": [
+            {
+                "content": "Luôn kiểm tra và cập nhật các bản vá an ninh cho hệ điều hành và các phần mềm ứng dụng",
+                "is_correct": false
+            },
+            {
+                "content": "Kiểm tra tất cả các dữ liệu đầu vào, đặc biệt dữ liệu nhập từ người dùng và từ các nguồn không tin cậy",
+                "is_correct": true
+            },
+            {
+                "content": "Cấu hình máy chủ CSDL không cho thực thi lệnh từ xa",
+                "is_correct": false
+            },
+            {
+                "content": "Không cho phép người dùng nhập mã vào các form.",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Trong hệ thống Kerberos gồm 3 thực thể: client A, máy chủ Kerberos T, máy chủ ứng dụng B, mục đích của hệ thống là để:",
+        "answers": [
+            {
+                "content": "T hỗ trợ A xác thực thông tin nhận dạng với B, kèm theo thiết lập khóa",
+                "is_correct": true
+            },
+            {
+                "content": "T xác thực B",
+                "is_correct": false
+            },
+            {
+                "content": "T xác thực A và B",
+                "is_correct": false
+            },
+            {
+                "content": "T xác thực A",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "SSL sử dụng giao thực SSL Handshake để khởi tạo phiên làm việc. SSL Handshake thực hiện việc xác thực thực thể dựa trên:",
+        "answers": [
+            {
+                "content": "Chữ ký số",
+                "is_correct": false
+            },
+            {
+                "content": "Chứng chỉ số",
+                "is_correct": true
+            },
+            {
+                "content": "Mã hóa khóa công khai",
+                "is_correct": false
+            },
+            {
+                "content": "Mã hóa khóa bí mật",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Điểm khác nhau chính giữa hai loại hàm băm MDC và MAC là:",
+        "answers": [
+            {
+                "content": "MDC an toàn hơn MAC",
+                "is_correct": false
+            },
+            {
+                "content": "MAC an toàn hơn MDC",
+                "is_correct": false
+            },
+            {
+                "content": "MDC có khả năng chống đụng độ cao hơn MAC",
+                "is_correct": false
+            },
+            {
+                "content": "MDC là loại hàm băm không khóa, còn MAC là loại hàm băm có khóa",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Một hệ thống điều khiển truy nhập có thể được cấu thành từ các dịch vụ nào sau đây:",
+        "answers": [
+            {
+                "content": "Xác thực, đăng nhập và kiểm toán (auditing)",
+                "is_correct": false
+            },
+            {
+                "content": "Xác thực, đăng nhập và trao quyền",
+                "is_correct": false
+            },
+            {
+                "content": "Xác thực, trao quyền và kiểm toán (auditing)",
+                "is_correct": false
+            },
+            {
+                "content": "Xác thực, trao quyền và quản trị",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Ưu điểm của kỹ thuật mã hóa khóa công khai so với mã hóa khóa bí mật là:",
+        "answers": [
+            {
+                "content": "Có độ an toàn cao hơn",
+                "is_correct": false
+            },
+            {
+                "content": "Trao đổi khóa dễ dàng hơn",
+                "is_correct": false
+            },
+            {
+                "content": "Chi phí tính toán thấp hơn",
+                "is_correct": false
+            },
+            {
+                "content": "Quản lý dễ dàng hơn",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Độ an toàn của hệ mã hóa RSA dựa trên:",
+        "answers": [
+            {
+                "content": "Khóa có kích thước lớn",
+                "is_correct": false
+            },
+            {
+                "content": "Giải thuật rất phức tạp",
+                "is_correct": true
+            },
+            {
+                "content": "Chi phí tính toán lớn",
+                "is_correct": false
+            },
+            {
+                "content": "Tính khó của việc phân tích số nguyên lớn",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Trong hệ mã hóa RSA, quan hệ toán học giữa khóa bí mật d và khóa công khai e được gọi là:",
+        "answers": [
+            {
+                "content": "d và e là 2 số nguyên tố cùng nhau",
+                "is_correct": false
+            },
+            {
+                "content": "d là modulo nghịch đảo của e",
+                "is_correct": false
+            },
+            {
+                "content": "d là modulo của e",
+                "is_correct": false
+            },
+            {
+                "content": "d và e không có quan hệ với nhau",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Trong hệ thống phân phối khóa sử dụng KTC gồm có n thực thể (không tính KTC), số lượng khóa dài hạn mỗi thực thể và KTC phải lưu là:",
+        "answers": [
+            {
+                "content": "Mỗi thực thể phải lưu 1 khóa, KTC phải lưu n2 khóa",
+                "is_correct": false
+            },
+            {
+                "content": "Mỗi thực thể phải lưu 1 khóa, KTC phải lưu n khóa",
+                "is_correct": true
+            },
+            {
+                "content": "Mỗi thực thể phải lưu n-1 khóa, KTC phải lưu n khóa",
+                "is_correct": false
+            },
+            {
+                "content": "Mỗi thực thể phải lưu 1 khóa, KTC phải lưu 1 khóa",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Số lượng các khóa phụ (subkey) cần được tạo ra từ khóa chính trong giải thuật DES là:",
+        "answers": [
+            {
+                "content": "18",
+                "is_correct": false
+            },
+            {
+                "content": "16",
+                "is_correct": true
+            },
+            {
+                "content": "14",
+                "is_correct": false
+            },
+            {
+                "content": "12",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Các thuộc tính cơ bản của chứng chỉ số (Digital certificate) gồm:",
+        "answers": [
+            {
+                "content": "Số nhận dạng, khóa công khai của chủ thể, thông tin định danh chủ thể",
+                "is_correct": false
+            },
+            {
+                "content": "Khóa công khai của chủ thể, thông tin định danh chủ thể, thuật toán chữ ký sử dụng",
+                "is_correct": false
+            },
+            {
+                "content": "Số nhận dạng, khóa công khai của chủ thể, chữ ký của nhà cung cấp CA",
+                "is_correct": false
+            },
+            {
+                "content": "Khóa công khai của chủ thể, thông tin định danh chủ thể, chữ ký của nhà cung cấp CA",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Công cụ Vulnerability scanner cho phép tin tặc:",
+        "answers": [
+            {
+                "content": "Tìm các cổng dịch vụ đang mở trên hệ thống",
+                "is_correct": false
+            },
+            {
+                "content": "Thu thập các thông tin về các điểm yếu/lỗ hổng đã biết của hệ thống máy tính hoặc mạng",
+                "is_correct": true
+            },
+            {
+                "content": "Nghe trộm và bắt các gói tin khi chúng được truyền trên mạng",
+                "is_correct": false
+            },
+            {
+                "content": "Chặn bắt và sửa đổi thông tin",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Sự khác biệt giữa trung tâm phân phối khóa KDC và trung tâm dịch khóa KTC là:",
+        "answers": [
+            {
+                "content": "KDC an toàn hơn KTC",
+                "is_correct": false
+            },
+            {
+                "content": "KTC an toàn hơn KDC",
+                "is_correct": false
+            },
+            {
+                "content": "KDC sinh khóa tập trung, còn KTC sinh khóa phân tán",
+                "is_correct": true
+            },
+            {
+                "content": "KDC yêu cầu có một máy chủ tin cậy, còn KTC không yêu cầu có một máy chủ tin cậy",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Tấn công lợi dụng lỗi tràn bộ đệm có thể giúp tin tặc chèn và thực hiện mã độc trên hệ thống nạn nhân thông qua cơ chế nào sau đây:",
+        "answers": [
+            {
+                "content": "Chèn mã độc vào thay thế mã trong chương trình có lỗi tràn bộ đệm",
+                "is_correct": false
+            },
+            {
+                "content": "Tất cả các đáp án trên đều đúng",
+                "is_correct": true
+            },
+            {
+                "content": "Chèn mã độc vào bộ đệm và lợi dụng cơ chế trở về từ chương trình con để thực hiện mã độc đã chèn",
+                "is_correct": false
+            },
+            {
+                "content": "Chèn mã độc vào bộ đệm và lợi dụng cơ chế gọi thực hiện chương trình con để thực hiện mã độc đã chèn",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Phát biểu nào sau đây về chữ ký số là chính xác:",
+        "answers": [
+            {
+                "content": "Chữ ký số được tạo ra bằng cách mã hóa thông điệp sử dụng khóa riêng của chủ thể",
+                "is_correct": false
+            },
+            {
+                "content": "Chữ ký số được sử dụng để đảm bảo tính bí mật và toàn vẹn thông điệp",
+                "is_correct": false
+            },
+            {
+                "content": "Chữ ký số được sử dụng để đảm bảo tính bí mật, toàn vẹn và xác thực thông điệp",
+                "is_correct": false
+            },
+            {
+                "content": "Chữ ký số là một chuỗi dữ liệu liên kết với một thông điệp và thực thể tạo ra thông điệp",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Số lượng thao tác trong mỗi vòng xử lý của MD5 là:",
+        "answers": [
+            {
+                "content": "12",
+                "is_correct": false
+            },
+            {
+                "content": "16",
+                "is_correct": true
+            },
+            {
+                "content": "14",
+                "is_correct": false
+            },
+            {
+                "content": "18",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Lỗ hổng an ninh trong một hệ thống là:",
+        "answers": [
+            {
+                "content": "Bất kỳ điểm yếu nào trong hệ thống cho phép mối đe dọa có thể gây tác hại",
+                "is_correct": true
+            },
+            {
+                "content": "Các điểm yếu trong hệ điều hành",
+                "is_correct": false
+            },
+            {
+                "content": "Tất cả điểm yếu hoặc khiếm khuyết trong hệ thống",
+                "is_correct": false
+            },
+            {
+                "content": "Các điểm yếu trong các phần mềm ứng dụng",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Hai lĩnh vực chính của an toàn thông tin là:",
+        "answers": [
+            {
+                "content": "Mật mã và An ninh mạng",
+                "is_correct": false
+            },
+            {
+                "content": "An toàn công nghệ thông tin và An ninh mạng",
+                "is_correct": false
+            },
+            {
+                "content": "An ninh máy tính và An ninh mạng",
+                "is_correct": false
+            },
+            {
+                "content": "An toàn công nghệ thông tin và Đảm bảo thông tin",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Các hệ điều hành Microsoft Windows và Linux sử dụng các mô hình điều khiển truy cập nào dưới đây?",
+        "answers": [
+            {
+                "content": "DAC và Role-BAC",
+                "is_correct": true
+            },
+            {
+                "content": "DAC và MAC",
+                "is_correct": false
+            },
+            {
+                "content": "MAC và Role-BAC",
+                "is_correct": false
+            },
+            {
+                "content": "MAC và Rule-BAC",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "SSL sử dụng giao thực SSL Handshake để khởi tạo phiên làm việc. SSL Handshake thực hiện việc trao đổi các khóa phiên dùng cho phiên làm việc dựa trên:",
+        "answers": [
+            {
+                "content": "Chữ ký số",
+                "is_correct": false
+            },
+            {
+                "content": "Chứng chỉ số",
+                "is_correct": false
+            },
+            {
+                "content": "Mã hóa khóa công khai",
+                "is_correct": true
+            },
+            {
+                "content": "Mã hóa khóa bí mật",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Tấn công bằng mã độc bao gồm các dạng tấn công:",
+        "answers": [
+            {
+                "content": "Cả A và B",
+                "is_correct": false
+            },
+            {
+                "content": "Cài đặt và thực hiện các phần mềm độc hại trên hệ thống nạn nhân",
+                "is_correct": false
+            },
+            {
+                "content": "Lợi dụng các lỗ hổng an ninh để đánh cắp thông tin nhạy cảm",
+                "is_correct": false
+            },
+            {
+                "content": "Lợi dụng các lỗ hổng an ninh để chèn và thực hiện mã độc trên hệ thống nạn nhân",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Tấn công Phishing là dạng tấn công vào:",
+        "answers": [
+            {
+                "content": "Người quản trị và người dùng thông thường",
+                "is_correct": true
+            },
+            {
+                "content": "Hệ điều hành và các ứng dụng",
+                "is_correct": false
+            },
+            {
+                "content": "Các hệ thống mạng",
+                "is_correct": false
+            },
+            {
+                "content": "Các phần mềm máy chủ",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Điểm khác nhau chính giữa các hệ thống ngăn chặn đột nhập (IPS) và phát hiện đột nhập (IDS) là:",
+        "answers": [
+            {
+                "content": "IPS có khả năng phát hiện và ngăn chặn tấn công tốt hơn IDS",
+                "is_correct": false
+            },
+            {
+                "content": "IDS có khả năng phát hiện và ngăn chặn tấn công tốt hơn IPS",
+                "is_correct": false
+            },
+            {
+                "content": "IPS có khả năng chủ động ngăn chặn tấn công so với IDS",
+                "is_correct": true
+            },
+            {
+                "content": "IPS có chi phí lớn hơn IDS",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Gửi một gói tin ICMP có kích thước lớn hơn 64Kb là một ví dụ của kiểu tấn công nào sau đây?",
+        "answers": [
+            {
+                "content": "Buffer overflow",
+                "is_correct": false
+            },
+            {
+                "content": "Syn flood",
+                "is_correct": false
+            },
+            {
+                "content": "Teardrop",
+                "is_correct": false
+            },
+            {
+                "content": "Ping of Death",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Chữ ký số (dùng riêng) thường được sử dụng để đảm bảo thuộc tính nào sau đây của thông điệp truyền:",
+        "answers": [
+            {
+                "content": "Tính bí mật",
+                "is_correct": false
+            },
+            {
+                "content": "Tính toàn vẹn",
+                "is_correct": true
+            },
+            {
+                "content": "Tính xác thực",
+                "is_correct": false
+            },
+            {
+                "content": "Tính không chối bỏ",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Tấn công DoS là dạng tấn công cho phép tin tặc:",
+        "answers": [
+            {
+                "content": "Gây ngắt quãng dịch vụ cung cấp cho người dùng bình thường",
+                "is_correct": true
+            },
+            {
+                "content": "Đánh cắp dữ liệu trên máy chủ",
+                "is_correct": false
+            },
+            {
+                "content": "Đánh cắp dữ liệu trên máy khách",
+                "is_correct": false
+            },
+            {
+                "content": "Sửa đổi dữ liệu trong CSDL",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Yêu cầu để đảm bảo sử dụng mã hóa đối xứng là",
+        "answers": [
+            {
+                "content": "Có thuật tóan encryption tốt,có một khóa bí mật được biết bởi người nhận/gởi và kênh truyền bí mật để phân phát key",
+                "is_correct": true
+            },
+            {
+                "content": "Có một kênh truyền phù hợp và một khóa bí mật được biết bởi người nhận/gởi",
+                "is_correct": false
+            },
+            {
+                "content": "Có thuật tóan encryption tốt và có một khóa bí mật được biết bởi người nhận/gởi",
+                "is_correct": false
+            },
+            {
+                "content": "Tất cả đều đúng",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Các thuật tóan nào sau đây là thuật tóan mã hóa đối xứng",
+        "answers": [
+            {
+                "content": "Triple –DES, RC4, RC5, Blowfish",
+                "is_correct": false
+            },
+            {
+                "content": "Triple –DES, RC4, RC5, IDEA",
+                "is_correct": true
+            },
+            {
+                "content": "RC4, RC5, IDEA, Blowfish",
+                "is_correct": false
+            },
+            {
+                "content": "IDEA, Blowfish, AES, Elliptic Cure",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Các phát biểu sau đây phát biểu nào đúng",
+        "answers": [
+            {
+                "content": "Hầu hết các thuật tóan mã hóa đối xứng đều dựa trên cấu trúc thuật toán Feistel",
+                "is_correct": false
+            },
+            {
+                "content": "Tấn công thông điệp thì thời gian giải mã tỷ lệ với kích thước khóa",
+                "is_correct": false
+            },
+            {
+                "content": "Hầu hết các thuật tóan mã hóa khối đều đối xứng",
+                "is_correct": false
+            },
+            {
+                "content": "Tất cả đều đúng",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Cơ chế bảo mật SSL hoạt động trên tầng",
+        "answers": [
+            {
+                "content": "Network, Transport",
+                "is_correct": false
+            },
+            {
+                "content": "Network, Session",
+                "is_correct": false
+            },
+            {
+                "content": "Application, Session",
+                "is_correct": true
+            },
+            {
+                "content": "Tất cả đều sai",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Keberos là dịch vụ ủy thác",
+        "answers": [
+            {
+                "content": "Xác thực trên Web",
+                "is_correct": false
+            },
+            {
+                "content": "Xác thực X.509",
+                "is_correct": false
+            },
+            {
+                "content": "Xác thực trên Server",
+                "is_correct": true
+            },
+            {
+                "content": "Xác thực trên các máy trạm với nhau",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "PGP là giao thức để xác thực",
+        "answers": [
+            {
+                "content": "Quyền đăng cập vào hệ thống máy chủ Window",
+                "is_correct": false
+            },
+            {
+                "content": "Bảo mật cho thư điện tử",
+                "is_correct": true
+            },
+            {
+                "content": "Thực hiện mã hóa thông điệp theo thuật tóan RSA",
+                "is_correct": false
+            },
+            {
+                "content": "Địa chỉ của máy trạm khi kết nối vào Internet",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Công cụ/cơ chế bảo mật cho mạng không dây là",
+        "answers": [
+            {
+                "content": "SSL",
+                "is_correct": false
+            },
+            {
+                "content": "TSL",
+                "is_correct": false
+            },
+            {
+                "content": "Giao thức PGP",
+                "is_correct": false
+            },
+            {
+                "content": "WEP",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Giao thức SSL và TSL hoạt động ở tầng nào của mô hình OSI",
+        "answers": [
+            {
+                "content": "Network",
+                "is_correct": false
+            },
+            {
+                "content": "Sesion",
+                "is_correct": false
+            },
+            {
+                "content": "Transport",
+                "is_correct": false
+            },
+            {
+                "content": "Từ tầng Transport trở lên",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Giao thức SSL dùng để",
+        "answers": [
+            {
+                "content": "Cung cấp bảo mật cho dữ liệu lưu thông trên dịch vụ HTTP",
+                "is_correct": false
+            },
+            {
+                "content": "Cung cấp bảo mật cho thư điện tử",
+                "is_correct": false
+            },
+            {
+                "content": "Cung cấp bảo mật cho Web",
+                "is_correct": true
+            },
+            {
+                "content": "Cung cấp bảo mật cho xác thực người dùng vào các hệ thống vận hành trên Platform Window",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Chức năng chính của Virus là",
+        "answers": [
+            {
+                "content": "Lây nhiễm và sinh sản",
+                "is_correct": false
+            },
+            {
+                "content": "Sống ký sinh và lây nhiễm",
+                "is_correct": false
+            },
+            {
+                "content": "Tự phát triển độc lập và lây nhiễm",
+                "is_correct": false
+            },
+            {
+                "content": "Tất cả đều đúng",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Hoạt động của virus có 4 giai đoạn",
+        "answers": [
+            {
+                "content": "Nằm im, lây nhiễm, tàn phá và tự hủy",
+                "is_correct": false
+            },
+            {
+                "content": "Lây nhiễm, tấn công, hủy diệt và tự hủy",
+                "is_correct": false
+            },
+            {
+                "content": "Nằm im, lây nhiễm, khởi sự và tàn phá",
+                "is_correct": true
+            },
+            {
+                "content": "Lây nhiễm, khởi sự, tàn phát, kích họat lại",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Các dạng sau đây, dạng nào là của virus",
+        "answers": [
+            {
+                "content": "stealth, cư trú bộ nhớ, macro, lưỡng tính, file",
+                "is_correct": true
+            },
+            {
+                "content": "virus ký sinh, file, boot sector, stealth, cư trú bộ nhớ, macro",
+                "is_correct": false
+            },
+            {
+                "content": "virus ký sinh, cư trú bộ nhớ, boot sector, Stealth, đa hình, macro",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Virus Macro chỉ có khả năng tấn công vào các file",
+        "answers": [
+            {
+                "content": "MS.Exel, MX Word, MS.Power Point",
+                "is_correct": false
+            },
+            {
+                "content": "stealth, cư trú bộ nhớ, macro, lưỡng tính, file",
+                "is_correct": false
+            },
+            {
+                "content": "MS.Exel, MX Word, Yahoo Mail",
+                "is_correct": true
+            },
+            {
+                "content": "Tất cả các loại file",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Các giao thức bảo mật trên Internet như SSL, TLS và SSH hoạt động ở tầng nào trên mô hình OSI",
+        "answers": [
+            {
+                "content": "Tầng Network",
+                "is_correct": false
+            },
+            {
+                "content": "Tầng Transport",
+                "is_correct": false
+            },
+            {
+                "content": "Từ tầng Transport trở lên đến tầng 7",
+                "is_correct": true
+            },
+            {
+                "content": "Tầng Session",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Kỹ thuật tấn công phổ biến trên Web là",
+        "answers": [
+            {
+                "content": "Chiếm hữu phiên làm việc.",
+                "is_correct": false
+            },
+            {
+                "content": "Tràn bộ đệm.",
+                "is_correct": false
+            },
+            {
+                "content": "Từ chối dịch vụ (DoS)",
+                "is_correct": true
+            },
+            {
+                "content": "Chèn câu truy vấn SQL.",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Các lỗ hổng bảo mật trên hệ thống là do",
+        "answers": [
+            {
+                "content": "Dịch vụ cung cấp",
+                "is_correct": false
+            },
+            {
+                "content": "Bản thân hệ điều hành",
+                "is_correct": false
+            },
+            {
+                "content": "Con người tạo ra",
+                "is_correct": false
+            },
+            {
+                "content": "Tất cả đều đúng",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Cho biết câu nào đúng trong các câu sau",
+        "answers": [
+            {
+                "content": "Tất cả Firewall đều có chung thuộc tính là cho phép phân biệt hay đối xử khả năng từ chối hay truy nhập dựa vào địa chỉ nguồn",
+                "is_correct": false
+            },
+            {
+                "content": "Chức năng chính của Firewall là kiểm sóat luồng thông tin giữa mạng cần bảo vệ và Internet thông qua các chính sách truy nhập đã được thiết lập",
+                "is_correct": false
+            },
+            {
+                "content": "Hệ thống Firewall thường bao g��m cả phần cứng lẫn phần mềm",
+                "is_correct": false
+            },
+            {
+                "content": "Tất cả đều đúng",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Loại Firewall nào sau đây cho phép hoạt động ở lớp phiên ( session) của mô hình OSI",
+        "answers": [
+            {
+                "content": "Packet filtering firewall(lop mang)",
+                "is_correct": false
+            },
+            {
+                "content": "Circuit level firewall(lop phien)",
+                "is_correct": true
+            },
+            {
+                "content": "Application level firewall(lop ung dung)",
+                "is_correct": false
+            },
+            {
+                "content": "Stateful multilayer inspection firewall",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Những giao thức WAN nào có thể được định hình trên một kết nối tuần tự không đồng bộ (Chọn 2)",
+        "answers": [
+            {
+                "content": "PPP",
+                "is_correct": true
+            },
+            {
+                "content": "ATM",
+                "is_correct": false
+            },
+            {
+                "content": "HDLC",
+                "is_correct": false
+            },
+            {
+                "content": "SDLC",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Khi thuê một giải pháp VPN, những loại tấn công nào bạn cần phải xét đến ?",
+        "answers": [
+            {
+                "content": "Denial of Service (DoS) attacks, Internet Viruses",
+                "is_correct": false
+            },
+            {
+                "content": "Distributed Denial of Service (DDoS) attacks.",
+                "is_correct": false
+            },
+            {
+                "content": "Data confidentiality, IP Spoofing.",
+                "is_correct": true
+            },
+            {
+                "content": "Network mapping, Internet Viruses.",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Các phát biểu sau đây phát biểu là là đúng nhất",
+        "answers": [
+            {
+                "content": "Fire wal là một vành đai phòng thủ cho máy tính hoặc hệ thống trước những tấn công",
+                "is_correct": false
+            },
+            {
+                "content": "Là một điểm chặn của trong quá trình điều khiển và giám sát.",
+                "is_correct": false
+            },
+            {
+                "content": "Là một phần mềm hoặc phần ứng có khả năng ngăn chặn tấn công từ bên trong và bên ngoài vào hệ thống.",
+                "is_correct": true
+            },
+            {
+                "content": "Là một giải pháp giúp hệ thống phát hiện và ngăn chặn các truy cập trái phép",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Bảo mật thư điện tử là nhằm đảm bảo",
+        "answers": [
+            {
+                "content": "Tính tin cẩn (confidentiality), Tính xác nhận, Toàn vẹn thông điệp(integrity), Sự thối thác ban đầu (non-repudiation of origin)",
+                "is_correct": true
+            },
+            {
+                "content": "Tính xác nhận,Toàn vẹn thông điệp(integrity), Sự thối thác ban đầu (nonrepudiation of origin), tính bền vững",
+                "is_correct": false
+            },
+            {
+                "content": "Sự thối thác ban đầu (non-repudiation of origin), tính bền vững, tính ổn khi gởi và nhận",
+                "is_correct": false
+            },
+            {
+                "content": "Tất cả đều đúng",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Các giao thức được để bảo mật thư điện tử là",
+        "answers": [
+            {
+                "content": "GPG, S/MINE",
+                "is_correct": false
+            },
+            {
+                "content": "SHA-1, S/MINE",
+                "is_correct": true
+            },
+            {
+                "content": "CAST-128 / IDEA/3DES",
+                "is_correct": false
+            },
+            {
+                "content": "Keboros, X.509",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Chữ ký điện tử (digital signature) sử dụng thuật tóan nào sau đây",
+        "answers": [
+            {
+                "content": "RSA,MD5",
+                "is_correct": false
+            },
+            {
+                "content": "RSA,MD5, Keboros",
+                "is_correct": false
+            },
+            {
+                "content": "MD5, SHA,RSA",
+                "is_correct": true
+            },
+            {
+                "content": "Không dùng thuật tóan nào nêu trên",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Chữ ký điện tử (digital signature) sử dụng thuật tóan nào sau đâyChữ ký điện tử là",
+        "answers": [
+            {
+                "content": "Là một chuỗi đã được mã hóa theo thuật tóan băm và đính kèm với văn bản gốc trước khi gởi.",
+                "is_correct": false
+            },
+            {
+                "content": "Đoạn dữ liệu ngắn đính kèm với văn bản gốc để chứng thực tác giả của văn bản và giúp người nhận kiểm tra tính toàn vẹn của nội dung văn bản gốc.",
+                "is_correct": false
+            },
+            {
+                "content": "a và b đều đúng",
+                "is_correct": true
+            },
+            {
+                "content": "Tất cả cả đều sai",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Các bước mã hóa của chứ ký điện tử",
+        "answers": [
+            {
+                "content": "Dùng giải thuật băm để thay đổi thông điệp cần truyền đi, Sử dụng khóa private key của người gửi để mã hóa message digest thu được ở bước trên, sau đó gộp digital signature vào message ban đầu.",
+                "is_correct": true
+            },
+            {
+                "content": "Dùng giải thuật băm để thay đổi thông điệp cần truyền đi, sử dụng khóa private key của người gửi để mã hóa message digest thu được ở bước trên, sau đó gộp digital signature vào message ban đầu và nén dữ liệu gởi đi.",
+                "is_correct": false
+            },
+            {
+                "content": "Chỉ sử dụng giải thuật băm để thay đổi thông điệp cần truyền đi và sử dụng khóa private key của người gửi để mã hóa message digest thu được ở bước trên.",
+                "is_correct": false
+            },
+            {
+                "content": "Tất cả đều đúng",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Các bước kiểm tra của chứ ký điện tử",
+        "answers": [
+            {
+                "content": "Gồm các bước 1.Dùng public key của người gửi (khóa này được thông báo đến mọi người) để giải mã chữ ký số của message, 2.Dùng giải thuật (MD5 hoặc SHA) băm message đính kèm, So sánh kết quả thu được ở bước 1 và 2. 3.Nếu trùng nhau, ta kết luận message này không bị thay đổi trong quá trình truyền và message này là của người gửi.",
+                "is_correct": true
+            },
+            {
+                "content": "Chỉ có bước 1 và 2",
+                "is_correct": false
+            },
+            {
+                "content": "Gồm các bước 1.Dùng public key của người gửi (khóa này được thông báo đến mọi người) để giải mã chữ ký số của message, 2.Dùng giải thuật (MD5 hoặc SHA) băm message đính kèm, So sánh kết quả thu được ở bước 1 và 2. 3.Nén dữ liệu rồi gởi đi",
+                "is_correct": false
+            },
+            {
+                "content": "d.Không có bước nào ở trên là đúng",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Việc xác thực người dùng khi đăng cập vào hệ thống Window XP, 2000 hoặc 2003 sử dụng giải thuật",
+        "answers": [
+            {
+                "content": "RSA",
+                "is_correct": false
+            },
+            {
+                "content": "Keberos",
+                "is_correct": true
+            },
+            {
+                "content": "MD5",
+                "is_correct": false
+            },
+            {
+                "content": "SHATR",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Để thực hiện tấn công bằng Trojan, kẻ tấn công chỉ cần",
+        "answers": [
+            {
+                "content": "Tạo 1 file chạy (*.exe, *.com) vận hành trên máy nạn nhân là đủ",
+                "is_correct": true
+            },
+            {
+                "content": "Cho máy nạn nhân lây nhiễm một loại virus bất kỳ nào đó.",
+                "is_correct": false
+            },
+            {
+                "content": "Thực hiện đồng thời 2 file, một file vận hành trên máy nạn nhân, file còn lại họat động điều khiển trên máy kẻ tấn công.",
+                "is_correct": false
+            },
+            {
+                "content": "Không có điều nào đúng.",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Giao thức bảo mật IPSec họat động ở tầng",
+        "answers": [
+            {
+                "content": "Chỉ ở tầng transport ở mô hình OSI",
+                "is_correct": false
+            },
+            {
+                "content": "Từ tầng 4 tới tầng 7 ở mô hình OSI",
+                "is_correct": false
+            },
+            {
+                "content": "Network Layer ở mô hình OSI",
+                "is_correct": true
+            },
+            {
+                "content": "Tất cả đều sai",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Cho biết phát biểu sau đây phát biểu nào là đúng nhất về registry",
+        "answers": [
+            {
+                "content": "Regỉstry là một cơ sở dữ liệu dùng để lưu trữ thông tin về những sự thay đổi, những lựa chọn, những thiết lập từ người sử dụng Windows.",
+                "is_correct": false
+            },
+            {
+                "content": "Regỉstry là một phần mềm tiện ích hỗ trợ cho người dùng thay đổii cấu hình Window khi cần thiết",
+                "is_correct": false
+            },
+            {
+                "content": "Regỉstry là một thành phần của hệ điều hành Window",
+                "is_correct": false
+            },
+            {
+                "content": "Tất cả đều đúng",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Có bao nhiêu kiểu dữ liệu trong Registry",
+        "answers": [
+            {
+                "content": "5",
+                "is_correct": true
+            },
+            {
+                "content": "4",
+                "is_correct": false
+            },
+            {
+                "content": "6",
+                "is_correct": false
+            },
+            {
+                "content": "7",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Các kiểu dữ liệu dùng trong registry là",
+        "answers": [
+            {
+                "content": "interger, real,text,string",
+                "is_correct": false
+            },
+            {
+                "content": "HKEY_CLASSES_ROOT, -USER, HKEY_LOCAL_MACHINE, HKEY_USERS, HKEY_CURRENT_CONFIG, HKEY_DYN_DATA",
+                "is_correct": false
+            },
+            {
+                "content": "HKEY_CLASSES_ROOT, -USER, HKEY_LOCAL_MACHINE, REG_BINARY",
+                "is_correct": false
+            },
+            {
+                "content": "REG_BINARY, REG_DWORD, REG_EXPAND_SZ, REG_MULTI_SZ, REG_SZ",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Để ẩn tất cả các ổ đĩa trong registry (A,B,C,D ) thì biến REG_DWORD trong Userkey và Systemkey có giá trị là bao nhiêu",
+        "answers": [
+            {
+                "content": "65656000",
+                "is_correct": true
+            },
+            {
+                "content": "67188270",
+                "is_correct": false
+            },
+            {
+                "content": "67108863",
+                "is_correct": false
+            },
+            {
+                "content": "Tất cả đều sai",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Để sử dụng xác thực Keberos V5 ở tất cả máy trạm Window98, người ta thực hiện :",
+        "answers": [
+            {
+                "content": "Update window 98 lên XP hoặc Window 2000",
+                "is_correct": false
+            },
+            {
+                "content": "Cài đặt tiện ích Distributed Security Client trên tất cả các máy chạy Window 98",
+                "is_correct": false
+            },
+            {
+                "content": "Chỉ cần cài đặt Active Directory trên Server hệ thống",
+                "is_correct": true
+            },
+            {
+                "content": "Không thể thực hiện được",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Khi cài đặt Window 2000 Server trên hệ thống NTFS, nhưng không thấy có hiển thị mục Security ở Security tables vì ?",
+        "answers": [
+            {
+                "content": "Update Window 2000 mà không remote trước khi cài đặt",
+                "is_correct": false
+            },
+            {
+                "content": "Cài đ��t Window 2000 nhiều lần trên Server",
+                "is_correct": false
+            },
+            {
+                "content": "Bản Window 2000 không có bản quyền",
+                "is_correct": true
+            },
+            {
+                "content": "Tất cả đều đúng",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Dịch vụ Active Directory thực hiện các chức năng sau",
+        "answers": [
+            {
+                "content": "Tổ chức và xây dựng các domain; xác thực và cấp quyền cho các đối tượng",
+                "is_correct": false
+            },
+            {
+                "content": "Duy các hoạt động của các dịch vụ bảo mật cho Window Server và xác thực, cấp quyền cho các đối tượng",
+                "is_correct": false
+            },
+            {
+                "content": "Chỉ thực hiện việc xác thực và cấp các quyền cho users và groups",
+                "is_correct": false
+            },
+            {
+                "content": "Quản lý tài nguyên và người dùng; xác thực và cấp các quyền cho users và groups; giám sát họat động của các user",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Thuật tóan thực hiện trong cơ chế bảo mật IP (IPSec) ở Window sử dụng là",
+        "answers": [
+            {
+                "content": "MD5 và SHA1",
+                "is_correct": false
+            },
+            {
+                "content": "Kerberos và DES",
+                "is_correct": false
+            },
+            {
+                "content": "DES hoặc 3DES (triple DES).",
+                "is_correct": true
+            },
+            {
+                "content": "Tất cả đều sai",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Trong Window 98,XP Registry được lưu trữ ở đâu ?",
+        "answers": [
+            {
+                "content": "Được lưu trong file Classes.dat trong thư mục Windows",
+                "is_correct": false
+            },
+            {
+                "content": "Được lưu trong thư mục 'Windows System32 Config'",
+                "is_correct": false
+            },
+            {
+                "content": "Trong 2 file: user.dat và system.dat trong thư mục Windows",
+                "is_correct": true
+            },
+            {
+                "content": "Tất cả đều sai",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Để thực hiện sửa đổi cấu hình trên registry ta thực hiện như sau:",
+        "answers": [
+            {
+                "content": "Gõ regedit vào cửa sổ Run",
+                "is_correct": true
+            },
+            {
+                "content": "Bấm Ctrl+ Esc+ r rồi bấm Enter",
+                "is_correct": false
+            },
+            {
+                "content": "a và b đúng",
+                "is_correct": false
+            },
+            {
+                "content": "Tất cả đều sai",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Quy trình crack một sản phẩm phần mềm đơn giản gồm mấy bước",
+        "answers": [
+            {
+                "content": "3",
+                "is_correct": true
+            },
+            {
+                "content": "4",
+                "is_correct": false
+            },
+            {
+                "content": "5",
+                "is_correct": false
+            },
+            {
+                "content": "3 hoặc 4",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Hai giao thức sử dụng trong IPSec (IPSec Protocol) gồm",
+        "answers": [
+            {
+                "content": "IP Authentication Header, TCP/IP",
+                "is_correct": false
+            },
+            {
+                "content": "TCP/IP, IP Encapsulating Security Payload",
+                "is_correct": false
+            },
+            {
+                "content": "IP Authentication Header, IP Encapsulating Security Payload",
+                "is_correct": true
+            },
+            {
+                "content": "Tất cả đều đúng",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Các điểm khác nhau cơ bản giữa dịch vụ X.509 và Kerberos là",
+        "answers": [
+            {
+                "content": "Dựa trên mã hóa đối xứng",
+                "is_correct": true
+            },
+            {
+                "content": "Được sử dụng trong dịch vụ mail",
+                "is_correct": false
+            },
+            {
+                "content": "Xác thực nhiều chiều",
+                "is_correct": false
+            },
+            {
+                "content": "Tất cả đều đúng",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Các chức năng cơ bản của kỹ thuật tấn công Sniffer",
+        "answers": [
+            {
+                "content": "Tự động chụp các tên người sử dụng (Username) và mật khẩu không được mã hoá, Chuyển đổi dữ liệu trên đường truyền, phân tích những lỗi đang mắc phải trên hệ thống lưu lượng của mạng.",
+                "is_correct": false
+            },
+            {
+                "content": "Bắt gói tin trên đường truyền, phân tích lỗi và giải mã gói tin",
+                "is_correct": false
+            },
+            {
+                "content": "Bắt gói tin trên đường truyền, mã hóa vag giải mã dữ liệu",
+                "is_correct": false
+            },
+            {
+                "content": "Tất cả đều đúng",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Các bước tấn công của Web Server theo trình tự sau :",
+        "answers": [
+            {
+                "content": "Thăm dò, Scan, Giành quyền truy cập, Duy trì truy cập, Xóa vết",
+                "is_correct": true
+            },
+            {
+                "content": "Scan, Thăm dò, Giành quyền truy cập, Duy trì truy cập, Xóa vết",
+                "is_correct": false
+            },
+            {
+                "content": "Thăm dò, Scan, Duy trì truy cập, Giành quyền truy cập, Xóa vết",
+                "is_correct": false
+            },
+            {
+                "content": "Giành quyền truy cập, Duy trì truy cập, Scan, Thăm dò",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Hiện tượng này do loại chương trình nguy hiểm nào gây ra : Làm mất một số file, làm phân mãnh ổ đĩa, gây tác hại vào những ngày, tháng đặc biệt v.v",
+        "answers": [
+            {
+                "content": "Virrus, Zombie",
+                "is_correct": false
+            },
+            {
+                "content": "Worm, Virus",
+                "is_correct": true
+            },
+            {
+                "content": "Logicbomb, Virus",
+                "is_correct": false
+            },
+            {
+                "content": "Trapdoors, Trojan",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Để đánh giá điểm mạnh của hệ thống IDS người ta dựa vào các yếu tố sau :",
+        "answers": [
+            {
+                "content": "Khởi sự, Cách thực hiện, biểu hiện mà nó ghi nhận",
+                "is_correct": false
+            },
+            {
+                "content": "Khởi sự, giám sát v�� trí, những đặc trưng ghép nối hoặc tích hợp",
+                "is_correct": true
+            },
+            {
+                "content": "Cách thực hiện, biểu hiện mà nó ghi nhận, những đặc trưng ghép nối hoặc tích hợp",
+                "is_correct": false
+            },
+            {
+                "content": "Tất cả đều đúng",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Hai cơ chế chính của hệ thống IDS Trigger để phát hiện khi có một kẻ xâm nhập tấn công mạng là:",
+        "answers": [
+            {
+                "content": "Phát hiện biểu hiện không bình thường, phát hiện sử dụng không đúng",
+                "is_correct": true
+            },
+            {
+                "content": "Phát hiện hiện tượng trùng lặp, phát hiện không bình thường",
+                "is_correct": false
+            },
+            {
+                "content": "Phát hiện thay đổi, phát hiện sử dụng bất bình thường",
+                "is_correct": false
+            },
+            {
+                "content": "Tất cả đều đúng",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Mục tiêu là phân tích mật mã là gì?",
+        "answers": [
+            {
+                "content": "Để xác định thế mạnh của các thuật toán một",
+                "is_correct": true
+            },
+            {
+                "content": "Để tăng cường chức năng thay thế trong một thuật toán mật mã",
+                "is_correct": false
+            },
+            {
+                "content": "Để giảm chức năng transposition trong một thuật toán mật mã",
+                "is_correct": false
+            },
+            {
+                "content": "Để xác định hoán vị sử dụng",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Điều gì sẽ xãy ra khi một thông báo đã được sửa đổi?",
+        "answers": [
+            {
+                "content": "Khoá công cộng đã được thay đổi",
+                "is_correct": false
+            },
+            {
+                "content": "Chìa khóa cá nhân đã được thay đổi",
+                "is_correct": false
+            },
+            {
+                "content": "Thông điệp số đã được thay đổi",
+                "is_correct": false
+            },
+            {
+                "content": "Tin nhắn đã được mã hóa đúng cách",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Mã hóa nào sau đây là một tiêu chuẩn dùng để phát triển cho việc tạo ra thông điệp an toàn?",
+        "answers": [
+            {
+                "content": "Data Encryption Standard",
+                "is_correct": true
+            },
+            {
+                "content": "Digital Signature Standard",
+                "is_correct": false
+            },
+            {
+                "content": "Secure Hash Algorithm",
+                "is_correct": false
+            },
+            {
+                "content": "Chữ kí dữ liệu tiêu chuẩn",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Nếu kẻ tấn công lấy trộm một mật khẩu có chứa một chiều mật khẩu đã mật mã, loại tấn công, cô sẽ thực hiện để tìm mật khẩu đã mật mã?",
+        "answers": [
+            {
+                "content": "Tấn công Man-in-the-middle",
+                "is_correct": false
+            },
+            {
+                "content": "Tấn công Birthday",
+                "is_correct": false
+            },
+            {
+                "content": "Tấn công Denial of Service",
+                "is_correct": false
+            },
+            {
+                "content": "Tấn công Dictionary",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Lợi thế của RSA là gì so với DSS?",
+        "answers": [
+            {
+                "content": "Nó có thể cung cấp cho chữ ký số và mã hóa các chức năng",
+                "is_correct": true
+            },
+            {
+                "content": "Nó sử dụng nguồn tài nguyên ít hơn và mã hóa nhanh hơn bởi vì nó sử dụng các phím đối xứng",
+                "is_correct": false
+            },
+            {
+                "content": "Nó là một thuật toán mật mã khối so với một thuật toán mật mã dòng",
+                "is_correct": false
+            },
+            {
+                "content": "Nó sử dụng một lần mã hóa pad",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Những gì được sử dụng để tạo ra một chữ ký điện tử?",
+        "answers": [
+            {
+                "content": "Khóa riêng của người nhận",
+                "is_correct": false
+            },
+            {
+                "content": "Khóa công khai của người gửi",
+                "is_correct": false
+            },
+            {
+                "content": "Khóa riêng của người gửi",
+                "is_correct": true
+            },
+            {
+                "content": "Khóa công khai của người nhận",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Phương thức nào sau đây là tốt nhất mô tả một chữ ký điện tử?",
+        "answers": [
+            {
+                "content": "Một phương thức chuyển giao một chữ ký viết tay vào một tài liệu điện tử",
+                "is_correct": false
+            },
+            {
+                "content": "Một phương pháp mã hóa thông tin bí mật",
+                "is_correct": false
+            },
+            {
+                "content": "Một phương pháp để cung cấp một chữ ký điện tử và mã hóa",
+                "is_correct": false
+            },
+            {
+                "content": "Một phương pháp để cho những người nhận của tin nhắn chứng minh nguồn gốc và sự toàn vẹn của một tin nhắn",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Sử dụng nhiêu bit với DES để có hiệu quả?",
+        "answers": [
+            {
+                "content": "56",
+                "is_correct": false
+            },
+            {
+                "content": "64",
+                "is_correct": true
+            },
+            {
+                "content": "32",
+                "is_correct": false
+            },
+            {
+                "content": "16",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Các yếu tố ảnh hưởng đến quá trình mã hóa",
+        "answers": [
+            {
+                "content": "Thuật toán mã hóa, giải mã, và tính an toàn của kênh truyền",
+                "is_correct": true
+            },
+            {
+                "content": "Thời gian thực hiện mã hóa và giải mã",
+                "is_correct": false
+            },
+            {
+                "content": "Thực hiện mã hóa khối, mở rộng số bít xử lý",
+                "is_correct": false
+            },
+            {
+                "content": "Tất cả đều sai",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Đối với Firewall lọc gói, hình thức tấn công nào sau đây được thực hiện",
+        "answers": [
+            {
+                "content": "Nhái địa chỉ IP, tấn công giữa, tấn công biên",
+                "is_correct": true
+            },
+            {
+                "content": "Nhái địa chỉ IP, tấn công đường đi nguồn, tấn công từng mẫu nhỏ",
+                "is_correct": false
+            },
+            {
+                "content": "Nhái địa chỉ IP, tấn công vượt firewall,tấn công từng mẫu nhỏ",
+                "is_correct": false
+            },
+            {
+                "content": "Nhái địa chỉ IP, tấn công vượt firewall, tấn công đường đi nguồn",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Ai là người tham gia vào việc phát triển đầu tiên hệ thống mã hóa khóa công?",
+        "answers": [
+            {
+                "content": "Adi Shamir",
+                "is_correct": false
+            },
+            {
+                "content": "Ross Anderson",
+                "is_correct": false
+            },
+            {
+                "content": "Bruce Schneier",
+                "is_correct": false
+            },
+            {
+                "content": "Martin Hellman",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "DES là viết tắt của từ nào ?",
+        "answers": [
+            {
+                "content": "Data encryption system",
+                "is_correct": false
+            },
+            {
+                "content": "Data encryption standard",
+                "is_correct": true
+            },
+            {
+                "content": "Data encoding standard",
+                "is_correct": false
+            },
+            {
+                "content": "Data encryption signature",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Các phát biểu sau đây, phát biểu nào tốt nhất mô tả một hacker mũ trắng?",
+        "answers": [
+            {
+                "content": "Chuyên gia bảo mật",
+                "is_correct": true
+            },
+            {
+                "content": "Cựu Hacker mũ đen",
+                "is_correct": false
+            },
+            {
+                "content": "Cựu Hacker mũ xám",
+                "is_correct": false
+            },
+            {
+                "content": "Hacker hiểm độc",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Giai đoạn đầu của hacking là gì?",
+        "answers": [
+            {
+                "content": "Duy trì truy cập",
+                "is_correct": false
+            },
+            {
+                "content": "Gaining truy cập",
+                "is_correct": false
+            },
+            {
+                "content": "Trinh sát",
+                "is_correct": true
+            },
+            {
+                "content": "Dò tìm (Scanning)",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Khi một hacker cố gắng tấn công một máy chủ qua Internet nó được gọi là loại tấn công?",
+        "answers": [
+            {
+                "content": "Tấn công từ xa",
+                "is_correct": true
+            },
+            {
+                "content": "Tấn công truy cập vật lý",
+                "is_correct": false
+            },
+            {
+                "content": "Truy cập địa phương",
+                "is_correct": false
+            },
+            {
+                "content": "Tấn công tấn công nội",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Công cụ nào sau đây đúng là một công cụ để thực hiện footprinting không bị phát hiện?",
+        "answers": [
+            {
+                "content": "Whois search",
+                "is_correct": true
+            },
+            {
+                "content": "Traceroute",
+                "is_correct": false
+            },
+            {
+                "content": "Ping sweep",
+                "is_correct": false
+            },
+            {
+                "content": "Host scanning",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Bước tiếp theo sẽ được thực hiện sau khi footprinting là gì?",
+        "answers": [
+            {
+                "content": "Scanning",
+                "is_correct": true
+            },
+            {
+                "content": "Enumeration",
+                "is_correct": false
+            },
+            {
+                "content": "System hacking",
+                "is_correct": false
+            },
+            {
+                "content": "Active information gathering",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Footprinting là gì?",
+        "answers": [
+            {
+                "content": "đo dấu vết của một hacker có đạo đức",
+                "is_correct": false
+            },
+            {
+                "content": "tích luỹ dữ liệu bằng cách thu thập thông tin về một mục tiêu",
+                "is_correct": false
+            },
+            {
+                "content": "quét một mạng lưới mục tiêu để phát hiện hệ điều hành các loại",
+                "is_correct": false
+            },
+            {
+                "content": "sơ đồ bố trí vật lý của một mạng của mục tiêu",
+                "is_correct": true
+            }
+        ]
+    },
+    {
+        "question": "Lý do tốt nhất để thực hiện một chính sách bảo mật là gì?",
+        "answers": [
+            {
+                "content": "Tăng an ninh.",
+                "is_correct": true
+            },
+            {
+                "content": "Nó làm cho khó hơn việc thi hành bảo mật",
+                "is_correct": false
+            },
+            {
+                "content": "Hạn chế quyền hạn của nhân viên",
+                "is_correct": false
+            },
+            {
+                "content": "Làm giảm an ninh.",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "FTP sử dụng cổng gì ?",
+        "answers": [
+            {
+                "content": "21",
+                "is_correct": true
+            },
+            {
+                "content": "25",
+                "is_correct": false
+            },
+            {
+                "content": "23",
+                "is_correct": false
+            },
+            {
+                "content": "80",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Cổng nào được HTTPS sử dụng?",
+        "answers": [
+            {
+                "content": "443",
+                "is_correct": true
+            },
+            {
+                "content": "80",
+                "is_correct": false
+            },
+            {
+                "content": "53",
+                "is_correct": false
+            },
+            {
+                "content": "21",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Trojan Horse là gì?",
+        "answers": [
+            {
+                "content": "một chương trình độc hại mà lấy cắp tên người dùng và mật khẩu của bạn",
+                "is_correct": false
+            },
+            {
+                "content": "gây hại như mã giả mạo hoặc thay thế mã hợp pháp",
+                "is_correct": true
+            },
+            {
+                "content": "Một người sử dụng trái phép những người thu truy cập vào cơ sở dữ liệu người dùng của bạn và cho biết thêm mình như một người sử dụng",
+                "is_correct": false
+            },
+            {
+                "content": "Một máy chủ đó là phải hy sinh cho tất cả các hacking nỗ lực để đăng nhập và giám sát các hoạt động hacking",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "John muốn cài đặt một ứng dụng mới vào máy chủ của Windows 2000. Ông muốn đảm bảo rằng các ứng dụng bất kỳ ông sử dụng chưa được cài Trojan. Ông có thể làm gì để giúp đảm bảo điều này?",
+        "answers": [
+            {
+                "content": "So sánh chữ ký MD5 của tập tin với một trong những công bố trên các phương tiện truyền thông phân tán",
+                "is_correct": true
+            },
+            {
+                "content": "Xin các ứng dụng thông qua SSL",
+                "is_correct": false
+            },
+            {
+                "content": "So sánh chữ ký virus của file với một trong những công bố trên các phương tiện truyền thông",
+                "is_correct": false
+            },
+            {
+                "content": "Cài đặt các ứng dụng từ đĩa CD-ROM",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Hầu hết các lỗi SQL Injection đều là do (chọn 2 phương án)",
+        "answers": [
+            {
+                "content": "câu lệnh SQL sai",
+                "is_correct": true
+            },
+            {
+                "content": "trình duyệt Web không hỗ trợ",
+                "is_correct": false
+            },
+            {
+                "content": "User làm cho câu lệnh SQL sai",
+                "is_correct": false
+            },
+            {
+                "content": "Sử dụng Hệ quản trị CSDL không có bản quyền",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Chính sách bảo mật là",
+        "answers": [
+            {
+                "content": "Cơ chế mặc định của hệ điều hành",
+                "is_correct": false
+            },
+            {
+                "content": "phương thức xác định các hành vi “phù hợp” của các đối tượng tương tác với hệ thống",
+                "is_correct": true
+            },
+            {
+                "content": "các tập luật được xây dựng nhằm bảo vệ các tấn công bất hợp pháp từ bên ngoài",
+                "is_correct": false
+            },
+            {
+                "content": "Tất cả đều đúng",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Các loại mục tiêu của chiến tranh thông tin",
+        "answers": [
+            {
+                "content": "Website, E-commerce server",
+                "is_correct": false
+            },
+            {
+                "content": "Internet Relay Chat (IRC), Domain Name System (DNS)",
+                "is_correct": true
+            },
+            {
+                "content": "ISP, Email server",
+                "is_correct": false
+            },
+            {
+                "content": "Tất cả đều đúng",
+                "is_correct": false
+            }
+        ]
+    },
+    {
+        "question": "Khi thực hiện triển khai HIDS khó khăn gặp là",
+        "answers": [
+            {
+                "content": "Chi phí lắp đặt cao, khó bảo quản và duy trì",
+                "is_correct": false
+            },
+            {
+                "content": "Giới hạn tầm nhìn mạng, phải xử lí với nhiều hệ điều hành khác trên mạng.",
+                "is_correct": true
+            },
+            {
+                "content": "Thường xuyên phải cập nhật bảng vá lỗi",
+                "is_correct": false
+            },
+            {
+                "content": "Thường xuyên cài đặt lại phải khi hệ thống mạng thay đổi hệ điều hành",
+                "is_correct": false
+            }
+        ]
+    }
+]

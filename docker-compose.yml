@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  quizhub-db:
+    image: postgres:15-alpine
+    container_name: quizhub-postgres
+    environment:
+      POSTGRES_DB: quiz_hub
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "5433:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  quizhub-app:
+    build: .
+    container_name: quizhub-backend
+    ports:
+      - "8080:8080"
+    depends_on:
+      - quizhub-db
+    environment:
+      # Nối thẳng vào container quizhub-db
+      DB_URL: jdbc:postgresql://quizhub-db:5432/quiz_hub
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      # Biến Google OAuth2
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
+      # Biến Mail
+      SPRING_MAIL_USERNAME: ${SPRING_MAIL_USERNAME}
+      SPRING_MAIL_PASSWORD: ${SPRING_MAIL_PASSWORD}
+      # Biến JWT
+      JWT_SECRET: ${JWT_SECRET}
+      # Biến Gemini API Key
+      GEMINI_API_KEY: ${GEMINI_API_KEY}
+      # Khởi tạo SQL (always cho lần đầu, never cho các lần sau)
+      SQL_INIT_MODE: ${SQL_INIT_MODE:-never}
+    restart: unless-stopped
+
+volumes:
+  pg_data:

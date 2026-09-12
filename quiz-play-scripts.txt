@@ -1,0 +1,539 @@
+﻿
+>     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+>     <script>
+          const assigningId = document.body.dataset.assigningId;
+          let quizData = null;
+          let currentIndex = 0;
+          let userAnswers = {}; // questionId -> [answerIds] or string
+          let timerInterval = null;
+          let endTime = null;
+          let viewMode = 'single'; // 'single' or 'full'
+  
+          document.addEventListener('DOMContentLoaded', initQuiz);
+  
+          function showErrorOverlay(err) {
+              const overlay = document.getElementById('errorOverlay');
+              const title = document.getElementById('errorTitle');
+              const msg = document.getElementById('errorMsg');
+              const icon = document.getElementById('errorIcon');
+  
+              overlay.style.display = 'flex';
+              
+              // Map error codes
+              switch(err.code) {
+                  case 1029: // QUIZ_EXPIRED
+                      title.innerText = "BÃ i thi Ä‘Ã£ káº¿t thÃºc";
+                      msg.innerText = "Ráº¥t tiáº¿c, thá»i gian lÃm bÃi cá»§a ká»³ thi nÃy Ä‘Ã£ háº¿t. Báº¡n khÃ´ng 
+thá»ƒ báº¯t Ä‘áº§u lÆ°á»£t lÃm bÃi má»›i.";
+                      icon.innerText = "â°";
+                      break;
+                  case 1030: // QUIZ_NOT_STARTED
+                      title.innerText = "ChÆ°a Ä‘áº¿n giá» lÃ m bÃ i";
+                      msg.innerText = "Ká»³ thi nÃy chÆ°a báº¯t Ä‘áº§u. Vui lÃ²ng quay láº¡i vÃo Ä‘Ãºng thá»i gian 
+Ä‘Ã£ Ä‘Æ°á»£c thÃ´ng bÃ¡o.";
+                      icon.innerText = "ðŸ“…";
+                      break;
+                  case 1028: // MAX_ATTEMPTS_REACHED
+                      title.innerText = "Háº¿t lÆ°á»£t lÃ m bÃ i";
+                      msg.innerText = "Báº¡n Ä‘Ã£ hoÃn thÃnh tá»‘i Ä‘a sá»‘ lÆ°á»£t lÃm bÃi cho phÃ©p Ä‘á»‘i vá»›i 
+ká»³ thi nÃy.";
+                      icon.innerText = "ðŸ";
+                      break;
+                  default:
+                      title.innerText = "KhÃ´ng thá»ƒ truy cáº­p";
+                      msg.innerText = err.message || "ÄÃ£ cÃ³ lá»—i xáº£y ra khi táº£i bÃi thi. Vui lÃ²ng kiá»ƒm tra 
+láº¡i káº¿t ná»‘i hoáº·c liÃªn há»‡ giÃ¡o viÃªn.";
+                      icon.innerText = "âš ï¸";
+              }
+          }
+  
+          async function initQuiz() {
+              try {
+                  const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+                  const response = await fetch(`/api/student/quiz/start?assigningId=${assigningId}`, {
+                      headers: { 'Authorization': 'Bearer ' + token }
+                  });
+  
+                  if (!response.ok) {
+                      const errData = await response.json();
+                      showErrorOverlay(errData);
+                      return;
+                  }
+                  quizData = await response.json();
+  
+                  // Initialize answers from server first
+                  userAnswers = quizData.selectedAnswers || {};
+                  if (quizData.selectedTexts) {
+                      Object.assign(userAnswers, quizData.selectedTexts);
+                  }
+  
+                  const saved = localStorage.getItem(`quiz_answers_${quizData.attemptId}`);
+                  if (saved) {
+                      const localData = JSON.parse(saved);
+                      // Only restore from local if the local data is fresher than the server's start time
+                      const serverStart = quizData.startedAtMillis;
+                      if (localData.timestamp && localData.timestamp > serverStart) {
+                          Object.assign(userAnswers, localData.answers);
+                      }
+                  }
+  
+                  setupTimer();
+                  renderView();
+                  renderGrid();
+                  updateStats();
+  
+                  document.getElementById('examTitle').textContent = quizData.quizTitle;
+                  document.getElementById('pageLoading').style.display = 'none';
+  
+                  // Check for fullscreen after loading
+                  checkFullScreen();
+  
+              } catch (error) {
+                  console.error(error);
+                  alert("Lá»—i há»‡ thá»‘ng khi táº£i bÃ i thi.");
+                  window.location.href = '/student';
+              }
+          }
+  
+          function setupTimer() {
+              const startedAt = new Date(quizData.startedAt);
+              const durationMs = quizData.durationInMins * 60 * 1000;
+              endTime = new Date(startedAt.getTime() + durationMs);
+  
+              updateTimer();
+              timerInterval = setInterval(updateTimer, 1000);
+          }
+  
+          function updateTimer() {
+              const now = new Date();
+              const diff = endTime - now;
+  
+              if (diff <= 0) {
+                  clearInterval(timerInterval);
+                  document.getElementById('timerDisplay').textContent = "00:00";
+                  autoSubmit();
+                  return;
+              }
+  
+              const mins = Math.floor(diff / 1000 / 60);
+              const secs = Math.floor((diff / 1000) % 60);
+              
+              const display = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+              document.getElementById('timerDisplay').textContent = display;
+  
+              if (mins < 5) {
+                  document.getElementById('timerBox').classList.add('timer-warning');
+              }
+          }
+  
+          function setViewMode(mode) {
+              viewMode = mode;
+              document.getElementById('btnSingleMode').classList.toggle('active', mode === 'single');
+              document.getElementById('btnFullMode').classList.toggle('active', mode === 'full');
+              
+              document.getElementById('singleModeView').style.display = mode === 'single' ? 'block' : 'none';
+              document.getElementById('fullModeView').style.display = mode === 'full' ? 'block' : 'none';
+              
+              renderView();
+              renderGrid();
+          }
+  
+          function renderView() {
+              if (viewMode === 'single') {
+                  renderSingleQuestion();
+              } else {
+                  renderFullQuiz();
+              }
+          }
+  
+          function renderSingleQuestion() {
+              const q = quizData.questions[currentIndex];
+              document.getElementById('qNumber').textContent = `CÃ¢u ${currentIndex + 1}`;
+              document.getElementById('qType').textContent = q.type === 'SINGLE_CHOICE' ? 'CHá»ŒN Má»˜T ÄÃP ÃN' : 
+(q.type === 'FILL_IN_BLANK' ? 'ÄIá»€N KHUYáº¾T' : 'CHá»ŒN NHIá»€U ÄÃP ÃN');
+              
+              const meta = document.querySelector('.q-meta');
+              const existingLevel = meta.querySelector('.q-level-badge');
+              if (existingLevel) existingLevel.remove();
+              
+              const levelBadge = document.createElement('span');
+              levelBadge.className = `q-level-badge level-${(q.level || 'medium').toLowerCase()}`;
+              levelBadge.textContent = q.level || 'MEDIUM';
+              meta.appendChild(levelBadge);
+  
+              document.getElementById('qText').textContent = q.text;
+  
+              const list = document.getElementById('answersList');
+              list.innerHTML = '';
+  
+              if (q.type === 'FILL_IN_BLANK') {
+                  const input = document.createElement('input');
+                  input.type = 'text';
+                  input.className = 'fill-input';
+                  input.placeholder = 'Nháº­p cÃ¢u tráº£ lá»i cá»§a báº¡n táº¡i Ä‘Ã¢y...';
+                  input.value = userAnswers[q.id] || '';
+                  input.oninput = (e) => handleFillInput(q.id, e.target.value);
+                  list.appendChild(input);
+              } else {
+                  q.answers.forEach((ans, i) => {
+                      const div = document.createElement('div');
+                      div.className = `answer-opt ${isAnswerSelected(q.id, ans.id) ? 'selected' : ''}`;
+                      div.innerHTML = `
+                          <div class="opt-prefix">${String.fromCharCode(65 + i)}</div>
+                          <div class="opt-text">${ans.text}</div>
+                      `;
+                      div.onclick = () => toggleAnswer(q.id, ans.id, q.type);
+                      list.appendChild(div);
+                  });
+              }
+  
+              document.getElementById('btnPrev').disabled = currentIndex === 0;
+              if (currentIndex === quizData.questions.length - 1) {
+                  document.getElementById('btnNext').classList.add('d-none');
+              } else {
+                  document.getElementById('btnNext').classList.remove('d-none');
+                  document.getElementById('btnNext').innerHTML = 'CÃ¢u tiáº¿p theo <i class="bi 
+bi-chevron-right"></i>';
+              }
+          }
+  
+          function renderFullQuiz() {
+              const container = document.getElementById('fullModeView');
+              container.innerHTML = '';
+  
+              quizData.questions.forEach((q, idx) => {
+                  const qDiv = document.createElement('div');
+                  qDiv.className = 'full-mode-question';
+                  qDiv.id = `q-full-${idx}`;
+                  
+                  let answersHtml = '';
+                  if (q.type === 'FILL_IN_BLANK') {
+                      answersHtml = `<input type="text" class="fill-input" placeholder="Nháºp cÃ¢u tráº£ lá»i..." 
+value="${userAnswers[q.id] || ''}" oninput="handleFillInput(${q.id}, this.value, true)">`;
+                  } else {
+                      q.answers.forEach((ans, i) => {
+                          answersHtml += `
+                              <div class="answer-opt ${isAnswerSelected(q.id, ans.id) ? 'selected' : ''}" 
+                                   onclick="toggleAnswer(${q.id}, ${ans.id}, '${q.type}')">
+                                  <div class="opt-prefix">${String.fromCharCode(65 + i)}</div>
+                                  <div class="opt-text">${ans.text}</div>
+                              </div>
+                          `;
+                      });
+                  }
+  
+                  qDiv.innerHTML = `
+                      <div class="mb-3 d-flex gap-2">
+                          <span class="q-type-badge">CÃ¢u ${idx + 1}</span>
+                          <span class="q-type-badge">${q.type === 'SINGLE_CHOICE' ? 'CHá»ŒN Má»˜T' : (q.type === 
+'FILL_IN_BLANK' ? 'ÄIá»€N KHUYáº¾T' : 'CHá»ŒN NHIá»€U')}</span>
+                          <span class="q-level-badge level-${(q.level || 'medium').toLowerCase()}">${q.level || 
+'MEDIUM'}</span>
+                      </div>
+                      <div class="fw-bold fs-5 mb-3">${q.text}</div>
+                      <div class="answers-list">${answersHtml}</div>
+                  `;
+                  container.appendChild(qDiv);
+              });
+  
+              // --- Scroll Spy for Full Mode ---
+              if (window.scrollObserver) window.scrollObserver.disconnect();
+              window.scrollObserver = new IntersectionObserver((entries) => {
+                  const visibleEntry = entries.find(e => e.isIntersecting);
+                  if (visibleEntry) {
+                      const idx = parseInt(visibleEntry.target.id.replace('q-full-', ''));
+                      currentIndex = idx;
+                      renderGrid();
+                      updateStats();
+                  }
+              }, {
+                  rootMargin: '-10% 0px -80% 0px',
+                  threshold: 0
+              });
+              document.querySelectorAll('.full-mode-question').forEach(q => window.scrollObserver.observe(q));
+          }
+  
+          function toggleAnswer(qId, ansId, type) {
+              if (type === 'SINGLE_CHOICE') {
+                  userAnswers[qId] = [ansId];
+              } else {
+                  if (!Array.isArray(userAnswers[qId])) userAnswers[qId] = [];
+                  const idx = userAnswers[qId].indexOf(ansId);
+                  if (idx > -1) userAnswers[qId].splice(idx, 1);
+                  else userAnswers[qId].push(ansId);
+              }
+              
+              saveToLocal();
+              saveToServer(qId, userAnswers[qId]);
+              renderView();
+              renderGrid();
+              updateStats();
+          }
+  
+          function isAnswerSelected(qId, ansId) {
+              return Array.isArray(userAnswers[qId]) && userAnswers[qId].includes(ansId);
+          }
+  
+          function handleFillInput(qId, val, isFullMode = false) {
+              userAnswers[qId] = val;
+              saveToLocal();
+              saveToServer(qId, val);
+              if (!isFullMode) {
+                  renderGrid();
+              } else {
+                  renderGrid();
+              }
+          }
+  
+          function saveToLocal() {
+              const dataToSave = {
+                  answers: userAnswers,
+                  timestamp: new Date().getTime()
+              };
+              localStorage.setItem(`quiz_answers_${quizData.attemptId}`, JSON.stringify(dataToSave));
+          }
+  
+          async function saveToServer(qId, val) {
+              const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+              const q = quizData.questions.find(qu => qu.id == qId);
+              const payload = {};
+              if (q && q.type === 'FILL_IN_BLANK') {
+                  payload.selectedText = val;
+              } else {
+                  payload.answerIds = val;
+              }
+  
+              try {
+                  await fetch(`/api/student/quiz/save-answer?attemptId=${quizData.attemptId}&questionId=${qId}`, {
+                      method: 'POST',
+                      headers: { 
+                          'Authorization': 'Bearer ' + token,
+                          'Content-Type': 'application/json'
+                      },
+                      body: JSON.stringify(payload)
+                  });
+              } catch (e) {
+                  console.error("Lá»—i khi lÆ°u Ä‘Ã¡p Ã¡n lÃªn server:", e);
+              }
+          }
+  
+          function renderGrid() {
+              const grid = document.getElementById('qGrid');
+              grid.innerHTML = '';
+              quizData.questions.forEach((q, i) => {
+                  const dot = document.createElement('div');
+                  const hasAnswer = (Array.isArray(userAnswers[q.id]) && userAnswers[q.id].length > 0) || (typeof 
+userAnswers[q.id] === 'string' && userAnswers[q.id].trim() !== '');
+                  dot.className = `q-dot ${i === currentIndex ? 'active' : ''} ${hasAnswer ? 'answered' : ''}`;
+                  dot.textContent = i + 1;
+                  dot.onclick = () => {
+                      currentIndex = i;
+                      if (viewMode === 'full') {
+                          document.getElementById(`q-full-${i}`).scrollIntoView({ behavior: 'smooth' });
+                      } else {
+                          renderView();
+                      }
+                      renderGrid();
+                  };
+                  grid.appendChild(dot);
+              });
+          }
+  
+          function updateStats() {
+              const total = quizData.questions.length;
+              const answered = Object.values(userAnswers).filter(a => (Array.isArray(a) && a.length > 0) || (typeof a 
+=== 'string' && a.trim() !== '')).length;
+              document.getElementById('progressText').textContent = `${currentIndex + 1}/${total}`;
+              document.getElementById('answeredCount').textContent = answered;
+              document.getElementById('progressBar').style.width = (answered / total * 100) + '%';
+          }
+  
+          function nextQuestion() {
+              if (currentIndex < quizData.questions.length - 1) {
+                  currentIndex++;
+                  renderView();
+                  renderGrid();
+                  updateStats();
+              }
+          }
+  
+          function prevQuestion() {
+              if (currentIndex > 0) {
+                  currentIndex--;
+                  renderView();
+                  renderGrid();
+                  updateStats();
+              }
+          }
+  
+          function submitQuiz() {
+              document.getElementById('remainingTimeInfo').textContent = 
+document.getElementById('timerDisplay').textContent;
+              new bootstrap.Modal(document.getElementById('submitModal')).show();
+          }
+  
+          async function executeSubmit() {
+              isMonitoring = false;
+              document.getElementById('pageLoading').style.display = 'flex';
+              const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+              const submitBtn = document.querySelector('#submitModal .btn-primary');
+              submitBtn.disabled = true;
+              submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> Äang ná»™p...';
+  
+              try {
+                  const questions = quizData.questions.map(q => {
+                      const ans = userAnswers[q.id];
+                      const qPayload = { questionId: q.id };
+                      if (q.type === 'FILL_IN_BLANK') {
+                          qPayload.selectedText = ans || '';
+                      } else {
+                          qPayload.answerIds = ans || [];
+                      }
+                      return qPayload;
+                  });
+  
+                  const response = await fetch('/api/student/quiz/submit', {
+                      method: 'POST',
+                      headers: { 
+                          'Authorization': 'Bearer ' + token,
+                          'Content-Type': 'application/json'
+                      },
+                      body: JSON.stringify({
+                          attemptId: quizData.attemptId,
+                          questions: questions
+                      })
+                  });
+  
+                  if (response.ok) {
+                      const result = await response.json();
+                      localStorage.removeItem(`quiz_answers_${quizData.attemptId}`);
+                      window.location.href = `/student/quiz/result/${result.id}`;
+                  } else {
+                      throw new Error("Lá»—i khi ná»™p bÃ i");
+                  }
+              } catch (error) {
+                  alert(error.message);
+                  document.getElementById('pageLoading').style.display = 'none';
+              }
+          }
+  
+          function autoSubmit() {
+              showToast("ÄÃ£ háº¿t thá»i gian lÃ m bÃ i! Há»‡ thá»‘ng sáº½ tá»± Ä‘á»™ng ná»™p bÃ i.", "err");
+              executeSubmit();
+          }
+  
+          function confirmExit() {
+              new bootstrap.Modal(document.getElementById('exitModal')).show();
+          }
+  
+          function executeExit() {
+              logViolation('MANUAL_EXIT');
+              setTimeout(() => {
+                  isMonitoring = false;
+                  window.location.href = '/student';
+              }, 500);
+          }
+  
+          // Monitoring logic
+          let isMonitoring = true;
+          document.addEventListener('visibilitychange', () => {
+              if (document.visibilityState === 'hidden' && isMonitoring) {
+                  logViolation('TAB_SWITCH');
+              }
+          });
+  
+          window.addEventListener('blur', () => {
+              if (isMonitoring) {
+                  logViolation('WINDOW_BLUR');
+              }
+          });
+  
+          window.addEventListener('beforeunload', (event) => {
+              if (isMonitoring) {
+                  logViolation('TAB_CLOSE', true);
+              }
+          });
+  
+          // Fullscreen Enforcement Logic
+          function checkFullScreen() {
+              if (!document.fullscreenElement && isMonitoring) {
+                  document.getElementById('fullscreenOverlay').style.display = 'flex';
+                  document.getElementById('fsMessage').innerHTML = `
+                      <span class="text-danger fw-bold">PhÃ¡t hiá»‡n hÃ nh Ä‘á»™ng thoÃ¡t toÃ n mÃ n hÃ¬nh!</span><br>
+                      Äá»ƒ Ä‘áº£m báº£o tÃnh cÃ´ng báº±ng, vui lÃ²ng quay láº¡i cháº¿ Ä‘á»™ toÃn mÃn hÃ¬nh Ä‘á»ƒ 
+tiáº¿p tá»¥c lÃm bÃi.
+                  `;
+                  return false;
+              }
+              return true;
+          }
+  
+          document.addEventListener('fullscreenchange', () => {
+              if (!document.fullscreenElement && isMonitoring) {
+                  logViolation('FULLSCREEN_EXIT');
+                  checkFullScreen();
+              } else if (document.fullscreenElement) {
+                  document.getElementById('fullscreenOverlay').style.display = 'none';
+              }
+          });
+  
+          function requestFullScreen() {
+              const elem = document.documentElement;
+              if (elem.requestFullscreen) {
+                  elem.requestFullscreen();
+              } else if (elem.webkitRequestFullscreen) { /* Safari */
+                  elem.webkitRequestFullscreen();
+              } else if (elem.msRequestFullscreen) { /* IE11 */
+                  elem.msRequestFullscreen();
+              }
+          }
+  
+          async function logViolation(code, isBeacon = false) {
+              if(!quizData || !quizData.attemptId) return;
+              const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+              const url = '/api/student/quiz/log-violation';
+              const data = JSON.stringify({
+                  attemptId: quizData.attemptId,
+                  violationCode: code
+              });
+  
+              if (isBeacon && navigator.sendBeacon) {
+                  const blob = new Blob([data], { type: 'application/json' });
+                  navigator.sendBeacon(url, blob);
+                  return;
+              }
+  
+              try {
+                  await fetch(url, {
+                      method: 'POST',
+                      headers: { 
+                          'Authorization': 'Bearer ' + token,
+                          'Content-Type': 'application/json'
+                      },
+                      body: data
+                  });
+                  showToast("PhÃ¡t hiá»‡n hÃ nh Ä‘á»™ng báº¥t thÆ°á»ng! Há»‡ thá»‘ng Ä‘Ã£ ghi nháº­n.", "err");
+              } catch (e) {
+                  console.error("Lá»—i khi ghi nháº­n vi pháº¡m:", e);
+              }
+          }
+  
+          function showToast(msg, type = 'ok') {
+              const wrap = document.getElementById('toastWrap');
+              if(!wrap) return;
+              const t = document.createElement('div');
+              t.className = `toast-msg show ${type}`;
+              t.innerHTML = `<i class="bi ${type==='ok'?'bi-check-circle-fill':'bi-exclamation-triangle-fill'}"></i> 
+<span>${msg}</span>`;
+              wrap.appendChild(t);
+              setTimeout(() => {
+                  t.classList.remove('show');
+                  setTimeout(() => t.remove(), 300);
+              }, 3000);
+          }
+      </script>
+  </body>
+  </html>
+  
+
+

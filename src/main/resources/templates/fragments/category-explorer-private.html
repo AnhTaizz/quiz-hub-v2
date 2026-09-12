@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+</head>
+
+<body>
+
+    <!-- 1️⃣ Fragment: Private Category Explorer Modal -->
+    <div th:fragment="category-explorer-private-modal" class="modal fade" id="categoryExplorerPrivateModal" tabindex="-1" aria-hidden="true">
+        <link rel="stylesheet" th:href="@{/css/fragments/category-explorer-private.css}">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.15);">
+                <div class="modal-header border-0 p-4" style="background: linear-gradient(135deg, #4f46e5, #3730a3); color: #ffffff;">
+                    <h5 class="modal-title fw-bold text-white mb-0" style="color: #ffffff !important;">
+                        <i class="bi bi-folder2-open me-2"></i>Chọn Danh mục của bạn
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="mb-3">
+                        <p class="text-muted small mb-0"><i class="bi bi-info-circle me-1"></i> Bấm vào tên danh mục để chọn.</p>
+                    </div>
+
+                    <div id="private-category-tree-container" style="max-height: 400px; overflow-y: auto; padding: 5px;">
+                        <!-- JS renders private categories here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2️⃣ Fragment: Category Create / Edit Modal -->
+    <div th:fragment="category-create-modal" class="modal fade" id="categoryCreateModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.15);">
+                <div class="modal-header border-0 p-4" style="background: linear-gradient(135deg, #4f46e5, #3730a3); color: #ffffff;">
+                    <h5 class="modal-title fw-bold text-white mb-0" id="categoryCreateTitle" style="color: #ffffff !important;">
+                        <i class="bi bi-folder-plus me-2"></i>Tạo danh mục mới
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <form id="categoryCreateForm" onsubmit="event.preventDefault(); submitCategoryCreateForm();">
+                        <input type="hidden" id="categoryCreateId">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold text-dark">Tên danh mục <span class="text-danger">*</span></label>
+                            <input type="text" id="categoryCreateName" class="form-control" style="border-radius: 12px; padding: 10px 14px;" placeholder="Ví dụ: Lập trình Java, Toán cao cấp..." required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold text-dark">Danh mục cha (Không bắt buộc)</label>
+                            <button type="button" id="categoryCreateParentBtn" 
+                                    class="btn btn-white w-100 text-start d-flex justify-content-between align-items-center" 
+                                    style="border-radius: 12px; padding: 10px 14px; border: 1px solid #dee2e6; background-color: #fff;" 
+                                    onclick="openParentCategoryPicker()">
+                                <span id="categoryCreateParentNameDisplay" class="text-muted">Mặc định: Danh mục gốc</span>
+                                <i class="bi bi-chevron-down text-muted"></i>
+                            </button>
+                            <input type="hidden" id="categoryCreateParentId">
+                            <input type="hidden" id="categoryCreateParentName">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold text-dark">Mô tả</label>
+                            <textarea id="categoryCreateDesc" class="form-control" rows="3" style="border-radius: 12px; padding: 10px 14px;" placeholder="Nhập mô tả cho danh mục này..."></textarea>
+                        </div>
+
+                        <div class="d-flex gap-2 justify-content-end mt-4">
+                            <button type="button" class="btn btn-light px-4 py-2 fw-bold" style="border-radius: 10px;" data-bs-dismiss="modal">Hủy</button>
+                            <button type="submit" class="btn btn-primary px-4 py-2 fw-bold" style="border-radius: 10px; background-color: #4f46e5; border-color: #4f46e5;">Lưu lại</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:fragment="category-explorer-private-scripts(userType)" th:remove="tag">
+        <script th:inline="javascript">
+            window.CATEGORY_EXPLORER_CONFIG = {
+                userType: [[${userType}]]
+            };
+        </script>
+        <script th:src="@{/js/fragments/category-explorer-private.js}"></script>
+    </div>
+
+</body>
+</html>
