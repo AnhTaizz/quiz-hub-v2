@@ -199,7 +199,13 @@ public class QuizTakingServiceImpl implements QuizTakingService {
     @Transactional
     public void saveAnswer(Long studentId, Long attemptId, Long questionId,
             SaveAnswerRequestDTO request) {
-        Attempt attempt = getValidAttempt(attemptId, studentId);
+        // Acquire PESSIMISTIC_WRITE lock on Attempt
+        Attempt attempt = attemptRepository.findWithLockById(attemptId)
+                .orElseThrow(() -> new AppException(ErrorCode.ATTEMPT_NOT_FOUND));
+
+        if (!attempt.getQuizTaking().getLearner().getId().equals(studentId)) {
+            throw new AppException(ErrorCode.UNAUTHORIZED);
+        }
 
         if (attempt.getEndedAt() != null) {
             throw new AppException(ErrorCode.ATTEMPT_ALREADY_SUBMITTED);
@@ -207,6 +213,22 @@ public class QuizTakingServiceImpl implements QuizTakingService {
 
         // Check schedule if assigned
         validateQuizSchedule(attempt.getQuizTaking().getQuizAssigning());
+
+        Long incomingRevision = request.getRevision();
+        Long latestPersistedRevision = userAttemptAnswerRepository.findMaxRevisionByAttemptIdAndQuestionId(attemptId, questionId);
+
+        if (incomingRevision != null) {
+            if (latestPersistedRevision != null && latestPersistedRevision >= incomingRevision) {
+                // Stale or duplicate request - ignore safely
+                return;
+            }
+        } else {
+            // Legacy request
+            if (latestPersistedRevision != null) {
+                // Unversioned request cannot overwrite existing versioned state
+                return;
+            }
+        }
 
         // Remove old answers for this question in this attempt
         userAttemptAnswerRepository.deleteByAttemptIdAndQuestionId(attemptId, questionId);
@@ -219,6 +241,7 @@ public class QuizTakingServiceImpl implements QuizTakingService {
                     .question(question)
                     .selectedText(request.getSelectedText())
                     .timestamp(LocalDateTime.now())
+                    .revision(incomingRevision)
                     .build();
             userAttemptAnswerRepository.save(uaa);
         } else if (request.getAnswerIds() != null && !request.getAnswerIds().isEmpty()) {
@@ -237,11 +260,21 @@ public class QuizTakingServiceImpl implements QuizTakingService {
                         .question(question)
                         .answer(answer)
                         .timestamp(LocalDateTime.now())
+                        .revision(incomingRevision)
                         .build());
             }
             if (!answersToSave.isEmpty()) {
                 userAttemptAnswerRepository.saveAll(answersToSave);
             }
+        } else {
+            // Tombstone for clear/deselect
+            UserAttemptAnswer uaa = UserAttemptAnswer.builder()
+                    .attempt(attempt)
+                    .question(question)
+                    .timestamp(LocalDateTime.now())
+                    .revision(incomingRevision)
+                    .build();
+            userAttemptAnswerRepository.save(uaa);
         }
     }
 

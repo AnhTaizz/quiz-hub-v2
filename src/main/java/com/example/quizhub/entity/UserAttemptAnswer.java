@@ -37,4 +37,7 @@ public class UserAttemptAnswer {
 
     @Column(name = "timestamp")
     LocalDateTime timestamp;
+
+    @Column(name = "revision")
+    Long revision;
 }

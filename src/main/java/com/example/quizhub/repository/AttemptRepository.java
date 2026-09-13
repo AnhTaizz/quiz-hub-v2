@@ -12,6 +12,9 @@ import java.util.List;
 
 @Repository
 public interface AttemptRepository extends JpaRepository<Attempt, Long> {
+    @org.springframework.data.jpa.repository.Lock(jakarta.persistence.LockModeType.PESSIMISTIC_WRITE)
+    @Query("SELECT a FROM Attempt a WHERE a.id = :id")
+    java.util.Optional<Attempt> findWithLockById(@Param("id") Long id);
 
     List<Attempt> findByQuizTakingId(Long quizTakingId);
     List<Attempt> findByQuizTakingIdOrderByStartedAtDesc(Long quizTakingId);

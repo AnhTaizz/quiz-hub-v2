@@ -25,8 +25,9 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
-import java.util.UUID;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -333,29 +334,83 @@ class QuizAttemptLifecycleIntegrationTest {
     }
 
     @Test
-    @org.junit.jupiter.api.Disabled("Known V2 defect: delayed stale autosave can overwrite newer answer because save requests have no ordering/revision metadata.")
     void delayedOlderSaveCanOverwriteNewerAnswer() {
-        // Reproduce stale autosave overwrite defect
+        // [TEST R1] - Reproduce stale autosave overwrite defect (now fixed)
         // Logical user order: A -> B
         // Server arrival order: B -> A (delayed)
         
         QuizTakingResponseDTO startRes = quizTakingService.startQuizAttempt(studentA.getId(), assignedQuiz.getId());
         Long attemptId = startRes.getAttemptId();
 
-        // 1. Newer intent B reaches server first
+        // 1. Newer intent B reaches server first (revision 2)
         SaveAnswerRequestDTO requestB = new SaveAnswerRequestDTO();
         requestB.setAnswerIds(List.of(answerOptionB.getId()));
+        requestB.setRevision(2L);
         quizTakingService.saveAnswer(studentA.getId(), attemptId, singleChoiceQuestion.getId(), requestB);
 
-        // 2. Delayed older intent A reaches server afterward
+        // 2. Delayed older intent A reaches server afterward (revision 1)
         SaveAnswerRequestDTO requestA = new SaveAnswerRequestDTO();
         requestA.setAnswerIds(List.of(answerOptionA.getId()));
+        requestA.setRevision(1L);
         quizTakingService.saveAnswer(studentA.getId(), attemptId, singleChoiceQuestion.getId(), requestA);
 
         // Desired invariant: final answer must still be B (the newer intent)
-        // With current code, this will fail because A overwrites B.
         List<UserAttemptAnswer> answers = userAttemptAnswerRepository.findByAttemptId(attemptId);
         assertThat(answers).hasSize(1);
         assertThat(answers.get(0).getAnswer().getId()).isEqualTo(answerOptionB.getId());
+    }
+
+    @Test
+    void duplicateRevisionIsIdempotent() {
+        // [TEST R2] - duplicate revision is idempotent
+        QuizTakingResponseDTO startRes = quizTakingService.startQuizAttempt(studentA.getId(), assignedQuiz.getId());
+        Long attemptId = startRes.getAttemptId();
+
+        SaveAnswerRequestDTO request1 = new SaveAnswerRequestDTO();
+        request1.setAnswerIds(List.of(answerOptionB.getId()));
+        request1.setRevision(2L);
+        quizTakingService.saveAnswer(studentA.getId(), attemptId, singleChoiceQuestion.getId(), request1);
+
+        SaveAnswerRequestDTO request2 = new SaveAnswerRequestDTO();
+        request2.setAnswerIds(List.of(answerOptionA.getId()));
+        request2.setRevision(2L);
+        quizTakingService.saveAnswer(studentA.getId(), attemptId, singleChoiceQuestion.getId(), request2);
+
+        // Second request with same revision must not replace B
+        List<UserAttemptAnswer> answers = userAttemptAnswerRepository.findByAttemptId(attemptId);
+        assertThat(answers).hasSize(1);
+        assertThat(answers.get(0).getAnswer().getId()).isEqualTo(answerOptionB.getId());
+    }
+
+    @Test
+    void newerClearProtectsAgainstStaleRestore() {
+        // [TEST R3] - newer clear protects against stale restore
+        QuizTakingResponseDTO startRes = quizTakingService.startQuizAttempt(studentA.getId(), assignedQuiz.getId());
+        Long attemptId = startRes.getAttemptId();
+
+        // rev1 A
+        SaveAnswerRequestDTO request1 = new SaveAnswerRequestDTO();
+        request1.setAnswerIds(List.of(answerOptionA.getId()));
+        request1.setRevision(1L);
+        quizTakingService.saveAnswer(studentA.getId(), attemptId, singleChoiceQuestion.getId(), request1);
+
+        // rev2 clear
+        SaveAnswerRequestDTO request2 = new SaveAnswerRequestDTO();
+        request2.setAnswerIds(Collections.emptyList());
+        request2.setRevision(2L);
+        quizTakingService.saveAnswer(studentA.getId(), attemptId, singleChoiceQuestion.getId(), request2);
+
+        // rev1 A delayed/retried
+        SaveAnswerRequestDTO request3 = new SaveAnswerRequestDTO();
+        request3.setAnswerIds(List.of(answerOptionA.getId()));
+        request3.setRevision(1L);
+        quizTakingService.saveAnswer(studentA.getId(), attemptId, singleChoiceQuestion.getId(), request3);
+
+        // Final state must remain unanswered (a tombstone)
+        List<UserAttemptAnswer> answers = userAttemptAnswerRepository.findByAttemptId(attemptId);
+        assertThat(answers).hasSize(1);
+        assertThat(answers.get(0).getAnswer()).isNull();
+        assertThat(answers.get(0).getSelectedText()).isNull();
+        assertThat(answers.get(0).getRevision()).isEqualTo(2L);
     }
 }

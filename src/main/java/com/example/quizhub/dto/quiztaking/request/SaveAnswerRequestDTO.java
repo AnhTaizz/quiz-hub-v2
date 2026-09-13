@@ -16,4 +16,5 @@ import lombok.experimental.FieldDefaults;
 public class SaveAnswerRequestDTO {
     List<Long> answerIds;
     String selectedText;
+    Long revision;
 }
