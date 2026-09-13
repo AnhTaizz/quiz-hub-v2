@@ -15,6 +15,7 @@ import com.example.quizhub.repository.*;
 import com.example.quizhub.service.quiz.QuizTakingService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -476,5 +477,49 @@ class QuizAttemptLifecycleIntegrationTest {
         assertThat(answers).hasSize(1);
         assertThat(answers.get(0).getAnswer().getId()).isEqualTo(answerOptionB.getId());
         assertThat(answers.get(0).getRevision()).isEqualTo(6L);
+    }
+
+    @Test
+    @Disabled("Known V2 defect: stale submit payload can overwrite newer revisioned autosave state.")
+    void staleSubmitPayloadCanOverwriteNewerAutosave() {
+        // [TEST] - Reproduce stale submit overwriting newer autosave
+        // 1. Start attempt
+        QuizTakingResponseDTO startRes = quizTakingService.startQuizAttempt(studentA.getId(), assignedQuiz.getId());
+        Long attemptId = startRes.getAttemptId();
+
+        // 2. Save Option B through saveAnswer using revision 2
+        SaveAnswerRequestDTO requestB = new SaveAnswerRequestDTO();
+        requestB.setAnswerIds(List.of(answerOptionB.getId()));
+        requestB.setRevision(2L);
+        quizTakingService.saveAnswer(studentA.getId(), attemptId, singleChoiceQuestion.getId(), requestB);
+
+        // 3. Verify DB contains B revision 2
+        List<UserAttemptAnswer> answers = userAttemptAnswerRepository.findByAttemptId(attemptId);
+        assertThat(answers).hasSize(1);
+        assertThat(answers.get(0).getAnswer().getId()).isEqualTo(answerOptionB.getId());
+        assertThat(answers.get(0).getRevision()).isEqualTo(2L);
+
+        // 4. Construct a submit payload containing stale Option A
+        QuestionSubmitRequestDTO qSubmit = new QuestionSubmitRequestDTO();
+        qSubmit.setQuestionId(singleChoiceQuestion.getId());
+        qSubmit.setAnswerIds(List.of(answerOptionA.getId())); // STALE! A is older intent
+
+        QuizSubmitRequestDTO submitReq = new QuizSubmitRequestDTO();
+        submitReq.setAttemptId(attemptId);
+        submitReq.setQuestions(List.of(qSubmit));
+
+        // 5. Call submitQuizAttempt
+        quizTakingService.submitQuizAttempt(studentA.getId(), submitReq);
+
+        // 6. Reload attempt and saved answers from DB
+        Attempt finalizedAttempt = attemptRepository.findById(attemptId).orElseThrow();
+        List<UserAttemptAnswer> finalAnswers = userAttemptAnswerRepository.findByAttemptId(attemptId);
+
+        // 7. Assert the DESIRED invariant (these will fail currently because A overwrites B)
+        assertThat(finalAnswers).hasSize(1);
+        assertThat(finalAnswers.get(0).getAnswer().getId()).isEqualTo(answerOptionB.getId());
+        assertThat(finalizedAttempt.getResult()).isEqualTo(0.0);
+        assertThat(finalizedAttempt.getCorrectNum()).isEqualTo(0);
+        assertThat(finalizedAttempt.getIncorrectNum()).isEqualTo(1);
     }
 }
