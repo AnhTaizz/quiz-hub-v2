@@ -34,3 +34,12 @@ build/
 
 # Security
 .env
+
+# Runtime / build logs
+*.log
+compile_log.txt
+error_log.txt
+
+# OS artifacts
+.DS_Store
+Thumbs.db
