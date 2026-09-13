@@ -17,7 +17,6 @@ import com.example.quizhub.repository.*;
 import com.example.quizhub.service.quiz.QuizTakingService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -517,9 +516,10 @@ class QuizAttemptLifecycleIntegrationTest {
         Attempt finalizedAttempt = attemptRepository.findById(attemptId).orElseThrow();
         List<UserAttemptAnswer> finalAnswers = userAttemptAnswerRepository.findByAttemptId(attemptId);
 
-        // 7. Assert the DESIRED invariant (these will fail currently because A overwrites B)
+        // 7. Assert the DESIRED invariant
         assertThat(finalAnswers).hasSize(1);
         assertThat(finalAnswers.get(0).getAnswer().getId()).isEqualTo(answerOptionB.getId());
+        assertThat(finalAnswers.get(0).getRevision()).isEqualTo(2L);
         assertThat(finalizedAttempt.getResult()).isEqualByComparingTo(BigDecimal.ZERO);
         assertThat(finalizedAttempt.getCorrectNum()).isEqualTo(0);
         assertThat(finalizedAttempt.getIncorrectNum()).isEqualTo(1);
@@ -551,6 +551,7 @@ class QuizAttemptLifecycleIntegrationTest {
 
         assertThat(finalAnswers).hasSize(1);
         assertThat(finalAnswers.get(0).getAnswer().getId()).isEqualTo(answerOptionA.getId());
+        assertThat(finalAnswers.get(0).getRevision()).isEqualTo(3L);
         assertThat(finalizedAttempt.getResult()).isEqualByComparingTo(BigDecimal.valueOf(10.0));
         assertThat(finalizedAttempt.getCorrectNum()).isEqualTo(1);
         assertThat(finalizedAttempt.getIncorrectNum()).isEqualTo(0);
@@ -582,6 +583,7 @@ class QuizAttemptLifecycleIntegrationTest {
 
         assertThat(finalAnswers).hasSize(1);
         assertThat(finalAnswers.get(0).getAnswer().getId()).isEqualTo(answerOptionB.getId());
+        assertThat(finalAnswers.get(0).getRevision()).isEqualTo(2L);
     }
 
     @Test
@@ -605,6 +607,7 @@ class QuizAttemptLifecycleIntegrationTest {
 
         assertThat(finalAnswers).hasSize(1);
         assertThat(finalAnswers.get(0).getAnswer().getId()).isEqualTo(answerOptionA.getId());
+        assertThat(finalAnswers.get(0).getRevision()).isEqualTo(1L);
         assertThat(finalizedAttempt.getResult()).isEqualByComparingTo(BigDecimal.valueOf(10.0));
     }
 
@@ -634,6 +637,7 @@ class QuizAttemptLifecycleIntegrationTest {
 
         assertThat(finalAnswers).hasSize(1);
         assertThat(finalAnswers.get(0).getAnswer().getId()).isEqualTo(answerOptionB.getId());
+        assertThat(finalAnswers.get(0).getRevision()).isEqualTo(2L);
     }
 
     @Test
@@ -686,6 +690,8 @@ class QuizAttemptLifecycleIntegrationTest {
 
         assertThat(finalAnswers).hasSize(1);
         assertThat(finalAnswers.get(0).getAnswer()).isNull(); // Tombstone
+        assertThat(finalAnswers.get(0).getSelectedText()).isNull();
+        assertThat(finalAnswers.get(0).getRevision()).isEqualTo(5L);
         assertThat(finalizedAttempt.getResult()).isEqualByComparingTo(BigDecimal.ZERO);
     }
 
@@ -711,30 +717,43 @@ class QuizAttemptLifecycleIntegrationTest {
         java.util.concurrent.CountDownLatch doneLatch = new java.util.concurrent.CountDownLatch(2);
         java.util.concurrent.ExecutorService executor = java.util.concurrent.Executors.newFixedThreadPool(2);
 
-        executor.submit(() -> {
+        java.util.concurrent.Future<?> autosaveFuture = executor.submit(() -> {
             try {
                 startLatch.await();
                 quizTakingService.saveAnswer(studentA.getId(), attemptId, singleChoiceQuestion.getId(), requestB);
             } catch (Exception e) {
-                // ATTEMPT_ALREADY_SUBMITTED is valid if submit runs first
+                if (e instanceof AppException && ((AppException) e).getErrorCode() == ErrorCode.ATTEMPT_ALREADY_SUBMITTED) {
+                    // valid outcome
+                } else {
+                    throw new RuntimeException("Autosave failed unexpectedly", e);
+                }
             } finally {
                 doneLatch.countDown();
             }
         });
 
-        executor.submit(() -> {
+        java.util.concurrent.Future<?> submitFuture = executor.submit(() -> {
             try {
                 startLatch.await();
                 quizTakingService.submitQuizAttempt(studentA.getId(), submitReq);
             } catch (Exception e) {
+                throw new RuntimeException("Submit failed unexpectedly", e);
             } finally {
                 doneLatch.countDown();
             }
         });
 
         startLatch.countDown();
-        doneLatch.await();
+        boolean finished = doneLatch.await(10, java.util.concurrent.TimeUnit.SECONDS);
+        assertThat(finished).isTrue();
         executor.shutdown();
+
+        try {
+            autosaveFuture.get();
+            submitFuture.get();
+        } catch (java.util.concurrent.ExecutionException e) {
+            org.junit.jupiter.api.Assertions.fail("Concurrency task failed", e);
+        }
 
         Attempt finalizedAttempt = attemptRepository.findById(attemptId).orElseThrow();
         List<UserAttemptAnswer> finalAnswers = userAttemptAnswerRepository.findByAttemptId(attemptId);
@@ -745,6 +764,7 @@ class QuizAttemptLifecycleIntegrationTest {
         assertThat(taking.getStatus()).isEqualTo(TakingStatus.COMPLETED);
         assertThat(finalAnswers).hasSize(1);
         assertThat(finalAnswers.get(0).getAnswer().getId()).isEqualTo(answerOptionB.getId());
+        assertThat(finalAnswers.get(0).getRevision()).isEqualTo(2L);
         assertThat(finalizedAttempt.getResult()).isEqualByComparingTo(BigDecimal.ZERO);
     }
 }
