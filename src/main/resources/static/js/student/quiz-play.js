@@ -2,7 +2,9 @@ const assigningId = document.body.dataset.assigningId;
 let quizData = null;
 let currentIndex = 0;
 let userAnswers = {}; // questionId -> [answerIds] or string
+let answerRevisions = {}; // questionId -> revision
 let flaggedQuestions = new Set(); // set of questionIds
+let fillDebounceTimers = {}; // questionId -> timerId
 let timerInterval = null;
 let endTime = null;
 let viewMode = 'single'; // 'single' or 'full'
@@ -79,6 +81,7 @@ async function initQuiz() {
         if (quizData.selectedTexts) {
             Object.assign(userAnswers, quizData.selectedTexts);
         }
+        answerRevisions = quizData.answerRevisions || {};
 
         const saved = localStorage.getItem(`quiz_answers_${quizData.attemptId}`);
         if (saved) {
@@ -296,6 +299,12 @@ function renderFullQuiz() {
     document.querySelectorAll('.full-mode-question').forEach(q => window.scrollObserver.observe(q));
 }
 
+function nextRevision(qId) {
+    const rev = (answerRevisions[qId] || 0) + 1;
+    answerRevisions[qId] = rev;
+    return rev;
+}
+
 function toggleAnswer(qId, ansId, type) {
     if (type === 'SINGLE_CHOICE') {
         userAnswers[qId] = [ansId];
@@ -307,7 +316,8 @@ function toggleAnswer(qId, ansId, type) {
     }
 
     saveToLocal();
-    saveToServer(qId, userAnswers[qId]);
+    const rev = nextRevision(qId);
+    saveToServer(qId, userAnswers[qId], rev);
     renderView();
     renderGrid();
     updateStats();
@@ -322,13 +332,13 @@ function isQuestionAnswered(qId) {
     return (Array.isArray(ans) && ans.length > 0) || (typeof ans === 'string' && ans.trim() !== '');
 }
 
-let fillDebounceTimer = null;
 function handleFillInput(qId, val, isFullMode = false) {
     userAnswers[qId] = val;
     saveToLocal();
-    clearTimeout(fillDebounceTimer);
-    fillDebounceTimer = setTimeout(() => {
-        saveToServer(qId, val);
+    const rev = nextRevision(qId);
+    clearTimeout(fillDebounceTimers[qId]);
+    fillDebounceTimers[qId] = setTimeout(() => {
+        saveToServer(qId, val, rev);
     }, 500);
     renderGrid();
 }
@@ -341,10 +351,10 @@ function saveToLocal() {
     localStorage.setItem(`quiz_answers_${quizData.attemptId}`, JSON.stringify(dataToSave));
 }
 
-async function saveToServer(qId, val) {
+async function saveToServer(qId, val, revision) {
     const token = localStorage.getItem('token') || sessionStorage.getItem('token');
     const q = quizData.questions.find(qu => qu.id == qId);
-    const payload = {};
+    const payload = { revision: revision };
     if (q && q.type === 'FILL_IN_BLANK') {
         payload.selectedText = val;
     } else {

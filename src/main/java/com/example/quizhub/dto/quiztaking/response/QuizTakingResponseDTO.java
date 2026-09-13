@@ -27,4 +27,5 @@ public class QuizTakingResponseDTO {
     List<QuestionTakingResponseDTO> questions;
     Map<Long, List<Long>> selectedAnswers;
     Map<Long, String> selectedTexts;
+    Map<Long, Long> answerRevisions;
 }

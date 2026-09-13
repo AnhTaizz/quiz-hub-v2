@@ -182,6 +182,13 @@ public class QuizTakingServiceImpl implements QuizTakingService {
                         UserAttemptAnswer::getSelectedText,
                         (existing, replacement) -> existing));
 
+        Map<Long, Long> answerRevisions = savedAnswers.stream()
+                .filter(uaa -> uaa.getRevision() != null)
+                .collect(Collectors.toMap(
+                        uaa -> uaa.getQuestion().getId(),
+                        UserAttemptAnswer::getRevision,
+                        Math::max));
+
         return QuizTakingResponseDTO.builder()
                 .attemptId(attempt.getId())
                 .quizTitle(quiz.getTitle())
@@ -192,6 +199,7 @@ public class QuizTakingServiceImpl implements QuizTakingService {
                 .questions(questionDTOs)
                 .selectedAnswers(selectedAnswers)
                 .selectedTexts(selectedTexts)
+                .answerRevisions(answerRevisions)
                 .build();
     }
 
@@ -810,20 +818,29 @@ public class QuizTakingServiceImpl implements QuizTakingService {
         }
 
         // Fetch saved answers for this attempt
-        Map<Long, List<Long>> selectedAnswers = userAttemptAnswerRepository.findByAttemptId(attempt.getId())
+        List<UserAttemptAnswer> savedAnswers = userAttemptAnswerRepository.findByAttemptId(attempt.getId());
+
+        Map<Long, List<Long>> selectedAnswers = savedAnswers
                 .stream()
                 .filter(uaa -> uaa.getAnswer() != null)
                 .collect(Collectors.groupingBy(
                         uaa -> uaa.getQuestion().getId(),
                         Collectors.mapping(uaa -> uaa.getAnswer().getId(), Collectors.toList())));
 
-        Map<Long, String> selectedTexts = userAttemptAnswerRepository.findByAttemptId(attempt.getId())
+        Map<Long, String> selectedTexts = savedAnswers
                 .stream()
                 .filter(uaa -> uaa.getSelectedText() != null && !uaa.getSelectedText().trim().isEmpty())
                 .collect(Collectors.toMap(
                         uaa -> uaa.getQuestion().getId(),
                         UserAttemptAnswer::getSelectedText,
                         (existing, replacement) -> existing));
+
+        Map<Long, Long> answerRevisions = savedAnswers.stream()
+                .filter(uaa -> uaa.getRevision() != null)
+                .collect(Collectors.toMap(
+                        uaa -> uaa.getQuestion().getId(),
+                        UserAttemptAnswer::getRevision,
+                        Math::max));
 
         return QuizTakingResponseDTO.builder()
                 .attemptId(attempt.getId())
@@ -833,6 +850,7 @@ public class QuizTakingServiceImpl implements QuizTakingService {
                 .questions(questionDTOs)
                 .selectedAnswers(selectedAnswers)
                 .selectedTexts(selectedTexts)
+                .answerRevisions(answerRevisions)
                 .build();
     }
 

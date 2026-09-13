@@ -413,4 +413,68 @@ class QuizAttemptLifecycleIntegrationTest {
         assertThat(answers.get(0).getSelectedText()).isNull();
         assertThat(answers.get(0).getRevision()).isEqualTo(2L);
     }
+    @Test
+    void revisionSurvivesStateRead() {
+        // [TEST C1] - revision survives state read
+        QuizTakingResponseDTO startRes = quizTakingService.startQuizAttempt(studentA.getId(), assignedQuiz.getId());
+        Long attemptId = startRes.getAttemptId();
+
+        SaveAnswerRequestDTO request = new SaveAnswerRequestDTO();
+        request.setAnswerIds(List.of(answerOptionA.getId()));
+        request.setRevision(5L);
+        quizTakingService.saveAnswer(studentA.getId(), attemptId, singleChoiceQuestion.getId(), request);
+
+        QuizTakingResponseDTO state = quizTakingService.getQuizTakingState(studentA.getId(), attemptId);
+        assertThat(state.getAnswerRevisions()).isNotNull();
+        assertThat(state.getAnswerRevisions().get(singleChoiceQuestion.getId())).isEqualTo(5L);
+    }
+
+    @Test
+    void tombstoneRevisionSurvivesStateRead() {
+        // [TEST C2] - tombstone revision survives state read
+        QuizTakingResponseDTO startRes = quizTakingService.startQuizAttempt(studentA.getId(), assignedQuiz.getId());
+        Long attemptId = startRes.getAttemptId();
+
+        SaveAnswerRequestDTO request1 = new SaveAnswerRequestDTO();
+        request1.setAnswerIds(List.of(answerOptionA.getId()));
+        request1.setRevision(1L);
+        quizTakingService.saveAnswer(studentA.getId(), attemptId, singleChoiceQuestion.getId(), request1);
+
+        SaveAnswerRequestDTO request2 = new SaveAnswerRequestDTO();
+        request2.setAnswerIds(Collections.emptyList()); // clear
+        request2.setRevision(2L);
+        quizTakingService.saveAnswer(studentA.getId(), attemptId, singleChoiceQuestion.getId(), request2);
+
+        QuizTakingResponseDTO state = quizTakingService.getQuizTakingState(studentA.getId(), attemptId);
+        assertThat(state.getSelectedAnswers().get(singleChoiceQuestion.getId())).isNull();
+        assertThat(state.getAnswerRevisions()).isNotNull();
+        assertThat(state.getAnswerRevisions().get(singleChoiceQuestion.getId())).isEqualTo(2L);
+    }
+
+    @Test
+    void revisionContinuesAfterReloadConceptually() {
+        // [TEST C3] - revision continues after reload conceptually
+        QuizTakingResponseDTO startRes = quizTakingService.startQuizAttempt(studentA.getId(), assignedQuiz.getId());
+        Long attemptId = startRes.getAttemptId();
+
+        SaveAnswerRequestDTO request1 = new SaveAnswerRequestDTO();
+        request1.setAnswerIds(List.of(answerOptionA.getId()));
+        request1.setRevision(5L);
+        quizTakingService.saveAnswer(studentA.getId(), attemptId, singleChoiceQuestion.getId(), request1);
+
+        QuizTakingResponseDTO state = quizTakingService.getQuizTakingState(studentA.getId(), attemptId);
+        Long currentRev = state.getAnswerRevisions().get(singleChoiceQuestion.getId());
+        assertThat(currentRev).isEqualTo(5L);
+
+        // next save revision = 6
+        SaveAnswerRequestDTO request2 = new SaveAnswerRequestDTO();
+        request2.setAnswerIds(List.of(answerOptionB.getId()));
+        request2.setRevision(6L);
+        quizTakingService.saveAnswer(studentA.getId(), attemptId, singleChoiceQuestion.getId(), request2);
+
+        List<UserAttemptAnswer> answers = userAttemptAnswerRepository.findByAttemptId(attemptId);
+        assertThat(answers).hasSize(1);
+        assertThat(answers.get(0).getAnswer().getId()).isEqualTo(answerOptionB.getId());
+        assertThat(answers.get(0).getRevision()).isEqualTo(6L);
+    }
 }
