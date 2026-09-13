@@ -18,4 +18,5 @@ public class QuestionSubmitRequestDTO {
     Long questionId;
     List<Long> answerIds;
     String selectedText;
+    Long revision;
 }

@@ -238,26 +238,28 @@ public class QuizTakingServiceImpl implements QuizTakingService {
             }
         }
 
-        // Remove old answers for this question in this attempt
-        userAttemptAnswerRepository.deleteByAttemptIdAndQuestionId(attemptId, questionId);
+        replaceQuestionState(attempt, questionId, request.getAnswerIds(), request.getSelectedText(), incomingRevision);
+    }
 
+    private void replaceQuestionState(Attempt attempt, Long questionId, List<Long> answerIds, String selectedText, Long incomingRevision) {
+        userAttemptAnswerRepository.deleteByAttemptIdAndQuestionId(attempt.getId(), questionId);
         Question question = Question.builder().id(questionId).build();
 
-        if (request.getSelectedText() != null) {
+        if (selectedText != null) {
             UserAttemptAnswer uaa = UserAttemptAnswer.builder()
                     .attempt(attempt)
                     .question(question)
-                    .selectedText(request.getSelectedText())
+                    .selectedText(selectedText)
                     .timestamp(LocalDateTime.now())
                     .revision(incomingRevision)
                     .build();
             userAttemptAnswerRepository.save(uaa);
-        } else if (request.getAnswerIds() != null && !request.getAnswerIds().isEmpty()) {
+        } else if (answerIds != null && !answerIds.isEmpty()) {
             List<UserAttemptAnswer> answersToSave = new java.util.ArrayList<>();
-            Map<Long, Answer> answerMap = answerRepository.findAllById(request.getAnswerIds()).stream()
+            Map<Long, Answer> answerMap = answerRepository.findAllById(answerIds).stream()
                     .collect(Collectors.toMap(Answer::getId, a -> a));
 
-            for (Long answerId : request.getAnswerIds()) {
+            for (Long answerId : answerIds) {
                 Answer answer = answerMap.get(answerId);
                 if (answer == null) {
                     throw new AppException(ErrorCode.ANSWER_NOT_FOUND);
@@ -388,7 +390,17 @@ public class QuizTakingServiceImpl implements QuizTakingService {
     @Override
     @Transactional
     public Attempt submitQuizAttempt(Long studentId, QuizSubmitRequestDTO requestDTO) {
-        Attempt attempt = getValidAttempt(requestDTO.getAttemptId(), studentId);
+        Attempt attempt = attemptRepository.findWithLockById(requestDTO.getAttemptId())
+                .orElseThrow(() -> new AppException(ErrorCode.ATTEMPT_NOT_FOUND));
+
+        if (studentId != null) {
+            User user = userRepository.findById(studentId).orElse(null);
+            if (user != null && user.getRole() == Role.STUDENT) {
+                if (!attempt.getQuizTaking().getLearner().getId().equals(studentId)) {
+                    throw new AppException(ErrorCode.UNAUTHORIZED);
+                }
+            }
+        }
 
         if (attempt.getEndedAt() != null) {
             throw new AppException(ErrorCode.ATTEMPT_ALREADY_SUBMITTED);
@@ -407,112 +419,31 @@ public class QuizTakingServiceImpl implements QuizTakingService {
             }
         }
 
-        Quiz quiz = attempt.getQuizTaking().getQuiz();
-        int totalQuestion = attempt.getTotalQuestNum();
-        int correctCount = 0;
-
-        // Map Id câu hỏi và DTO của học sinh
-        Map<Long, QuestionSubmitRequestDTO> submittedAnswersMap = requestDTO.getQuestions().stream()
-                .collect(Collectors.toMap(
-                        QuestionSubmitRequestDTO::getQuestionId,
-                        q -> q,
-                        (existing, replacement) -> existing));
-
-        userAttemptAnswerRepository.deleteByAttemptId(attempt.getId());
-        List<UserAttemptAnswer> answersToSave = new java.util.ArrayList<>();
-
-        List<Long> allSubmittedAnswerIds = new java.util.ArrayList<>();
         if (requestDTO.getQuestions() != null) {
             for (QuestionSubmitRequestDTO qReq : requestDTO.getQuestions()) {
-                if (qReq.getAnswerIds() != null) {
-                    allSubmittedAnswerIds.addAll(qReq.getAnswerIds());
-                }
-            }
-        }
-        Map<Long, Answer> answerMap = answerRepository.findAllById(allSubmittedAnswerIds).stream()
-                .collect(Collectors.toMap(Answer::getId, a -> a));
+                Long questionId = qReq.getQuestionId();
+                Long incomingRevision = qReq.getRevision();
+                Long latestPersistedRevision = userAttemptAnswerRepository.findMaxRevisionByAttemptIdAndQuestionId(attempt.getId(), questionId);
 
-        // Chấm điểm từng câu
-        for (Question question : quiz.getQuestions()) {
-            QuestionSubmitRequestDTO qReq = submittedAnswersMap.get(question.getId());
-
-            if (question.getType() == QuestionType.FILL_IN_BLANK) {
-                String studentText = (qReq != null && qReq.getSelectedText() != null ? qReq.getSelectedText() : "");
-                String trimmedStudent = studentText.trim();
-                boolean isCorrect = question.getAnswers().stream()
-                        .filter(Answer::getIsCorrect)
-                        .anyMatch(a -> a.getText() != null && a.getText().trim().equalsIgnoreCase(trimmedStudent));
-
-                if (isCorrect)
-                    correctCount++;
-
-                answersToSave.add(UserAttemptAnswer.builder()
-                        .attempt(attempt)
-                        .question(question)
-                        .selectedText(studentText)
-                        .timestamp(LocalDateTime.now())
-                        .build());
-            } else {
-                List<Long> submitedAnswersIds = (qReq != null && qReq.getAnswerIds() != null) ? qReq.getAnswerIds()
-                        : Collections.emptyList();
-                List<Long> correctAnswersIds = question.getAnswers().stream()
-                        .filter(Answer::getIsCorrect)
-                        .map(Answer::getId)
-                        .collect(Collectors.toList());
-
-                if (submitedAnswersIds.size() == correctAnswersIds.size()
-                        && submitedAnswersIds.containsAll(correctAnswersIds)) {
-                    correctCount++;
-                }
-
-                for (Long answerId : submitedAnswersIds) {
-                    Answer answer = answerMap.get(answerId);
-                    if (answer == null) {
-                        throw new AppException(ErrorCode.ANSWER_NOT_FOUND);
+                boolean shouldApply = false;
+                if (incomingRevision != null) {
+                    if (latestPersistedRevision == null || incomingRevision > latestPersistedRevision) {
+                        shouldApply = true;
                     }
+                } else {
+                    if (latestPersistedRevision == null) {
+                        shouldApply = true;
+                    }
+                }
 
-                    answersToSave.add(UserAttemptAnswer.builder()
-                            .attempt(attempt)
-                            .question(question)
-                            .answer(answer)
-                            .timestamp(LocalDateTime.now())
-                            .build());
+                if (shouldApply) {
+                    replaceQuestionState(attempt, questionId, qReq.getAnswerIds(), qReq.getSelectedText(), incomingRevision);
                 }
             }
         }
 
-        if (!answersToSave.isEmpty()) {
-            userAttemptAnswerRepository.saveAll(answersToSave);
-        }
-
-        // Tính điểm
-        int incorrectCount = totalQuestion - correctCount;
-        BigDecimal finalScore = BigDecimal.ZERO;
-
-        if (totalQuestion > 0) {
-            finalScore = BigDecimal.valueOf((double) correctCount / totalQuestion * 10.0)
-                    .setScale(2, RoundingMode.HALF_UP);
-        }
-
-        attempt.setResult(finalScore);
-        attempt.setCorrectNum(correctCount);
-        attempt.setIncorrectNum(incorrectCount);
-        attempt.setEndedAt(LocalDateTime.now());
-        attempt.getQuizTaking().setStatus(TakingStatus.COMPLETED);
-
-        attemptRepository.save(attempt);
-
-        // Notify student of result
-        try {
-            notificationService.createNotification(
-                    studentId,
-                    "Kết quả bài thi: " + quiz.getTitle(),
-                    "Bạn đã hoàn thành bài thi với số điểm: " + finalScore + "/10",
-                    NotificationType.QUIZ_SUBMITTED,
-                    "/student/history");
-        } catch (Exception e) {
-        }
-
+        userAttemptAnswerRepository.flush();
+        finalizeAttempt(attempt);
         return attempt;
     }
 

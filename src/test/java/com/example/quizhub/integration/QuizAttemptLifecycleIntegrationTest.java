@@ -1,5 +1,7 @@
 package com.example.quizhub.integration;
 
+import java.math.BigDecimal;
+
 import com.example.quizhub.dto.quiztaking.request.QuestionSubmitRequestDTO;
 import com.example.quizhub.dto.quiztaking.request.QuizSubmitRequestDTO;
 import com.example.quizhub.dto.quiztaking.request.SaveAnswerRequestDTO;
@@ -480,7 +482,6 @@ class QuizAttemptLifecycleIntegrationTest {
     }
 
     @Test
-    @Disabled("Known V2 defect: stale submit payload can overwrite newer revisioned autosave state.")
     void staleSubmitPayloadCanOverwriteNewerAutosave() {
         // [TEST] - Reproduce stale submit overwriting newer autosave
         // 1. Start attempt
@@ -503,6 +504,7 @@ class QuizAttemptLifecycleIntegrationTest {
         QuestionSubmitRequestDTO qSubmit = new QuestionSubmitRequestDTO();
         qSubmit.setQuestionId(singleChoiceQuestion.getId());
         qSubmit.setAnswerIds(List.of(answerOptionA.getId())); // STALE! A is older intent
+        qSubmit.setRevision(1L);
 
         QuizSubmitRequestDTO submitReq = new QuizSubmitRequestDTO();
         submitReq.setAttemptId(attemptId);
@@ -518,8 +520,231 @@ class QuizAttemptLifecycleIntegrationTest {
         // 7. Assert the DESIRED invariant (these will fail currently because A overwrites B)
         assertThat(finalAnswers).hasSize(1);
         assertThat(finalAnswers.get(0).getAnswer().getId()).isEqualTo(answerOptionB.getId());
-        assertThat(finalizedAttempt.getResult()).isEqualTo(0.0);
+        assertThat(finalizedAttempt.getResult()).isEqualByComparingTo(BigDecimal.ZERO);
         assertThat(finalizedAttempt.getCorrectNum()).isEqualTo(0);
         assertThat(finalizedAttempt.getIncorrectNum()).isEqualTo(1);
+    }
+
+    @Test
+    void newerSubmitStateBeatsOlderAutosave() {
+        QuizTakingResponseDTO startRes = quizTakingService.startQuizAttempt(studentA.getId(), assignedQuiz.getId());
+        Long attemptId = startRes.getAttemptId();
+
+        SaveAnswerRequestDTO requestB = new SaveAnswerRequestDTO();
+        requestB.setAnswerIds(List.of(answerOptionB.getId()));
+        requestB.setRevision(2L);
+        quizTakingService.saveAnswer(studentA.getId(), attemptId, singleChoiceQuestion.getId(), requestB);
+
+        QuestionSubmitRequestDTO qSubmit = new QuestionSubmitRequestDTO();
+        qSubmit.setQuestionId(singleChoiceQuestion.getId());
+        qSubmit.setAnswerIds(List.of(answerOptionA.getId())); 
+        qSubmit.setRevision(3L); // newer
+
+        QuizSubmitRequestDTO submitReq = new QuizSubmitRequestDTO();
+        submitReq.setAttemptId(attemptId);
+        submitReq.setQuestions(List.of(qSubmit));
+
+        quizTakingService.submitQuizAttempt(studentA.getId(), submitReq);
+
+        Attempt finalizedAttempt = attemptRepository.findById(attemptId).orElseThrow();
+        List<UserAttemptAnswer> finalAnswers = userAttemptAnswerRepository.findByAttemptId(attemptId);
+
+        assertThat(finalAnswers).hasSize(1);
+        assertThat(finalAnswers.get(0).getAnswer().getId()).isEqualTo(answerOptionA.getId());
+        assertThat(finalizedAttempt.getResult()).isEqualByComparingTo(BigDecimal.valueOf(10.0));
+        assertThat(finalizedAttempt.getCorrectNum()).isEqualTo(1);
+        assertThat(finalizedAttempt.getIncorrectNum()).isEqualTo(0);
+    }
+
+    @Test
+    void equalRevisionPrefersDB() {
+        QuizTakingResponseDTO startRes = quizTakingService.startQuizAttempt(studentA.getId(), assignedQuiz.getId());
+        Long attemptId = startRes.getAttemptId();
+
+        SaveAnswerRequestDTO requestB = new SaveAnswerRequestDTO();
+        requestB.setAnswerIds(List.of(answerOptionB.getId()));
+        requestB.setRevision(2L);
+        quizTakingService.saveAnswer(studentA.getId(), attemptId, singleChoiceQuestion.getId(), requestB);
+
+        QuestionSubmitRequestDTO qSubmit = new QuestionSubmitRequestDTO();
+        qSubmit.setQuestionId(singleChoiceQuestion.getId());
+        qSubmit.setAnswerIds(List.of(answerOptionA.getId())); 
+        qSubmit.setRevision(2L); // equal
+
+        QuizSubmitRequestDTO submitReq = new QuizSubmitRequestDTO();
+        submitReq.setAttemptId(attemptId);
+        submitReq.setQuestions(List.of(qSubmit));
+
+        quizTakingService.submitQuizAttempt(studentA.getId(), submitReq);
+
+        Attempt finalizedAttempt = attemptRepository.findById(attemptId).orElseThrow();
+        List<UserAttemptAnswer> finalAnswers = userAttemptAnswerRepository.findByAttemptId(attemptId);
+
+        assertThat(finalAnswers).hasSize(1);
+        assertThat(finalAnswers.get(0).getAnswer().getId()).isEqualTo(answerOptionB.getId());
+    }
+
+    @Test
+    void submitCanPersistMutationThatNeverAutosaved() {
+        QuizTakingResponseDTO startRes = quizTakingService.startQuizAttempt(studentA.getId(), assignedQuiz.getId());
+        Long attemptId = startRes.getAttemptId();
+
+        QuestionSubmitRequestDTO qSubmit = new QuestionSubmitRequestDTO();
+        qSubmit.setQuestionId(singleChoiceQuestion.getId());
+        qSubmit.setAnswerIds(List.of(answerOptionA.getId())); 
+        qSubmit.setRevision(1L);
+
+        QuizSubmitRequestDTO submitReq = new QuizSubmitRequestDTO();
+        submitReq.setAttemptId(attemptId);
+        submitReq.setQuestions(List.of(qSubmit));
+
+        quizTakingService.submitQuizAttempt(studentA.getId(), submitReq);
+
+        Attempt finalizedAttempt = attemptRepository.findById(attemptId).orElseThrow();
+        List<UserAttemptAnswer> finalAnswers = userAttemptAnswerRepository.findByAttemptId(attemptId);
+
+        assertThat(finalAnswers).hasSize(1);
+        assertThat(finalAnswers.get(0).getAnswer().getId()).isEqualTo(answerOptionA.getId());
+        assertThat(finalizedAttempt.getResult()).isEqualByComparingTo(BigDecimal.valueOf(10.0));
+    }
+
+    @Test
+    void legacySubmitCannotOverwriteVersionedState() {
+        QuizTakingResponseDTO startRes = quizTakingService.startQuizAttempt(studentA.getId(), assignedQuiz.getId());
+        Long attemptId = startRes.getAttemptId();
+
+        SaveAnswerRequestDTO requestB = new SaveAnswerRequestDTO();
+        requestB.setAnswerIds(List.of(answerOptionB.getId()));
+        requestB.setRevision(2L);
+        quizTakingService.saveAnswer(studentA.getId(), attemptId, singleChoiceQuestion.getId(), requestB);
+
+        QuestionSubmitRequestDTO qSubmit = new QuestionSubmitRequestDTO();
+        qSubmit.setQuestionId(singleChoiceQuestion.getId());
+        qSubmit.setAnswerIds(List.of(answerOptionA.getId())); 
+        qSubmit.setRevision(null);
+
+        QuizSubmitRequestDTO submitReq = new QuizSubmitRequestDTO();
+        submitReq.setAttemptId(attemptId);
+        submitReq.setQuestions(List.of(qSubmit));
+
+        quizTakingService.submitQuizAttempt(studentA.getId(), submitReq);
+
+        Attempt finalizedAttempt = attemptRepository.findById(attemptId).orElseThrow();
+        List<UserAttemptAnswer> finalAnswers = userAttemptAnswerRepository.findByAttemptId(attemptId);
+
+        assertThat(finalAnswers).hasSize(1);
+        assertThat(finalAnswers.get(0).getAnswer().getId()).isEqualTo(answerOptionB.getId());
+    }
+
+    @Test
+    void legacySubmitStillWorksWithNoVersionedState() {
+        QuizTakingResponseDTO startRes = quizTakingService.startQuizAttempt(studentA.getId(), assignedQuiz.getId());
+        Long attemptId = startRes.getAttemptId();
+
+        QuestionSubmitRequestDTO qSubmit = new QuestionSubmitRequestDTO();
+        qSubmit.setQuestionId(singleChoiceQuestion.getId());
+        qSubmit.setAnswerIds(List.of(answerOptionA.getId())); 
+        qSubmit.setRevision(null);
+
+        QuizSubmitRequestDTO submitReq = new QuizSubmitRequestDTO();
+        submitReq.setAttemptId(attemptId);
+        submitReq.setQuestions(List.of(qSubmit));
+
+        quizTakingService.submitQuizAttempt(studentA.getId(), submitReq);
+
+        Attempt finalizedAttempt = attemptRepository.findById(attemptId).orElseThrow();
+        List<UserAttemptAnswer> finalAnswers = userAttemptAnswerRepository.findByAttemptId(attemptId);
+
+        assertThat(finalAnswers).hasSize(1);
+        assertThat(finalAnswers.get(0).getAnswer().getId()).isEqualTo(answerOptionA.getId());
+        assertThat(finalizedAttempt.getResult()).isEqualByComparingTo(BigDecimal.valueOf(10.0));
+    }
+
+    @Test
+    void newerSubmitClearRemainsUnanswered() {
+        QuizTakingResponseDTO startRes = quizTakingService.startQuizAttempt(studentA.getId(), assignedQuiz.getId());
+        Long attemptId = startRes.getAttemptId();
+
+        SaveAnswerRequestDTO requestA = new SaveAnswerRequestDTO();
+        requestA.setAnswerIds(List.of(answerOptionA.getId()));
+        requestA.setRevision(4L);
+        quizTakingService.saveAnswer(studentA.getId(), attemptId, singleChoiceQuestion.getId(), requestA);
+
+        QuestionSubmitRequestDTO qSubmit = new QuestionSubmitRequestDTO();
+        qSubmit.setQuestionId(singleChoiceQuestion.getId());
+        qSubmit.setAnswerIds(List.of()); // clear
+        qSubmit.setRevision(5L);
+
+        QuizSubmitRequestDTO submitReq = new QuizSubmitRequestDTO();
+        submitReq.setAttemptId(attemptId);
+        submitReq.setQuestions(List.of(qSubmit));
+
+        quizTakingService.submitQuizAttempt(studentA.getId(), submitReq);
+
+        Attempt finalizedAttempt = attemptRepository.findById(attemptId).orElseThrow();
+        List<UserAttemptAnswer> finalAnswers = userAttemptAnswerRepository.findByAttemptId(attemptId);
+
+        assertThat(finalAnswers).hasSize(1);
+        assertThat(finalAnswers.get(0).getAnswer()).isNull(); // Tombstone
+        assertThat(finalizedAttempt.getResult()).isEqualByComparingTo(BigDecimal.ZERO);
+    }
+
+    @Test
+    void concurrentSubmitAndAutosaveAreSerializedSafely() throws InterruptedException {
+        QuizTakingResponseDTO startRes = quizTakingService.startQuizAttempt(studentA.getId(), assignedQuiz.getId());
+        Long attemptId = startRes.getAttemptId();
+
+        SaveAnswerRequestDTO requestB = new SaveAnswerRequestDTO();
+        requestB.setAnswerIds(List.of(answerOptionB.getId()));
+        requestB.setRevision(2L);
+
+        QuestionSubmitRequestDTO qSubmit = new QuestionSubmitRequestDTO();
+        qSubmit.setQuestionId(singleChoiceQuestion.getId());
+        qSubmit.setAnswerIds(List.of(answerOptionB.getId()));
+        qSubmit.setRevision(2L);
+
+        QuizSubmitRequestDTO submitReq = new QuizSubmitRequestDTO();
+        submitReq.setAttemptId(attemptId);
+        submitReq.setQuestions(List.of(qSubmit));
+
+        java.util.concurrent.CountDownLatch startLatch = new java.util.concurrent.CountDownLatch(1);
+        java.util.concurrent.CountDownLatch doneLatch = new java.util.concurrent.CountDownLatch(2);
+        java.util.concurrent.ExecutorService executor = java.util.concurrent.Executors.newFixedThreadPool(2);
+
+        executor.submit(() -> {
+            try {
+                startLatch.await();
+                quizTakingService.saveAnswer(studentA.getId(), attemptId, singleChoiceQuestion.getId(), requestB);
+            } catch (Exception e) {
+                // ATTEMPT_ALREADY_SUBMITTED is valid if submit runs first
+            } finally {
+                doneLatch.countDown();
+            }
+        });
+
+        executor.submit(() -> {
+            try {
+                startLatch.await();
+                quizTakingService.submitQuizAttempt(studentA.getId(), submitReq);
+            } catch (Exception e) {
+            } finally {
+                doneLatch.countDown();
+            }
+        });
+
+        startLatch.countDown();
+        doneLatch.await();
+        executor.shutdown();
+
+        Attempt finalizedAttempt = attemptRepository.findById(attemptId).orElseThrow();
+        List<UserAttemptAnswer> finalAnswers = userAttemptAnswerRepository.findByAttemptId(attemptId);
+
+        Long takingId = finalizedAttempt.getQuizTaking().getId();
+        QuizTaking taking = quizTakingRepository.findById(takingId).orElseThrow();
+
+        assertThat(taking.getStatus()).isEqualTo(TakingStatus.COMPLETED);
+        assertThat(finalAnswers).hasSize(1);
+        assertThat(finalAnswers.get(0).getAnswer().getId()).isEqualTo(answerOptionB.getId());
+        assertThat(finalizedAttempt.getResult()).isEqualByComparingTo(BigDecimal.ZERO);
     }
 }

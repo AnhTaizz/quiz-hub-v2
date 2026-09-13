@@ -507,6 +507,12 @@ function submitQuiz() {
 
 async function executeSubmit() {
     isMonitoring = false;
+    
+    // Cancel all pending fill-in debounce timers
+    if (typeof fillDebounceTimers !== 'undefined') {
+        Object.values(fillDebounceTimers).forEach(timerId => clearTimeout(timerId));
+    }
+
     document.getElementById('pageLoading').style.display = 'flex';
     const token = localStorage.getItem('token') || sessionStorage.getItem('token');
     const submitBtn = document.querySelector('#submitModal .btn-primary');
@@ -516,7 +522,10 @@ async function executeSubmit() {
     try {
         const questions = quizData.questions.map(q => {
             const ans = userAnswers[q.id];
-            const qPayload = { questionId: q.id };
+            const qPayload = { 
+                questionId: q.id,
+                revision: Object.prototype.hasOwnProperty.call(answerRevisions, q.id) ? answerRevisions[q.id] : null
+            };
             if (q.type === 'FILL_IN_BLANK') {
                 qPayload.selectedText = ans || '';
             } else {
