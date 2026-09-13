@@ -86,7 +86,7 @@ async function initQuiz() {
         const saved = localStorage.getItem(`quiz_answers_${quizData.attemptId}`);
         if (saved) {
             const localData = JSON.parse(saved);
-            Object.assign(userAnswers, localData.answers || localData);
+            reconcileLocalAndServerState(localData);
         }
 
         const savedFlags = localStorage.getItem(`quiz_flags_${quizData.attemptId}`);
@@ -315,8 +315,8 @@ function toggleAnswer(qId, ansId, type) {
         else userAnswers[qId].push(ansId);
     }
 
-    saveToLocal();
     const rev = nextRevision(qId);
+    saveToLocal();
     saveToServer(qId, userAnswers[qId], rev);
     renderView();
     renderGrid();
@@ -334,8 +334,8 @@ function isQuestionAnswered(qId) {
 
 function handleFillInput(qId, val, isFullMode = false) {
     userAnswers[qId] = val;
-    saveToLocal();
     const rev = nextRevision(qId);
+    saveToLocal();
     clearTimeout(fillDebounceTimers[qId]);
     fillDebounceTimers[qId] = setTimeout(() => {
         saveToServer(qId, val, rev);
@@ -346,9 +346,75 @@ function handleFillInput(qId, val, isFullMode = false) {
 function saveToLocal() {
     const dataToSave = {
         answers: userAnswers,
+        revisions: answerRevisions,
         timestamp: new Date().getTime()
     };
     localStorage.setItem(`quiz_answers_${quizData.attemptId}`, JSON.stringify(dataToSave));
+}
+
+function hasMeaningfulAnswer(ans) {
+    return (Array.isArray(ans) && ans.length > 0) || (typeof ans === 'string' && ans.trim() !== '');
+}
+
+function reconcileLocalAndServerState(localData) {
+    const localAnswers = localData.answers || localData;
+    const localRevisions = localData.revisions || {};
+    const hasLegacyLocal = !localData.revisions;
+    
+    const serverAnswers = Object.assign({}, userAnswers);
+    const serverRevisions = Object.assign({}, answerRevisions);
+    
+    userAnswers = {};
+    answerRevisions = {};
+    
+    const questionsToReplay = [];
+    
+    quizData.questions.forEach(q => {
+        const qId = q.id;
+        const sRev = serverRevisions[qId];
+        const sAns = serverAnswers[qId];
+        const hasServerState = sRev !== undefined || hasMeaningfulAnswer(sAns);
+        
+        const lRev = localRevisions[qId];
+        const lAns = localAnswers[qId];
+        const hasLocalAns = localAnswers.hasOwnProperty(qId);
+        
+        if (!hasLegacyLocal && hasLocalAns) {
+            const resolvedSRev = sRev || 0;
+            const resolvedLRev = lRev || 0;
+            
+            if (resolvedLRev > resolvedSRev) {
+                userAnswers[qId] = lAns;
+                answerRevisions[qId] = resolvedLRev;
+                questionsToReplay.push(qId);
+            } else {
+                if (sAns !== undefined) userAnswers[qId] = sAns;
+                if (sRev !== undefined) answerRevisions[qId] = sRev;
+            }
+        } else if (hasLegacyLocal && hasLocalAns) {
+            if (hasServerState) {
+                if (sAns !== undefined) userAnswers[qId] = sAns;
+                if (sRev !== undefined) answerRevisions[qId] = sRev;
+            } else {
+                if (hasMeaningfulAnswer(lAns)) {
+                    userAnswers[qId] = lAns;
+                    answerRevisions[qId] = 1;
+                    questionsToReplay.push(qId);
+                }
+            }
+        } else {
+            if (sAns !== undefined) userAnswers[qId] = sAns;
+            if (sRev !== undefined) answerRevisions[qId] = sRev;
+        }
+    });
+    
+    saveToLocal();
+    
+    questionsToReplay.forEach(qId => {
+        const rev = answerRevisions[qId];
+        const val = userAnswers[qId] || (quizData.questions.find(qu => qu.id == qId).type === 'FILL_IN_BLANK' ? '' : []);
+        saveToServer(qId, val, rev);
+    });
 }
 
 async function saveToServer(qId, val, revision) {
