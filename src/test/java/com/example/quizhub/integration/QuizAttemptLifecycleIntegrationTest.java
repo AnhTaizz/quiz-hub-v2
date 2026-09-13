@@ -258,7 +258,10 @@ class QuizAttemptLifecycleIntegrationTest {
         submitReq.setAttemptId(attemptId);
         submitReq.setQuestions(List.of(qSubmit));
 
-        Attempt submittedAttempt = quizTakingService.submitQuizAttempt(studentA.getId(), submitReq);
+        quizTakingService.submitQuizAttempt(studentA.getId(), submitReq);
+
+        // Reload attempt from repository to prove database persistence
+        Attempt submittedAttempt = attemptRepository.findById(attemptId).orElseThrow();
 
         assertThat(submittedAttempt.getEndedAt()).isNotNull();
         // Given 1 question and we chose the correct answer, score should be 10.0, 1 correct, 0 incorrect
@@ -276,19 +279,36 @@ class QuizAttemptLifecycleIntegrationTest {
         QuizTakingResponseDTO startRes = quizTakingService.startQuizAttempt(studentA.getId(), assignedQuiz.getId());
         Long attemptId = startRes.getAttemptId();
 
+        // 1. Submit deterministic state (Option A)
+        QuestionSubmitRequestDTO qSubmit = new QuestionSubmitRequestDTO();
+        qSubmit.setQuestionId(singleChoiceQuestion.getId());
+        qSubmit.setAnswerIds(List.of(answerOptionA.getId()));
+
         QuizSubmitRequestDTO submitReq = new QuizSubmitRequestDTO();
         submitReq.setAttemptId(attemptId);
-        submitReq.setQuestions(List.of()); // empty submit is fine
+        submitReq.setQuestions(List.of(qSubmit));
         quizTakingService.submitQuizAttempt(studentA.getId(), submitReq);
 
+        // 2. Capture persisted answer state after submit
+        List<UserAttemptAnswer> answersBefore = userAttemptAnswerRepository.findByAttemptId(attemptId);
+        assertThat(answersBefore).hasSize(1);
+        assertThat(answersBefore.get(0).getAnswer().getId()).isEqualTo(answerOptionA.getId());
+
+        // 3. Attempt saveAnswer with Option B after submission
         SaveAnswerRequestDTO saveReq = new SaveAnswerRequestDTO();
-        saveReq.setAnswerIds(List.of(answerOptionA.getId()));
+        saveReq.setAnswerIds(List.of(answerOptionB.getId()));
 
         AppException ex = assertThrows(AppException.class, () -> {
             quizTakingService.saveAnswer(studentA.getId(), attemptId, singleChoiceQuestion.getId(), saveReq);
         });
         
+        // 4. Verify ATTEMPT_ALREADY_SUBMITTED
         assertThat(ex.getErrorCode()).isEqualTo(ErrorCode.ATTEMPT_ALREADY_SUBMITTED);
+
+        // 5. Re-read persisted answers and assert they are identical to state before rejected save
+        List<UserAttemptAnswer> answersAfter = userAttemptAnswerRepository.findByAttemptId(attemptId);
+        assertThat(answersAfter).hasSize(1);
+        assertThat(answersAfter.get(0).getAnswer().getId()).isEqualTo(answerOptionA.getId());
     }
 
     @Test
