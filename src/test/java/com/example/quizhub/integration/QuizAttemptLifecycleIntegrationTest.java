@@ -331,4 +331,31 @@ class QuizAttemptLifecycleIntegrationTest {
         List<UserAttemptAnswer> answers = userAttemptAnswerRepository.findByAttemptId(attemptId);
         assertThat(answers).isEmpty();
     }
+
+    @Test
+    @org.junit.jupiter.api.Disabled("Known V2 defect: delayed stale autosave can overwrite newer answer because save requests have no ordering/revision metadata.")
+    void delayedOlderSaveCanOverwriteNewerAnswer() {
+        // Reproduce stale autosave overwrite defect
+        // Logical user order: A -> B
+        // Server arrival order: B -> A (delayed)
+        
+        QuizTakingResponseDTO startRes = quizTakingService.startQuizAttempt(studentA.getId(), assignedQuiz.getId());
+        Long attemptId = startRes.getAttemptId();
+
+        // 1. Newer intent B reaches server first
+        SaveAnswerRequestDTO requestB = new SaveAnswerRequestDTO();
+        requestB.setAnswerIds(List.of(answerOptionB.getId()));
+        quizTakingService.saveAnswer(studentA.getId(), attemptId, singleChoiceQuestion.getId(), requestB);
+
+        // 2. Delayed older intent A reaches server afterward
+        SaveAnswerRequestDTO requestA = new SaveAnswerRequestDTO();
+        requestA.setAnswerIds(List.of(answerOptionA.getId()));
+        quizTakingService.saveAnswer(studentA.getId(), attemptId, singleChoiceQuestion.getId(), requestA);
+
+        // Desired invariant: final answer must still be B (the newer intent)
+        // With current code, this will fail because A overwrites B.
+        List<UserAttemptAnswer> answers = userAttemptAnswerRepository.findByAttemptId(attemptId);
+        assertThat(answers).hasSize(1);
+        assertThat(answers.get(0).getAnswer().getId()).isEqualTo(answerOptionB.getId());
+    }
 }
