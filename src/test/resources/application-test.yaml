@@ -1,0 +1,22 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/fake
+    username: fake
+    password: fake
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+  sql:
+    init:
+      mode: never
+
+# Provide fake properties for external integrations to satisfy placeholders in the main config
+GOOGLE_CLIENT_ID: "test-google-client-id"
+GOOGLE_CLIENT_SECRET: "test-google-client-secret"
+SPRING_MAIL_USERNAME: "test@example.com"
+SPRING_MAIL_PASSWORD: "test-mail-password"
+JWT_SECRET: "test-jwt-secret-key-at-least-64-characters-long-for-security"
+GEMINI_API_KEY: "test-gemini-api-key"
+DB_URL: "jdbc:postgresql://localhost:5432/fake"
+DB_USERNAME: "fake"
+DB_PASSWORD: "fake"
