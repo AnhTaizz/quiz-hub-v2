@@ -22,7 +22,7 @@ public interface QuizTakingService {
 
         QuizResultResponseDTO getQuizResult(Long studentId, Long attemptId);
 
-        ViolationResponseDTO recordViolation(ViolationRequestDTO request);
+        ViolationResponseDTO recordViolation(Long studentId, ViolationRequestDTO request);
 
         void autoSubmitExpiredAttempts();
 

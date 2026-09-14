@@ -116,8 +116,9 @@ public class StudentQuizRestController {
     }
 
     @PostMapping("/log-violation")
-    public ResponseEntity<ViolationResponseDTO> logViolation(@RequestBody ViolationRequestDTO request) {
-        ViolationResponseDTO result = quizTakingService.recordViolation(request);
+    public ResponseEntity<ViolationResponseDTO> logViolation(Principal principal, @RequestBody ViolationRequestDTO request) {
+        User user = userRepository.findByEmail(principal.getName()).orElseThrow();
+        ViolationResponseDTO result = quizTakingService.recordViolation(user.getId(), request);
         return ResponseEntity.ok(result);
     }
 

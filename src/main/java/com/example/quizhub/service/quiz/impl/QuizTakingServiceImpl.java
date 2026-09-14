@@ -557,8 +557,8 @@ public class QuizTakingServiceImpl implements QuizTakingService {
 
     @Override
     @Transactional
-    public ViolationResponseDTO recordViolation(ViolationRequestDTO request) {
-        Attempt attempt = getValidAttempt(request.getAttemptId(), null);
+    public ViolationResponseDTO recordViolation(Long studentId, ViolationRequestDTO request) {
+        Attempt attempt = getValidAttempt(request.getAttemptId(), studentId);
 
         // Nếu bài đã nộp rồi thì bỏ qua, trả về state hiện tại
         if (attempt.getEndedAt() != null) {
