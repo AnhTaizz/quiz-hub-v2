@@ -1,4 +1,5 @@
 const assigningId = document.body.dataset.assigningId;
+const attemptId = document.body.dataset.attemptId;
 let quizData = null;
 let currentIndex = 0;
 let userAnswers = {}; // questionId -> [answerIds] or string
@@ -66,7 +67,17 @@ async function initQuiz() {
     }
     try {
         const token = localStorage.getItem('token') || sessionStorage.getItem('token');
-        const response = await fetch(`/api/student/quiz/start?assigningId=${assigningId}`, {
+        let url = "";
+        if (attemptId) {
+            url = `/api/student/quiz/resume?attemptId=${attemptId}`;
+        } else if (assigningId) {
+            url = `/api/student/quiz/start?assigningId=${assigningId}`;
+        } else {
+            showErrorOverlay({code: 0, message: "Không tìm thấy thông tin bài thi."});
+            return;
+        }
+        
+        const response = await fetch(url, {
             headers: { 'Authorization': 'Bearer ' + token }
         });
 
