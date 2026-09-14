@@ -175,6 +175,35 @@ class QuizAttemptLifecycleIntegrationTest {
     }
 
     @Test
+    void startRejectsWhenMaxAttemptsReached() {
+        assignedQuiz.setMaxAttempt(1);
+        quizAssigningRepository.save(assignedQuiz);
+
+        // First attempt (allowed)
+        QuizTakingResponseDTO response = quizTakingService.startQuizAttempt(studentA.getId(), assignedQuiz.getId());
+        
+        // Complete the attempt manually
+        Attempt attempt = attemptRepository.findById(response.getAttemptId()).orElseThrow();
+        attempt.setEndedAt(LocalDateTime.now());
+        attemptRepository.save(attempt);
+
+        QuizTaking taking = quizTakingRepository.findByLearnerIdAndQuizAssigningId(studentA.getId(), assignedQuiz.getId()).orElseThrow();
+        taking.setStatus(TakingStatus.COMPLETED);
+        quizTakingRepository.save(taking);
+
+        // Second attempt (rejected because max attempt = 1)
+        long activeAttemptsBefore = attemptRepository.count();
+        
+        AppException exception = assertThrows(AppException.class, 
+            () -> quizTakingService.startQuizAttempt(studentA.getId(), assignedQuiz.getId()));
+            
+        assertThat(exception.getErrorCode()).isEqualTo(ErrorCode.MAX_ATTEMPTS_REACHED);
+        
+        // Assert no new active attempt was created
+        assertThat(attemptRepository.count()).isEqualTo(activeAttemptsBefore);
+    }
+
+    @Test
     void startCreatesActiveAttempt() {
         // [TEST A] - Start creates an active attempt
         QuizTakingResponseDTO response = quizTakingService.startQuizAttempt(studentA.getId(), assignedQuiz.getId());

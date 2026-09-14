@@ -50,7 +50,7 @@ public class MigrationFailFastTest {
         // 3. Configure Flyway
         Flyway flyway = Flyway.configure()
                 .dataSource(dataSource)
-                .locations("classpath:db/migration")
+                .locations("filesystem:src/main/resources/db/migration")
                 .baselineOnMigrate(true)
                 .baselineVersion("1")
                 .load();
@@ -58,5 +58,48 @@ public class MigrationFailFastTest {
         // 4. Migration should fail because of duplicates
         FlywayException exception = assertThrows(FlywayException.class, flyway::migrate);
         assertThat(exception.getMessage()).contains("Duplicate QuizTaking rows detected");
+    }
+
+    @Test
+    void migrationFailsWhenMultipleActiveAttemptsExist() throws Exception {
+        DriverManagerDataSource dataSource = new DriverManagerDataSource();
+        dataSource.setDriverClassName(postgres.getDriverClassName());
+        dataSource.setUrl(postgres.getJdbcUrl());
+        dataSource.setUsername(postgres.getUsername());
+        dataSource.setPassword(postgres.getPassword());
+
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+        
+        // Clean up from previous test just in case (though Testcontainers typically spins up clean per run, but let's be sure or rely on fresh DB)
+        jdbcTemplate.execute("DROP SCHEMA public CASCADE; CREATE SCHEMA public;");
+
+        // 1. Manually create V1 schema
+        String v1Schema = Files.readString(Path.of("src/main/resources/db/migration/V1__baseline_schema.sql"));
+        jdbcTemplate.execute(v1Schema);
+
+        // 2. Insert valid quiz taking and dirty attempts
+        jdbcTemplate.execute("INSERT INTO _user (id, is_enable, is_verified, email, full_name, password, role) VALUES (1001, true, true, 'dirty1@test.com', 'Dirty 1', 'pass', 'STUDENT')");
+        jdbcTemplate.execute("INSERT INTO categories (id, name, is_public) VALUES (1001, 'Test Cat', false)");
+        jdbcTemplate.execute("INSERT INTO _quiz (id, is_draft, is_enable, is_exam, created_id, category_id) VALUES ('" + UUID.randomUUID() + "', false, true, true, 1001, 1001)");
+        jdbcTemplate.execute("INSERT INTO _quiz_assigning (id, is_deleted, is_hidden) VALUES (2001, false, false)");
+        
+        // Insert exactly one quiz taking
+        jdbcTemplate.execute("INSERT INTO _quiz_taking (id, learner_id, assigning_id, status) VALUES (3001, 1001, 2001, 'NOT_STARTED')");
+
+        // Insert TWO attempts with ended_at = NULL for the same taking_id
+        jdbcTemplate.execute("INSERT INTO _attempt (id, taking_id) VALUES (4001, 3001)");
+        jdbcTemplate.execute("INSERT INTO _attempt (id, taking_id) VALUES (4002, 3001)");
+
+        // 3. Configure Flyway
+        Flyway flyway = Flyway.configure()
+                .dataSource(dataSource)
+                .locations("filesystem:src/main/resources/db/migration")
+                .baselineOnMigrate(true)
+                .baselineVersion("1")
+                .load();
+
+        // 4. Migration should fail because of multiple active attempts
+        FlywayException exception = assertThrows(FlywayException.class, flyway::migrate);
+        assertThat(exception.getMessage()).contains("Multiple active Attempt rows detected");
     }
 }

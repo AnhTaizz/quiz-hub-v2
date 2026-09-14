@@ -21,6 +21,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -142,22 +143,24 @@ class ConcurrentQuizStartIntegrationTest {
         // Release latch to start both simultaneously
         latch.countDown();
 
-        QuizTakingResponseDTO response1 = future1.get();
-        QuizTakingResponseDTO response2 = future2.get();
+        try {
+            QuizTakingResponseDTO response1 = future1.get(10, TimeUnit.SECONDS);
+            QuizTakingResponseDTO response2 = future2.get(10, TimeUnit.SECONDS);
 
-        executor.shutdown();
+            assertThat(response1.getAttemptId()).isEqualTo(response2.getAttemptId());
+            
+            long takingCount = quizTakingRepository.count();
+            assertThat(takingCount).isEqualTo(1);
 
-        assertThat(response1.getAttemptId()).isEqualTo(response2.getAttemptId());
-        
-        long takingCount = quizTakingRepository.count();
-        assertThat(takingCount).isEqualTo(1);
+            long attemptCount = attemptRepository.count();
+            assertThat(attemptCount).isEqualTo(1);
 
-        long attemptCount = attemptRepository.count();
-        assertThat(attemptCount).isEqualTo(1);
-
-        Attempt attempt = attemptRepository.findAll().get(0);
-        assertThat(attempt.getEndedAt()).isNull();
-        QuizTaking taking = quizTakingRepository.findAll().get(0);
-        assertThat(taking.getStatus().name()).isEqualTo("IN_PROGRESS");
+            Attempt attempt = attemptRepository.findAll().get(0);
+            assertThat(attempt.getEndedAt()).isNull();
+            QuizTaking taking = quizTakingRepository.findAll().get(0);
+            assertThat(taking.getStatus().name()).isEqualTo("IN_PROGRESS");
+        } finally {
+            executor.shutdownNow();
+        }
     }
 }
