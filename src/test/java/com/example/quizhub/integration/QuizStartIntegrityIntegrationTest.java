@@ -6,7 +6,6 @@ import com.example.quizhub.entity.enums.Role;
 import com.example.quizhub.entity.enums.TakingStatus;
 import com.example.quizhub.repository.*;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -107,7 +106,6 @@ class QuizStartIntegrityIntegrationTest {
     }
 
     @Test
-    @Disabled("Known V2 integrity gap: database does not prevent duplicate QuizTaking rows for the same learner and assigning.")
     void databaseShouldRejectDuplicateAssignedQuizTaking() {
         // [TEST Q] - duplicate QuizTaking is currently possible
         // Desired invariant: For one assigned quiz, (student, assigning) must map to at most ONE QuizTaking.
@@ -136,7 +134,6 @@ class QuizStartIntegrityIntegrationTest {
     }
 
     @Test
-    @Disabled("Known V2 integrity gap: database does not prevent multiple unfinished attempts for one QuizTaking.")
     void databaseShouldRejectMultipleActiveAttemptsForSameQuizTaking() {
         // [TEST A] - multiple active attempts are currently possible
         // Desired invariant: For one QuizTaking, there must be at most ONE unfinished Attempt (ended_at IS NULL).

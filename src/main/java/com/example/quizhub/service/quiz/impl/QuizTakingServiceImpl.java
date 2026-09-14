@@ -75,7 +75,7 @@ public class QuizTakingServiceImpl implements QuizTakingService {
     @Override
     @Transactional
     public QuizTakingResponseDTO startQuizAttempt(Long studentId, Long quizAssigningId) {
-        User student = userRepository.findById(studentId)
+        User student = userRepository.findWithLockById(studentId)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
         QuizAssigning quizAssigning = quizAssigningRepository.findById(quizAssigningId)
                 .orElseThrow(() -> new AppException(ErrorCode.QUIZ_NOT_FOUND));

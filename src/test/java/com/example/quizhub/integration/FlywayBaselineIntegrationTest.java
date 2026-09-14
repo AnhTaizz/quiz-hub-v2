@@ -39,11 +39,16 @@ public class FlywayBaselineIntegrationTest {
                 Integer.class);
         assertThat(countHistory).isEqualTo(1);
 
-        // 2. Verify baseline migration version 1 exists
+        // 2. Verify migration version 1 and 2 exist
         Integer countVersion1 = jdbcTemplate.queryForObject(
                 "SELECT count(*) FROM flyway_schema_history WHERE version = '1'",
                 Integer.class);
         assertThat(countVersion1).isEqualTo(1);
+
+        Integer countVersion2 = jdbcTemplate.queryForObject(
+                "SELECT count(*) FROM flyway_schema_history WHERE version = '2'",
+                Integer.class);
+        assertThat(countVersion2).isEqualTo(1);
 
         // 3. Verify representative tables exist
         Integer countQuizTaking = jdbcTemplate.queryForObject(
@@ -55,5 +60,16 @@ public class FlywayBaselineIntegrationTest {
                 "SELECT count(*) FROM information_schema.tables WHERE table_name = '_attempt'",
                 Integer.class);
         assertThat(countAttempt).isEqualTo(1);
+
+        // 4. Verify indexes exist
+        Integer countQIndex = jdbcTemplate.queryForObject(
+                "SELECT count(*) FROM pg_indexes WHERE indexname = 'uq_quiz_taking_learner_assigning'",
+                Integer.class);
+        assertThat(countQIndex).isEqualTo(1);
+
+        Integer countAIndex = jdbcTemplate.queryForObject(
+                "SELECT count(*) FROM pg_indexes WHERE indexname = 'uq_attempt_one_active_per_taking'",
+                Integer.class);
+        assertThat(countAIndex).isEqualTo(1);
     }
 }

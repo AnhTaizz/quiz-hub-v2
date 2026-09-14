@@ -56,11 +56,15 @@ public class ExistingSchemaBaselineTest {
                 Integer.class);
         assertThat(countHistoryAfter).isEqualTo(1);
 
+        Integer countVersions = jdbcTemplate.queryForObject(
+                "SELECT count(*) FROM flyway_schema_history",
+                Integer.class);
+        assertThat(countVersions).isEqualTo(2);
+
         MigrationInfo currentInfo = flyway.info().current();
         assertThat(currentInfo).isNotNull();
-        assertThat(currentInfo.getVersion().toString()).isEqualTo("1");
-        assertThat(currentInfo.getDescription()).isEqualTo("<< Flyway Baseline >>");
-        // For a baselined existing DB, the type is usually BASELINE.
-        assertThat(currentInfo.getType().name()).isEqualTo("BASELINE");
+        assertThat(currentInfo.getVersion().toString()).isEqualTo("2");
+        assertThat(currentInfo.getDescription()).isEqualTo("quiz start integrity");
+        assertThat(currentInfo.getType().name()).isEqualTo("SQL");
     }
 }
