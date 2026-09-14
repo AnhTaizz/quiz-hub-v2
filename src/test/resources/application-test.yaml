@@ -5,7 +5,7 @@ spring:
     password: fake
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: validate
   sql:
     init:
       mode: never
