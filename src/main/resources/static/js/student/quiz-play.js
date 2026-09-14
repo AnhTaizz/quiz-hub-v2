@@ -8,6 +8,7 @@ let fillDebounceTimers = {}; // questionId -> timerId
 let timerInterval = null;
 let endTime = null;
 let viewMode = 'single'; // 'single' or 'full'
+let isSubmitting = false;
 
 document.addEventListener('DOMContentLoaded', initQuiz);
 
@@ -506,6 +507,9 @@ function submitQuiz() {
 }
 
 async function executeSubmit() {
+    if (isSubmitting) return;
+    isSubmitting = true;
+
     isMonitoring = false;
     
     // Cancel all pending fill-in debounce timers
@@ -557,6 +561,9 @@ async function executeSubmit() {
     } catch (error) {
         showToast(error.message, 'error');
         document.getElementById('pageLoading').style.display = 'none';
+        isSubmitting = false;
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = 'Đồng ý nộp';
     }
 }
 

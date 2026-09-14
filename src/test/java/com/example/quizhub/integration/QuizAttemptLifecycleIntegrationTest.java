@@ -767,4 +767,182 @@ class QuizAttemptLifecycleIntegrationTest {
         assertThat(finalAnswers.get(0).getRevision()).isEqualTo(2L);
         assertThat(finalizedAttempt.getResult()).isEqualByComparingTo(BigDecimal.ZERO);
     }
+
+    @Test
+    void repeatedSubmitShouldBeIdempotent() {
+        // [TEST I1] - sequential identical retry
+        QuizTakingResponseDTO startRes = quizTakingService.startQuizAttempt(studentA.getId(), assignedQuiz.getId());
+        Long attemptId = startRes.getAttemptId();
+
+        QuestionSubmitRequestDTO qSubmit = new QuestionSubmitRequestDTO();
+        qSubmit.setQuestionId(singleChoiceQuestion.getId());
+        qSubmit.setAnswerIds(List.of(answerOptionA.getId()));
+        qSubmit.setRevision(1L);
+
+        QuizSubmitRequestDTO submitReq = new QuizSubmitRequestDTO();
+        submitReq.setAttemptId(attemptId);
+        submitReq.setQuestions(List.of(qSubmit));
+
+        // First submit
+        quizTakingService.submitQuizAttempt(studentA.getId(), submitReq);
+
+        Attempt firstAttempt = attemptRepository.findById(attemptId).orElseThrow();
+        LocalDateTime firstEndedAt = firstAttempt.getEndedAt();
+        BigDecimal firstResult = firstAttempt.getResult();
+        int firstCorrect = firstAttempt.getCorrectNum();
+        int firstIncorrect = firstAttempt.getIncorrectNum();
+        
+        List<UserAttemptAnswer> answersAfterFirst = userAttemptAnswerRepository.findByAttemptId(attemptId);
+        Long firstAnswerId = answersAfterFirst.get(0).getAnswer().getId();
+        Long firstRevision = answersAfterFirst.get(0).getRevision();
+
+        Long notifCountAfterFirst = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM notifications", Long.class);
+
+        // Second duplicate submit
+        quizTakingService.submitQuizAttempt(studentA.getId(), submitReq);
+
+        Attempt secondAttempt = attemptRepository.findById(attemptId).orElseThrow();
+        
+        assertThat(secondAttempt.getEndedAt()).isEqualTo(firstEndedAt);
+        assertThat(secondAttempt.getResult()).isEqualByComparingTo(firstResult);
+        assertThat(secondAttempt.getCorrectNum()).isEqualTo(firstCorrect);
+        assertThat(secondAttempt.getIncorrectNum()).isEqualTo(firstIncorrect);
+
+        List<UserAttemptAnswer> answersAfterSecond = userAttemptAnswerRepository.findByAttemptId(attemptId);
+        assertThat(answersAfterSecond).hasSize(1);
+        assertThat(answersAfterSecond.get(0).getAnswer().getId()).isEqualTo(firstAnswerId);
+        assertThat(answersAfterSecond.get(0).getRevision()).isEqualTo(firstRevision);
+
+        Long notifCountAfterSecond = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM notifications", Long.class);
+        assertThat(notifCountAfterSecond).isEqualTo(notifCountAfterFirst);
+    }
+
+    @Test
+    void retryWithDifferentPayloadCannotChangeCompletedAttempt() {
+        // [TEST I2] - retry with changed payload
+        QuizTakingResponseDTO startRes = quizTakingService.startQuizAttempt(studentA.getId(), assignedQuiz.getId());
+        Long attemptId = startRes.getAttemptId();
+
+        // Submit A revision 1
+        QuestionSubmitRequestDTO qSubmitA = new QuestionSubmitRequestDTO();
+        qSubmitA.setQuestionId(singleChoiceQuestion.getId());
+        qSubmitA.setAnswerIds(List.of(answerOptionA.getId()));
+        qSubmitA.setRevision(1L);
+
+        QuizSubmitRequestDTO submitReqA = new QuizSubmitRequestDTO();
+        submitReqA.setAttemptId(attemptId);
+        submitReqA.setQuestions(List.of(qSubmitA));
+
+        quizTakingService.submitQuizAttempt(studentA.getId(), submitReqA);
+        
+        Long notifCountAfterFirst = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM notifications", Long.class);
+
+        // Retry B revision 2
+        QuestionSubmitRequestDTO qSubmitB = new QuestionSubmitRequestDTO();
+        qSubmitB.setQuestionId(singleChoiceQuestion.getId());
+        qSubmitB.setAnswerIds(List.of(answerOptionB.getId()));
+        qSubmitB.setRevision(2L);
+
+        QuizSubmitRequestDTO submitReqB = new QuizSubmitRequestDTO();
+        submitReqB.setAttemptId(attemptId);
+        submitReqB.setQuestions(List.of(qSubmitB));
+
+        quizTakingService.submitQuizAttempt(studentA.getId(), submitReqB);
+
+        Attempt finalizedAttempt = attemptRepository.findById(attemptId).orElseThrow();
+        List<UserAttemptAnswer> finalAnswers = userAttemptAnswerRepository.findByAttemptId(attemptId);
+        
+        assertThat(finalAnswers).hasSize(1);
+        assertThat(finalAnswers.get(0).getAnswer().getId()).isEqualTo(answerOptionA.getId()); // Still A
+        assertThat(finalAnswers.get(0).getRevision()).isEqualTo(1L); // Still 1
+
+        assertThat(finalizedAttempt.getResult()).isEqualByComparingTo(BigDecimal.valueOf(10.0));
+        
+        Long notifCountAfterSecond = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM notifications", Long.class);
+        assertThat(notifCountAfterSecond).isEqualTo(notifCountAfterFirst);
+    }
+
+    @Test
+    void concurrentDuplicateSubmitsAreIdempotent() throws InterruptedException {
+        // [TEST I3] - concurrent duplicate submits
+        QuizTakingResponseDTO startRes = quizTakingService.startQuizAttempt(studentA.getId(), assignedQuiz.getId());
+        Long attemptId = startRes.getAttemptId();
+
+        QuestionSubmitRequestDTO qSubmit = new QuestionSubmitRequestDTO();
+        qSubmit.setQuestionId(singleChoiceQuestion.getId());
+        qSubmit.setAnswerIds(List.of(answerOptionA.getId()));
+        qSubmit.setRevision(1L);
+
+        QuizSubmitRequestDTO submitReq = new QuizSubmitRequestDTO();
+        submitReq.setAttemptId(attemptId);
+        submitReq.setQuestions(List.of(qSubmit));
+
+        java.util.concurrent.CountDownLatch startLatch = new java.util.concurrent.CountDownLatch(1);
+        java.util.concurrent.CountDownLatch doneLatch = new java.util.concurrent.CountDownLatch(2);
+        java.util.concurrent.ExecutorService executor = java.util.concurrent.Executors.newFixedThreadPool(2);
+
+        java.util.concurrent.Callable<Void> task = () -> {
+            try {
+                startLatch.await();
+                quizTakingService.submitQuizAttempt(studentA.getId(), submitReq);
+            } finally {
+                doneLatch.countDown();
+            }
+            return null;
+        };
+
+        java.util.concurrent.Future<Void> future1 = executor.submit(task);
+        java.util.concurrent.Future<Void> future2 = executor.submit(task);
+
+        startLatch.countDown();
+        boolean finished = doneLatch.await(10, java.util.concurrent.TimeUnit.SECONDS);
+        assertThat(finished).isTrue();
+        executor.shutdown();
+
+        try {
+            future1.get();
+            future2.get();
+        } catch (java.util.concurrent.ExecutionException e) {
+            org.junit.jupiter.api.Assertions.fail("Concurrency task failed", e);
+        }
+
+        Attempt finalizedAttempt = attemptRepository.findById(attemptId).orElseThrow();
+        List<UserAttemptAnswer> finalAnswers = userAttemptAnswerRepository.findByAttemptId(attemptId);
+
+        assertThat(finalAnswers).hasSize(1);
+        assertThat(finalAnswers.get(0).getAnswer().getId()).isEqualTo(answerOptionA.getId());
+        assertThat(finalAnswers.get(0).getRevision()).isEqualTo(1L);
+        assertThat(finalizedAttempt.getResult()).isEqualByComparingTo(BigDecimal.valueOf(10.0));
+        assertThat(finalizedAttempt.getCorrectNum()).isEqualTo(1);
+        assertThat(finalizedAttempt.getIncorrectNum()).isEqualTo(0);
+        
+        Long notifCount = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM notifications", Long.class);
+        assertThat(notifCount).isEqualTo(1L);
+    }
+    
+    @Test
+    void studentCannotSubmitAnotherStudentsCompletedAttempt() {
+        // [TEST I4] - ownership still enforced
+        QuizTakingResponseDTO startRes = quizTakingService.startQuizAttempt(studentA.getId(), assignedQuiz.getId());
+        Long attemptId = startRes.getAttemptId();
+
+        QuestionSubmitRequestDTO qSubmit = new QuestionSubmitRequestDTO();
+        qSubmit.setQuestionId(singleChoiceQuestion.getId());
+        qSubmit.setAnswerIds(List.of(answerOptionA.getId()));
+        qSubmit.setRevision(1L);
+
+        QuizSubmitRequestDTO submitReq = new QuizSubmitRequestDTO();
+        submitReq.setAttemptId(attemptId);
+        submitReq.setQuestions(List.of(qSubmit));
+
+        // First submit by owner (Student A)
+        quizTakingService.submitQuizAttempt(studentA.getId(), submitReq);
+
+        // Student B tries to submit Student A's attempt
+        AppException ex = assertThrows(AppException.class, () -> {
+            quizTakingService.submitQuizAttempt(studentB.getId(), submitReq);
+        });
+
+        assertThat(ex.getErrorCode()).isEqualTo(ErrorCode.UNAUTHORIZED);
+    }
 }

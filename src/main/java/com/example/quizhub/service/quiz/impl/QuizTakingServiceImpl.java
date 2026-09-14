@@ -403,7 +403,7 @@ public class QuizTakingServiceImpl implements QuizTakingService {
         }
 
         if (attempt.getEndedAt() != null) {
-            throw new AppException(ErrorCode.ATTEMPT_ALREADY_SUBMITTED);
+            return attempt;
         }
 
         // Check schedule if assigned

@@ -9,6 +9,7 @@ let flaggedQuestions = new Set(); // set of questionIds
 let timerInterval = null;
 let endTime = null;
 let viewMode = 'single'; // 'single' or 'full'
+let isSubmitting = false;
 
 async function initQuiz() {
     const referrer = document.referrer;
@@ -393,6 +394,9 @@ function submitQuiz() {
 }
 
 async function executeSubmit() {
+    if (isSubmitting) return;
+    isSubmitting = true;
+
     document.getElementById('pageLoading').style.display = 'flex';
     const token = localStorage.getItem('token') || sessionStorage.getItem('token');
     const submitBtn = document.querySelector('#submitModal .btn-primary');
@@ -433,6 +437,9 @@ async function executeSubmit() {
     } catch (error) {
         showToast(error.message, 'err');
         document.getElementById('pageLoading').style.display = 'none';
+        isSubmitting = false;
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = 'Đồng ý nộp';
     }
 }
 
