@@ -723,9 +723,21 @@ public class QuizTakingServiceImpl implements QuizTakingService {
     private QuizTakingResponseDTO buildQuizTakingResponseDTO(Attempt attempt, Quiz quiz, QuizAssigning quizAssigning) {
         Random random = new Random(attempt.getId());
 
-        List<QuestionTakingResponseDTO> questionDTOs = quiz.getQuestions().stream()
+        List<Question> questions = quiz.getQuestions();
+        List<Long> questionIds = questions.stream()
+                .map(Question::getId)
+                .collect(Collectors.toList());
+
+        Map<Long, List<Answer>> answersByQuestionId = questionIds.isEmpty() ? 
+            Collections.emptyMap() : 
+            answerRepository.findByQuestionIdIn(questionIds)
+                .stream()
+                .collect(Collectors.groupingBy(ans -> ans.getQuestion().getId()));
+
+        List<QuestionTakingResponseDTO> questionDTOs = questions.stream()
                 .map(question -> {
-                    List<AnswerTakingResponseDTO> answerDTOs = question.getAnswers().stream()
+                    List<Answer> questionAnswers = answersByQuestionId.getOrDefault(question.getId(), Collections.emptyList());
+                    List<AnswerTakingResponseDTO> answerDTOs = questionAnswers.stream()
                             .map(ans -> new AnswerTakingResponseDTO(
                                     ans.getId(),
                                     ans.getText()))
