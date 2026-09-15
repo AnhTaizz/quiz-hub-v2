@@ -214,12 +214,15 @@ function renderSingleQuestion() {
         input.className = 'fill-input';
         input.placeholder = 'Nhập câu trả lời của bạn tại đây...';
         input.value = userAnswers[q.id] || '';
+        input.setAttribute('data-question-id', q.id);
         input.oninput = (e) => handleFillInput(q.id, e.target.value);
         list.appendChild(input);
     } else {
         q.answers.forEach((ans, i) => {
             const div = document.createElement('div');
             div.className = `answer-opt ${isAnswerSelected(q.id, ans.id) ? 'selected' : ''}`;
+            div.setAttribute('data-question-id', q.id);
+            div.setAttribute('data-answer-id', ans.id);
             div.innerHTML = `
                 <div class="opt-prefix">${String.fromCharCode(65 + i)}</div>
                 <div class="opt-text">${ans.text}</div>
@@ -249,11 +252,12 @@ function renderFullQuiz() {
 
         let answersHtml = '';
         if (q.type === 'FILL_IN_BLANK') {
-            answersHtml = `<input type="text" class="fill-input" placeholder="Nhập câu trả lời..." value="${userAnswers[q.id] || ''}" oninput="handleFillInput(${q.id}, this.value, true)">`;
+            answersHtml = `<input type="text" class="fill-input" placeholder="Nhập câu trả lời..." value="${userAnswers[q.id] || ''}" data-question-id="${q.id}" oninput="handleFillInput(${q.id}, this.value, true)">`;
         } else {
             q.answers.forEach((ans, i) => {
                 answersHtml += `
                     <div class="answer-opt ${isAnswerSelected(q.id, ans.id) ? 'selected' : ''}"
+                         data-question-id="${q.id}" data-answer-id="${ans.id}"
                          onclick="toggleAnswer(${q.id}, ${ans.id}, '${q.type}')">
                         <div class="opt-prefix">${String.fromCharCode(65 + i)}</div>
                         <div class="opt-text">${ans.text}</div>
@@ -330,8 +334,9 @@ function toggleAnswer(qId, ansId, type) {
     const rev = nextRevision(qId);
     saveToLocal();
     saveToServer(qId, userAnswers[qId], rev);
-    renderView();
-    renderGrid();
+    
+    updateAnswerSelectionDom(qId);
+    updateQuestionDot(qId);
     updateStats();
 }
 
@@ -352,7 +357,8 @@ function handleFillInput(qId, val, isFullMode = false) {
     fillDebounceTimers[qId] = setTimeout(() => {
         saveToServer(qId, val, rev);
     }, 500);
-    renderGrid();
+    updateQuestionDot(qId);
+    updateStats();
 }
 
 function saveToLocal() {
@@ -472,6 +478,7 @@ function renderGrid() {
         const isFlagged = flaggedQuestions.has(q.id);
 
         dot.className = `q-dot ${i === currentIndex ? 'active' : ''} ${isAnswered ? 'answered' : ''} ${isFlagged ? 'flagged' : ''}`;
+        dot.setAttribute('data-dot-qid', q.id);
         dot.textContent = i + 1;
         dot.onclick = () => {
             currentIndex = i;
@@ -484,6 +491,28 @@ function renderGrid() {
         };
         grid.appendChild(dot);
     });
+}
+
+function updateAnswerSelectionDom(qId) {
+    const options = document.querySelectorAll(`.answer-opt[data-question-id="${qId}"]`);
+    options.forEach(opt => {
+        const ansId = parseInt(opt.getAttribute('data-answer-id'));
+        if (isAnswerSelected(qId, ansId)) {
+            opt.classList.add('selected');
+        } else {
+            opt.classList.remove('selected');
+        }
+    });
+}
+
+function updateQuestionDot(qId) {
+    const dot = document.querySelector(`.q-dot[data-dot-qid="${qId}"]`);
+    if (dot) {
+        const isAnswered = isQuestionAnswered(qId);
+        const isFlagged = flaggedQuestions.has(qId);
+        dot.classList.toggle('answered', !!isAnswered);
+        dot.classList.toggle('flagged', !!isFlagged);
+    }
 }
 
 function updateStats() {

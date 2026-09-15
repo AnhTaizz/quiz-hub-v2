@@ -58,4 +58,22 @@ public class QuizPlayClientConsolidationTest {
 
         assertThat(htmlContent).contains("class=\"btn-back\"");
     }
+
+    @Test
+    void answerInteractionIsTargetedAndRevisionAware() throws Exception {
+        Path canonicalJs = Paths.get("src/main/resources/static/js/student/quiz-play.js");
+        String jsContent = Files.readString(canonicalJs);
+
+        String toggleAnswerBody = jsContent.substring(jsContent.indexOf("function toggleAnswer"), jsContent.indexOf("function isAnswerSelected"));
+        assertThat(toggleAnswerBody).doesNotContain("renderView()");
+        assertThat(toggleAnswerBody).doesNotContain("renderGrid()");
+        assertThat(toggleAnswerBody).contains("updateAnswerSelectionDom(qId)");
+        assertThat(toggleAnswerBody).contains("updateQuestionDot(qId)");
+        
+        String handleFillInputBody = jsContent.substring(jsContent.indexOf("function handleFillInput"), jsContent.indexOf("function saveToLocal"));
+        assertThat(handleFillInputBody).doesNotContain("renderGrid()");
+        assertThat(handleFillInputBody).contains("updateQuestionDot(qId)");
+        
+        assertThat(jsContent).contains("const rev = nextRevision(qId)");
+    }
 }
