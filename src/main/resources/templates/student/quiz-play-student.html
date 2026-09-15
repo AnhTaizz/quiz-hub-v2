@@ -25,6 +25,23 @@
         <p class="fw-bold text-muted">Đang thiết lập phòng thi...</p>
     </div>
 
+    <!-- Fullscreen Enforcement Overlay -->
+    <div id="fullscreenOverlay" style="display: none;">
+        <div class="fs-card">
+            <div class="fs-icon">
+                <i class="bi bi-fullscreen"></i>
+            </div>
+            <h3 class="fw-bold mb-3">Yêu cầu Toàn màn hình</h3>
+            <p class="text-muted mb-4" id="fsMessage">
+                Để đảm bảo tính công bằng, bài thi yêu cầu hoạt động ở chế độ toàn màn hình.
+                Bạn sẽ không thể làm bài nếu thoát chế độ này.
+            </p>
+            <button class="btn btn-primary btn-lg rounded-pill px-5 fw-bold" onclick="requestFullScreen()">
+                Bắt đầu / Quay lại phòng thi
+            </button>
+        </div>
+    </div>
+
     <header class="exam-header">
         <!-- Left: Logo & Title -->
         <div class="d-flex align-items-center gap-3">
@@ -183,6 +200,15 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <div class="error-overlay" id="errorOverlay">
+        <div class="error-content">
+            <div class="error-icon" id="errorIcon">🚫</div>
+            <div class="error-title" id="errorTitle">Thông báo</div>
+            <div class="error-msg" id="errorMsg">Đã có lỗi xảy ra. Vui lòng thử lại sau.</div>
+            <a href="/student" class="btn-back">Quay về trang chủ</a>
         </div>
     </div>
 

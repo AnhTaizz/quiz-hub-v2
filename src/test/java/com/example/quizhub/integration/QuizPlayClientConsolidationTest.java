@@ -43,4 +43,19 @@ public class QuizPlayClientConsolidationTest {
         assertThat(jsContent).contains("answerRevisions");
         assertThat(jsContent).contains("reconcileLocalAndServerState");
     }
+    @Test
+    void activeTemplateContainsRequiredDomElements() throws Exception {
+        Path htmlTemplate = Paths.get("src/main/resources/templates/student/quiz-play-student.html");
+        String htmlContent = Files.readString(htmlTemplate);
+
+        assertThat(htmlContent).contains("id=\"fullscreenOverlay\"");
+        assertThat(htmlContent).contains("id=\"fsMessage\"");
+
+        assertThat(htmlContent).contains("id=\"errorOverlay\"");
+        assertThat(htmlContent).contains("id=\"errorIcon\"");
+        assertThat(htmlContent).contains("id=\"errorTitle\"");
+        assertThat(htmlContent).contains("id=\"errorMsg\"");
+
+        assertThat(htmlContent).contains("class=\"btn-back\"");
+    }
 }
