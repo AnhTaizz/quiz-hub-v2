@@ -57,14 +57,20 @@ class QuizResumeNPlusOneTest {
     private QuizTakingService quizTakingService;
     @Autowired
     private EntityManagerFactory entityManagerFactory;
+    @Autowired
+    private UserAttemptAnswerRepository userAttemptAnswerRepository;
+    @Autowired
+    private org.springframework.jdbc.core.JdbcTemplate jdbcTemplate;
 
     private User student;
 
     @BeforeEach
     void setupTestFixture() {
+        userAttemptAnswerRepository.deleteAllInBatch();
         attemptRepository.deleteAllInBatch();
         quizTakingRepository.deleteAllInBatch();
         answerRepository.deleteAllInBatch();
+        jdbcTemplate.execute("delete from _question_creating");
         questionRepository.deleteAllInBatch();
         quizAssigningRepository.deleteAllInBatch();
         quizRepository.deleteAllInBatch();
@@ -175,7 +181,7 @@ class QuizResumeNPlusOneTest {
     void resumePreservesSavedQuestionState() {
         // Create classroom and quiz
         Classroom classroom = classroomRepository.save(Classroom.builder()
-                .code("STATE_CODE")
+                .code("ST_CODE")
                 .name("State Class")
                 .creator(student)
                 .isEnable(true)
