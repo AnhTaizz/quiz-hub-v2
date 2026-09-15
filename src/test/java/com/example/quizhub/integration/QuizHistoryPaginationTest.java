@@ -25,6 +25,11 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import org.springframework.ui.ExtendedModelMap;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.context.SecurityContextImpl;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -75,9 +80,13 @@ public class QuizHistoryPaginationTest {
 
     @Autowired
     private EntityManagerFactory entityManagerFactory;
+    
+    @Autowired
+    private com.example.quizhub.controller.student.StudentHomeController studentHomeController;
 
     private User studentA;
     private User studentB;
+    private User studentC;
 
     @BeforeEach
     void setUp() {
@@ -110,6 +119,15 @@ public class QuizHistoryPaginationTest {
         studentB.setFullName("Student B");
         studentB.setPassword("password123");
         studentB = userRepository.save(studentB);
+
+        studentC = new User();
+        studentC.setEmail("studentC_" + UUID.randomUUID() + "@test.com");
+        studentC.setRole(Role.STUDENT);
+        studentC.setIsEnable(true);
+        studentC.setIsVerified(true);
+        studentC.setFullName("Student C");
+        studentC.setPassword("password123");
+        studentC = userRepository.save(studentC);
 
         Classroom classroom = new Classroom();
         classroom.setName("Test Class");
@@ -171,6 +189,32 @@ public class QuizHistoryPaginationTest {
         aB.setQuizTaking(takingB);
         aB.setStartedAt(LocalDateTime.now());
         attemptRepository.save(aB); // 1 attempt for B
+
+        // Student C taking assigned quiz (large history)
+        QuizTaking takingC = new QuizTaking();
+        takingC.setLearner(studentC);
+        takingC.setQuiz(quiz);
+        takingC.setQuizAssigning(assigning);
+        takingC = quizTakingRepository.save(takingC);
+
+        List<Attempt> attemptsC = new ArrayList<>();
+        for (int i = 0; i < 500; i++) {
+            Attempt a = new Attempt();
+            a.setQuizTaking(takingC);
+            a.setStartedAt(LocalDateTime.now().minusDays(500 - i)); 
+            a.setEndedAt(a.getStartedAt().plusMinutes(10));
+            a.setResult(BigDecimal.valueOf(9.0));
+            attemptsC.add(a);
+            
+            // save in batches to avoid OOM or slow down
+            if (attemptsC.size() % 100 == 0) {
+                attemptRepository.saveAll(attemptsC);
+                attemptsC.clear();
+            }
+        }
+        if (!attemptsC.isEmpty()) {
+            attemptRepository.saveAll(attemptsC);
+        }
     }
 
     @Test
@@ -222,5 +266,35 @@ public class QuizHistoryPaginationTest {
         Page<QuizHistoryItemDTO> pageB = studentHomeService.getQuizHistoryPage(
                 studentB.getEmail(), PageRequest.of(0, 20));
         assertThat(pageB.getTotalElements()).isEqualTo(1);
+        
+        // Query scaling test for large history (student C)
+        stats.clear();
+        Page<QuizHistoryItemDTO> pageC = studentHomeService.getQuizHistoryPage(
+                studentC.getEmail(), PageRequest.of(0, 20));
+        long queryCountPageC = stats.getPrepareStatementCount();
+        System.out.println("Query count for page C (500 items): " + queryCountPageC);
+        
+        assertThat(pageC.getContent()).hasSize(20);
+        assertThat(pageC.getTotalElements()).isEqualTo(500);
+        
+        // The query count for the large history should be roughly equal to the small history query count
+        assertThat(queryCountPageC).isLessThanOrEqualTo(queryCountPage0 + 1);
+    }
+
+    @Test
+    void testPageSizeClamp() {
+        SecurityContextHolder.setContext(new SecurityContextImpl(
+            new UsernamePasswordAuthenticationToken(studentA.getEmail(), null, List.of(new SimpleGrantedAuthority("ROLE_STUDENT")))
+        ));
+        
+        ExtendedModelMap model = new ExtendedModelMap();
+        
+        // test max clamp
+        studentHomeController.getHistory(0, 100, model);
+        assertThat(model.getAttribute("pageSize")).isEqualTo(50);
+        
+        // test min clamp
+        studentHomeController.getHistory(0, -5, model);
+        assertThat(model.getAttribute("pageSize")).isEqualTo(1);
     }
 }

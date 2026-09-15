@@ -120,13 +120,13 @@
                             <div th:if="${totalPages > 1}" class="d-flex justify-content-center mt-4">
                                 <ul class="pagination">
                                     <li class="page-item" th:classappend="${currentPage == 0 ? 'disabled' : ''}">
-                                        <a class="page-link" th:href="@{/student/history(page=${currentPage - 1})}">Trước</a>
+                                        <a class="page-link" th:href="@{/student/history(page=${currentPage - 1}, size=${pageSize})}">Trước</a>
                                     </li>
                                     <li class="page-item disabled">
                                         <span class="page-link" th:text="${currentPage + 1} + ' / ' + ${totalPages}">1 / 5</span>
                                     </li>
                                     <li class="page-item" th:classappend="${currentPage == totalPages - 1 ? 'disabled' : ''}">
-                                        <a class="page-link" th:href="@{/student/history(page=${currentPage + 1})}">Sau</a>
+                                        <a class="page-link" th:href="@{/student/history(page=${currentPage + 1}, size=${pageSize})}">Sau</a>
                                     </li>
                                 </ul>
                             </div>

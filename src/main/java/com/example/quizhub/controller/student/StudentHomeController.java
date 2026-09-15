@@ -126,6 +126,7 @@ public class StudentHomeController {
         model.addAttribute("quizAttempts", quizPage.getContent());
         model.addAttribute("quizPage", quizPage);
         model.addAttribute("currentPage", page);
+        model.addAttribute("pageSize", size);
         model.addAttribute("totalPages", quizPage.getTotalPages());
         model.addAttribute("practiceHistory", practiceHistory);
         return "student/student-history";
