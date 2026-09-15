@@ -130,6 +130,9 @@ class QuizTakingScaleBenchmarkTest {
         System.out.printf("SUBMIT ms\t%d\t%d\t%d\n\n", q50.submitMs, q100.submitMs, q200.submitMs);
 
         // Automated Invariants
+        // Start Query Count should remain approx constant
+        assertThat(q200.startQueries).isLessThanOrEqualTo(q50.startQueries + 2);
+
         // Resume Query Count should remain approx constant
         assertThat(q200.resumeQueries).isLessThanOrEqualTo(q50.resumeQueries + 5);
 
@@ -205,8 +208,11 @@ class QuizTakingScaleBenchmarkTest {
         res.startMs = (System.nanoTime() - t1) / 1000000;
         res.startQueries = stats.getPrepareStatementCount();
         
-        assertThat(startRes.getQuestions()).hasSize(questionCount);
-        assertThat(startRes.getQuestions().get(0).getAnswers()).hasSize(4);
+        assertThat(startRes.getQuestions())
+                .hasSize(questionCount)
+                .allSatisfy(question -> 
+                        assertThat(question.getAnswers()).hasSize(4)
+                );
         Long attemptId = startRes.getAttemptId();
         assertThat(attemptId).isNotNull();
 
@@ -227,6 +233,9 @@ class QuizTakingScaleBenchmarkTest {
         QuizTakingResponseDTO stateRes = quizTakingService.getQuizTakingState(student.getId(), attemptId);
         res.resumeMs = (System.nanoTime() - t3) / 1000000;
         res.resumeQueries = stats.getPrepareStatementCount();
+
+        assertThat(stateRes.getAttemptId()).isEqualTo(attemptId);
+        assertThat(stateRes.getQuestions()).hasSize(questionCount);
 
         // 4. Measure SUBMIT
         QuestionSubmitRequestDTO qSubmit = new QuestionSubmitRequestDTO();
