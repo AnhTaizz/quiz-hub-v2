@@ -138,6 +138,9 @@ class QuizTakingScaleBenchmarkTest {
 
         // Autosave Query Count should remain approx constant
         assertThat(q200.autosaveQueries).isLessThanOrEqualTo(q50.autosaveQueries + 2);
+
+        // Submit Query Count should remain approx constant
+        assertThat(q200.submitQueries).isLessThanOrEqualTo(q50.submitQueries + 2);
     }
 
     private BenchmarkResult measureQuiz(int questionCount) {

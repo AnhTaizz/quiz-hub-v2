@@ -330,15 +330,22 @@ public class QuizTakingServiceImpl implements QuizTakingService {
         Map<Long, List<UserAttemptAnswer>> answersMap = savedAnswers.stream()
                 .collect(Collectors.groupingBy(uaa -> uaa.getQuestion().getId()));
 
-        for (Question question : quiz.getQuestions()) {
+        List<Question> questions = quiz.getQuestions();
+        List<Long> questionIds = questions.stream().map(Question::getId).collect(Collectors.toList());
+        Map<Long, List<Answer>> correctAnswersByQuestionId = questionIds.isEmpty() ? Collections.emptyMap() :
+                answerRepository.findByQuestionIdIn(questionIds).stream()
+                        .filter(Answer::getIsCorrect)
+                        .collect(Collectors.groupingBy(a -> a.getQuestion().getId()));
+
+        for (Question question : questions) {
             List<UserAttemptAnswer> userAnswers = answersMap.getOrDefault(question.getId(), Collections.emptyList());
+            List<Answer> correctAnswers = correctAnswersByQuestionId.getOrDefault(question.getId(), Collections.emptyList());
 
             if (question.getType() == QuestionType.FILL_IN_BLANK) {
                 String studentText = userAnswers.isEmpty() ? ""
                         : (userAnswers.get(0).getSelectedText() != null ? userAnswers.get(0).getSelectedText() : "");
                 String trimmedStudent = studentText.trim();
-                boolean isCorrect = question.getAnswers().stream()
-                        .filter(Answer::getIsCorrect)
+                boolean isCorrect = correctAnswers.stream()
                         .anyMatch(a -> a.getText() != null && a.getText().trim().equalsIgnoreCase(trimmedStudent));
                 if (isCorrect)
                     correctCount++;
@@ -348,8 +355,7 @@ public class QuizTakingServiceImpl implements QuizTakingService {
                         .map(uaa -> uaa.getAnswer().getId())
                         .collect(Collectors.toList());
 
-                List<Long> correctAnswersIds = question.getAnswers().stream()
-                        .filter(Answer::getIsCorrect)
+                List<Long> correctAnswersIds = correctAnswers.stream()
                         .map(Answer::getId)
                         .collect(Collectors.toList());
 

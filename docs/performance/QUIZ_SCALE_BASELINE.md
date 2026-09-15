@@ -4,7 +4,7 @@
 **Environment:** PostgreSQL 15-alpine (Testcontainers)  
 **Workload:** Quizzes containing 50, 100, and 200 questions (each with 4 choices).
 
-## Results
+## Results (Before V2-019 Fix)
 
 ```text
                 50Q       100Q       200Q
@@ -25,13 +25,19 @@ SUBMIT
   ms            237       167        197
 ```
 
+## Results (After V2-019 Fix)
+
+```text
+                50Q       100Q       200Q
+SUBMIT
+  queries       14        14         14
+```
+
 ## Interpretation
 
 * **START**: CONSTANT. The query footprint is strictly bounded to 13 queries regardless of quiz size.
 * **AUTOSAVE**: CONSTANT. The footprint for saving a single question's answer is firmly bounded to 8 queries.
 * **RESUME**: CONSTANT. The optimized retrieval (from V2-015) successfully executes exactly 9 queries to load all previously answered items.
-* **SUBMIT**: MILD SCALING / SUSPICIOUS. 
-
-Submit is the only measured lifecycle operation whose SQL statement count grows with quiz size (16 -> 18 -> 23 for 50 -> 100 -> 200 questions). This identifies submit as the next scaling hotspot. The exact cause has not yet been established and should be investigated before applying an optimization.
+* **SUBMIT**: CONSTANT. The batched lazy-load scaling (16 -> 18 -> 23) was eliminated by bulk-fetching correct answers before grading. The operation now requires exactly 14 queries.
 
 Note: Execution-time measurements are diagnostic only because they are noisy and non-monotonic.

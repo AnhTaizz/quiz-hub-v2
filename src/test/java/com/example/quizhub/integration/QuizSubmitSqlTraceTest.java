@@ -122,6 +122,15 @@ public class QuizSubmitSqlTraceTest {
         long total100 = q100.values().stream().mapToLong(Long::longValue).sum();
         long total200 = q200.values().stream().mapToLong(Long::longValue).sum();
         System.out.printf("TOTALS | %4d | %4d | %4d\n", total50, total100, total200);
+
+        long answerFetches50 = q50.entrySet().stream()
+                .filter(e -> e.getKey().contains("from _answer"))
+                .mapToLong(Map.Entry::getValue).sum();
+        long answerFetches200 = q200.entrySet().stream()
+                .filter(e -> e.getKey().contains("from _answer"))
+                .mapToLong(Map.Entry::getValue).sum();
+
+        assertThat(answerFetches200).isLessThanOrEqualTo(answerFetches50 + 1);
     }
 
     private Map<String, Long> traceSubmit(int questionCount) {

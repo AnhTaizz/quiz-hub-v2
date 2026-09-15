@@ -70,3 +70,17 @@ The exact delta between 50Q (16 total), 100Q (18 total), and 200Q (23 total) is 
 ## Recommended V2-019 Optimization
 To optimize this operation to O(1) constant queries regardless of quiz size, we should decouple grading from entity traversal.
 Recommendation: Pre-fetch all correct answers for the quiz's questions in a single bulk query (e.g., via a dedicated `AnswerRepository` method like `findByQuestionIdIn`) before entering the grading loop, bypassing the batched entity lazy loading entirely.
+
+## V2-019 Post-Fix Results
+
+After applying the bulk-fetch optimization, the submit phase now executes a constant number of queries regardless of the quiz size.
+
+```text
+Before (Batched Lazy-Load)
+_answer fetches: 3 / 5 / 10
+submit totals:   16 / 18 / 23
+
+After (Bulk Fetch)
+_answer fetches: 1 / 1 / 1
+submit totals:   14 / 14 / 14
+```
