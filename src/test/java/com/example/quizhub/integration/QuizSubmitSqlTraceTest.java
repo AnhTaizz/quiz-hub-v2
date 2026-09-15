@@ -8,6 +8,7 @@ import com.example.quizhub.entity.*;
 import com.example.quizhub.entity.enums.JoinStatus;
 import com.example.quizhub.entity.enums.QuestionType;
 import com.example.quizhub.entity.enums.Role;
+import com.example.quizhub.entity.enums.TakingStatus;
 import com.example.quizhub.repository.*;
 import com.example.quizhub.service.quiz.QuizTakingService;
 import org.junit.jupiter.api.BeforeEach;
@@ -205,6 +206,9 @@ public class QuizSubmitSqlTraceTest {
         
         Attempt attempt = attemptRepository.findById(attemptId).orElseThrow();
         assertThat(attempt.getEndedAt()).isNotNull();
+        assertThat(attempt.getResult()).isNotNull();
+        QuizTaking qt = quizTakingRepository.findById(attempt.getQuizTaking().getId()).orElseThrow();
+        assertThat(qt.getStatus()).isEqualTo(TakingStatus.COMPLETED);
 
         return sqls.stream()
                 .map(this::normalizeSql)
