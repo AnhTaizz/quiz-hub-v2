@@ -109,12 +109,24 @@ public class StudentHomeController {
     }
 
     @GetMapping("/history")
-    public String getHistory(Model model) {
+    public String getHistory(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size,
+            Model model) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        List<Attempt> quizAttempts = studentHomeService.getAllQuizAttempts(email);
+        if (size > 50) size = 50;
+        if (size < 1) size = 1;
+        if (page < 0) page = 0;
+
+        org.springframework.data.domain.Pageable pageable = org.springframework.data.domain.PageRequest.of(page, size);
+        org.springframework.data.domain.Page<com.example.quizhub.dto.student.QuizHistoryItemDTO> quizPage = studentHomeService.getQuizHistoryPage(email, pageable);
+
         List<com.example.quizhub.dto.practice.PracticeHistoryResponseDTO> practiceHistory = practiceService
                 .getMyPracticeHistory();
-        model.addAttribute("quizAttempts", quizAttempts);
+        model.addAttribute("quizAttempts", quizPage.getContent());
+        model.addAttribute("quizPage", quizPage);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", quizPage.getTotalPages());
         model.addAttribute("practiceHistory", practiceHistory);
         return "student/student-history";
     }

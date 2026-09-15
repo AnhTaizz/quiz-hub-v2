@@ -256,8 +256,8 @@ public class StudentHomeServiceImpl implements StudentHomeService {
     }
 
     @Override
-    public List<Attempt> getAllQuizAttempts(String email) {
+    public org.springframework.data.domain.Page<com.example.quizhub.dto.student.QuizHistoryItemDTO> getQuizHistoryPage(String email, org.springframework.data.domain.Pageable pageable) {
         User student = userRepository.findByEmail(email).orElseThrow();
-        return attemptRepository.findByQuizTakingLearnerIdOrderByStartedAtDesc(student.getId());
+        return attemptRepository.findQuizHistoryPageByStudentId(student.getId(), pageable);
     }
 }

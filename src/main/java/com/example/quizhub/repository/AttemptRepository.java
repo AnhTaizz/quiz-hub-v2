@@ -43,4 +43,15 @@ public interface AttemptRepository extends JpaRepository<Attempt, Long> {
 
     @Query("SELECT COUNT(a) FROM Attempt a WHERE a.quizTaking.quizAssigning.id = :assigningId")
     long countByQuizAssigningId(@Param("assigningId") Long assigningId);
+
+    @Query("SELECT new com.example.quizhub.dto.student.QuizHistoryItemDTO(" +
+           "a.id, a.result, a.startedAt, a.endedAt, q.title, qa.id, c.name) " +
+           "FROM Attempt a " +
+           "JOIN a.quizTaking qt " +
+           "JOIN qt.quiz q " +
+           "LEFT JOIN qt.quizAssigning qa " +
+           "LEFT JOIN qa.classroom c " +
+           "WHERE qt.learner.id = :studentId " +
+           "ORDER BY a.startedAt DESC")
+    org.springframework.data.domain.Page<com.example.quizhub.dto.student.QuizHistoryItemDTO> findQuizHistoryPageByStudentId(@Param("studentId") Long studentId, org.springframework.data.domain.Pageable pageable);
 }

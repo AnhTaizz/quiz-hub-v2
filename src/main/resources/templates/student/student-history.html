@@ -69,11 +69,11 @@
                                             <i class="bi bi-hourglass-split"></i>
                                         </div>
                                         <div>
-                                            <h5 class="fw-bold mb-1" th:text="${attempt.quizTaking.quiz.title}">Tên đề
+                                            <h5 class="fw-bold mb-1" th:text="${attempt.quizTitle}">Tên đề
                                                 thi</h5>
                                             <div class="text-muted small">
                                                 <span class="badge bg-light text-dark me-2"
-                                                    th:text="${attempt.quizTaking.quizAssigning != null ? (attempt.quizTaking.quizAssigning.classroom != null ? attempt.quizTaking.quizAssigning.classroom.name : 'Lớp đã xóa') : 'Đề thi cá nhân'}">Tên
+                                                    th:text="${attempt.quizAssigningId != null ? (attempt.classroomName != null ? attempt.classroomName : 'Lớp đã xóa') : 'Đề thi cá nhân'}">Tên
                                                     lớp</span>
                                                 <i class="bi bi-calendar3 me-1"></i> <span
                                                     th:text="${#temporals.format(attempt.startedAt, 'HH:mm dd/MM/yyyy')}">Thời
@@ -89,31 +89,46 @@
                                                 --</div>
                                         </div>
                                         <th:block th:if="${attempt.endedAt != null}">
-                                            <a th:if="${attempt.quizTaking.quizAssigning != null}"
-                                                th:href="@{'/student/quiz/result/' + ${attempt.id}}"
+                                            <a th:if="${attempt.quizAssigningId != null}"
+                                                th:href="@{'/student/quiz/result/' + ${attempt.attemptId}}"
                                                 class="btn-view text-decoration-none">
                                                 Xem chi tiết <i class="bi bi-chevron-right ms-1"></i>
                                             </a>
-                                            <a th:if="${attempt.quizTaking.quizAssigning == null}"
-                                                th:href="@{'/student/quiz/result?attemptId=' + ${attempt.id}}"
+                                            <a th:if="${attempt.quizAssigningId == null}"
+                                                th:href="@{'/student/quiz/result?attemptId=' + ${attempt.attemptId}}"
                                                 class="btn-view text-decoration-none">
                                                 Xem chi tiết <i class="bi bi-chevron-right ms-1"></i>
                                             </a>
                                         </th:block>
                                         <th:block th:if="${attempt.endedAt == null}">
-                                            <a th:if="${attempt.quizTaking.quizAssigning != null}"
-                                                th:href="@{'/student/quiz/play/' + ${attempt.quizTaking.quizAssigning.id}}"
+                                            <a th:if="${attempt.quizAssigningId != null}"
+                                                th:href="@{'/student/quiz/play/' + ${attempt.quizAssigningId}}"
                                                 class="btn btn-warning fw-bold shadow-sm" style="border-radius: 12px; padding: 10px 20px;">
                                                 <i class="bi bi-play-fill me-1"></i> Làm tiếp
                                             </a>
-                                            <a th:if="${attempt.quizTaking.quizAssigning == null}"
-                                                th:href="@{'/student/quiz/play?attemptId=' + ${attempt.id}}"
+                                            <a th:if="${attempt.quizAssigningId == null}"
+                                                th:href="@{'/student/quiz/play?attemptId=' + ${attempt.attemptId}}"
                                                 class="btn btn-warning fw-bold shadow-sm" style="border-radius: 12px; padding: 10px 20px;">
                                                 <i class="bi bi-play-fill me-1"></i> Làm tiếp
                                             </a>
                                         </th:block>
                                     </div>
                                 </div>
+                            </div>
+                            
+                            <!-- Pagination -->
+                            <div th:if="${totalPages > 1}" class="d-flex justify-content-center mt-4">
+                                <ul class="pagination">
+                                    <li class="page-item" th:classappend="${currentPage == 0 ? 'disabled' : ''}">
+                                        <a class="page-link" th:href="@{/student/history(page=${currentPage - 1})}">Trước</a>
+                                    </li>
+                                    <li class="page-item disabled">
+                                        <span class="page-link" th:text="${currentPage + 1} + ' / ' + ${totalPages}">1 / 5</span>
+                                    </li>
+                                    <li class="page-item" th:classappend="${currentPage == totalPages - 1 ? 'disabled' : ''}">
+                                        <a class="page-link" th:href="@{/student/history(page=${currentPage + 1})}">Sau</a>
+                                    </li>
+                                </ul>
                             </div>
                         </div>
                     </div>

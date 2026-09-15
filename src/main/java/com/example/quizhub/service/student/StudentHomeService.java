@@ -20,7 +20,7 @@ public interface StudentHomeService {
     
     List<Attempt> getQuizHistory(Long assigningId, String email);
     
-    List<Attempt> getAllQuizAttempts(String email);
+    org.springframework.data.domain.Page<com.example.quizhub.dto.student.QuizHistoryItemDTO> getQuizHistoryPage(String email, org.springframework.data.domain.Pageable pageable);
     
     User getStudentByEmail(String email);
 }
