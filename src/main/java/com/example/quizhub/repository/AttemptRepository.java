@@ -17,6 +17,7 @@ public interface AttemptRepository extends JpaRepository<Attempt, Long> {
     java.util.Optional<Attempt> findWithLockById(@Param("id") Long id);
 
     List<Attempt> findByQuizTakingId(Long quizTakingId);
+    List<Attempt> findByQuizTakingIdIn(java.util.Collection<Long> quizTakingIds);
     List<Attempt> findByQuizTakingIdOrderByStartedAtDesc(Long quizTakingId);
     int countByQuizTakingId(Long quizTakingId);
 

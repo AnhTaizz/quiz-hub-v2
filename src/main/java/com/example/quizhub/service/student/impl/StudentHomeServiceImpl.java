@@ -159,7 +159,7 @@ public class StudentHomeServiceImpl implements StudentHomeService {
                 List.of(JoinStatus.APPROVED, JoinStatus.PENDING)).stream().filter(j -> j.getClassroom() != null)
                 .collect(Collectors.toList());
 
-        Map<Long, QuizDashboardInfoDTO> quizMap = new LinkedHashMap<>();
+        Map<Long, QuizAssigning> visibleAssignments = new LinkedHashMap<>();
 
         for (ClassJoining joining : joinedClasses) {
             if (joining.getStatus() == JoinStatus.APPROVED && joining.getClassroom() != null) {
@@ -173,41 +173,69 @@ public class StudentHomeServiceImpl implements StudentHomeService {
                                 || !isStudentAllowed(assigning, student.getId()))
                             continue;
 
-                        if (quizMap.containsKey(assigning.getId()))
-                            continue;
-
-                        QuizTaking taking = quizTakingRepository
-                                .findByLearnerIdAndQuizAssigningId(student.getId(), assigning.getId())
-                                .orElse(null);
-
-                        int finishedCount = 0;
-                        boolean anyAttemptExists = false;
-                        boolean hasUnfinished = false;
-                        if (taking != null) {
-                            List<Attempt> attempts = attemptRepository.findByQuizTakingId(taking.getId());
-                            if (attempts != null) {
-                                finishedCount = (int) attempts.stream().filter(a -> a.getEndedAt() != null).count();
-                                anyAttemptExists = !attempts.isEmpty();
-                                hasUnfinished = attempts.stream().anyMatch(a -> a.getEndedAt() == null);
-                            }
-                        }
-
-                        QuizDashboardInfoDTO info = new QuizDashboardInfoDTO();
-                        info.setAssigning(assigning);
-                        info.setAttemptsMade(finishedCount);
-                        info.setAttemptsLeft(
-                                assigning.getMaxAttempt() == null || assigning.getMaxAttempt() == 0 ? -1
-                                        : Math.max(0, assigning.getMaxAttempt() - finishedCount));
-                        info.setHasStarted(anyAttemptExists);
-                        info.setHasUnfinished(hasUnfinished);
-
-                        quizMap.put(assigning.getId(), info);
+                        visibleAssignments.putIfAbsent(assigning.getId(), assigning);
                     }
                 }
             }
         }
 
-        List<QuizDashboardInfoDTO> allQuizzes = new ArrayList<>(quizMap.values());
+        if (visibleAssignments.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        List<Long> assigningIds = new ArrayList<>(visibleAssignments.keySet());
+        List<QuizTaking> takings = quizTakingRepository.findByLearnerIdAndQuizAssigningIdIn(student.getId(), assigningIds);
+
+        Map<Long, QuizTaking> takingByAssigningId = new HashMap<>();
+        for (QuizTaking taking : takings) {
+            if (taking.getQuizAssigning() != null) {
+                Long aid = taking.getQuizAssigning().getId();
+                if (takingByAssigningId.containsKey(aid)) {
+                    throw new IllegalStateException("Multiple QuizTaking rows found for assignment: " + aid);
+                }
+                takingByAssigningId.put(aid, taking);
+            }
+        }
+
+        List<Long> takingIds = takings.stream().map(QuizTaking::getId).collect(Collectors.toList());
+        Map<Long, List<Attempt>> attemptsByTakingId = new HashMap<>();
+
+        if (!takingIds.isEmpty()) {
+            List<Attempt> allAttempts = attemptRepository.findByQuizTakingIdIn(takingIds);
+            for (Attempt attempt : allAttempts) {
+                if (attempt.getQuizTaking() != null) {
+                    attemptsByTakingId.computeIfAbsent(attempt.getQuizTaking().getId(), k -> new ArrayList<>()).add(attempt);
+                }
+            }
+        }
+
+        List<QuizDashboardInfoDTO> allQuizzes = new ArrayList<>();
+
+        for (QuizAssigning assigning : visibleAssignments.values()) {
+            QuizTaking taking = takingByAssigningId.get(assigning.getId());
+
+            int finishedCount = 0;
+            boolean anyAttemptExists = false;
+            boolean hasUnfinished = false;
+            
+            if (taking != null) {
+                List<Attempt> attempts = attemptsByTakingId.getOrDefault(taking.getId(), Collections.emptyList());
+                finishedCount = (int) attempts.stream().filter(a -> a.getEndedAt() != null).count();
+                anyAttemptExists = !attempts.isEmpty();
+                hasUnfinished = attempts.stream().anyMatch(a -> a.getEndedAt() == null);
+            }
+
+            QuizDashboardInfoDTO info = new QuizDashboardInfoDTO();
+            info.setAssigning(assigning);
+            info.setAttemptsMade(finishedCount);
+            info.setAttemptsLeft(
+                    assigning.getMaxAttempt() == null || assigning.getMaxAttempt() == 0 ? -1
+                            : Math.max(0, assigning.getMaxAttempt() - finishedCount));
+            info.setHasStarted(anyAttemptExists);
+            info.setHasUnfinished(hasUnfinished);
+
+            allQuizzes.add(info);
+        }
 
         allQuizzes.sort((a, b) -> {
             LocalDateTime d1 = a.getAssigning().getDueDate();

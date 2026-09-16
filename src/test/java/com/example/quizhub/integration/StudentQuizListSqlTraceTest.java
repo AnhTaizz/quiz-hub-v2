@@ -159,10 +159,15 @@ class StudentQuizListSqlTraceTest {
                 .filter(e -> e.getKey().contains("from _quiz"))
                 .mapToLong(Map.Entry::getValue).sum();
 
-        assertThat(quizTakingSelects100).isGreaterThan(quizTakingSelects10);
-        assertThat(attemptSelects100).isGreaterThan(attemptSelects10);
-        // We might also see Quiz fetches scaling
-        // assertThat(quizSelects100).isGreaterThan(quizSelects10);
+        assertThat(quizTakingSelects100).isLessThanOrEqualTo(quizTakingSelects10 + 1);
+        assertThat(attemptSelects100).isLessThanOrEqualTo(attemptSelects10 + 1);
+        
+        // Assert that the queries are approximately constant and not scaling with assignments
+        assertThat(quizTakingSelects100).isLessThanOrEqualTo(2);
+        assertThat(attemptSelects100).isLessThanOrEqualTo(2);
+        
+        // Overall total queries shouldn't scale linearly anymore
+        assertThat(total100).isLessThanOrEqualTo(total10 + 2);
     }
 
     private Map<String, Long> traceWorkload(int assignmentCount) {
