@@ -9,11 +9,13 @@ Measure how `QuizTakingServiceImpl.getQuizResult(...)` scales in SQL query execu
 A benchmark test `QuizResultScaleBenchmarkTest` was created with a real PostgreSQL database (via Testcontainers) to isolate the execution of `getQuizResult(...)`.
 
 - Three identical quiz scenarios were created containing **50**, **100**, and **200** questions.
+- Before measuring each workload, all database fixtures were completely cleared, and fresh fixtures were inserted specifically for that size limit.
 - Each question was set as `SINGLE_CHOICE` with 4 answers (1 correct, 3 incorrect).
 - A completed attempt was prepared with the student correctly answering every single question.
 - The `QuizAssigning.showAnswer` field was set to `true` to ensure full diagnostic payloads were returned.
-- To simulate production behavior (like Spring's Open Session in View), `getQuizResult` was executed inside a transaction boundary.
-- The persistence context and Hibernate statistics were cleared immediately prior to the execution to ensure we captured cold cache database retrieval.
+- The measured service invocation is executed inside a test transaction so Hibernate lazy relationships used by `getQuizResult()` remain accessible.
+- The persistence context was cleared immediately prior to the execution to ensure we captured cold cache database retrieval.
+- Hibernate Statistics was used as the authoritative query count mechanism.
 
 ## 3. Measurements
 
@@ -21,22 +23,32 @@ The following results trace the total number of SQL queries and elapsed time for
 
 | Metric | 50 Questions | 100 Questions | 200 Questions |
 | :--- | :--- | :--- | :--- |
-| **SQL queries** | 12 | 13 | 18 |
-| **Elapsed ms** | 468 | 365 | 193 |
+| **SQL queries** | 11 | 13 | 18 |
+| **Elapsed ms** | 929 | 504 | 405 |
 
-*(Note: Timing variances [468ms -> 193ms] are typical of JVM/Hibernate warmup phases executing in sequence and are strictly diagnostic).*
+*(Note: Timing variances are typical of JVM/Hibernate warmup phases executing in sequence and are strictly diagnostic).*
 
-## 4. Classification
+## 4. Interpretation
 
 **Classification: MILD SCALING**
 
-The query count grows in small steps (12 -> 13 -> 18) rather than strictly linearly (e.g. 50 -> 100 -> 200). This evidence rules out a pure strict `N+1` per-question scaling problem. The mild growth is consistent with Hibernate batch fetching (e.g., `@BatchSize`) being exhausted and triggering additional batched `SELECT ... WHERE ... IN (...)` queries for deeper associations (like user selected answers or answer options).
+Query count increases with quiz size, but much more slowly than one query per question. The exact SQL statement(s) responsible have not yet been identified. 
+
+The shape may be compatible with batched fetching, but this remains a hypothesis until statement-level SQL tracing is performed. 
 
 ## 5. Correctness
 
 For all workloads, the integrity of the returned `QuizResultResponseDTO` was asserted and proven correct:
-- Total questions correctly matched N.
-- Total correct answers correctly matched N (0 incorrect).
-- Each question returned exactly 4 answers.
-- Each question returned a populated list of `selectedAnswerIds`.
-- The overall attempt ID tied back perfectly.
+- `attemptId` matches.
+- `totalNum` == N.
+- `correctNum` == N.
+- `incorrectNum` == 0.
+- `questions.size` == N.
+- Exactly 4 answers/question.
+- Exactly one selected answer/question (`selectedAnswerIds` has size 1).
+- `isCorrect` == true.
+- `score` == 10.00.
+
+## 6. Next step
+
+Statement-level SQL tracing before considering any optimization.

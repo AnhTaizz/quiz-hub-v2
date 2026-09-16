@@ -32,7 +32,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 @ActiveProfiles("test")
 @TestPropertySource(properties = {
-        "spring.jpa.properties.hibernate.session_factory.statement_inspector=com.example.quizhub.integration.SqlCaptureInspector",
         "spring.jpa.properties.hibernate.generate_statistics=true"
 })
 @Testcontainers
@@ -74,8 +73,15 @@ public class QuizResultScaleBenchmarkTest {
     private User student;
     private Classroom classroom;
 
-    @BeforeEach
-    void setup() {
+
+    @Autowired
+    private TransactionTemplate transactionTemplate;
+
+    @Autowired
+    private jakarta.persistence.EntityManagerFactory entityManagerFactory;
+
+    private void runBenchmark(int questionCount) {
+        // --- 1. CLEANUP OLD DATA ---
         userAttemptAnswerRepository.deleteAllInBatch();
         attemptRepository.deleteAllInBatch();
         quizTakingRepository.deleteAllInBatch();
@@ -89,7 +95,8 @@ public class QuizResultScaleBenchmarkTest {
         classroomRepository.deleteAllInBatch();
         userRepository.deleteAllInBatch();
 
-        teacher = userRepository.save(User.builder()
+        // --- 2. CREATE ISOLATED FIXTURES ---
+        User teacher = userRepository.save(User.builder()
                 .email("teacher_result@test.com")
                 .password("hashedpw")
                 .fullName("Teacher Result")
@@ -97,7 +104,7 @@ public class QuizResultScaleBenchmarkTest {
                 .isVerified(true)
                 .role(Role.TEACHER).build());
 
-        student = userRepository.save(User.builder()
+        User student = userRepository.save(User.builder()
                 .email("student_result@test.com")
                 .password("hashedpw")
                 .fullName("Student Result")
@@ -105,7 +112,7 @@ public class QuizResultScaleBenchmarkTest {
                 .isVerified(true)
                 .role(Role.STUDENT).build());
 
-        classroom = classroomRepository.save(Classroom.builder()
+        Classroom classroom = classroomRepository.save(Classroom.builder()
                 .name("Quiz Result Class")
                 .creator(teacher)
                 .code("QRC123")
@@ -117,12 +124,7 @@ public class QuizResultScaleBenchmarkTest {
                 .learner(student)
                 .status(JoinStatus.APPROVED)
                 .build());
-    }
 
-    @Autowired
-    private TransactionTemplate transactionTemplate;
-
-    private void runBenchmark(int questionCount) {
         Long attemptId = transactionTemplate.execute(status -> {
             Quiz quiz = quizRepository.save(Quiz.builder()
                     .title("Result Scale Quiz " + questionCount)
@@ -207,10 +209,13 @@ public class QuizResultScaleBenchmarkTest {
             return attempt.getId();
         });
 
-        // -- BENCHMARK BOUNDARY --
+        // --- 3. MEASUREMENT PREPARATION ---
         entityManager.clear();
+
+        org.hibernate.stat.Statistics statistics = entityManagerFactory.unwrap(org.hibernate.SessionFactory.class).getStatistics();
+        statistics.setStatisticsEnabled(true);
+        statistics.clear();
         
-        SqlCaptureInspector.start();
         long start = System.nanoTime();
         
         QuizResultResponseDTO result = transactionTemplate.execute(status -> 
@@ -218,24 +223,24 @@ public class QuizResultScaleBenchmarkTest {
         );
         
         long end = System.nanoTime();
-        List<String> sqls = SqlCaptureInspector.stop();
 
-        long queries = sqls.size();
+        long queries = statistics.getPrepareStatementCount();
         long ms = (end - start) / 1_000_000;
 
         System.out.printf("Questions: %3d | SQL Queries: %4d | Time: %5d ms%n", questionCount, queries, ms);
 
-        // Assertions
+        // --- 4. ASSERTIONS ---
         assertThat(result).isNotNull();
         assertThat(result.getAttemptId()).isEqualTo(attemptId);
         assertThat(result.getTotalNum()).isEqualTo(questionCount);
         assertThat(result.getCorrectNum()).isEqualTo(questionCount);
         assertThat(result.getIncorrectNum()).isEqualTo(0);
+        assertThat(result.getScore()).isEqualByComparingTo("10.00");
         assertThat(result.getQuestions()).hasSize(questionCount);
 
         for (QuestionResultDTO qDto : result.getQuestions()) {
             assertThat(qDto.getAnswers()).hasSize(4);
-            assertThat(qDto.getSelectedAnswerIds()).isNotEmpty();
+            assertThat(qDto.getSelectedAnswerIds()).hasSize(1);
             assertThat(qDto.getIsCorrect()).isTrue();
         }
     }
