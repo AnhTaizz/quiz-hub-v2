@@ -20,6 +20,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
+import org.springframework.test.annotation.DirtiesContext;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import jakarta.persistence.EntityManagerFactory;
 
@@ -35,6 +36,7 @@ import static org.assertj.core.api.Assertions.assertThat;
     "spring.jpa.properties.hibernate.session_factory.statement_inspector=com.example.quizhub.integration.SqlCaptureInspector"
 })
 @Testcontainers
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class QuizSubmitSqlTraceTest {
 
     @Container
