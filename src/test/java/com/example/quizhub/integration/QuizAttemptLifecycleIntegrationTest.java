@@ -974,4 +974,138 @@ class QuizAttemptLifecycleIntegrationTest {
 
         assertThat(ex.getErrorCode()).isEqualTo(ErrorCode.UNAUTHORIZED);
     }
+
+    @Test
+    void fillInBlankGradingHandlesWhitespaceAndCaseInsensitivity() {
+        User teacher = userRepository.findAll().stream().filter(u -> "teacher@test.com".equals(u.getEmail())).findFirst().orElseThrow();
+        Classroom classroom = classroomRepository.findAll().get(0);
+
+        Quiz fillQuiz = quizRepository.save(Quiz.builder()
+                .title("Fill in Blank Quiz")
+                .description("Testing fill in blank grading")
+                .creator(teacher)
+                .isDraft(false)
+                .isEnable(true)
+                .isExam(false)
+                .build());
+
+        Question fillQuestion = questionRepository.save(Question.builder()
+                .text("Capital of France?")
+                .type(QuestionType.FILL_IN_BLANK)
+                .build());
+
+        fillQuiz.setQuestions(List.of(fillQuestion));
+        quizRepository.save(fillQuiz);
+
+        answerRepository.save(Answer.builder()
+                .question(fillQuestion)
+                .text("Paris")
+                .isCorrect(true)
+                .build());
+
+        answerRepository.save(Answer.builder()
+                .question(fillQuestion)
+                .text("London")
+                .isCorrect(false)
+                .build());
+
+        QuizAssigning fillAssignedQuiz = quizAssigningRepository.save(QuizAssigning.builder()
+                .quiz(fillQuiz)
+                .classroom(classroom)
+                .durationInMins(60)
+                .startDate(LocalDateTime.now().minusMinutes(5))
+                .dueDate(LocalDateTime.now().plusDays(1))
+                .isHidden(false)
+                .build());
+
+        QuizTakingResponseDTO startRes = quizTakingService.startQuizAttempt(studentA.getId(), fillAssignedQuiz.getId());
+        Long attemptId = startRes.getAttemptId();
+
+        QuestionSubmitRequestDTO qSubmit = new QuestionSubmitRequestDTO();
+        qSubmit.setQuestionId(fillQuestion.getId());
+        qSubmit.setSelectedText("  pArIs  ");
+
+        QuizSubmitRequestDTO submitReq = new QuizSubmitRequestDTO();
+        submitReq.setAttemptId(attemptId);
+        submitReq.setQuestions(List.of(qSubmit));
+
+        quizTakingService.submitQuizAttempt(studentA.getId(), submitReq);
+
+        Attempt submittedAttempt = attemptRepository.findById(attemptId).orElseThrow();
+        
+        assertThat(submittedAttempt.getEndedAt()).isNotNull();
+        assertThat(submittedAttempt.getResult()).isEqualByComparingTo(BigDecimal.valueOf(10.0));
+        assertThat(submittedAttempt.getCorrectNum()).isEqualTo(1);
+        assertThat(submittedAttempt.getIncorrectNum()).isEqualTo(0);
+
+        QuizTaking taking = quizTakingRepository.findById(submittedAttempt.getQuizTaking().getId()).orElseThrow();
+        assertThat(taking.getStatus()).isEqualTo(TakingStatus.COMPLETED);
+    }
+
+    @Test
+    void fillInBlankGradingRejectsIncorrectFalseAlternatives() {
+        User teacher = userRepository.findAll().stream().filter(u -> "teacher@test.com".equals(u.getEmail())).findFirst().orElseThrow();
+        Classroom classroom = classroomRepository.findAll().get(0);
+
+        Quiz fillQuiz = quizRepository.save(Quiz.builder()
+                .title("Fill in Blank Quiz False Alternative")
+                .description("Testing fill in blank grading")
+                .creator(teacher)
+                .isDraft(false)
+                .isEnable(true)
+                .isExam(false)
+                .build());
+
+        Question fillQuestion = questionRepository.save(Question.builder()
+                .text("Capital of France?")
+                .type(QuestionType.FILL_IN_BLANK)
+                .build());
+
+        fillQuiz.setQuestions(List.of(fillQuestion));
+        quizRepository.save(fillQuiz);
+
+        answerRepository.save(Answer.builder()
+                .question(fillQuestion)
+                .text("Paris")
+                .isCorrect(true)
+                .build());
+
+        answerRepository.save(Answer.builder()
+                .question(fillQuestion)
+                .text("London")
+                .isCorrect(false)
+                .build());
+
+        QuizAssigning fillAssignedQuiz = quizAssigningRepository.save(QuizAssigning.builder()
+                .quiz(fillQuiz)
+                .classroom(classroom)
+                .durationInMins(60)
+                .startDate(LocalDateTime.now().minusMinutes(5))
+                .dueDate(LocalDateTime.now().plusDays(1))
+                .isHidden(false)
+                .build());
+
+        QuizTakingResponseDTO startRes = quizTakingService.startQuizAttempt(studentA.getId(), fillAssignedQuiz.getId());
+        Long attemptId = startRes.getAttemptId();
+
+        QuestionSubmitRequestDTO qSubmit = new QuestionSubmitRequestDTO();
+        qSubmit.setQuestionId(fillQuestion.getId());
+        qSubmit.setSelectedText("London");
+
+        QuizSubmitRequestDTO submitReq = new QuizSubmitRequestDTO();
+        submitReq.setAttemptId(attemptId);
+        submitReq.setQuestions(List.of(qSubmit));
+
+        quizTakingService.submitQuizAttempt(studentA.getId(), submitReq);
+
+        Attempt submittedAttempt = attemptRepository.findById(attemptId).orElseThrow();
+        
+        assertThat(submittedAttempt.getEndedAt()).isNotNull();
+        assertThat(submittedAttempt.getResult()).isEqualByComparingTo(BigDecimal.ZERO);
+        assertThat(submittedAttempt.getCorrectNum()).isEqualTo(0);
+        assertThat(submittedAttempt.getIncorrectNum()).isEqualTo(1);
+
+        QuizTaking taking = quizTakingRepository.findById(submittedAttempt.getQuizTaking().getId()).orElseThrow();
+        assertThat(taking.getStatus()).isEqualTo(TakingStatus.COMPLETED);
+    }
 }
