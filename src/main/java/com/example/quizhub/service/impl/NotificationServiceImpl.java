@@ -9,6 +9,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.quizhub.entity.Notification;
 import com.example.quizhub.entity.User;
 import com.example.quizhub.entity.enums.NotificationType;
+import com.example.quizhub.exception.AppException;
+import com.example.quizhub.exception.ErrorCode;
 import com.example.quizhub.repository.NotificationRepository;
 import com.example.quizhub.repository.UserRepository;
 import com.example.quizhub.service.NotificationService;
@@ -54,11 +56,13 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     @Transactional
-    public void markAsRead(Long notificationId) {
-        notificationRepository.findById(notificationId).ifPresent(n -> {
-            n.setRead(true);
-            notificationRepository.save(n);
-        });
+    public void markAsRead(Long notificationId, String email) {
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new AppException(ErrorCode.NOTIFICATION_NOT_FOUND));
+        // Scoped to the owner: a notification that belongs to another user is indistinguishable from a missing one.
+        Notification notification = notificationRepository.findByIdAndUserId(notificationId, user.getId())
+                .orElseThrow(() -> new AppException(ErrorCode.NOTIFICATION_NOT_FOUND));
+        notification.setRead(true);
+        notificationRepository.save(notification);
     }
 
     @Override

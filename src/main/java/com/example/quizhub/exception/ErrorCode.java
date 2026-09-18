@@ -59,7 +59,9 @@ public enum ErrorCode {
     QUESTION_NOT_IN_QUIZ(1043, "Câu hỏi không thuộc đề thi này", HttpStatus.BAD_REQUEST),
     ANSWER_NOT_IN_QUESTION(1044, "Câu trả lời không thuộc câu hỏi này", HttpStatus.BAD_REQUEST),
     // Authenticated but not permitted (403). Distinct from UNAUTHORIZED (401, not authenticated).
-    FORBIDDEN(1045, "Bạn không có quyền truy cập tài nguyên này", HttpStatus.FORBIDDEN);
+    FORBIDDEN(1045, "Bạn không có quyền truy cập tài nguyên này", HttpStatus.FORBIDDEN),
+    // Also returned for a notification that exists but belongs to someone else (never reveal which).
+    NOTIFICATION_NOT_FOUND(1046, "Không tìm thấy thông báo", HttpStatus.NOT_FOUND);
 
     final int code;
     final String message;

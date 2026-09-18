@@ -8,6 +8,7 @@ public interface NotificationService {
     void createNotification(Long userId, String title, String message, NotificationType type, String link);
     List<Notification> getMyNotifications(String email);
     long countUnread(String email);
-    void markAsRead(Long notificationId);
+    /** Marks the caller's own notification read; a missing or foreign id both raise NOTIFICATION_NOT_FOUND. */
+    void markAsRead(Long notificationId, String email);
     void markAllAsRead(String email);
 }
