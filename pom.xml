@@ -28,6 +28,10 @@
 	</scm>
 	<properties>
 		<java.version>21</java.version>
+		<!-- Pinned Node used ONLY by the build (frontend-maven-plugin downloads it; no host Node needed). -->
+		<frontend.node.version>v22.20.0</frontend.node.version>
+		<!-- -DskipFrontend=true skips the React build (e.g. backend-only iteration). Never set for releases. -->
+		<skipFrontend>false</skipFrontend>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -152,6 +156,54 @@
 
 	<build>
 		<plugins>
+			<!--
+				React SPA build. Runs in generate-resources (before package), so every
+				`mvn package` - including the Docker image build - contains a fresh React
+				bundle. Vite writes straight into target/classes/static/app (see
+				frontend/vite.config.ts), which Spring Boot serves at /app/**; nothing
+				generated is committed.
+			-->
+			<plugin>
+				<groupId>com.github.eirslett</groupId>
+				<artifactId>frontend-maven-plugin</artifactId>
+				<version>1.15.1</version>
+				<configuration>
+					<workingDirectory>frontend</workingDirectory>
+					<skip>${skipFrontend}</skip>
+				</configuration>
+				<executions>
+					<execution>
+						<id>install-node</id>
+						<goals>
+							<goal>install-node-and-npm</goal>
+						</goals>
+						<phase>generate-resources</phase>
+						<configuration>
+							<nodeVersion>${frontend.node.version}</nodeVersion>
+						</configuration>
+					</execution>
+					<execution>
+						<id>npm-ci</id>
+						<goals>
+							<goal>npm</goal>
+						</goals>
+						<phase>generate-resources</phase>
+						<configuration>
+							<arguments>ci</arguments>
+						</configuration>
+					</execution>
+					<execution>
+						<id>npm-build</id>
+						<goals>
+							<goal>npm</goal>
+						</goals>
+						<phase>generate-resources</phase>
+						<configuration>
+							<arguments>run build</arguments>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>

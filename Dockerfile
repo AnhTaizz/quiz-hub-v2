@@ -7,10 +7,18 @@ COPY pom.xml .
 RUN --mount=type=cache,target=/root/.m2 mvn -B -ntp dependency:go-offline
 
 # Copy mã nguồn và đóng gói ứng dụng
+# The React SPA is built by the same Maven invocation: frontend-maven-plugin (see
+# pom.xml) downloads its pinned Node, runs `npm ci` + `vite build`, and Vite writes
+# straight into target/classes/static/app, so the jar below always contains a fresh
+# React bundle - no host-built dist/ is ever trusted or needed.
 # Tests are skipped here on purpose: CI already runs the full Maven test suite
-# (against real PostgreSQL via Testcontainers) before this image is ever built.
+# (against real PostgreSQL via Testcontainers) and the frontend quality/E2E jobs
+# before this image is ever built.
+COPY frontend ./frontend
 COPY src ./src
-RUN --mount=type=cache,target=/root/.m2 mvn -B -ntp clean package -DskipTests
+RUN --mount=type=cache,target=/root/.m2 \
+    --mount=type=cache,target=/root/.npm \
+    mvn -B -ntp clean package -DskipTests
 
 # Giai đoạn 2: Môi trường chạy JRE 21 siêu nhẹ
 FROM eclipse-temurin:21-jre-alpine

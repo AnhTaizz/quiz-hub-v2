@@ -49,3 +49,11 @@ uploads/
 # OS artifacts
 .DS_Store
 Thumbs.db
+
+# Frontend (React) - dependencies, downloaded Node (frontend-maven-plugin), and generated output
+frontend/node_modules/
+frontend/node/
+frontend/dist/
+frontend/playwright-report/
+frontend/test-results/
+frontend/*.tsbuildinfo
