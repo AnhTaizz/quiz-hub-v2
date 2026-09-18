@@ -662,7 +662,21 @@ public class QuizTakingServiceImpl implements QuizTakingService {
     @Override
     @Transactional
     public ViolationResponseDTO recordViolation(Long studentId, ViolationRequestDTO request) {
-        Attempt attempt = getValidAttempt(request.getAttemptId(), studentId);
+        // Acquire PESSIMISTIC_WRITE lock on the attempt first so concurrent violation
+        // requests for the same attempt are serialized around the endedAt check, the
+        // violation insert, and the threshold finalization decision.
+        Attempt attempt = attemptRepository.findWithLockById(request.getAttemptId())
+                .orElseThrow(() -> new AppException(ErrorCode.ATTEMPT_NOT_FOUND));
+
+        if (studentId != null) {
+            User user = userRepository.findById(studentId).orElse(null);
+            if (user != null) {
+                if (user.getRole() == Role.STUDENT
+                        && !attempt.getQuizTaking().getLearner().getId().equals(studentId)) {
+                    throw new AppException(ErrorCode.UNAUTHORIZED);
+                }
+            }
+        }
 
         // Nếu bài đã nộp rồi thì bỏ qua, trả về state hiện tại
         if (attempt.getEndedAt() != null) {
