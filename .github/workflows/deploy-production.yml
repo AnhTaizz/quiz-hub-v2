@@ -35,6 +35,11 @@ jobs:
           if [ -z "$TAG" ]; then
             TAG="sha-$(git rev-parse --short HEAD)"
           fi
+          if ! [[ "$TAG" =~ ^sha-[0-9a-f]{7,40}$ ]]; then
+            echo "Invalid image tag: $TAG" >&2
+            echo "Only immutable sha-<git-sha> tags are deployable." >&2
+            exit 1
+          fi
           echo "Deploying tag: $TAG"
           echo "tag=$TAG" >> "$GITHUB_OUTPUT"
 

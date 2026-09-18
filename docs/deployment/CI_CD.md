@@ -183,6 +183,20 @@ GitHub → Actions → Deploy Production → Run workflow
 Deployment is **never** automatic on push to `main` — only the image publish
 step is. A human explicitly triggers `Deploy Production` when ready.
 
+### 8.1 Only immutable `sha-<git-sha>` tags are deployable
+
+The `Resolve image tag` step validates the resolved tag against
+`^sha-[0-9a-f]{7,40}$` and fails the run if it doesn't match. This applies
+whether the tag came from the `image_tag` input or from the default
+(`sha-$(git rev-parse --short HEAD)`).
+
+`Publish Image` also pushes a `latest` tag to GHCR for convenience (e.g.
+manually pulling the newest build), but `Deploy Production` intentionally
+refuses to deploy `latest`, or any other non-SHA tag: production deployments
+must stay traceable to an exact commit, and accepting free-form tag text
+into a workflow that ultimately runs on a remote server over SSH would let
+arbitrary input reach a shell command.
+
 ## 9. Current status
 
 As of this pipeline being introduced, no production server or `production`
