@@ -222,6 +222,11 @@ public class QuizTakingServiceImpl implements QuizTakingService {
         // Check schedule if assigned
         validateQuizSchedule(attempt.getQuizTaking().getQuizAssigning());
 
+        // Validate question/answer ownership before touching persisted state
+        Quiz quiz = attempt.getQuizTaking().getQuiz();
+        validateQuestionInQuiz(quiz, questionId);
+        validateAnswersBelongToQuestion(questionId, request.getAnswerIds());
+
         Long incomingRevision = request.getRevision();
         Long latestPersistedRevision = userAttemptAnswerRepository.findMaxRevisionByAttemptIdAndQuestionId(attemptId, questionId);
 
@@ -255,11 +260,14 @@ public class QuizTakingServiceImpl implements QuizTakingService {
                     .build();
             userAttemptAnswerRepository.save(uaa);
         } else if (answerIds != null && !answerIds.isEmpty()) {
+            // Duplicate answer IDs are normalized to distinct IDs so they cannot create
+            // duplicate persisted selections that would distort grading.
+            List<Long> distinctAnswerIds = answerIds.stream().distinct().collect(Collectors.toList());
             List<UserAttemptAnswer> answersToSave = new java.util.ArrayList<>();
-            Map<Long, Answer> answerMap = answerRepository.findAllById(answerIds).stream()
+            Map<Long, Answer> answerMap = answerRepository.findAllById(distinctAnswerIds).stream()
                     .collect(Collectors.toMap(Answer::getId, a -> a));
 
-            for (Long answerId : answerIds) {
+            for (Long answerId : distinctAnswerIds) {
                 Answer answer = answerMap.get(answerId);
                 if (answer == null) {
                     throw new AppException(ErrorCode.ANSWER_NOT_FOUND);
@@ -285,6 +293,76 @@ public class QuizTakingServiceImpl implements QuizTakingService {
                     .revision(incomingRevision)
                     .build();
             userAttemptAnswerRepository.save(uaa);
+        }
+    }
+
+    private void validateQuestionInQuiz(Quiz quiz, Long questionId) {
+        if (questionId == null) {
+            return;
+        }
+        boolean belongsToQuiz = quiz.getQuestions().stream()
+                .anyMatch(q -> q.getId().equals(questionId));
+        if (!belongsToQuiz) {
+            throw new AppException(ErrorCode.QUESTION_NOT_IN_QUIZ);
+        }
+    }
+
+    private void validateAnswersBelongToQuestion(Long questionId, List<Long> answerIds) {
+        if (answerIds == null || answerIds.isEmpty()) {
+            return;
+        }
+        List<Long> distinctAnswerIds = answerIds.stream().distinct().collect(Collectors.toList());
+        Map<Long, Answer> answerMap = answerRepository.findAllById(distinctAnswerIds).stream()
+                .collect(Collectors.toMap(Answer::getId, a -> a));
+
+        for (Long answerId : distinctAnswerIds) {
+            Answer answer = answerMap.get(answerId);
+            if (answer == null) {
+                throw new AppException(ErrorCode.ANSWER_NOT_FOUND);
+            }
+            if (answer.getQuestion() == null || !answer.getQuestion().getId().equals(questionId)) {
+                throw new AppException(ErrorCode.ANSWER_NOT_IN_QUESTION);
+            }
+        }
+    }
+
+    /**
+     * Validates every question/answer in a submit payload against the attempt's quiz
+     * BEFORE any persisted state is mutated, so a single malformed entry in a multi-question
+     * payload cannot leave a partially-applied submission. Answer ownership is checked with
+     * one bulk fetch across the whole payload rather than one query per question.
+     */
+    private void validateSubmitPayload(Quiz quiz, List<QuestionSubmitRequestDTO> questions) {
+        if (questions == null || questions.isEmpty()) {
+            return;
+        }
+        for (QuestionSubmitRequestDTO qReq : questions) {
+            validateQuestionInQuiz(quiz, qReq.getQuestionId());
+        }
+
+        java.util.Set<Long> allAnswerIds = questions.stream()
+                .filter(qReq -> qReq.getAnswerIds() != null)
+                .flatMap(qReq -> qReq.getAnswerIds().stream())
+                .collect(Collectors.toCollection(java.util.LinkedHashSet::new));
+        if (allAnswerIds.isEmpty()) {
+            return;
+        }
+        Map<Long, Answer> answerMap = answerRepository.findAllById(allAnswerIds).stream()
+                .collect(Collectors.toMap(Answer::getId, a -> a));
+
+        for (QuestionSubmitRequestDTO qReq : questions) {
+            if (qReq.getAnswerIds() == null || qReq.getAnswerIds().isEmpty()) {
+                continue;
+            }
+            for (Long answerId : qReq.getAnswerIds().stream().distinct().collect(Collectors.toList())) {
+                Answer answer = answerMap.get(answerId);
+                if (answer == null) {
+                    throw new AppException(ErrorCode.ANSWER_NOT_FOUND);
+                }
+                if (answer.getQuestion() == null || !answer.getQuestion().getId().equals(qReq.getQuestionId())) {
+                    throw new AppException(ErrorCode.ANSWER_NOT_IN_QUESTION);
+                }
+            }
         }
     }
 
@@ -426,6 +504,10 @@ public class QuizTakingServiceImpl implements QuizTakingService {
         }
 
         if (requestDTO.getQuestions() != null) {
+            // Validate the entire payload's question/answer ownership up front so a single
+            // malformed entry cannot leave a partially-applied submission.
+            validateSubmitPayload(attempt.getQuizTaking().getQuiz(), requestDTO.getQuestions());
+
             for (QuestionSubmitRequestDTO qReq : requestDTO.getQuestions()) {
                 Long questionId = qReq.getQuestionId();
                 Long incomingRevision = qReq.getRevision();
