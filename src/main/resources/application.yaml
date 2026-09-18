@@ -75,6 +75,21 @@ spring:
         - classpath:/static/
         - file:./uploads/
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: never
+  health:
+    # Outbound SMTP connectivity is not a container liveness/readiness concern;
+    # without this, a transient Gmail SMTP failure would flip the container
+    # health check to unhealthy even though the app and database are fine.
+    mail:
+      enabled: false
+
 app:
   jwt:
     secret: ${JWT_SECRET}

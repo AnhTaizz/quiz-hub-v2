@@ -41,7 +41,11 @@ public class SecurityConfig {
                         "/login", "/register", "/forgot-password", "/oauth2-redirect.html", "/oauth2-choose-role.html",
                         "/api/auth/register", "/api/auth/login", "/api/auth/check-email", "/api/auth/oauth2-register",
                         "/api/auth/forgot-password", "/api/auth/reset-password",
-                        "/error" };
+                        "/error",
+                        // Required for Docker/orchestrator health checks. Only health is exposed via
+                        // management.endpoints.web.exposure.include, so this does not open the rest
+                        // of /actuator/**.
+                        "/actuator/health", "/actuator/health/**" };
 
         @Bean
         public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
