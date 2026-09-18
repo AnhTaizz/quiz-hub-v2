@@ -369,33 +369,45 @@ public class QuizTakingServiceImpl implements QuizTakingService {
     @Override
     @Transactional
     public void autoSubmitExpiredAttempts() {
-        LocalDateTime now = LocalDateTime.now();
-        List<Attempt> activeAttempts = attemptRepository.findActiveAttemptsWithAssigning();
+        // ID-only scan: candidate Attempt entities must NOT be hydrated into this session
+        // before the locked re-fetch below, otherwise Hibernate's identity map would return
+        // the same (potentially stale) Java object for the "locked" read instead of the
+        // freshly committed row, silently defeating the PESSIMISTIC_WRITE re-check.
+        List<Long> candidateIds = attemptRepository.findActiveAttemptIdsWithAssigning();
 
-        for (Attempt attempt : activeAttempts) {
-            boolean expired = false;
-            QuizAssigning assigning = attempt.getQuizTaking().getQuizAssigning();
-
-            // 1. Kiểm tra hạn chót nộp bài (DueDate)
-            if (assigning.getDueDate() != null && now.isAfter(assigning.getDueDate())) {
-                expired = true;
+        for (Long id : candidateIds) {
+            // Acquire PESSIMISTIC_WRITE and re-check endedAt/expiry before finalizing, so this
+            // scheduled sweep can't race a concurrent manual submit or violation auto-submit
+            // that finalized the same attempt using stale pre-lock state.
+            Attempt locked = attemptRepository.findWithLockById(id).orElse(null);
+            if (locked == null || locked.getEndedAt() != null) {
+                continue;
+            }
+            if (!isExpired(locked, locked.getQuizTaking().getQuizAssigning(), LocalDateTime.now())) {
+                continue;
             }
 
-            // 2. Kiểm tra thời lượng làm bài (Duration)
-            if (!expired && assigning.getDurationInMins() != null) {
-                // Thêm 1 phút bù trừ độ trễ mạng/hệ thống
-                LocalDateTime limitTime = attempt.getStartedAt().plusMinutes(assigning.getDurationInMins())
-                        .plusMinutes(1);
-                if (now.isAfter(limitTime)) {
-                    expired = true;
-                }
-            }
+            log.info("Auto-submitting expired attempt ID: {}", locked.getId());
+            finalizeAttempt(locked);
+        }
+    }
 
-            if (expired) {
-                log.info("Auto-submitting expired attempt ID: {}", attempt.getId());
-                finalizeAttempt(attempt);
+    private boolean isExpired(Attempt attempt, QuizAssigning assigning, LocalDateTime now) {
+        // 1. Kiểm tra hạn chót nộp bài (DueDate)
+        if (assigning.getDueDate() != null && now.isAfter(assigning.getDueDate())) {
+            return true;
+        }
+
+        // 2. Kiểm tra thời lượng làm bài (Duration), thêm 1 phút bù trừ độ trễ mạng/hệ thống
+        if (assigning.getDurationInMins() != null) {
+            LocalDateTime limitTime = attempt.getStartedAt().plusMinutes(assigning.getDurationInMins())
+                    .plusMinutes(1);
+            if (now.isAfter(limitTime)) {
+                return true;
             }
         }
+
+        return false;
     }
 
     private void finalizeAttempt(Attempt attempt) {

@@ -40,6 +40,14 @@ public interface AttemptRepository extends JpaRepository<Attempt, Long> {
     @Query("SELECT a FROM Attempt a WHERE a.endedAt IS NULL AND a.quizTaking.quizAssigning IS NOT NULL")
     List<Attempt> findActiveAttemptsWithAssigning();
 
+    // ID-only projection so scanning for expired attempts never hydrates a full Attempt
+    // into the persistence context ahead of the later locked re-fetch: a query for an entity
+    // already present in the current session's identity map returns the SAME (potentially
+    // stale) Java object rather than the freshly locked row, which would defeat the
+    // PESSIMISTIC_WRITE re-check in autoSubmitExpiredAttempts().
+    @Query("SELECT a.id FROM Attempt a WHERE a.endedAt IS NULL AND a.quizTaking.quizAssigning IS NOT NULL")
+    List<Long> findActiveAttemptIdsWithAssigning();
+
     long countByQuizTakingIdAndEndedAtIsNotNull(Long quizTakingId);
 
     @Query("SELECT COUNT(a) FROM Attempt a WHERE a.quizTaking.quizAssigning.id = :assigningId")
