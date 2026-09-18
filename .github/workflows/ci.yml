@@ -1,0 +1,182 @@
+name: CI
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  backend-tests:
+    name: Backend Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Set up JDK 21 (Temurin)
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+
+      - name: Docker preflight
+        run: docker info
+
+      - name: Make mvnw executable
+        run: chmod +x mvnw
+
+      # Runs the full Maven test suite (against real PostgreSQL via
+      # Testcontainers, using the runner's own Docker engine) and then
+      # packages the jar in the same invocation.
+      - name: Test and package
+        run: ./mvnw -B -ntp clean package
+
+      - name: Upload jar artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: quizhub-jar
+          path: target/*.jar
+          retention-days: 3
+          if-no-files-found: error
+
+  container-smoke:
+    name: Container Smoke Test
+    needs: backend-tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+
+      # Smoke-test secrets are generated fresh on the runner and never
+      # touch repository/production secrets, so this stage works
+      # unmodified on pull requests from forks.
+      - name: Generate smoke-test environment
+        run: |
+          set -euo pipefail
+          {
+            echo "DB_USERNAME=quizhub"
+            echo "DB_PASSWORD=$(openssl rand -hex 16)"
+            echo "GOOGLE_CLIENT_ID=ci-smoke-test"
+            echo "GOOGLE_CLIENT_SECRET=ci-smoke-test"
+            echo "SPRING_MAIL_USERNAME=ci-smoke-test@example.com"
+            echo "SPRING_MAIL_PASSWORD=ci-smoke-test"
+            echo "JWT_SECRET=$(openssl rand -hex 40)"
+            echo "GEMINI_API_KEY=ci-smoke-test"
+            echo "SQL_INIT_MODE=never"
+            echo "APP_PORT=8080"
+            echo "DB_HOST_PORT=5433"
+          } > "$RUNNER_TEMP/smoke.env"
+
+      - name: Build and start the stack
+        run: docker compose --env-file "$RUNNER_TEMP/smoke.env" up -d --build
+
+      - name: Wait for containers to become healthy
+        run: |
+          set -euo pipefail
+          for i in $(seq 1 30); do
+            db_status=$(docker inspect --format='{{.State.Health.Status}}' quizhub-postgres 2>/dev/null || echo "missing")
+            app_status=$(docker inspect --format='{{.State.Health.Status}}' quizhub-backend 2>/dev/null || echo "missing")
+            echo "attempt $i: db=$db_status app=$app_status"
+            if [ "$db_status" = "healthy" ] && [ "$app_status" = "healthy" ]; then
+              echo "Stack is healthy"
+              exit 0
+            fi
+            if [ "$app_status" = "unhealthy" ] || [ "$db_status" = "unhealthy" ]; then
+              echo "A container reported unhealthy"
+              exit 1
+            fi
+            sleep 5
+          done
+          echo "Timed out waiting for the stack to become healthy"
+          exit 1
+
+      - name: Verify the app container runs as non-root
+        run: |
+          set -euo pipefail
+          uid=$(docker exec quizhub-backend id -u)
+          echo "Container UID: $uid"
+          if [ "$uid" = "0" ]; then
+            echo "Container is running as root"
+            exit 1
+          fi
+
+      - name: Verify /actuator/health over HTTP
+        run: |
+          set -euo pipefail
+          code=$(curl -s -o /tmp/health.json -w '%{http_code}' http://localhost:8080/actuator/health)
+          cat /tmp/health.json
+          echo
+          if [ "$code" != "200" ]; then
+            echo "Expected HTTP 200, got $code"
+            exit 1
+          fi
+          grep -q '"status":"UP"' /tmp/health.json
+
+      - name: Dump container logs on failure
+        if: failure()
+        run: docker compose logs --no-color
+
+      - name: Tear down the stack
+        if: always()
+        run: docker compose down -v
+
+  publish-image:
+    name: Publish Image
+    needs: [backend-tests, container-smoke]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Compute image metadata
+        id: meta
+        uses: docker/metadata-action@v6
+        with:
+          images: ghcr.io/${{ github.repository }}
+          tags: |
+            type=raw,value=latest
+            type=sha,prefix=sha-,format=short
+
+      - name: Build and push
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          provenance: true
+          sbom: true
