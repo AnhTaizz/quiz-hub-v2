@@ -536,6 +536,7 @@ public class QuizTakingServiceImpl implements QuizTakingService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public QuizResultResponseDTO getQuizResult(Long studentId, Long attemptId) {
         Attempt attempt = getValidAttempt(attemptId, studentId);
 
@@ -554,10 +555,10 @@ public class QuizTakingServiceImpl implements QuizTakingService {
         // 1. Requester is a teacher or admin
         // 2. OR It's a personal quiz (no assigning)
         // 3. OR the teacher explicitly allowed it (showAnswer is true)
-        // 4. OR the deadline has passed (safety fallback, though usually showAnswer is
-        // the master switch)
-        boolean deadlinePassed = quizAssigning == null || quizAssigning.getDueDate() == null
-                || quizAssigning.getDueDate().isBefore(LocalDateTime.now());
+        // 4. OR the deadline has passed (a missing dueDate means there is no passed
+        // deadline, so it must NOT be treated as "already passed")
+        boolean deadlinePassed = quizAssigning != null && quizAssigning.getDueDate() != null
+                && quizAssigning.getDueDate().isBefore(LocalDateTime.now());
 
         boolean shouldShowAnswer = isTeacherOrAdmin
                 || quizAssigning == null
