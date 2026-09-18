@@ -1,5 +1,5 @@
-import { expect, test, type Page } from "@playwright/test";
-import { loginAsStudent } from "./support/fixture";
+import { expect, loginAsStudent, showChoiceQuestion, test } from "./support/test";
+import type { Page } from "@playwright/test";
 
 async function expectNoHorizontalOverflow(page: Page, label: string) {
   const overflow = await page.evaluate(() => ({
@@ -16,8 +16,10 @@ test.describe("360 x 800 viewport", () => {
     await expectNoHorizontalOverflow(page, "login");
   });
 
-  test("dashboard, quiz list, history and quiz play have no horizontal overflow", async ({ page }) => {
-    await loginAsStudent(page);
+  test("dashboard, quiz list, history and quiz play have no horizontal overflow", async ({ page, world }) => {
+    // Own submitted attempt so the history page is populated, plus a startable quiz for the play check.
+    await world.seedSubmittedAttempt();
+    await loginAsStudent(page, world);
     await expect(page).toHaveURL(/\/student$/);
     await expectNoHorizontalOverflow(page, "dashboard");
 
@@ -27,6 +29,7 @@ test.describe("360 x 800 viewport", () => {
 
     await page.goto("/student/history");
     await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+    await expect(page.getByText(world.quizTitle)).toBeVisible();
     await expectNoHorizontalOverflow(page, "history");
 
     await page.goto("/student/quizzes");
@@ -34,7 +37,9 @@ test.describe("360 x 800 viewport", () => {
     await expect(page.getByRole("timer")).toBeVisible();
     await expectNoHorizontalOverflow(page, "quiz play");
 
-    // Tap targets: every answer option and nav button is at least 40px tall.
+    // Tap targets: every answer option and nav button is at least 40px tall (the single-choice question
+    // may be anywhere in the quiz, so navigate to it first).
+    await showChoiceQuestion(page);
     const option = page.locator(".qh-quiz-play__option").first();
     const box = await option.boundingBox();
     expect(box?.height ?? 0).toBeGreaterThanOrEqual(44);

@@ -1,5 +1,5 @@
-import { expect, test, type Page } from "@playwright/test";
-import { loginAsStudent } from "./support/fixture";
+import { expect, loginAsStudent, test } from "./support/test";
+import type { Page } from "@playwright/test";
 
 const WIDTHS = [360, 430, 768, 1024, 1440];
 
@@ -11,20 +11,13 @@ async function noHorizontalOverflow(page: Page, label: string, width: number) {
   expect(scrollWidth, `${label} @${width}px overflows horizontally`).toBeLessThanOrEqual(clientWidth);
 }
 
-test("key student routes have no horizontal overflow from 360px to 1440px", async ({ page }) => {
-  await page.setViewportSize({ width: 1280, height: 800 });
-  await loginAsStudent(page);
+test("key student routes have no horizontal overflow from 360px to 1440px", async ({ page, world }) => {
+  // This test builds everything it needs itself: its own student + startable assignment (`world`), and its
+  // own submitted attempt (created through the public API) for the result route.
+  const attemptId = await world.seedSubmittedAttempt();
 
-  // Needs an existing attempt for the result page; the journey spec has submitted one.
-  const attemptId = await page.evaluate(async () => {
-    const token = localStorage.getItem("token") ?? "";
-    const response = await fetch("/api/student/quiz/history?page=0&size=1", {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    const body = (await response.json()) as { content: { attemptId: number }[] };
-    return body.content[0]?.attemptId;
-  });
-  expect(attemptId, "expected a submitted attempt from the journey spec").toBeDefined();
+  await page.setViewportSize({ width: 1280, height: 800 });
+  await loginAsStudent(page, world);
 
   const routes: [string, string][] = [
     ["dashboard", "/student"],
@@ -41,7 +34,8 @@ test("key student routes have no horizontal overflow from 360px to 1440px", asyn
       await expect(page.locator("h1, h2").first()).toBeVisible();
       await noHorizontalOverflow(page, label, width);
     }
-    // Quiz play (resumes the unfinished attempt started by the keyboard spec, or starts a new one).
+    // Quiz play: the world's assignment is startable (1 of 3 attempts used by the seed above); after the first
+    // width the unfinished attempt this loop started is simply resumed.
     await page.goto("/student/quizzes");
     await page.getByRole("link", { name: /start quiz|resume quiz/i }).first().click();
     await expect(page.getByRole("timer")).toBeVisible();

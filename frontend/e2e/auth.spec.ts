@@ -1,5 +1,9 @@
-import { expect, test } from "@playwright/test";
-import { loginAsStudent } from "./support/fixture";
+import { expect, loginAsStudent, test } from "./support/test";
+
+function originPattern(baseURL: string | undefined, path: string): RegExp {
+  const escaped = (baseURL ?? "").replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return new RegExp(`^${escaped}${path}$`);
+}
 
 test.describe("authentication", () => {
   test("wrong credentials show a friendly error and stay on the login page", async ({ page }) => {
@@ -17,23 +21,23 @@ test.describe("authentication", () => {
     await expect(page).toHaveURL(/\/login\?returnUrl=/);
   });
 
-  test("an internal returnUrl is honoured after login", async ({ page }) => {
-    await loginAsStudent(page, "/student/quizzes");
+  test("an internal returnUrl is honoured after login", async ({ page, world }) => {
+    await loginAsStudent(page, world, "/student/quizzes");
     await expect(page).toHaveURL(/\/student\/quizzes$/);
   });
 
-  test("an external returnUrl is ignored after login (open-redirect regression)", async ({ page, baseURL }) => {
-    await loginAsStudent(page, "https://evil.example/phish");
-    await expect(page).toHaveURL(new RegExp(`^${baseURL?.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}/student$`));
+  test("an external returnUrl is ignored after login (open-redirect regression)", async ({ page, world, baseURL }) => {
+    await loginAsStudent(page, world, "https://evil.example/phish");
+    await expect(page).toHaveURL(originPattern(baseURL, "/student"));
   });
 
-  test("a protocol-relative returnUrl is ignored after login", async ({ page, baseURL }) => {
-    await loginAsStudent(page, "//evil.example");
-    await expect(page).toHaveURL(new RegExp(`^${baseURL?.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}/student$`));
+  test("a protocol-relative returnUrl is ignored after login", async ({ page, world, baseURL }) => {
+    await loginAsStudent(page, world, "//evil.example");
+    await expect(page).toHaveURL(originPattern(baseURL, "/student"));
   });
 
   test("an OAuth error is displayed as inert text, never executed (F-02 regression)", async ({ page }) => {
-    const payload = "<img src=x onerror=\"window.__pwned=1\">";
+    const payload = '<img src=x onerror="window.__pwned=1">';
     await page.goto(`/oauth2-redirect.html?error=${encodeURIComponent(payload)}`);
 
     await expect(page.getByText(payload)).toBeVisible();
@@ -41,8 +45,8 @@ test.describe("authentication", () => {
     await expect(page.locator("img[src='x']")).toHaveCount(0);
   });
 
-  test("logging out returns the user to a protected-route login redirect", async ({ page }) => {
-    await loginAsStudent(page);
+  test("logging out returns the user to a protected-route login redirect", async ({ page, world }) => {
+    await loginAsStudent(page, world);
     await expect(page).toHaveURL(/\/student$/);
     await page.getByRole("button", { name: "Log out" }).click();
     await page.goto("/student");

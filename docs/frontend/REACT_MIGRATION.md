@@ -41,7 +41,7 @@ src/components/ ui/ (Button, Input, PasswordInput, Card, Badge, Modal, Spinner, 
 src/features/   auth, student, classroom, history, quiz (play engine, reconcile, recovery storage, timer)
 src/styles/     tokens.css (the only place colors/spacing/radius are defined) + global.css
 src/utils/      safePath.ts (safe redirect validation)
-e2e/            Playwright specs + API-seeded fixture (global-setup.ts)
+e2e/            Playwright specs; each test builds its own isolated data through the public API (support/api.ts, `world` fixture) - no shared state, any spec runs alone and in any order
 ```
 
 ## 4. Build integration (decision)
@@ -122,6 +122,8 @@ container). `Publish Image` requires all four.
   `AccessDeniedException`, so a wrong-role call to any `@PreAuthorize` REST endpoint returns **500 instead of 403** (still
   denied, no data). Not changed here (backend behavior); should be fixed with an `AccessDeniedException` handler.
 - **Timezone:** `QuizHubApplication` pins the JVM to `Asia/Ho_Chi_Minh` and the API serializes `LocalDateTime` without an offset, so browser-side comparison of `startDate`/`dueDate` is wrong outside UTC+7. My first implementation did exactly that and failed in CI (UTC) while passing on a UTC+7 workstation. Availability is now computed by the server (`AssignedQuizSummaryDTO.availability`), and the E2E browser runs in `America/Los_Angeles` by default so this cannot regress silently. The quiz timer is unaffected (it uses the server's `startedAtMillis` epoch).
+- **Question order is not guaranteed by the API.** `Quiz.questions` is an unordered many-to-many, so a quiz's first question may be the fill-in one rather than the single-choice one. My first E2E specs assumed an order and flaked (~1 in 3 runs); they are now order-agnostic and every test builds its own isolated data through the public API (no shared state, any spec runs alone and in any order; verified across forced orderings and 5 consecutive full runs). Whether quiz-question order should be stable is a backend follow-up (legacy pages have the same behavior).
+- **CI smoke flake (unexplained).** The route-ownership smoke step failed once on CI (commit `337cb70`) and passed on the commits before/after. I could not reproduce it locally (including 300 iterations of the suspected pipe/SIGPIPE pattern), so the cause is unproven. The step was hardened (no pipes into `grep -q`) and now reports the failing check as a public `::error::` annotation, so a recurrence will be diagnosable.
 - The dev proxy list from the brief named `/uploads`; the backend actually serves avatars at `/avatars/**`, which is what
   the proxy uses.
 - Testcontainers-based tests need a running Docker engine; Docker Desktop had stopped mid-session and had to be restarted.
