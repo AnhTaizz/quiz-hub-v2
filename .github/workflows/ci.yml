@@ -171,35 +171,42 @@ jobs:
           set -euo pipefail
           base=http://localhost:8080
 
+          # Failures are emitted as ::error:: annotations so the cause is visible without log access.
+          # Bodies are captured first and searched with here-strings, so no check depends on
+          # early-exit pipe/SIGPIPE behavior under pipefail.
+          fail() { echo "::error::$1"; exit 1; }
+
           for path in / /login /register /forgot-password; do
-            curl -fsS "$base$path" | grep -q 'id="root"' \
-              || { echo "$path did not serve the React shell"; exit 1; }
+            body=$(curl -fsS "$base$path") || fail "GET $path failed"
+            grep -q 'id="root"' <<< "$body" || fail "$path did not serve the React shell"
           done
 
-          asset=$(curl -fsS "$base/login" | grep -o '/app/assets/[^"]*\.js' | head -1)
-          [ -n "$asset" ] || { echo "No built asset referenced by the React shell"; exit 1; }
+          login_html=$(curl -fsS "$base/login") || fail "GET /login failed"
+          asset=$(grep -o '/app/assets/[^"]*\.js' <<< "$login_html" | head -n 1 || true)
+          [ -n "$asset" ] || fail "No built asset referenced by the React shell"
           code=$(curl -s -o /dev/null -w '%{http_code}' "$base$asset")
-          [ "$code" = "200" ] || { echo "Built asset $asset returned $code"; exit 1; }
+          [ "$code" = "200" ] || fail "Built asset $asset returned $code"
 
           for path in /student /student/quizzes /teacher /admin; do
             result=$(curl -s -o /dev/null -w '%{http_code} %{redirect_url}' "$base$path")
             echo "$path -> $result"
-            echo "$result" | grep -q '^302 .*/login?returnUrl=' \
-              || { echo "$path should redirect anonymous users to /login"; exit 1; }
+            grep -q '^302 .*/login?returnUrl=' <<< "$result" \
+              || fail "$path should redirect anonymous users to /login (got: $result)"
           done
 
           code=$(curl -s -o /dev/null -w '%{http_code}' "$base/api/student/dashboard")
-          [ "$code" = "401" ] || { echo "API returned $code instead of 401"; exit 1; }
+          [ "$code" = "401" ] || fail "API returned $code instead of 401"
 
-          token=$(curl -fsS -X POST "$base/api/auth/register" -H 'Content-Type: application/json' \
-            -d '{"fullName":"Smoke Teacher","email":"smoke-teacher@example.com","password":"Passw0rd!","confirmPassword":"Passw0rd!","role":"TEACHER"}' \
-            | sed -n 's/.*"token":"\([^"]*\)".*/\1/p')
-          [ -n "$token" ] || { echo "Could not obtain a teacher token"; exit 1; }
-          page=$(curl -fsS -H "Authorization: Bearer $token" "$base/teacher")
-          if echo "$page" | grep -q 'id="root"'; then
-            echo "/teacher was captured by the React shell"; exit 1
-          fi
-          echo "$page" | grep -qi '<html' || { echo "/teacher did not render a legacy page"; exit 1; }
+          register=$(curl -fsS -X POST "$base/api/auth/register" -H 'Content-Type: application/json' \
+            -d '{"fullName":"Smoke Teacher","email":"smoke-teacher@example.com","password":"Passw0rd!","confirmPassword":"Passw0rd!","role":"TEACHER"}') \
+            || fail "Could not register the smoke teacher"
+          token=$(sed -n 's/.*"token":"\([^"]*\)".*/\1/p' <<< "$register")
+          [ -n "$token" ] || fail "Could not obtain a teacher token"
+
+          page=$(curl -fsS -H "Authorization: Bearer $token" "$base/teacher") || fail "GET /teacher failed for a teacher"
+          if grep -q 'id="root"' <<< "$page"; then fail "/teacher was captured by the React shell"; fi
+          grep -qi '<html' <<< "$page" || fail "/teacher did not render a legacy page"
+          echo "Route ownership verified"
 
       - name: Dump container logs on failure
         if: failure()
