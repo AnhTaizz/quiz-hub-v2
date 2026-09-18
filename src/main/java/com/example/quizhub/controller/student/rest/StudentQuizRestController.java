@@ -29,11 +29,18 @@ import com.example.quizhub.dto.quiz.response.QuizResponseDTO;
 import com.example.quizhub.dto.quiz.response.QuizSummaryDTO;
 import com.example.quizhub.dto.quiz.request.QuizRequestDTO;
 import com.example.quizhub.dto.quiz.request.BulkQuizCreateRequestDTO;
+import com.example.quizhub.dto.student.AssignedQuizSummaryDTO;
+import com.example.quizhub.dto.student.QuizHistoryItemDTO;
 import com.example.quizhub.entity.Attempt;
 import com.example.quizhub.entity.User;
 import com.example.quizhub.repository.UserRepository;
 import com.example.quizhub.service.quiz.QuizService;
 import com.example.quizhub.service.quiz.QuizTakingService;
+import com.example.quizhub.service.student.StudentHomeService;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -47,10 +54,42 @@ public class StudentQuizRestController {
     private final QuizTakingService quizTakingService;
     private final UserRepository userRepository;
     private final QuizService quizService;
+    private final StudentHomeService studentHomeService;
 
     @GetMapping("/mine")
     public ResponseEntity<List<QuizSummaryDTO>> getMyQuizzes() {
         return ResponseEntity.ok(quizService.getMyQuizzes());
+    }
+
+    /**
+     * Teacher/classroom-assigned quizzes for the current student, with per-quiz
+     * attempt stats. JSON counterpart of the Thymeleaf-only
+     * StudentHomeController#listAllQuizzes ("/student/quizzes"); reuses the same
+     * service call, no new business logic.
+     */
+    @GetMapping("/assigned")
+    public ResponseEntity<List<AssignedQuizSummaryDTO>> getAssignedQuizzes(Principal principal) {
+        List<AssignedQuizSummaryDTO> quizzes = studentHomeService.getAllQuizzes(principal.getName())
+                .stream()
+                .map(AssignedQuizSummaryDTO::fromDashboardInfo)
+                .toList();
+        return ResponseEntity.ok(quizzes);
+    }
+
+    /**
+     * Paginated combined quiz-attempt history. JSON counterpart of the
+     * Thymeleaf-only StudentHomeController#getHistory ("/student/history"); reuses
+     * the same service call and page-size clamp (1-50), no new business logic.
+     */
+    @GetMapping("/history")
+    public ResponseEntity<Page<QuizHistoryItemDTO>> getQuizHistoryPage(
+            Principal principal,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size) {
+        int clampedSize = Math.min(Math.max(size, 1), 50);
+        int clampedPage = Math.max(page, 0);
+        Pageable pageable = PageRequest.of(clampedPage, clampedSize);
+        return ResponseEntity.ok(studentHomeService.getQuizHistoryPage(principal.getName(), pageable));
     }
 
     @GetMapping("/{id}")

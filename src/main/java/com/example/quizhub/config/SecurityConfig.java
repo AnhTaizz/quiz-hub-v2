@@ -38,7 +38,11 @@ public class SecurityConfig {
                         "/js/**",
                         "/images/**",
                         "/assets/**",
-                        "/login", "/register", "/forgot-password", "/oauth2-redirect.html", "/oauth2-choose-role.html",
+                        // Built React SPA bundle (index.html + hashed JS/CSS). Static, non-sensitive, same
+                        // trust level as /css/**, /js/**. SpaController forwards React-owned routes to
+                        // /app/index.html; Spring Security also evaluates that forward, so it must be public.
+                        "/app/**",
+                        "/login","/register", "/forgot-password", "/oauth2-redirect.html", "/oauth2-choose-role.html",
                         "/api/auth/register", "/api/auth/login", "/api/auth/check-email", "/api/auth/oauth2-register",
                         "/api/auth/forgot-password", "/api/auth/reset-password",
                         "/error",

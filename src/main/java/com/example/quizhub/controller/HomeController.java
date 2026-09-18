@@ -3,30 +3,15 @@ package com.example.quizhub.controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
+/**
+ * "/", "/login", "/register" and "/forgot-password" are now owned by the
+ * React SPA (see SpaController). Only pages still rendered by Thymeleaf
+ * remain here.
+ */
 @Controller
 public class HomeController{
-    @GetMapping("/")
-    public String homePage(){
-        return "index";
-    }
-
-    @GetMapping("/login")
-    public String loginPage(){
-        return "login";
-    }
-
-    @GetMapping("/register")
-    public String registerPage(){
-        return "register";
-    }
-
     @GetMapping("/profile")
     public String profilePage(){
         return "profile";
-    }
-
-    @GetMapping("/forgot-password")
-    public String forgotPasswordPage(){
-        return "forgot-password";
     }
 }

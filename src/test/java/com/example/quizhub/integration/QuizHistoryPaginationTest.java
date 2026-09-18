@@ -81,8 +81,10 @@ public class QuizHistoryPaginationTest {
     @Autowired
     private EntityManagerFactory entityManagerFactory;
     
+    // Combined quiz history moved from the Thymeleaf StudentHomeController to this JSON
+    // endpoint when the student UI migrated to React; the page-size clamp is unchanged.
     @Autowired
-    private com.example.quizhub.controller.student.StudentHomeController studentHomeController;
+    private com.example.quizhub.controller.student.rest.StudentQuizRestController studentQuizRestController;
 
     private User studentA;
     private User studentB;
@@ -287,14 +289,16 @@ public class QuizHistoryPaginationTest {
             new UsernamePasswordAuthenticationToken(studentA.getEmail(), null, List.of(new SimpleGrantedAuthority("ROLE_STUDENT")))
         ));
         
-        ExtendedModelMap model = new ExtendedModelMap();
-        
+        java.security.Principal principal = studentA::getEmail;
+
         // test max clamp
-        studentHomeController.getHistory(0, 100, model);
-        assertThat(model.getAttribute("pageSize")).isEqualTo(50);
-        
+        Page<QuizHistoryItemDTO> maxClamped = studentQuizRestController.getQuizHistoryPage(principal, 0, 100).getBody();
+        assertThat(maxClamped).isNotNull();
+        assertThat(maxClamped.getSize()).isEqualTo(50);
+
         // test min clamp
-        studentHomeController.getHistory(0, -5, model);
-        assertThat(model.getAttribute("pageSize")).isEqualTo(1);
+        Page<QuizHistoryItemDTO> minClamped = studentQuizRestController.getQuizHistoryPage(principal, 0, -5).getBody();
+        assertThat(minClamped).isNotNull();
+        assertThat(minClamped.getSize()).isEqualTo(1);
     }
 }
