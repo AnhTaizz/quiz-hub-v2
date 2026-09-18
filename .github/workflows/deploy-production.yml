@@ -1,0 +1,70 @@
+name: Deploy Production
+
+on:
+  workflow_dispatch:
+    inputs:
+      image_tag:
+        description: "Image tag to deploy (defaults to sha-<short SHA of the selected ref>)"
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy to production
+    runs-on: ubuntu-latest
+    environment: production
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Resolve image tag
+        id: image
+        env:
+          REQUESTED_TAG: ${{ inputs.image_tag }}
+        run: |
+          set -euo pipefail
+          TAG="$REQUESTED_TAG"
+          if [ -z "$TAG" ]; then
+            TAG="sha-$(git rev-parse --short HEAD)"
+          fi
+          echo "Deploying tag: $TAG"
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+
+      - name: Configure SSH
+        run: |
+          set -euo pipefail
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          printf '%s\n' "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          printf '%s\n' "${{ secrets.DEPLOY_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/known_hosts
+
+      - name: Copy deployment files to server
+        run: |
+          set -euo pipefail
+          scp -i ~/.ssh/deploy_key -P "${{ secrets.DEPLOY_PORT }}" -o UserKnownHostsFile=~/.ssh/known_hosts \
+            docker-compose.prod.yml deploy/remote-deploy.sh \
+            "${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:${{ secrets.DEPLOY_PATH }}/"
+
+      # remote-deploy.sh pulls the image, starts the stack, polls health,
+      # and rolls back to the previously running image if the new one never
+      # becomes healthy (see the script for the exact procedure). It exits
+      # non-zero on any deployment failure, including a successful rollback,
+      # so this step - and the whole run - correctly shows as failed.
+      - name: Deploy (with health check and rollback)
+        env:
+          QUIZHUB_IMAGE: ghcr.io/${{ github.repository }}:${{ steps.image.outputs.tag }}
+        run: |
+          set -euo pipefail
+          ssh -i ~/.ssh/deploy_key -p "${{ secrets.DEPLOY_PORT }}" -o UserKnownHostsFile=~/.ssh/known_hosts \
+            "${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}" \
+            "chmod +x '${{ secrets.DEPLOY_PATH }}/remote-deploy.sh' && QUIZHUB_IMAGE='$QUIZHUB_IMAGE' DEPLOY_PATH='${{ secrets.DEPLOY_PATH }}' '${{ secrets.DEPLOY_PATH }}/remote-deploy.sh'"
