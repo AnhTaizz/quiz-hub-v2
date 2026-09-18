@@ -121,6 +121,7 @@ container). `Publish Image` requires all four.
 - **Pre-existing:** `GlobalExceptionHandle`'s catch-all `RuntimeException` handler swallows Spring Security's
   `AccessDeniedException`, so a wrong-role call to any `@PreAuthorize` REST endpoint returns **500 instead of 403** (still
   denied, no data). Not changed here (backend behavior); should be fixed with an `AccessDeniedException` handler.
+- **Timezone:** `QuizHubApplication` pins the JVM to `Asia/Ho_Chi_Minh` and the API serializes `LocalDateTime` without an offset, so browser-side comparison of `startDate`/`dueDate` is wrong outside UTC+7. My first implementation did exactly that and failed in CI (UTC) while passing on a UTC+7 workstation. Availability is now computed by the server (`AssignedQuizSummaryDTO.availability`), and the E2E browser runs in `America/Los_Angeles` by default so this cannot regress silently. The quiz timer is unaffected (it uses the server's `startedAtMillis` epoch).
 - The dev proxy list from the brief named `/uploads`; the backend actually serves avatars at `/avatars/**`, which is what
   the proxy uses.
 - Testcontainers-based tests need a running Docker engine; Docker Desktop had stopped mid-session and had to be restarted.

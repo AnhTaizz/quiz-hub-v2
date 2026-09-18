@@ -18,6 +18,9 @@ export default defineConfig({
     // Local convenience only: E2E_CHANNEL=chrome (or msedge) uses an installed browser instead of
     // Playwright's downloaded Chromium. CI leaves it unset and uses the bundled Chromium.
     channel: process.env.E2E_CHANNEL,
+    // The backend pins its JVM to Asia/Ho_Chi_Minh and sends offset-less LocalDateTime strings, so the
+    // browser deliberately runs in a very different zone to prove nothing depends on matching clocks.
+    timezoneId: process.env.E2E_TIMEZONE ?? "America/Los_Angeles",
   },
   projects: [
     {

@@ -38,7 +38,7 @@ change):
 | React feature | Method + path | Response | Legacy source | Status |
 |---|---|---|---|---|
 | Dashboard | `GET /api/student/dashboard` | `StudentDashboardResponse {greeting,totalCompleted,quizAvg,practiceAvg,pendingCount,pendingThisWeekCount,assignedQuizzes[]}` | `StudentHomeController#home` | **NEW** (`StudentDashboardRestController`) |
-| Assigned quiz list | `GET /api/student/quiz/assigned` | `AssignedQuizSummary[] {assigningId,quizId,quizTitle,classroomId,classroomName,startDate,dueDate,durationInMins,maxAttempt,attemptsMade,attemptsLeft(-1=∞),hasStarted,hasUnfinished}` | `StudentHomeController#listAllQuizzes` | **NEW** |
+| Assigned quiz list | `GET /api/student/quiz/assigned` | `AssignedQuizSummary[] {assigningId,quizId,quizTitle,classroomId,classroomName,startDate,dueDate,durationInMins,maxAttempt,attemptsMade,attemptsLeft(-1=∞),hasStarted,hasUnfinished,availability(NOT_STARTED|AVAILABLE|EXPIRED, server clock)}` | `StudentHomeController#listAllQuizzes` | **NEW** |
 | Classroom list | `GET /api/student/classrooms` | `StudentClassroomSummary[] {id,code,name,description,imageUrl,teacherName,joinStatus,joinedAt}` | `StudentClassroomWebController#listClassrooms` | **NEW** |
 | Classroom detail | `GET /api/student/classrooms/{id}` | `StudentClassroomDetail {…,topics[],assignedQuizzes[]}`; non-APPROVED members get `USER_NOT_IN_CLASS` (400) | `StudentClassroomWebController#classroomDetailPage` | **NEW** |
 | Join classroom | `POST /api/student/classrooms/join?code=` | `string` | existing | existing |

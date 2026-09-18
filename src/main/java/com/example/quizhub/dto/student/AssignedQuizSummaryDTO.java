@@ -33,6 +33,24 @@ public class AssignedQuizSummaryDTO {
     private int attemptsLeft;
     private boolean hasStarted;
     private boolean hasUnfinished;
+    /**
+     * NOT_STARTED | AVAILABLE | EXPIRED, computed with the server clock. The JVM is pinned to
+     * Asia/Ho_Chi_Minh and startDate/dueDate are serialized as offset-less LocalDateTime strings, so a
+     * client outside that zone cannot compare them to its own clock; the server is the only reliable judge.
+     * Same rule the legacy templates applied via `now.isBefore(startDate)` / `now.isAfter(dueDate)`.
+     */
+    private String availability;
+
+    static String availabilityOf(QuizAssigning assigning) {
+        LocalDateTime now = LocalDateTime.now();
+        if (assigning.getStartDate() != null && now.isBefore(assigning.getStartDate())) {
+            return "NOT_STARTED";
+        }
+        if (assigning.getDueDate() != null && now.isAfter(assigning.getDueDate())) {
+            return "EXPIRED";
+        }
+        return "AVAILABLE";
+    }
 
     public static AssignedQuizSummaryDTO fromDashboardInfo(QuizDashboardInfoDTO info) {
         var assigning = info.getAssigning();
@@ -52,6 +70,7 @@ public class AssignedQuizSummaryDTO {
                 .attemptsLeft(info.getAttemptsLeft())
                 .hasStarted(info.isHasStarted())
                 .hasUnfinished(info.isHasUnfinished())
+                .availability(availabilityOf(assigning))
                 .build();
     }
 
@@ -77,6 +96,7 @@ public class AssignedQuizSummaryDTO {
                 .attemptsLeft(assigning.getMaxAttempt() != null ? assigning.getMaxAttempt() : -1)
                 .hasStarted(false)
                 .hasUnfinished(false)
+                .availability(availabilityOf(assigning))
                 .build();
     }
 }

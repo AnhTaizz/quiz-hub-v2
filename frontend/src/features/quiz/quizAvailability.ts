@@ -3,17 +3,21 @@ import type { AssignedQuizSummary } from "@/types/api";
 export type QuizAvailability = "not_started" | "available" | "expired";
 
 /**
- * Mirrors the availability check the legacy Thymeleaf templates perform
- * inline (e.g. student-classroom-detail.html's `now.isBefore(startDate)` /
- * `now.isAfter(dueDate)`). This is a client-side *display* hint only - the
- * backend independently enforces QUIZ_NOT_STARTED/QUIZ_EXPIRED at attempt
- * start/submit time, so a clock skew here never grants access the server
- * would reject.
+ * Availability is decided by the server (`AssignedQuizSummaryDTO.availability`), never re-derived
+ * here. The backend pins its JVM to Asia/Ho_Chi_Minh and serializes dates as offset-less
+ * LocalDateTime strings, so comparing them with the browser's clock is wrong for any user outside
+ * that zone (this is exactly what broke the CI E2E run, which is in UTC). The backend also
+ * independently enforces QUIZ_NOT_STARTED / QUIZ_EXPIRED when a quiz is actually started.
  */
-export function getQuizAvailability(quiz: AssignedQuizSummary, now: Date = new Date()): QuizAvailability {
-  if (quiz.startDate && now < new Date(quiz.startDate)) return "not_started";
-  if (quiz.dueDate && now > new Date(quiz.dueDate)) return "expired";
-  return "available";
+export function getQuizAvailability(quiz: AssignedQuizSummary): QuizAvailability {
+  switch (quiz.availability) {
+    case "NOT_STARTED":
+      return "not_started";
+    case "EXPIRED":
+      return "expired";
+    case "AVAILABLE":
+      return "available";
+  }
 }
 
 export function formatAttemptsLeft(quiz: AssignedQuizSummary): string {

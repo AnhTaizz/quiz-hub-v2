@@ -88,6 +88,8 @@ export interface AssignedQuizSummary {
   attemptsLeft: number; // -1 = unlimited
   hasStarted: boolean;
   hasUnfinished: boolean;
+  /** Decided by the server clock (see quizAvailability.ts for why the client must not compute this). */
+  availability: "NOT_STARTED" | "AVAILABLE" | "EXPIRED";
 }
 
 export interface StudentDashboardResponse {
