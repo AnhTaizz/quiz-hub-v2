@@ -32,6 +32,7 @@ test("student core journey: dashboard -> start -> answer -> autosave -> reload r
 
   // Answer the other question (a reload always returns to question 1)
   await page.getByRole("button", { name: "Next" }).click();
+  await expect(page.getByText(/^Question 2 of \d+$/)).toBeVisible();
   await answerCurrentQuestion(page);
 
   // Submit through the confirmation dialog

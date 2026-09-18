@@ -48,9 +48,14 @@ export async function expectAnswerRestored(page: Page, kind: AnswerKind): Promis
 /** Navigates (via the question navigator) to the single-choice question, wherever it is. */
 export async function showChoiceQuestion(page: Page): Promise<void> {
   const dots = page.getByRole("button", { name: /^Question \d+,/ });
+  // count() does not auto-wait: without this the loop can run before the quiz has loaded (0 dots) and
+  // wrongly conclude there is no single-choice question - which is what failed on the slower CI runner.
+  await expect(dots.first()).toBeVisible();
   const total = await dots.count();
   for (let i = 0; i < total; i++) {
     await dots.nth(i).click();
+    // Don't read the question type until the navigator has actually moved to the clicked question.
+    await expect(dots.nth(i)).toHaveAttribute("aria-current", "step");
     if ((await currentQuestionKind(page)) === "choice") return;
   }
   throw new Error("No single-choice question found in the quiz");
