@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -21,6 +22,23 @@ public class GlobalExceptionHandle {
     @ExceptionHandler(AppException.class)
     public ResponseEntity<ErrorResponse> handleAppException(AppException e) {
         ErrorCode errorCode = e.getErrorCode();
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .code(errorCode.getCode())
+                .status(errorCode.getStatusCode().value())
+                .message(errorCode.getMessage())
+                .timestamp(LocalDateTime.now())
+                .build();
+        return ResponseEntity.status(errorCode.getStatusCode()).body(errorResponse);
+    }
+
+    // Method security (@PreAuthorize) throws this from inside the controller layer, where the
+    // SecurityFilterChain's CustomAccessDeniedHandler never sees it. Without a specific handler it fell
+    // through to the RuntimeException handler below and surfaced as a 500. Spring picks the most specific
+    // handler, so this wins over RuntimeException without any instanceof special-casing there.
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ErrorResponse> handleAccessDeniedException(AccessDeniedException e) {
+        log.debug("Access denied by method security: {}", e.getMessage());
+        ErrorCode errorCode = ErrorCode.FORBIDDEN;
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .code(errorCode.getCode())
                 .status(errorCode.getStatusCode().value())

@@ -158,11 +158,8 @@ class SpaRoutingIntegrationTest {
         for (String path : new String[] { "/api/student/dashboard", "/api/student/quiz/assigned",
                 "/api/student/quiz/history", "/api/student/classrooms" }) {
             MvcResult result = mockMvc.perform(get(path).header("Authorization", "Bearer " + teacherToken)).andReturn();
-            // Pre-existing behavior: GlobalExceptionHandle's catch-all RuntimeException handler also
-            // catches Spring Security's AccessDeniedException from @PreAuthorize, so ALL role-protected
-            // REST endpoints (old and new) answer a wrong-role caller with 500 rather than 403. Access is
-            // still denied and no data is returned, which is what this test guards.
-            assertThat(result.getResponse().getStatus()).as(path).isGreaterThanOrEqualTo(400);
+            // Denied by @PreAuthorize (method security); GlobalExceptionHandle maps that to 403.
+            assertThat(result.getResponse().getStatus()).as(path).isEqualTo(403);
             assertThat(result.getResponse().getContentAsString()).as(path).doesNotContain("assignedQuizzes");
         }
     }

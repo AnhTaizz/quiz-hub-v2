@@ -57,7 +57,9 @@ public enum ErrorCode {
     QUIZ_ASSIGNING_HAS_SUBMISSIONS(1041, "Không thể xóa bài thi đã có học sinh làm bài", HttpStatus.BAD_REQUEST),
     DEADLINE_IN_PAST(1042, "Hạn chót không được nằm trong quá khứ", HttpStatus.BAD_REQUEST),
     QUESTION_NOT_IN_QUIZ(1043, "Câu hỏi không thuộc đề thi này", HttpStatus.BAD_REQUEST),
-    ANSWER_NOT_IN_QUESTION(1044, "Câu trả lời không thuộc câu hỏi này", HttpStatus.BAD_REQUEST);
+    ANSWER_NOT_IN_QUESTION(1044, "Câu trả lời không thuộc câu hỏi này", HttpStatus.BAD_REQUEST),
+    // Authenticated but not permitted (403). Distinct from UNAUTHORIZED (401, not authenticated).
+    FORBIDDEN(1045, "Bạn không có quyền truy cập tài nguyên này", HttpStatus.FORBIDDEN);
 
     final int code;
     final String message;
