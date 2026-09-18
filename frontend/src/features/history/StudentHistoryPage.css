@@ -1,0 +1,36 @@
+.qh-history-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.qh-history-list--refreshing {
+  opacity: 0.6;
+}
+
+.qh-history-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.qh-history-item__title {
+  margin: 0;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.qh-history-item__meta {
+  margin: 0;
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+.qh-history-item__score {
+  margin: 0;
+  font-weight: 800;
+  font-size: 18px;
+  color: var(--color-primary);
+  flex-shrink: 0;
+}

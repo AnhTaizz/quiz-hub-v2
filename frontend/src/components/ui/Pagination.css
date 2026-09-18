@@ -1,0 +1,12 @@
+.qh-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4);
+  margin-top: var(--space-5);
+}
+
+.qh-pagination__status {
+  font-size: 14px;
+  color: var(--color-text-muted);
+}

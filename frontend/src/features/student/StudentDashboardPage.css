@@ -1,0 +1,30 @@
+.qh-dashboard-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+}
+
+.qh-dashboard-summary__value {
+  font-size: 28px;
+  font-weight: 800;
+  margin: 0;
+  color: var(--color-primary);
+}
+
+.qh-dashboard-summary__label {
+  margin: var(--space-1) 0 0;
+  color: var(--color-text-muted);
+  font-size: 13px;
+}
+
+.qh-dashboard-section-title {
+  font-size: 18px;
+  margin-bottom: var(--space-3);
+}
+
+.qh-dashboard-quiz-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--space-4);
+}

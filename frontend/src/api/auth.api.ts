@@ -1,0 +1,28 @@
+import { httpClient } from "./httpClient";
+import type {
+  AuthResponse,
+  LoginRequest,
+  OAuth2RegisterRequest,
+  RegisterRequest,
+  ResetPasswordRequest,
+} from "@/types/api";
+
+export const authApi = {
+  login: (payload: LoginRequest) => httpClient.post<AuthResponse>("/auth/login", { body: payload }),
+
+  register: (payload: RegisterRequest) =>
+    httpClient.post<AuthResponse>("/auth/register", { body: payload }),
+
+  checkEmail: (email: string, signal?: AbortSignal) =>
+    httpClient.get<boolean>("/auth/check-email", { query: { email }, signal }),
+
+  // Backend binds this as @RequestParam, not a JSON body - see API_MAP.md.
+  forgotPassword: (email: string) =>
+    httpClient.post<string>("/auth/forgot-password", { query: { email } }),
+
+  resetPassword: (payload: ResetPasswordRequest) =>
+    httpClient.post<string>("/auth/reset-password", { body: payload }),
+
+  oauth2Register: (payload: OAuth2RegisterRequest) =>
+    httpClient.post<AuthResponse>("/auth/oauth2-register", { body: payload }),
+};

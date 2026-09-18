@@ -1,0 +1,67 @@
+.qh-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  height: 44px;
+  padding: 0 var(--space-5);
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  transition: background-color 0.15s ease, opacity 0.15s ease;
+}
+
+.qh-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.qh-button--primary {
+  background: var(--color-primary);
+  color: #fff;
+}
+.qh-button--primary:not(:disabled):hover {
+  background: var(--color-primary-hover);
+}
+
+.qh-button--secondary {
+  background: var(--color-surface);
+  color: var(--color-text);
+  border-color: var(--color-border);
+}
+.qh-button--secondary:not(:disabled):hover {
+  background: var(--color-background);
+}
+
+.qh-button--danger {
+  background: var(--color-danger);
+  color: #fff;
+}
+.qh-button--danger:not(:disabled):hover {
+  background: var(--color-danger-hover);
+}
+
+.qh-button--ghost {
+  background: transparent;
+  color: var(--color-primary);
+}
+.qh-button--ghost:not(:disabled):hover {
+  background: var(--color-background);
+}
+
+.qh-button__spinner {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  animation: qh-spin 0.6s linear infinite;
+}
+
+@keyframes qh-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

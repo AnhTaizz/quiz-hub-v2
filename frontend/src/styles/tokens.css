@@ -1,0 +1,57 @@
+/*
+ * Single source of design tokens for the React app - deliberately NOT a port
+ * of the legacy 41 CSS files' 128 distinct hex colors / 53 border-radius
+ * values (audit finding F-05). Swap these values for real brand tokens; the
+ * point is that every component in this app reads from here, not that these
+ * exact values are final.
+ */
+:root {
+  --color-primary: #4338ca;
+  --color-primary-hover: #3730a3;
+  --color-background: #f8fafc;
+  --color-surface: #ffffff;
+  --color-text: #1e1b4b;
+  --color-text-muted: #64748b;
+  --color-border: #e2e8f0;
+  --color-success: #16a34a;
+  --color-warning: #d97706;
+  --color-danger: #dc2626;
+  --color-danger-hover: #b91c1c;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-pill: 999px;
+
+  --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.08);
+  --shadow-md: 0 4px 16px rgba(15, 23, 42, 0.12);
+
+  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+
+  --focus-ring: 0 0 0 3px rgba(67, 56, 202, 0.35);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --color-background: #0f172a;
+    --color-surface: #1e293b;
+    --color-text: #f1f5f9;
+    --color-text-muted: #94a3b8;
+    --color-border: #334155;
+  }
+}
+
+:root[data-theme="dark"] {
+  --color-background: #0f172a;
+  --color-surface: #1e293b;
+  --color-text: #f1f5f9;
+  --color-text-muted: #94a3b8;
+  --color-border: #334155;
+}

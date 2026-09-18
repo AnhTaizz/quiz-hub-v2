@@ -1,0 +1,74 @@
+.qh-auth-page {
+  min-height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-5);
+}
+
+.qh-auth-card {
+  width: 100%;
+  max-width: 400px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  padding: var(--space-6);
+}
+
+.qh-auth-title {
+  font-size: 22px;
+  margin: 0 0 var(--space-5);
+  text-align: center;
+}
+
+.qh-auth-error {
+  background: rgba(220, 38, 38, 0.1);
+  color: var(--color-danger);
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  margin-bottom: var(--space-4);
+}
+
+.qh-auth-links {
+  display: flex;
+  justify-content: space-between;
+  margin-top: var(--space-4);
+  font-size: 14px;
+}
+
+.qh-role-fieldset {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-3) var(--space-4);
+  margin-bottom: var(--space-4);
+  display: flex;
+  gap: var(--space-5);
+}
+
+.qh-role-fieldset legend {
+  font-size: 13px;
+  font-weight: 600;
+  padding: 0 var(--space-1);
+}
+
+.qh-role-option {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.qh-auth-divider {
+  text-align: center;
+  color: var(--color-text-muted);
+  font-size: 13px;
+  margin: var(--space-4) 0;
+}
+
+.qh-auth-google {
+  width: 100%;
+  text-decoration: none;
+}

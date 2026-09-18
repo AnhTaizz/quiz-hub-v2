@@ -1,0 +1,21 @@
+.qh-spinner-wrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4);
+}
+
+.qh-spinner {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 3px solid var(--color-border);
+  border-top-color: var(--color-primary);
+  animation: qh-spin 0.7s linear infinite;
+}
+
+@keyframes qh-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
