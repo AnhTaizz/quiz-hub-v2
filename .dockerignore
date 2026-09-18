@@ -1,0 +1,32 @@
+# Version control / CI metadata
+.git
+.github
+
+# Build output (rebuilt inside the image; never trust a host-built target/)
+target/
+
+# Secrets / environment files - never send these into the build context
+.env
+.env.*
+deploy/
+
+# IDE metadata
+.idea
+.vscode
+*.iml
+
+# Logs and local scratch
+*.log
+compile_log.txt
+error_log.txt
+
+# Docs (not required to build or run the app)
+docs/
+README.md
+
+# Runtime data that must not be baked into the image
+uploads/
+
+# OS artifacts
+.DS_Store
+Thumbs.db

@@ -6,8 +6,6 @@ services:
       POSTGRES_DB: quiz_hub
       POSTGRES_USER: ${DB_USERNAME}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
-    ports:
-      - "127.0.0.1:${DB_HOST_PORT:-5433}:5432"
     volumes:
       - pg_data:/var/lib/postgresql/data
     healthcheck:
@@ -19,7 +17,7 @@ services:
     restart: unless-stopped
 
   quizhub-app:
-    build: .
+    image: ${QUIZHUB_IMAGE:?QUIZHUB_IMAGE must be provided}
     container_name: quizhub-backend
     init: true
     security_opt:
@@ -30,21 +28,16 @@ services:
       quizhub-db:
         condition: service_healthy
     environment:
-      # Nối thẳng vào container quizhub-db
+      # Nối thẳng vào container quizhub-db trên mạng nội bộ của Compose
       DB_URL: jdbc:postgresql://quizhub-db:5432/quiz_hub
       DB_USERNAME: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}
-      # Biến Google OAuth2
       GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
       GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
-      # Biến Mail
       SPRING_MAIL_USERNAME: ${SPRING_MAIL_USERNAME}
       SPRING_MAIL_PASSWORD: ${SPRING_MAIL_PASSWORD}
-      # Biến JWT
       JWT_SECRET: ${JWT_SECRET}
-      # Biến Gemini API Key
       GEMINI_API_KEY: ${GEMINI_API_KEY}
-      # Khởi tạo SQL (always cho lần đầu, never cho các lần sau)
       SQL_INIT_MODE: ${SQL_INIT_MODE:-never}
     volumes:
       - uploads_data:/app/uploads

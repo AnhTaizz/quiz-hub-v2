@@ -34,11 +34,17 @@ build/
 
 # Security
 .env
+.env.*
+!.env.example
+!deploy/.env.production.example
 
 # Runtime / build logs
 *.log
 compile_log.txt
 error_log.txt
+
+# Local uploads (bind-mounted in docker-compose.yml, persisted via named volume otherwise)
+uploads/
 
 # OS artifacts
 .DS_Store
