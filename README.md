@@ -32,7 +32,9 @@ Hệ thống được thiết kế với giao diện cao cấp, hiện đại, m
 
 - **Backend**: Java 21, Spring Boot 3.x, Spring Security (OAuth2 Login Google, JWT)
 - **Database**: PostgreSQL
-- **Frontend**: HTML5 (Thymeleaf template engine), CSS3 (Vanilla CSS), Javascript (ES6+)
+- **Frontend (đang di trú)**:
+  - **React 19 + TypeScript + Vite** (thư mục [`frontend/`](frontend/)) — đã thay thế giao diện Thymeleaf cho **trang đăng nhập/đăng ký/quên mật khẩu và khu vực Học sinh** (dashboard, danh sách bài thi, lớp học, làm bài, kết quả, lịch sử).
+  - **Teacher / Admin vẫn là giao diện cũ** (Thymeleaf + Vanilla JS) trong Sprint 1; cùng một số trang Học sinh chưa di trú (luyện tập, thư viện câu hỏi, tạo đề cá nhân, hồ sơ). Chi tiết: [`docs/frontend/REACT_MIGRATION.md`](docs/frontend/REACT_MIGRATION.md).
 - **AI Integration**: Google Gemini AI API
 - **Containerization**: Docker, Docker Compose
 - **CI/CD**: GitHub Actions, GitHub Container Registry (GHCR)
@@ -45,6 +47,7 @@ Hệ thống được thiết kế với giao diện cao cấp, hiện đại, m
 - **Java Development Kit (JDK) 21** trở lên.
 - **PostgreSQL** (nếu chạy trực tiếp trên máy).
 - **Docker** và **Docker Compose** (Khuyên dùng).
+- **Node.js không bắt buộc** để build/chạy ứng dụng: `./mvnw package` tự tải Node 22 đã ghim phiên bản và build React. Chỉ cần Node 22.12+ nếu bạn phát triển frontend (xem bên dưới).
 
 ---
 
@@ -111,6 +114,30 @@ docker compose down
    ./mvnw spring-boot:run
    ```
 
+### Phát triển frontend React (`frontend/`)
+
+`./mvnw package` (và `docker build`) luôn build React mới nhất vào `target/classes/static/app` — không có `dist/` nào được commit. Khi sửa giao diện React, dùng dev server để có hot-reload:
+
+```bash
+# Terminal 1: backend + PostgreSQL (port 8080)
+./mvnw spring-boot:run
+
+# Terminal 2: React dev server (Node 22.12+), proxy /api, /oauth2, /login/oauth2, /avatars -> :8080
+cd frontend
+npm ci
+npm run dev          # http://localhost:5173
+```
+
+| Lệnh (trong `frontend/`) | Mục đích |
+| :--- | :--- |
+| `npm run typecheck` | TypeScript strict |
+| `npm run lint` | ESLint |
+| `npm run test:run` | Unit/component test (Vitest + Testing Library) |
+| `npm run build` | Build production (Vite) |
+| `npm run e2e` | Playwright E2E — cần app chạy tại `E2E_BASE_URL` (mặc định `http://localhost:8080`) và `npx playwright install chromium` |
+
+> Lưu ý: dev server (`:5173`) phục vụ SPA ở đường dẫn gốc; khi chạy qua `:8080` (bản tích hợp), Spring forward các đường dẫn React-owned (ví dụ `/student`) về `/app/index.html`. Các trang Thymeleaf cũ (teacher/admin/...) chỉ chạy qua `:8080`. Bỏ qua bước build React khi chỉ làm backend: `./mvnw package -DskipFrontend=true`.
+
 ---
 
 ## 🔄 CI/CD
@@ -119,11 +146,17 @@ Every pull request and push to `main` runs automatically in GitHub Actions:
 
 ```text
 PR / push → main
-  → Backend Tests      (Java 21, full Maven test suite against real PostgreSQL)
+  → Frontend Quality   (Node 22: typecheck, lint, Vitest, production build)
+  → Backend Tests      (Java 21, full Maven test suite against real PostgreSQL;
+                        package also builds the React bundle)
   → Container Smoke Test  (builds the real Dockerfile, starts the real
-                            docker-compose stack, checks /actuator/health)
+                            docker-compose stack, checks /actuator/health,
+                            React vs legacy route ownership, API not captured)
+  → E2E                (Playwright against the real container: login,
+                        quiz autosave/reload/submit, security regressions,
+                        360px viewport)
 
-push → main (after both succeed)
+push → main (after ALL four succeed)
   → Publish Image      (ghcr.io/anhtaizz/quiz-hub-v2:latest and :sha-<short-sha>)
 
 manual only

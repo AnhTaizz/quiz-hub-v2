@@ -10,13 +10,11 @@ rollback-aware production deployment workflow.
 ```text
 PR / push to main
       │
-      ▼
-  Backend Tests  (Java 21, mvnw clean package, full Testcontainers suite)
-      │
-      ▼
-  Container Smoke Test  (real Dockerfile + docker-compose.yml, health-checked)
-      │
-      ▼ (push to main only)
+      ├─▶ Frontend Quality  (Node 22: typecheck, lint, Vitest, Vite build)
+      ├─▶ Backend Tests  (Java 21, mvnw clean package - also builds React - full Testcontainers suite)
+      │        ├─▶ Container Smoke Test  (real Dockerfile + docker-compose.yml, health, React/legacy route ownership)
+      │        └─▶ E2E  (Playwright against the real container)
+      ▼ (push to main only, after ALL four succeed)
   Publish Image  (ghcr.io/<owner>/<repo>:latest and :sha-<short-sha>)
       │
       ▼ (manual, separate workflow)
@@ -32,7 +30,9 @@ CD is defined in [`.github/workflows/deploy-production.yml`](../../.github/workf
 | :--- | :--- | :--- |
 | **Backend Tests** | every PR to `main`, every push to `main`, manual | The full Maven suite (Testcontainers against real PostgreSQL) passes and the jar packages successfully. |
 | **Container Smoke Test** | after Backend Tests succeeds | The *actual* Dockerfile builds, the *actual* `docker-compose.yml` stack starts, PostgreSQL and the app both report healthy, the app container runs as a non-root user, and `GET /actuator/health` returns `200 {"status":"UP"}` over real HTTP. |
-| **Publish Image** | push to `main` only, after both jobs above succeed | Builds and pushes `ghcr.io/<owner>/<repo>:latest` and `:sha-<short-sha>` using `GITHUB_TOKEN` (no PAT), with OCI labels, build provenance, and an SBOM attached. |
+| **Frontend Quality** | every PR to `main`, every push to `main`, manual | The React app type-checks (strict TS), lints, passes its Vitest unit/component tests and builds for production. |
+| **E2E** | after Backend Tests succeeds | Playwright drives the real container (fixture seeded through the public REST API): login, safe `returnUrl`, quiz autosave → reload restores → submit → result, OAuth-error XSS regression, 360 px viewport with no horizontal overflow. |
+| **Publish Image** | push to `main` only, after Frontend Quality, Backend Tests, Container Smoke Test **and** E2E succeed | Builds and pushes `ghcr.io/<owner>/<repo>:latest` and `:sha-<short-sha>` using `GITHUB_TOKEN` (no PAT), with OCI labels, build provenance, and an SBOM attached. |
 
 The smoke-test stage generates its own throwaway credentials on the runner
 (random DB password, random JWT secret, dummy OAuth/mail/Gemini values) — it
@@ -68,8 +68,10 @@ Recommended policy:
 
 - Require a pull request before merging.
 - Require status checks to pass before merging, specifically:
+  - `Frontend Quality`
   - `Backend Tests`
   - `Container Smoke Test`
+  - `E2E`
 - Optionally require branches to be up to date before merging.
 - Block force pushes to `main`.
 
