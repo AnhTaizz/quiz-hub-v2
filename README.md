@@ -1,5 +1,7 @@
 # 🚀 QuizHub V2 - Nền tảng Ôn luyện & Tạo đề trắc nghiệm thông minh với AI
 
+[![CI](https://github.com/AnhTaizz/quiz-hub-v2/actions/workflows/ci.yml/badge.svg)](https://github.com/AnhTaizz/quiz-hub-v2/actions/workflows/ci.yml)
+
 ## Project Origin
 
 QuizHub V2 is a personal stabilization and refactoring project based on lessons learned from an earlier collaborative QuizHub project. 
@@ -33,6 +35,7 @@ Hệ thống được thiết kế với giao diện cao cấp, hiện đại, m
 - **Frontend**: HTML5 (Thymeleaf template engine), CSS3 (Vanilla CSS), Javascript (ES6+)
 - **AI Integration**: Google Gemini AI API
 - **Containerization**: Docker, Docker Compose
+- **CI/CD**: GitHub Actions, GitHub Container Registry (GHCR)
 
 ---
 
@@ -81,13 +84,19 @@ SQL_INIT_MODE=never
 ### Cách 1: Chạy qua Docker & Docker Compose (Khuyên dùng 🐳)
 
 ```bash
-docker-compose up -d --build
+cp .env.example .env
+# điền thông tin cấu hình vào .env
+
+docker compose up -d --build
+docker compose ps
 ```
 Web App sẽ chạy tại địa chỉ: **[http://localhost:8080](http://localhost:8080)**
 
+Health check: **[http://localhost:8080/actuator/health](http://localhost:8080/actuator/health)** (dùng cho Docker healthcheck, không yêu cầu đăng nhập).
+
 *Để dừng ứng dụng:*
 ```bash
-docker-compose down
+docker compose down
 ```
 
 ### Cách 2: Chạy trực tiếp trên máy local (Development Mode 💻)
@@ -101,6 +110,34 @@ docker-compose down
    ```bash
    ./mvnw spring-boot:run
    ```
+
+---
+
+## 🔄 CI/CD
+
+Every pull request and push to `main` runs automatically in GitHub Actions:
+
+```text
+PR / push → main
+  → Backend Tests      (Java 21, full Maven test suite against real PostgreSQL)
+  → Container Smoke Test  (builds the real Dockerfile, starts the real
+                            docker-compose stack, checks /actuator/health)
+
+push → main (after both succeed)
+  → Publish Image      (ghcr.io/anhtaizz/quiz-hub-v2:latest and :sha-<short-sha>)
+
+manual only
+  → Deploy Production  (GitHub "production" environment → SSH →
+                         docker compose → health check → automatic
+                         rollback on failure)
+```
+
+Production deployment is **manual** (`workflow_dispatch`) — pushing to
+`main` never deploys by itself, it only publishes the image.
+
+Full operational details (required secrets, server bootstrap, rollback
+model, recommended branch protection) are documented in
+[`docs/deployment/CI_CD.md`](docs/deployment/CI_CD.md).
 
 ---
 
