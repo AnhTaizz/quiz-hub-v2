@@ -108,8 +108,8 @@ public class QuizTakingServiceImpl implements QuizTakingService {
                 .orElse(null);
 
         if (attempt == null) {
-            // Check if reached max attempts
-            if (quizAssigning.getMaxAttempt() != null) {
+            // Check if reached max attempts (null or <= 0 means unlimited attempts)
+            if (quizAssigning.getMaxAttempt() != null && quizAssigning.getMaxAttempt() > 0) {
                 long finishedCount = attempts.stream()
                         .filter(a -> a.getEndedAt() != null)
                         .count();
