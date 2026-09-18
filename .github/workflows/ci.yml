@@ -17,6 +17,39 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  frontend-quality:
+    name: Frontend Quality
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Set up Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22.x"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Unit and component tests
+        run: npm run test:run
+
+      - name: Production build
+        run: npm run build
+
   backend-tests:
     name: Backend Tests
     runs-on: ubuntu-latest
@@ -40,7 +73,9 @@ jobs:
 
       # Runs the full Maven test suite (against real PostgreSQL via
       # Testcontainers, using the runner's own Docker engine) and then
-      # packages the jar in the same invocation.
+      # packages the jar in the same invocation. The package step also runs
+      # the React build (frontend-maven-plugin), so the uploaded jar is
+      # backend + a fresh React bundle, exactly what the Docker image ships.
       - name: Test and package
         run: ./mvnw -B -ntp clean package
 
@@ -129,6 +164,130 @@ jobs:
           fi
           grep -q '"status":"UP"' /tmp/health.json
 
+      # React owns "/", the auth pages and the migrated student routes; the
+      # API, actuator and the still-legacy Thymeleaf pages must not be captured.
+      - name: Verify React and legacy route ownership
+        run: |
+          set -euo pipefail
+          base=http://localhost:8080
+
+          for path in / /login /register /forgot-password; do
+            curl -fsS "$base$path" | grep -q 'id="root"' \
+              || { echo "$path did not serve the React shell"; exit 1; }
+          done
+
+          asset=$(curl -fsS "$base/login" | grep -o '/app/assets/[^"]*\.js' | head -1)
+          [ -n "$asset" ] || { echo "No built asset referenced by the React shell"; exit 1; }
+          code=$(curl -s -o /dev/null -w '%{http_code}' "$base$asset")
+          [ "$code" = "200" ] || { echo "Built asset $asset returned $code"; exit 1; }
+
+          for path in /student /student/quizzes /teacher /admin; do
+            result=$(curl -s -o /dev/null -w '%{http_code} %{redirect_url}' "$base$path")
+            echo "$path -> $result"
+            echo "$result" | grep -q '^302 .*/login?returnUrl=' \
+              || { echo "$path should redirect anonymous users to /login"; exit 1; }
+          done
+
+          code=$(curl -s -o /dev/null -w '%{http_code}' "$base/api/student/dashboard")
+          [ "$code" = "401" ] || { echo "API returned $code instead of 401"; exit 1; }
+
+          token=$(curl -fsS -X POST "$base/api/auth/register" -H 'Content-Type: application/json' \
+            -d '{"fullName":"Smoke Teacher","email":"smoke-teacher@example.com","password":"Passw0rd!","confirmPassword":"Passw0rd!","role":"TEACHER"}' \
+            | sed -n 's/.*"token":"\([^"]*\)".*/\1/p')
+          [ -n "$token" ] || { echo "Could not obtain a teacher token"; exit 1; }
+          page=$(curl -fsS -H "Authorization: Bearer $token" "$base/teacher")
+          if echo "$page" | grep -q 'id="root"'; then
+            echo "/teacher was captured by the React shell"; exit 1
+          fi
+          echo "$page" | grep -qi '<html' || { echo "/teacher did not render a legacy page"; exit 1; }
+
+      - name: Dump container logs on failure
+        if: failure()
+        run: docker compose logs --no-color
+
+      - name: Tear down the stack
+        if: always()
+        run: docker compose down -v
+
+  e2e:
+    name: E2E
+    needs: backend-tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+
+      # Same throwaway-credentials approach as the smoke test: nothing here
+      # touches repository or production secrets.
+      - name: Generate E2E environment
+        run: |
+          set -euo pipefail
+          {
+            echo "DB_USERNAME=quizhub"
+            echo "DB_PASSWORD=$(openssl rand -hex 16)"
+            echo "GOOGLE_CLIENT_ID=ci-e2e"
+            echo "GOOGLE_CLIENT_SECRET=ci-e2e"
+            echo "SPRING_MAIL_USERNAME=ci-e2e@example.com"
+            echo "SPRING_MAIL_PASSWORD=ci-e2e"
+            echo "JWT_SECRET=$(openssl rand -hex 40)"
+            echo "GEMINI_API_KEY=ci-e2e"
+            echo "SQL_INIT_MODE=never"
+            echo "APP_PORT=8080"
+            echo "DB_HOST_PORT=5433"
+          } > "$RUNNER_TEMP/e2e.env"
+
+      - name: Build and start the stack
+        run: docker compose --env-file "$RUNNER_TEMP/e2e.env" up -d --build
+
+      - name: Wait for the app to become healthy
+        run: |
+          set -euo pipefail
+          for i in $(seq 1 40); do
+            app_status=$(docker inspect --format='{{.State.Health.Status}}' quizhub-backend 2>/dev/null || echo "missing")
+            echo "attempt $i: app=$app_status"
+            if [ "$app_status" = "healthy" ]; then exit 0; fi
+            if [ "$app_status" = "unhealthy" ]; then echo "App reported unhealthy"; exit 1; fi
+            sleep 5
+          done
+          echo "Timed out waiting for the app"
+          exit 1
+
+      - name: Set up Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22.x"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install frontend dependencies
+        working-directory: frontend
+        run: npm ci
+
+      - name: Install Playwright browser
+        working-directory: frontend
+        run: npx playwright install --with-deps chromium
+
+      - name: Run Playwright E2E
+        working-directory: frontend
+        env:
+          E2E_BASE_URL: http://localhost:8080
+        run: npm run e2e
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: |
+            frontend/playwright-report
+            frontend/test-results
+          retention-days: 7
+          if-no-files-found: ignore
+
       - name: Dump container logs on failure
         if: failure()
         run: docker compose logs --no-color
@@ -139,7 +298,7 @@ jobs:
 
   publish-image:
     name: Publish Image
-    needs: [backend-tests, container-smoke]
+    needs: [frontend-quality, backend-tests, container-smoke, e2e]
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     timeout-minutes: 15
