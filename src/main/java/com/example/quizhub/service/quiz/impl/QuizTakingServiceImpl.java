@@ -491,33 +491,48 @@ public class QuizTakingServiceImpl implements QuizTakingService {
                         ua -> ua.getQuestion().getId(),
                         Collectors.mapping(ua -> ua.getAnswer().getId(), Collectors.toList())));
 
+        // Map questionId -> selected free-text answer, built once instead of re-scanning
+        // userAnswers per question (was an O(Q^2) scan for FILL_IN_BLANK-heavy quizzes).
+        Map<Long, String> selectedTextMap = userAnswers.stream()
+                .filter(ua -> ua.getSelectedText() != null)
+                .collect(Collectors.toMap(
+                        ua -> ua.getQuestion().getId(),
+                        UserAttemptAnswer::getSelectedText,
+                        (existing, replacement) -> existing));
+
+        // Bulk fetch all answers for all questions in this quiz in a single query, instead of
+        // relying on Question.answers' batched lazy-load (which scales the number of _answer
+        // queries with the question count).
+        List<Long> questionIds = quiz.getQuestions().stream().map(Question::getId).collect(Collectors.toList());
+        Map<Long, List<Answer>> answersByQuestionId = questionIds.isEmpty() ? Collections.emptyMap() :
+                answerRepository.findByQuestionIdIn(questionIds).stream()
+                        .collect(Collectors.groupingBy(a -> a.getQuestion().getId()));
+
         QuizAssigning assigning = attempt.getQuizTaking().getQuizAssigning();
         Random random = new Random(attempt.getId());
 
         List<QuizResultResponseDTO.QuestionResultDTO> questionResults = quiz.getQuestions().stream()
                 .map(q -> {
+                    List<Answer> questionAnswers = answersByQuestionId.getOrDefault(q.getId(), Collections.emptyList());
                     List<Long> selectedIds = selectedAnswersMap.getOrDefault(q.getId(), Collections.emptyList());
-                    String selectedText = userAnswers.stream()
-                            .filter(ua -> ua.getQuestion().getId().equals(q.getId()) && ua.getSelectedText() != null)
-                            .map(UserAttemptAnswer::getSelectedText)
-                            .findFirst().orElse(null);
+                    String selectedText = selectedTextMap.get(q.getId());
 
                     boolean isCorrect = false;
                     if (q.getType() == QuestionType.FILL_IN_BLANK) {
                         String trimmedStudent = (selectedText != null ? selectedText : "").trim();
-                        isCorrect = q.getAnswers().stream()
+                        isCorrect = questionAnswers.stream()
                                 .filter(Answer::getIsCorrect)
                                 .anyMatch(a -> a.getText() != null
                                         && a.getText().trim().equalsIgnoreCase(trimmedStudent));
                     } else {
-                        List<Long> correctIds = q.getAnswers().stream()
+                        List<Long> correctIds = questionAnswers.stream()
                                 .filter(Answer::getIsCorrect)
                                 .map(Answer::getId)
                                 .collect(Collectors.toList());
                         isCorrect = selectedIds.size() == correctIds.size() && selectedIds.containsAll(correctIds);
                     }
 
-                    List<QuizResultResponseDTO.AnswerResultDTO> answerResults = q.getAnswers().stream()
+                    List<QuizResultResponseDTO.AnswerResultDTO> answerResults = questionAnswers.stream()
                             .map(a -> QuizResultResponseDTO.AnswerResultDTO.builder()
                                     .answerId(a.getId())
                                     .text(a.getText())

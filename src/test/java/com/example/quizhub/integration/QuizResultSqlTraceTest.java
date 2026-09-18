@@ -241,34 +241,58 @@ public class QuizResultSqlTraceTest {
         return trimmed;
     }
 
+    private int countAnswerFetches(Map<String, Integer> templateCounts) {
+        int total = 0;
+        for (Map.Entry<String, Integer> entry : templateCounts.entrySet()) {
+            if (entry.getKey().toLowerCase().contains("from _answer")) {
+                total += entry.getValue();
+            }
+        }
+        return total;
+    }
+
     @Test
     void traceGetQuizResult() {
         System.out.println("Starting SQL Trace for getQuizResult");
         System.out.println("--------------------------------------------------");
-        
+
         Map<String, Integer> counts50 = runTrace(50);
         Map<String, Integer> counts100 = runTrace(100);
         Map<String, Integer> counts200 = runTrace(200);
-        
+
         Set<String> allTemplates = new LinkedHashSet<>();
         allTemplates.addAll(counts50.keySet());
         allTemplates.addAll(counts100.keySet());
         allTemplates.addAll(counts200.keySet());
-        
+
         System.out.printf("%-100s | %3s | %3s | %3s%n", "SQL Template", "50Q", "100Q", "200Q");
         System.out.println("-".repeat(116));
-        
+
         for (String template : allTemplates) {
             int c50 = counts50.getOrDefault(template, 0);
             int c100 = counts100.getOrDefault(template, 0);
             int c200 = counts200.getOrDefault(template, 0);
-            
+
             System.out.printf("%-100s | %3d | %3d | %3d%n", template, c50, c100, c200);
         }
         System.out.println("--------------------------------------------------");
-        System.out.printf("%-100s | %3d | %3d | %3d%n", "TOTAL", 
+        System.out.printf("%-100s | %3d | %3d | %3d%n", "TOTAL",
                 counts50.values().stream().mapToInt(Integer::intValue).sum(),
                 counts100.values().stream().mapToInt(Integer::intValue).sum(),
                 counts200.values().stream().mapToInt(Integer::intValue).sum());
+
+        int answerFetches50 = countAnswerFetches(counts50);
+        int answerFetches100 = countAnswerFetches(counts100);
+        int answerFetches200 = countAnswerFetches(counts200);
+
+        System.out.printf("_answer fetches -> 50Q: %d | 100Q: %d | 200Q: %d%n",
+                answerFetches50, answerFetches100, answerFetches200);
+
+        // getQuizResult must bulk-fetch answers once per call, regardless of question count.
+        // Batched lazy-loading of Question.answers previously scaled these fetches with
+        // question count (3/5/10 for 50/100/200 questions).
+        assertThat(answerFetches50).isEqualTo(1);
+        assertThat(answerFetches100).isEqualTo(1);
+        assertThat(answerFetches200).isEqualTo(1);
     }
 }

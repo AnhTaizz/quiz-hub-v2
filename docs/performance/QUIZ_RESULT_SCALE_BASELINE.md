@@ -52,3 +52,14 @@ For all workloads, the integrity of the returned `QuizResultResponseDTO` was ass
 ## 6. Next step
 
 Statement-level SQL tracing before considering any optimization.
+
+## 7. V2-025 Resolution (Backend Closing Sprint)
+
+After bulk-fetching `getQuizResult()`'s answers (see `QUIZ_RESULT_SQL_TRACE.md` section 8), re-running this benchmark shows the query count is now flat:
+
+| Metric | 50 Questions | 100 Questions | 200 Questions |
+| :--- | :--- | :--- | :--- |
+| **SQL queries (before)** | 11 | 13 | 18 |
+| **SQL queries (after)** | **9** | **9** | **9** |
+
+Correctness assertions (attemptId, totalNum, correctNum, incorrectNum, questions.size, answers/question, selectedAnswerIds, isCorrect, score) all continue to pass unchanged.

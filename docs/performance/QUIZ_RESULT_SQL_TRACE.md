@@ -88,3 +88,21 @@ When `q.getAnswers()` is called on an uninitialized question, Hibernate executes
 
 The batch fetch protects the system from N+1 degradation, but we can eliminate the step-scaling completely. 
 **Recommended narrowly scoped optimization:** Bulk-fetch all answers for the quiz's questions before iterating over them to build the result DTOs. A single `answerRepository.findByQuestionIdIn(...)` could resolve all lazy proxies in `O(1)` query, reducing the total query cost to exactly 9 queries regardless of quiz size.
+
+## 8. V2-025 Resolution (Backend Closing Sprint)
+
+The recommended fix was implemented in `QuizTakingServiceImpl.getQuizResult()`:
+
+- Question IDs are collected once, and `answerRepository.findByQuestionIdIn(...)` bulk-fetches every `Answer` for the quiz in a single query, built into a `Map<Long, List<Answer>>`.
+- Every `q.getAnswers()` lazy-collection access inside the result-question mapping loop (correctness check, correct-ID computation, `AnswerResultDTO` construction) was replaced with a lookup into that map.
+- `Question.answers`'s `@BatchSize(size = 20)` mapping was left untouched (other call sites still benefit from it); only this hot method stopped depending on it.
+- The per-question `userAnswers.stream().filter(...)` scan for the selected free-text answer (an O(Q²) scan for FILL_IN_BLANK-heavy quizzes) was replaced with a `Map<Long, String>` built once before the loop.
+
+`QuizResultSqlTraceTest` now asserts `_answer` fetches equal exactly 1 at every scale (50/100/200 questions) instead of only printing the trend.
+
+| Metric | 50Q before | 100Q before | 200Q before | 50Q after | 100Q after | 200Q after |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| `_answer` fetches | 3 | 5 | 10 | **1** | **1** | **1** |
+| Total SQL | 11 | 13 | 18 | **9** | **9** | **9** |
+
+The result-page query count is now constant with respect to question count.
