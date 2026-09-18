@@ -480,6 +480,8 @@ public class QuizTakingServiceImpl implements QuizTakingService {
                     NotificationType.QUIZ_SUBMITTED,
                     "/student/history");
         } catch (Exception e) {
+            // Notification failure must not roll back the already-persisted quiz submission.
+            log.error("Failed to send quiz result notification for attempt ID={}", attempt.getId(), e);
         }
     }
 
