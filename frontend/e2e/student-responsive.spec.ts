@@ -1,4 +1,4 @@
-import { expect, loginAsStudent, test } from "./support/test";
+import { expect, loginAsStudent, passFullscreenGate, test } from "./support/test";
 import type { Page } from "@playwright/test";
 
 const WIDTHS = [360, 430, 768, 1024, 1440];
@@ -34,11 +34,18 @@ test("key student routes have no horizontal overflow from 360px to 1440px", asyn
       await expect(page.locator("h1, h2").first()).toBeVisible();
       await noHorizontalOverflow(page, label, width);
     }
-    // Quiz play: the world's assignment is startable (1 of 3 attempts used by the seed above); after the first
-    // width the unfinished attempt this loop started is simply resumed.
-    await page.goto("/student/quizzes");
-    await page.getByRole("link", { name: /start quiz|resume quiz/i }).first().click();
-    await expect(page.getByRole("timer")).toBeVisible();
+  }
+
+  // Quiz play: start the world's assignment ONCE and only resize while on it. Leaving the play page is a
+  // recorded proctoring event (TAB_CLOSE); three of them auto-submit the attempt, so navigating away at every
+  // width would (correctly) end the quiz.
+  await page.setViewportSize({ width: 1280, height: 800 });
+  await page.goto("/student/quizzes");
+  await page.getByRole("link", { name: /start quiz|resume quiz/i }).first().click();
+  await expect(page.getByRole("timer")).toBeVisible();
+  await passFullscreenGate(page);
+  for (const width of WIDTHS) {
+    await page.setViewportSize({ width, height: 800 });
     await noHorizontalOverflow(page, "quiz play", width);
   }
 

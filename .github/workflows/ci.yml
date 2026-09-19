@@ -206,6 +206,43 @@ jobs:
           page=$(curl -fsS -H "Authorization: Bearer $token" "$base/teacher") || fail "GET /teacher failed for a teacher"
           if grep -q 'id="root"' <<< "$page"; then fail "/teacher was captured by the React shell"; fi
           grep -qi '<html' <<< "$page" || fail "/teacher did not render a legacy page"
+
+          # Sprint 2A: public first-login route, /profile for any signed-in role, and the practice routes.
+          body=$(curl -fsS "$base/oauth2-choose-role.html") || fail "GET /oauth2-choose-role.html failed"
+          grep -q 'id="root"' <<< "$body" || fail "/oauth2-choose-role.html did not serve the React shell"
+
+          result=$(curl -s -o /dev/null -w '%{http_code} %{redirect_url}' "$base/profile")
+          grep -q '^302 .*/login?returnUrl=' <<< "$result" || fail "/profile should redirect anonymous users (got: $result)"
+
+          body=$(curl -fsS -H "Authorization: Bearer $token" "$base/profile") || fail "GET /profile failed for a teacher"
+          grep -q 'id="root"' <<< "$body" || fail "/profile did not serve the React shell for a teacher"
+
+          student=$(curl -fsS -X POST "$base/api/auth/register" -H 'Content-Type: application/json' \
+            -d '{"fullName":"Smoke Student","email":"smoke-student@example.com","password":"Passw0rd!","confirmPassword":"Passw0rd!","role":"STUDENT"}') \
+            || fail "Could not register the smoke student"
+          stoken=$(sed -n 's/.*"token":"\([^"]*\)".*/\1/p' <<< "$student")
+          [ -n "$stoken" ] || fail "Could not obtain a student token"
+
+          for path in /profile /student/practice /student/practice/play /student/practice/review/1 /student/practice-history; do
+            body=$(curl -fsS -H "Authorization: Bearer $stoken" "$base$path") || fail "GET $path failed for a student"
+            grep -q 'id="root"' <<< "$body" || fail "$path was not served by the React shell"
+          done
+
+          for path in /student/categories /student/practice/personal-play; do
+            body=$(curl -fsS -H "Authorization: Bearer $stoken" "$base$path") || fail "GET $path failed for a student"
+            if grep -q 'id="root"' <<< "$body"; then fail "$path (still legacy) was captured by the React shell"; fi
+            grep -qi '<html' <<< "$body" || fail "$path did not render a legacy page"
+          done
+
+          # A teacher must not get the student-only practice shell.
+          code=$(curl -s -o /dev/null -w '%{http_code}' -H "Authorization: Bearer $token" "$base/student/practice")
+          [ "$code" != "200" ] || fail "/student/practice was served to a teacher"
+
+          # Never-SPA prefixes: none of these may return the React shell.
+          for path in /api/student/dashboard /actuator/health /oauth2/authorization/google /login/oauth2/code/google /avatars/none.png; do
+            body=$(curl -s -H "Authorization: Bearer $stoken" "$base$path" || true)
+            if grep -q 'id="root"' <<< "$body"; then fail "$path was captured by the React shell"; fi
+          done
           echo "Route ownership verified"
 
       - name: Dump container logs on failure

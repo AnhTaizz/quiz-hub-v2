@@ -20,8 +20,21 @@ export { expect };
 // first question may be the single-choice OR the fill-in one. Tests must never assume which.
 export type AnswerKind = "choice" | "fill";
 
+/**
+ * The quiz player blocks the page with a "Fullscreen required" overlay until the student enters fullscreen
+ * (a user gesture is mandatory). Call this once the quiz has rendered; it is a no-op when already fullscreen.
+ */
+export async function passFullscreenGate(page: Page): Promise<void> {
+  const gate = page.getByRole("alertdialog", { name: /fullscreen/i });
+  if (await gate.isVisible()) {
+    await page.getByRole("button", { name: "Enter fullscreen" }).click();
+    await expect(gate).toHaveCount(0);
+  }
+}
+
 async function currentQuestionKind(page: Page): Promise<AnswerKind> {
   await expect(page.getByRole("region", { name: /^Question \d+$/ })).toBeVisible();
+  await passFullscreenGate(page);
   return (await page.getByLabel("Your answer").count()) > 0 ? "fill" : "choice";
 }
 
@@ -38,6 +51,8 @@ export async function answerCurrentQuestion(page: Page): Promise<AnswerKind> {
 }
 
 export async function expectAnswerRestored(page: Page, kind: AnswerKind): Promise<void> {
+  await expect(page.getByRole("region", { name: /^Question \d+$/ })).toBeVisible();
+  await passFullscreenGate(page);
   if (kind === "fill") {
     await expect(page.getByLabel("Your answer")).toHaveValue("Paris");
   } else {
@@ -51,6 +66,7 @@ export async function showChoiceQuestion(page: Page): Promise<void> {
   // count() does not auto-wait: without this the loop can run before the quiz has loaded (0 dots) and
   // wrongly conclude there is no single-choice question - which is what failed on the slower CI runner.
   await expect(dots.first()).toBeVisible();
+  await passFullscreenGate(page);
   const total = await dots.count();
   for (let i = 0; i < total; i++) {
     await dots.nth(i).click();
