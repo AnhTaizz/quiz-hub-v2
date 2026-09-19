@@ -1,4 +1,4 @@
-import { expect, loginAsStudent, passFullscreenGate, test } from "./support/test";
+import { expect, loginAsStudent, test } from "./support/test";
 import type { Page } from "@playwright/test";
 
 const WIDTHS = [360, 430, 768, 1024, 1440];
@@ -43,7 +43,8 @@ test("key student routes have no horizontal overflow from 360px to 1440px", asyn
   await page.goto("/student/quizzes");
   await page.getByRole("link", { name: /start quiz|resume quiz/i }).first().click();
   await expect(page.getByRole("timer")).toBeVisible();
-  await passFullscreenGate(page);
+  // The fullscreen gate is deliberately NOT passed: a fullscreen window cannot be resized (Chromium refuses
+  // setWindowBounds), and the quiz layout is fully rendered - and measured - underneath the overlay.
   for (const width of WIDTHS) {
     await page.setViewportSize({ width, height: 800 });
     await noHorizontalOverflow(page, "quiz play", width);
