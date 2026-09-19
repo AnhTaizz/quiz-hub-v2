@@ -5,6 +5,7 @@ import { authApi } from "@/api/auth.api";
 import { isApiError } from "@/api/httpClient";
 import { useAuth } from "@/auth/AuthProvider";
 import { roleHomePath } from "@/auth/authStorage";
+import { goToSafePath } from "@/utils/routes";
 import { Input } from "@/components/ui/Input";
 import { PasswordInput } from "@/components/ui/PasswordInput";
 import { Button } from "@/components/ui/Button";
@@ -32,7 +33,7 @@ export function RegisterPage() {
         role: auth.role,
         avatarUrl: auth.avatarUrl,
       });
-      navigate(roleHomePath(auth.role), { replace: true });
+      goToSafePath(null, roleHomePath(auth.role), navigate);
     },
     onError: (error) => {
       setFormError(isApiError(error) ? error.message : "Registration failed. Please try again.");

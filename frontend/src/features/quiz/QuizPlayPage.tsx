@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import { useQuizAttempt, type QuizSource } from "./useQuizAttempt";
 import { useCountdown } from "./useCountdown";
@@ -8,6 +8,12 @@ import { Button } from "@/components/ui/Button";
 import { Modal } from "@/components/ui/Modal";
 import { useToast } from "@/components/feedback/ToastProvider";
 import { isApiError } from "@/api/httpClient";
+import { SaveIndicator } from "@/components/feedback/SaveIndicator";
+import { readReturnUrl } from "@/features/practice/practiceSession";
+import { goToSafePath } from "@/utils/routes";
+import { FullscreenGate } from "./FullscreenGate";
+import { clearLocalAttempt } from "./localAttemptStorage";
+import { exitFullscreenQuietly, MAX_VIOLATIONS, useQuizProctoring } from "./useQuizProctoring";
 import "./QuizPlayPage.css";
 
 export function QuizPlayByAssigningPage() {
@@ -25,30 +31,78 @@ function QuizPlayPage({ source }: { source: QuizSource }) {
   const navigate = useNavigate();
   const { showToast } = useToast();
   const [confirmOpen, setConfirmOpen] = useState(false);
+  const [exitOpen, setExitOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [leaving, setLeaving] = useState(false);
+  const [autoSubmitted, setAutoSubmitted] = useState(false);
+  const [everLeftFullscreen, setEverLeftFullscreen] = useState(false);
+  const redirectTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+
+  const state = attempt.state;
+
+  // Monitoring runs only while the attempt is really being taken; every path that ends or leaves it turns it off.
+  const proctoring = useQuizProctoring({
+    attemptId: state?.attemptId ?? null,
+    active: !!state && !submitting && !leaving && !autoSubmitted,
+    onViolation: (result, code) => {
+      if (code === "FULLSCREEN_EXIT") setEverLeftFullscreen(true);
+      showToast(
+        `Warning ${result.violationCount} of ${MAX_VIOLATIONS}: leaving the exam is recorded. ` +
+          `${Math.max(MAX_VIOLATIONS - result.violationCount, 0)} more and the quiz is submitted automatically.`,
+        "warning",
+      );
+    },
+    onAutoSubmitted: (result) => {
+      // The backend already graded and ended the attempt: no second submit. Drop the local recovery data,
+      // leave fullscreen (monitoring is already off) and go to the result.
+      setAutoSubmitted(true);
+      clearLocalAttempt(result.attemptId);
+      void exitFullscreenQuietly();
+      showToast(`Your quiz was submitted automatically after ${result.violationCount} violations.`, "error");
+      redirectTimer.current = setTimeout(
+        () => navigate(`/student/quiz/result/${result.attemptId}`, { replace: true }),
+        1500,
+      );
+    },
+  });
+
+  useEffect(() => () => clearTimeout(redirectTimer.current), []);
 
   const handleSubmit = useCallback(async () => {
+    // Stop monitoring synchronously so nothing (fullscreen exit, blur, unload) is logged during/after the submit.
+    proctoring.stop();
     setSubmitting(true);
     try {
       const result = await attempt.submit();
       if (result) {
+        await exitFullscreenQuietly();
         navigate(`/student/quiz/result/${result.id}`, { replace: true });
       }
     } catch (error) {
       showToast(isApiError(error) ? error.message : "Could not submit quiz. Your answers are saved locally - please try again.", "error");
+      // Failed: the attempt is still open, so monitoring resumes (active flips back to true).
       setSubmitting(false);
       setConfirmOpen(false);
     }
-  }, [attempt, navigate, showToast]);
+  }, [attempt, navigate, proctoring, showToast]);
 
-  const state = attempt.state;
+  const handleExit = useCallback(async () => {
+    // The manual exit is itself a recorded event (and counts toward the limit, like the legacy client).
+    const outcome = await proctoring.logManualExit();
+    proctoring.stop();
+    setLeaving(true);
+    if (outcome?.autoSubmitted) return; // onAutoSubmitted already routes to the result
+    await exitFullscreenQuietly();
+    goToSafePath(readReturnUrl(), "/student", navigate);
+  }, [navigate, proctoring]);
+
   const countdown = useCountdown(
     state?.startedAtMillis ?? null,
     state?.durationInMins ?? 0,
     () => {
       // Backend still enforces the real deadline server-side; this only
       // triggers the client-side submit flow when the display clock hits 0.
-      if (!submitting) void handleSubmit();
+      if (!submitting && !leaving && !autoSubmitted) void handleSubmit();
     },
   );
 
@@ -73,8 +127,14 @@ function QuizPlayPage({ source }: { source: QuizSource }) {
 
   return (
     <div className="qh-quiz-play">
+      {proctoring.needsFullscreen && (
+        <FullscreenGate onEnter={() => void proctoring.requestFullscreen()} reEntry={everLeftFullscreen} />
+      )}
       <header className="qh-quiz-play__header">
         <h1 className="qh-quiz-play__title">{state.quizTitle}</h1>
+        <Button variant="ghost" type="button" onClick={() => setExitOpen(true)}>
+          Exit exam
+        </Button>
         <div
           className={`qh-quiz-play__timer ${countdown.isCritical ? "qh-quiz-play__timer--critical" : ""}`}
           role="timer"
@@ -214,22 +274,27 @@ function QuizPlayPage({ source }: { source: QuizSource }) {
           change your answers.
         </p>
       </Modal>
+
+      <Modal
+        isOpen={exitOpen}
+        onClose={() => setExitOpen(false)}
+        title="Leave the exam?"
+        footer={
+          <>
+            <Button variant="secondary" onClick={() => setExitOpen(false)}>
+              Keep working
+            </Button>
+            <Button variant="danger" onClick={() => void handleExit()}>
+              Leave now
+            </Button>
+          </>
+        }
+      >
+        <p>
+          Leaving is recorded as an early exit and counts toward the {MAX_VIOLATIONS}-violation limit. Your saved
+          answers are kept, and you can resume this quiz if time remains.
+        </p>
+      </Modal>
     </div>
   );
-}
-
-function SaveIndicator({ status, onRetry }: { status: string; onRetry: () => void }) {
-  if (status === "saving") return <span className="qh-save-indicator qh-save-indicator--saving">Saving…</span>;
-  if (status === "saved") return <span className="qh-save-indicator qh-save-indicator--saved">Saved</span>;
-  if (status === "error") {
-    return (
-      <span className="qh-save-indicator qh-save-indicator--error">
-        Save failed - answer kept on this device.{" "}
-        <button type="button" className="qh-save-indicator__retry" onClick={onRetry}>
-          Retry
-        </button>
-      </span>
-    );
-  }
-  return null;
 }

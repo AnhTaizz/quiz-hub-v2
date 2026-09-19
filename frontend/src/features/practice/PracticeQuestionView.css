@@ -1,0 +1,101 @@
+.qh-practice-q {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  scroll-margin-top: 80px;
+}
+
+.qh-practice-q__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-3);
+}
+
+.qh-practice-q__meta {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+.qh-practice-q__text {
+  font-size: 17px;
+  line-height: 1.5;
+  margin: 0 0 var(--space-4);
+  overflow-wrap: anywhere;
+}
+
+.qh-practice-q__options {
+  list-style: none;
+  margin: 0 0 var(--space-3);
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.qh-practice-q__option {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  min-height: 48px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  overflow-wrap: anywhere;
+}
+
+.qh-practice-q__option input {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.qh-practice-q__option--selected {
+  border-color: var(--color-primary);
+  background: rgba(67, 56, 202, 0.06);
+}
+
+.qh-practice-q__option--correct {
+  border-color: var(--color-success);
+  background: rgba(22, 163, 74, 0.12);
+}
+
+.qh-practice-q__option--wrong {
+  border-color: var(--color-danger);
+  background: rgba(220, 38, 38, 0.1);
+}
+
+.qh-practice-q__fill {
+  width: 100%;
+  height: 48px;
+  padding: 0 var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: 16px;
+  margin-bottom: var(--space-3);
+}
+
+.qh-practice-q__fill--correct {
+  border-color: var(--color-success);
+}
+.qh-practice-q__fill--wrong {
+  border-color: var(--color-danger);
+}
+
+.qh-practice-q__verdict {
+  margin: var(--space-2) 0 0;
+  font-weight: 700;
+  font-size: 14px;
+}
+.qh-practice-q__verdict--ok {
+  color: var(--color-success);
+}
+.qh-practice-q__verdict--bad {
+  color: var(--color-danger);
+}

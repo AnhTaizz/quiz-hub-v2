@@ -245,3 +245,129 @@ export interface Page<T> {
   last: boolean;
   empty: boolean;
 }
+
+// --- Profile ---
+
+export interface ChangePasswordRequest {
+  oldPassword: string;
+  newPassword: string;
+  confirmNewPassword: string;
+}
+
+// --- Notifications (the wire name for the read flag is "read", shared with the legacy bell) ---
+
+export type NotificationType =
+  | "QUESTION_APPROVED"
+  | "QUESTION_REJECTED"
+  | "JOIN_REQUEST"
+  | "JOIN_APPROVED"
+  | "QUIZ_SUBMITTED"
+  | "QUIZ_ASSIGNED"
+  | "JOIN_REJECTED"
+  | "SYSTEM_ALERT";
+
+export interface NotificationItem {
+  id: number;
+  title: string;
+  message: string;
+  type: NotificationType | null;
+  read: boolean;
+  link: string | null;
+  createdAt: string | null;
+}
+
+// --- Categories (only what the practice setup needs) ---
+
+export interface CategoryNode {
+  id: number;
+  name: string;
+  fullPath: string | null;
+  children: CategoryNode[];
+}
+
+// --- Practice ---
+
+export interface PracticeStartRequest {
+  categoryId: number;
+  limit: number;
+  offset?: number | null;
+  isRandom?: boolean | null;
+  forceNew?: boolean | null;
+  practiceId?: number | null;
+}
+
+export interface PracticeAnswerOption {
+  id: number;
+  text: string;
+  /** Sent by the backend already at start; used for optional instant feedback only - the score is always the server's. */
+  isCorrect: boolean | null;
+}
+
+export interface PracticeQuestion {
+  id: number;
+  text: string;
+  type: QuestionType;
+  level: QuestionLevel | string | null;
+  answers: PracticeAnswerOption[];
+  selectedAnswerIds: number[] | null;
+  selectedText: string | null;
+  isCorrect: boolean | null;
+}
+
+export interface PracticeStartResponse {
+  questions: PracticeQuestion[];
+  practiceId: number | null;
+  categoryId: number | null;
+  categoryName: string | null;
+  quizTitle: string | null;
+}
+
+export interface PracticeAnswerRequest {
+  questionId: number;
+  selectedAnswerId?: number | null;
+  selectedAnswerIds?: number[] | null;
+  selectedText?: string | null;
+}
+
+export interface PracticeSubmitRequest {
+  categoryId: number;
+  practiceId: number | null;
+  answers: PracticeAnswerRequest[];
+}
+
+export interface PracticeDetail {
+  questionId: number;
+  questionText: string;
+  selectedAnswerIds: number[] | null;
+  selectedText: string | null;
+  correctAnswerIds: number[] | null;
+  correctTexts: string[] | null;
+  isCorrect: boolean | null;
+  questionType: QuestionType;
+  questionLevel: string | null;
+  answers: PracticeAnswerOption[];
+}
+
+export interface PracticeResult {
+  practiceId: number;
+  categoryName: string | null;
+  totalQuestions: number;
+  correctAnswers: number | null;
+  score: number | null;
+  createdAt: string | null;
+  details: PracticeDetail[];
+}
+
+export interface PracticeHistoryItem {
+  id: number;
+  categoryId: number | null;
+  categoryName: string | null;
+  totalQuestions: number | null;
+  correctAnswers: number | null;
+  answeredQuestions: number | null;
+  createdAt: string | null;
+  isCompleted: boolean;
+  isRandom: boolean | null;
+  practiceLimit: number | null;
+  practiceOffset: number | null;
+}

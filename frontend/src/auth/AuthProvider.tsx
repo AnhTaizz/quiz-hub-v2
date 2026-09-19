@@ -1,11 +1,13 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
-import { clearSession, getStoredUser, getToken, setSession, type StoredUser } from "./authStorage";
+import { clearSession, getStoredUser, getToken, setSession, setStoredUser, type StoredUser } from "./authStorage";
 import { setUnauthorizedHandler } from "@/api/httpClient";
 
 interface AuthContextValue {
   user: StoredUser | null;
   isAuthenticated: boolean;
   login: (token: string, user: StoredUser) => void;
+  /** Merge profile edits (name/avatar) into the signed-in user without touching the token. */
+  updateUser: (patch: Partial<Pick<StoredUser, "fullName" | "avatarUrl">>) => void;
   logout: () => void;
 }
 
@@ -24,14 +26,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(nextUser);
   }, []);
 
+  const updateUser = useCallback((patch: Partial<Pick<StoredUser, "fullName" | "avatarUrl">>) => {
+    setUser((current) => {
+      if (!current) return current;
+      const next = { ...current, ...patch };
+      setStoredUser(next);
+      return next;
+    });
+  }, []);
+
   useEffect(() => {
     setUnauthorizedHandler(logout);
     return () => setUnauthorizedHandler(null);
   }, [logout]);
 
   const value = useMemo<AuthContextValue>(
-    () => ({ user, isAuthenticated: user !== null, login, logout }),
-    [user, login, logout],
+    () => ({ user, isAuthenticated: user !== null, login, logout, updateUser }),
+    [user, login, logout, updateUser],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

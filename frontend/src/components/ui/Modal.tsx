@@ -21,6 +21,13 @@ const FOCUSABLE_SELECTOR =
 export function Modal({ isOpen, onClose, title, children, footer }: ModalProps) {
   const dialogRef = useRef<HTMLDivElement>(null);
   const previouslyFocused = useRef<HTMLElement | null>(null);
+  // Callers routinely pass a fresh inline onClose every render. If the effect below depended on it, every
+  // re-render (e.g. each keystroke in a form inside the dialog) would re-run it and yank focus back to the
+  // first control. Keep the latest handler in a ref so the effect only re-runs when the dialog opens/closes.
+  const onCloseRef = useRef(onClose);
+  useEffect(() => {
+    onCloseRef.current = onClose;
+  });
 
   useEffect(() => {
     if (!isOpen) return;
@@ -32,7 +39,7 @@ export function Modal({ isOpen, onClose, title, children, footer }: ModalProps) 
 
     function handleKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape") {
-        onClose();
+        onCloseRef.current();
         return;
       }
       if (event.key !== "Tab" || !dialog) return;
@@ -56,12 +63,12 @@ export function Modal({ isOpen, onClose, title, children, footer }: ModalProps) 
       document.removeEventListener("keydown", handleKeyDown);
       previouslyFocused.current?.focus();
     };
-  }, [isOpen, onClose]);
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
   return createPortal(
-    <div className="qh-modal-overlay" onMouseDown={onClose}>
+    <div className="qh-modal-overlay" onMouseDown={() => onCloseRef.current()}>
       <div
         className="qh-modal"
         role="dialog"

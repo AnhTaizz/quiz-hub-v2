@@ -1,5 +1,5 @@
 import { lazy, Suspense, type ReactNode } from "react";
-import { Routes, Route } from "react-router";
+import { Navigate, Routes, Route } from "react-router";
 import { RequireAuth } from "@/auth/RequireAuth";
 import { RequireRole } from "@/auth/RequireRole";
 import { AppShell } from "@/components/layout/AppShell";
@@ -39,6 +39,20 @@ const QuizPlayByAttemptPage = lazy(() =>
 );
 const QuizResultPage = lazy(() => import("@/features/quiz/QuizResultPage").then((m) => ({ default: m.QuizResultPage })));
 
+const OAuth2ChooseRolePage = lazy(() =>
+  import("@/features/auth/OAuth2ChooseRolePage").then((m) => ({ default: m.OAuth2ChooseRolePage })),
+);
+const ProfilePage = lazy(() => import("@/features/profile/ProfilePage").then((m) => ({ default: m.ProfilePage })));
+const PracticeSetupPage = lazy(() =>
+  import("@/features/practice/PracticeSetupPage").then((m) => ({ default: m.PracticeSetupPage })),
+);
+const PracticePlayPage = lazy(() =>
+  import("@/features/practice/PracticePlayPage").then((m) => ({ default: m.PracticePlayPage })),
+);
+const PracticeReviewPage = lazy(() =>
+  import("@/features/practice/PracticeReviewPage").then((m) => ({ default: m.PracticeReviewPage })),
+);
+
 function StudentOnly({ children }: { children: ReactNode }) {
   return (
     <RequireAuth>
@@ -56,6 +70,17 @@ export function AppRouter() {
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/oauth2-redirect.html" element={<OAuth2RedirectPage />} />
+        <Route path="/oauth2-choose-role.html" element={<OAuth2ChooseRolePage />} />
+
+        {/* Any signed-in role (teacher/admin reach it from their legacy headers too), so not student-only. */}
+        <Route
+          path="/profile"
+          element={
+            <RequireAuth>
+              <ProfilePage />
+            </RequireAuth>
+          }
+        />
 
         <Route
           path="/student"
@@ -70,10 +95,22 @@ export function AppRouter() {
           <Route path="classrooms" element={<StudentClassroomListPage />} />
           <Route path="classrooms/:id" element={<StudentClassroomDetailPage />} />
           <Route path="history" element={<StudentHistoryPage />} />
+          <Route path="practice" element={<PracticeSetupPage />} />
+          <Route path="practice/review/:id" element={<PracticeReviewPage />} />
+          {/* The old server-rendered route pointed at a template that no longer exists. */}
+          <Route path="practice-history" element={<Navigate to="/student/history?tab=practice" replace />} />
         </Route>
 
         {/* Full-screen quiz-taking flow - no dashboard chrome, matching the
             legacy quiz-play page's dedicated layout. */}
+        <Route
+          path="/student/practice/play"
+          element={
+            <StudentOnly>
+              <PracticePlayPage />
+            </StudentOnly>
+          }
+        />
         <Route
           path="/student/quiz/play/:assigningId"
           element={

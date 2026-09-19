@@ -2,6 +2,7 @@ import { useEffect, useMemo } from "react";
 import { useNavigate, useSearchParams, Link } from "react-router";
 import { useAuth } from "@/auth/AuthProvider";
 import { roleHomePath, type StoredUser } from "@/auth/authStorage";
+import { goToSafePath } from "@/utils/routes";
 import type { Role } from "@/types/api";
 import { Spinner } from "@/components/ui/Spinner";
 import "./AuthPages.css";
@@ -63,7 +64,7 @@ export function OAuth2RedirectPage() {
   useEffect(() => {
     if (callback.kind !== "ok") return;
     login(callback.token, callback.user);
-    navigate(roleHomePath(callback.user.role), { replace: true });
+    goToSafePath(null, roleHomePath(callback.user.role), navigate);
   }, [callback, login, navigate]);
 
   if (callback.kind === "error") {

@@ -18,6 +18,8 @@ interface RequestOptions {
   signal?: AbortSignal;
   /** multipart/form-data upload; when set, `body` is ignored and no JSON Content-Type is sent. */
   formData?: FormData;
+  /** Lets a request outlive the page (e.g. proctoring on tab close). Still authenticated via the Authorization header. */
+  keepalive?: boolean;
 }
 
 let onUnauthorized: (() => void) | null = null;
@@ -44,7 +46,9 @@ async function parseErrorBody(response: Response): Promise<Partial<ApiError>> {
     const data = (await response.json()) as Record<string, unknown>;
     return {
       code: typeof data.code === "number" ? data.code : undefined,
-      message: typeof data.message === "string" ? data.message : undefined,
+      // Most endpoints use {message}; the avatar upload endpoint answers 400 with {error}.
+      message:
+        typeof data.message === "string" ? data.message : typeof data.error === "string" ? data.error : undefined,
       errors: (data.errors as Record<string, string> | undefined) ?? undefined,
     };
   } catch {
@@ -74,6 +78,7 @@ async function request<T>(method: Method, path: string, options: RequestOptions 
       headers,
       body,
       signal: options.signal,
+      keepalive: options.keepalive,
       credentials: "same-origin",
     });
   } catch (cause) {

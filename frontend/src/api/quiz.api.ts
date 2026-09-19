@@ -29,6 +29,6 @@ export const quizApi = {
   getResult: (attemptId: number, signal?: AbortSignal) =>
     httpClient.get<QuizResultResponse>("/student/quiz/result", { query: { attemptId }, signal }),
 
-  logViolation: (payload: ViolationRequest) =>
-    httpClient.post<ViolationResponse>("/student/quiz/log-violation", { body: payload }),
+  logViolation: (payload: ViolationRequest, options?: { keepalive?: boolean }) =>
+    httpClient.post<ViolationResponse>("/student/quiz/log-violation", { body: payload, keepalive: options?.keepalive }),
 };

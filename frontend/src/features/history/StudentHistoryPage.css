@@ -34,3 +34,27 @@
   color: var(--color-primary);
   flex-shrink: 0;
 }
+
+.qh-history-tabs {
+  display: flex;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.qh-history-tab {
+  min-height: 44px;
+  padding: 0 var(--space-4);
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--color-text-muted);
+  cursor: pointer;
+}
+
+.qh-history-tab--active {
+  color: var(--color-primary);
+  border-bottom-color: var(--color-primary);
+}

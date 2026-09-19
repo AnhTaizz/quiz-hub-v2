@@ -19,7 +19,13 @@ body {
 }
 
 a {
-  color: var(--color-primary);
+  color: var(--color-accent);
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-heading);
 }
 
 /* Visible focus state for every interactive element - audit finding F-09/a11y. */

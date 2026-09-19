@@ -1,0 +1,119 @@
+.qh-bell {
+  position: relative;
+}
+
+.qh-bell__button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text);
+  cursor: pointer;
+}
+
+.qh-bell__badge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 5px;
+  border-radius: var(--radius-pill);
+  background: var(--color-danger);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.qh-bell__panel {
+  position: absolute;
+  right: 0;
+  top: calc(100% + var(--space-2));
+  width: min(360px, calc(100vw - 32px));
+  max-height: 70vh;
+  overflow-y: auto;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  z-index: 30;
+}
+
+.qh-bell__panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.qh-bell__title {
+  font-size: 15px;
+  margin: 0;
+}
+
+.qh-bell__mark-all {
+  background: none;
+  border: none;
+  color: var(--color-primary);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: var(--space-2);
+  min-height: 44px;
+}
+
+.qh-bell__mark-all:disabled {
+  color: var(--color-text-muted);
+  cursor: not-allowed;
+}
+
+.qh-bell__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.qh-bell__item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  border-bottom: 1px solid var(--color-border);
+  padding: var(--space-3) var(--space-4);
+  min-height: 44px;
+  cursor: pointer;
+  color: var(--color-text);
+}
+
+.qh-bell__item--unread {
+  background: rgba(67, 56, 202, 0.06);
+}
+
+.qh-bell__item-title {
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.qh-bell__item-message {
+  font-size: 13px;
+  color: var(--color-text-muted);
+  overflow-wrap: anywhere;
+}
+
+.qh-bell__item-time {
+  font-size: 11px;
+  color: var(--color-text-muted);
+}

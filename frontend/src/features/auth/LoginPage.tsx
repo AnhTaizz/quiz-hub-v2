@@ -5,7 +5,7 @@ import { authApi } from "@/api/auth.api";
 import { isApiError } from "@/api/httpClient";
 import { useAuth } from "@/auth/AuthProvider";
 import { roleHomePath } from "@/auth/authStorage";
-import { resolveSafeReturnPath } from "@/utils/safePath";
+import { goToSafePath } from "@/utils/routes";
 import { Input } from "@/components/ui/Input";
 import { PasswordInput } from "@/components/ui/PasswordInput";
 import { Button } from "@/components/ui/Button";
@@ -33,8 +33,7 @@ export function LoginPage() {
         role: auth.role,
         avatarUrl: auth.avatarUrl,
       });
-      const destination = resolveSafeReturnPath(searchParams.get("returnUrl"), roleHomePath(auth.role));
-      navigate(destination, { replace: true });
+      goToSafePath(searchParams.get("returnUrl"), roleHomePath(auth.role), navigate);
     },
     onError: (error) => {
       setFormError(isApiError(error) ? error.message : "Login failed. Please try again.");

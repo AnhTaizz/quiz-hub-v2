@@ -4,8 +4,6 @@ import type {
   Page,
   QuizHistoryItem,
   StudentDashboardResponse,
-  UpdateProfileRequest,
-  UserProfileResponse,
 } from "@/types/api";
 
 export const studentApi = {
@@ -20,18 +18,4 @@ export const studentApi = {
       query: { page, size },
       signal,
     }),
-};
-
-export const userApi = {
-  getMyProfile: (signal?: AbortSignal) =>
-    httpClient.get<UserProfileResponse>("/users/my-profile", { signal }),
-
-  updateMyProfile: (payload: UpdateProfileRequest) =>
-    httpClient.put<UserProfileResponse>("/users/my-profile", { body: payload }),
-
-  uploadAvatar: (file: File) => {
-    const formData = new FormData();
-    formData.append("file", file);
-    return httpClient.post<{ url: string }>("/users/upload-avatar", { formData });
-  },
 };

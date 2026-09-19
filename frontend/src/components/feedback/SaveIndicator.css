@@ -1,0 +1,24 @@
+.qh-save-indicator {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.qh-save-indicator--saving {
+  color: var(--color-text-muted);
+}
+.qh-save-indicator--saved {
+  color: var(--color-success);
+}
+.qh-save-indicator--error {
+  color: var(--color-danger);
+}
+
+.qh-save-indicator__retry {
+  background: none;
+  border: none;
+  color: var(--color-danger);
+  text-decoration: underline;
+  cursor: pointer;
+  font-weight: 700;
+  padding: 0;
+}

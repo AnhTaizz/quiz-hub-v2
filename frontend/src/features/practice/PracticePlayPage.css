@@ -1,0 +1,115 @@
+.qh-practice-play {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  max-width: 760px;
+  margin: 0 auto;
+  padding: var(--space-4);
+}
+
+.qh-practice-play__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  position: sticky;
+  top: 0;
+  background: var(--color-background);
+  padding: var(--space-2) 0;
+  z-index: 5;
+}
+
+.qh-practice-play__heading {
+  min-width: 0;
+}
+
+.qh-practice-play__title {
+  font-size: 18px;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.qh-practice-play__progress {
+  margin: 2px 0 0;
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+.qh-practice-play__nav {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+  gap: var(--space-2);
+}
+
+.qh-practice-play__dot {
+  height: 40px;
+  min-width: 40px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.qh-practice-play__dot--answered {
+  background: rgba(22, 163, 74, 0.12);
+  border-color: var(--color-success);
+}
+
+.qh-practice-play__dot--flagged {
+  outline: 2px solid var(--color-warning);
+  outline-offset: 1px;
+}
+
+.qh-practice-play__dot--active {
+  background: var(--color-primary);
+  color: #fff;
+  border-color: var(--color-primary);
+}
+
+.qh-practice-play__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.qh-practice-play__flag {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 13px;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  min-height: 44px;
+}
+
+.qh-practice-play__footer {
+  position: sticky;
+  bottom: 0;
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+  background: var(--color-background);
+  padding: var(--space-3) 0;
+}
+
+@media (max-width: 430px) {
+  .qh-practice-play {
+    padding: var(--space-3);
+  }
+
+  .qh-practice-play__footer .qh-button {
+    flex: 1;
+  }
+}
+
+.qh-practice-play__alert {
+  background: rgba(220, 38, 38, 0.1);
+  color: var(--color-danger);
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  margin: 0;
+}

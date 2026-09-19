@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { act, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -56,6 +56,7 @@ function renderQuiz() {
           <Routes>
             <Route path="/student/quiz/play/:assigningId" element={<QuizPlayByAssigningPage />} />
             <Route path="/student/quiz/result/:attemptId" element={<p>Result page</p>} />
+            <Route path="/student" element={<p>Student home</p>} />
           </Routes>
         </MemoryRouter>
       </ToastProvider>
@@ -67,6 +68,7 @@ beforeEach(() => {
   vi.clearAllMocks();
   localStorage.clear();
   mocked.saveAnswer.mockResolvedValue(undefined);
+  mocked.logViolation.mockResolvedValue({ violationCount: 1, autoSubmitted: false, attemptId: 99 });
 });
 
 describe("QuizPlayPage", () => {
@@ -187,5 +189,89 @@ describe("QuizPlayPage", () => {
       expect.objectContaining({ answerIds: [11], revision: 3 }),
     );
     expect(await screen.findByLabelText("4")).toBeChecked();
+  });
+
+  describe("proctoring integration", () => {
+    it("on an auto-submit answer: no second submit, recovery data cleared, routed to the result", async () => {
+      mocked.start.mockResolvedValue(quiz());
+      mocked.logViolation.mockResolvedValue({ violationCount: 3, autoSubmitted: true, attemptId: 99 });
+      const user = userEvent.setup();
+      renderQuiz();
+      await user.click(await screen.findByLabelText("4"));
+      await waitFor(() => expect(localStorage.getItem("quizhub:attempt:99")).not.toBeNull());
+
+      act(() => {
+        window.dispatchEvent(new Event("blur"));
+      });
+      await waitFor(() =>
+        expect(mocked.logViolation).toHaveBeenCalledWith({ attemptId: 99, violationCode: "WINDOW_BLUR" }),
+      );
+
+      expect(await screen.findByText("Result page", {}, { timeout: 4000 })).toBeInTheDocument();
+      expect(mocked.submit).not.toHaveBeenCalled();
+      expect(localStorage.getItem("quizhub:attempt:99")).toBeNull();
+    });
+
+    it("logs nothing while the submit is in flight or after it succeeded", async () => {
+      mocked.start.mockResolvedValue(quiz());
+      mocked.submit.mockImplementation(
+        () => new Promise((resolve) => setTimeout(() => resolve({ id: 99, score: 10 }), 200)),
+      );
+      const user = userEvent.setup();
+      renderQuiz();
+      await user.click(await screen.findByRole("button", { name: "Submit quiz" }));
+      await user.click(await screen.findByRole("button", { name: "Submit" }));
+
+      act(() => {
+        window.dispatchEvent(new Event("blur"));
+        window.dispatchEvent(new Event("beforeunload"));
+      });
+      expect(await screen.findByText("Result page")).toBeInTheDocument();
+      act(() => {
+        window.dispatchEvent(new Event("blur"));
+      });
+      expect(mocked.logViolation).not.toHaveBeenCalled();
+    });
+
+    it("keeps monitoring after a FAILED submit (the attempt is still open)", async () => {
+      mocked.start.mockResolvedValue(quiz());
+      mocked.submit.mockRejectedValueOnce({ status: 500, message: "boom" });
+      const user = userEvent.setup();
+      renderQuiz();
+      await user.click(await screen.findByRole("button", { name: "Submit quiz" }));
+      await user.click(await screen.findByRole("button", { name: "Submit" }));
+      await waitFor(() => expect(mocked.submit).toHaveBeenCalledTimes(1));
+      await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
+
+      act(() => {
+        window.dispatchEvent(new Event("blur"));
+      });
+      await waitFor(() => expect(mocked.logViolation).toHaveBeenCalledTimes(1));
+    });
+
+    it("manual exit is confirmed first, recorded as MANUAL_EXIT, then leaves the exam", async () => {
+      mocked.start.mockResolvedValue(quiz());
+      const user = userEvent.setup();
+      renderQuiz();
+      await user.click(await screen.findByRole("button", { name: "Exit exam" }));
+      expect(await screen.findByRole("dialog", { name: "Leave the exam?" })).toBeInTheDocument();
+      expect(mocked.logViolation).not.toHaveBeenCalled(); // opening the dialog logs nothing
+
+      await user.click(screen.getByRole("button", { name: "Leave now" }));
+      await waitFor(() =>
+        expect(mocked.logViolation).toHaveBeenCalledWith({ attemptId: 99, violationCode: "MANUAL_EXIT" }),
+      );
+      expect(await screen.findByText("Student home")).toBeInTheDocument();
+      expect(mocked.submit).not.toHaveBeenCalled();
+    });
+
+    it("opening the submit dialog is not a violation", async () => {
+      mocked.start.mockResolvedValue(quiz());
+      const user = userEvent.setup();
+      renderQuiz();
+      await user.click(await screen.findByRole("button", { name: "Submit quiz" }));
+      await screen.findByRole("dialog");
+      expect(mocked.logViolation).not.toHaveBeenCalled();
+    });
   });
 });

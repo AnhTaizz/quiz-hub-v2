@@ -43,6 +43,12 @@ export function setSession(token: string, user: StoredUser): void {
   document.cookie = `jwt=${token}; path=/; max-age=${60 * 60 * 24 * 7}; SameSite=Lax`;
 }
 
+/** Rewrites only the stored user (token untouched), in whichever storage currently holds the session. */
+export function setStoredUser(user: StoredUser): void {
+  const storage = localStorage.getItem(TOKEN_KEY) !== null ? localStorage : sessionStorage;
+  storage.setItem(USER_KEY, JSON.stringify(user));
+}
+
 export function clearSession(): void {
   localStorage.removeItem(TOKEN_KEY);
   localStorage.removeItem(USER_KEY);
