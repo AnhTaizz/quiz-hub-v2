@@ -73,7 +73,8 @@ class SpaRoutingIntegrationTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = { "/", "/login", "/register", "/forgot-password", "/oauth2-redirect.html" })
+    @ValueSource(strings = { "/", "/login", "/register", "/forgot-password", "/oauth2-redirect.html",
+            "/oauth2-choose-role.html" })
     void publicReactRoutesForwardToSpaShellAnonymously(String path) throws Exception {
         mockMvc.perform(get(path)).andExpect(status().isOk()).andExpect(forwardedUrl(SPA_INDEX));
     }
@@ -81,7 +82,9 @@ class SpaRoutingIntegrationTest {
     @ParameterizedTest
     @ValueSource(strings = {
             "/student", "/student/quizzes", "/student/classrooms", "/student/classrooms/42",
-            "/student/history", "/student/quiz/play/5", "/student/quiz/resume/9", "/student/quiz/result/9" })
+            "/student/history", "/student/practice", "/student/practice/play", "/student/practice/review/12",
+            "/student/practice-history", "/student/quiz/play/5", "/student/quiz/resume/9",
+            "/student/quiz/result/9" })
     void studentReactRoutesForwardToSpaShellForStudents(String path) throws Exception {
         mockMvc.perform(get(path).header("Authorization", "Bearer " + studentToken))
                 .andExpect(status().isOk())
@@ -121,13 +124,57 @@ class SpaRoutingIntegrationTest {
         assertThat(result.getModelAndView().getViewName()).isEqualTo("admin/admin-home");
     }
 
+    @ParameterizedTest
+    @ValueSource(strings = { "student", "teacher", "admin" })
+    void profileIsReactOwnedForEverySignedInRole(String role) throws Exception {
+        String token = switch (role) {
+            case "teacher" -> teacherToken;
+            case "admin" -> adminToken;
+            default -> studentToken;
+        };
+        mockMvc.perform(get("/profile").header("Authorization", "Bearer " + token))
+                .andExpect(status().isOk())
+                .andExpect(forwardedUrl(SPA_INDEX));
+    }
+
     @Test
-    void legacyProfilePageIsNotCapturedBySpa() throws Exception {
-        MvcResult result = mockMvc.perform(get("/profile").header("Authorization", "Bearer " + studentToken))
-                .andReturn();
+    void profileStillRequiresAuthenticationAndPreservesReturnUrl() throws Exception {
+        mockMvc.perform(get("/profile"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/login?returnUrl=%2Fprofile"));
+    }
+
+    @Test
+    void practiceRoutesAreStudentOnlyAndNotServedToTeachers() throws Exception {
+        for (String path : new String[] { "/student/practice", "/student/practice/play", "/student/practice/review/3" }) {
+            MvcResult result = mockMvc.perform(get(path).header("Authorization", "Bearer " + teacherToken)).andReturn();
+            assertThat(result.getResponse().getForwardedUrl()).as(path).isNull();
+        }
+    }
+
+    @Test
+    void personalQuizPracticeStaysOnThymeleaf() throws Exception {
+        MvcResult result = mockMvc.perform(get("/student/practice/personal-play")
+                .header("Authorization", "Bearer " + studentToken)).andReturn();
         assertThat(result.getResponse().getForwardedUrl()).isNull();
         assertThat(result.getModelAndView()).isNotNull();
-        assertThat(result.getModelAndView().getViewName()).isEqualTo("profile");
+        assertThat(result.getModelAndView().getViewName()).isEqualTo("student/practice-play");
+    }
+
+    @Test
+    void nonNumericReviewIdsAreNotForwardedToSpa() throws Exception {
+        MvcResult result = mockMvc.perform(get("/student/practice/review/abc")
+                .header("Authorization", "Bearer " + studentToken)).andReturn();
+        assertThat(result.getResponse().getForwardedUrl()).isNull();
+    }
+
+    @Test
+    void studentCategoriesStayOnThymeleaf() throws Exception {
+        MvcResult result = mockMvc.perform(get("/student/categories")
+                .header("Authorization", "Bearer " + studentToken)).andReturn();
+        assertThat(result.getResponse().getForwardedUrl()).isNull();
+        assertThat(result.getModelAndView()).isNotNull();
+        assertThat(result.getModelAndView().getViewName()).startsWith("student/");
     }
 
     @Test

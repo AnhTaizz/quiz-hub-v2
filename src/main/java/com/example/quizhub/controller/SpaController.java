@@ -23,8 +23,17 @@ public class SpaController {
 
     private static final String SPA_INDEX = "forward:/app/index.html";
 
-    @GetMapping({ "/", "/login", "/register", "/forgot-password", "/oauth2-redirect.html" })
+    @GetMapping({ "/", "/login", "/register", "/forgot-password", "/oauth2-redirect.html", "/oauth2-choose-role.html" })
     public String publicRoutes() {
+        return SPA_INDEX;
+    }
+
+    /**
+     * Any signed-in role (teacher and admin headers link here too). Not listed as public: SecurityConfig's
+     * anyRequest().authenticated() sends anonymous visitors to /login?returnUrl=%2Fprofile.
+     */
+    @GetMapping("/profile")
+    public String profile() {
         return SPA_INDEX;
     }
 
@@ -34,6 +43,10 @@ public class SpaController {
             "/student/classrooms",
             "/student/classrooms/{id:\\d+}",
             "/student/history",
+            "/student/practice",
+            "/student/practice/play",
+            "/student/practice/review/{id:\\d+}",
+            "/student/practice-history",
             "/student/quiz/play/{id:\\d+}",
             "/student/quiz/resume/{id:\\d+}",
             "/student/quiz/result/{id:\\d+}"

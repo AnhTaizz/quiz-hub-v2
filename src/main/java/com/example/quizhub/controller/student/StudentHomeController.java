@@ -27,11 +27,6 @@ public class StudentHomeController {
 
     private final StudentHomeService studentHomeService;
 
-    @GetMapping("/practice-history")
-    public String practiceHistory(Model model) {
-        return "student/student-practice-history";
-    }
-
     @GetMapping("/quiz/history/{assigningId}")
     public String quizHistory(@PathVariable Long assigningId, Model model) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
