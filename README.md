@@ -33,8 +33,8 @@ Hệ thống được thiết kế với giao diện cao cấp, hiện đại, m
 - **Backend**: Java 21, Spring Boot 3.x, Spring Security (OAuth2 Login Google, JWT)
 - **Database**: PostgreSQL
 - **Frontend (đang di trú)**:
-  - **React 19 + TypeScript + Vite** (thư mục [`frontend/`](frontend/)) — đã thay thế giao diện Thymeleaf cho **trang đăng nhập/đăng ký/quên mật khẩu và khu vực Học sinh** (dashboard, danh sách bài thi, lớp học, làm bài, kết quả, lịch sử).
-  - **Teacher / Admin vẫn là giao diện cũ** (Thymeleaf + Vanilla JS) trong Sprint 1; cùng một số trang Học sinh chưa di trú (luyện tập, thư viện câu hỏi, tạo đề cá nhân, hồ sơ). Chi tiết: [`docs/frontend/REACT_MIGRATION.md`](docs/frontend/REACT_MIGRATION.md).
+  - **React 19 + TypeScript + Vite** (thư mục [`frontend/`](frontend/)) — đã thay thế giao diện Thymeleaf cho **trang đăng nhập/đăng ký/quên mật khẩu, chọn vai trò lần đầu (OAuth), hồ sơ cá nhân, thông báo và khu vực Học sinh** (dashboard, danh sách bài thi, lớp học, làm bài có giám sát, kết quả, lịch sử bài thi + luyện tập, luyện tập).
+  - **Teacher / Admin vẫn là giao diện cũ** (Thymeleaf + Vanilla JS); cùng một số trang Học sinh chưa di trú (thư viện câu hỏi/danh mục, tạo đề cá nhân, luyện tập từ đề cá nhân). Chi tiết: [`docs/frontend/REACT_MIGRATION.md`](docs/frontend/REACT_MIGRATION.md).
 - **AI Integration**: Google Gemini AI API
 - **Containerization**: Docker, Docker Compose
 - **CI/CD**: GitHub Actions, GitHub Container Registry (GHCR)

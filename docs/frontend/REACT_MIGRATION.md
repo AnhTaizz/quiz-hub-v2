@@ -1,4 +1,4 @@
-# React frontend migration — Sprint 1
+# React frontend migration — Sprint 1 + Sprint 2A
 
 Status: **Sprint 1 complete for the auth pages and the student vertical slice. The migration is NOT finished.**
 Teacher and Admin (and several student pages) remain on the legacy Thymeleaf frontend.
@@ -60,11 +60,11 @@ React owns exactly these paths (explicit list in `SpaController`, **not** a `/st
 
 | Path | Owner | Notes |
 |---|---|---|
-| `/`, `/login`, `/register`, `/forgot-password`, `/oauth2-redirect.html` | React | public |
-| `/student`, `/student/quizzes`, `/student/classrooms`, `/student/classrooms/{n}`, `/student/history` | React | `@PreAuthorize(STUDENT)` + existing `/student/**` filter rule |
+| `/`, `/login`, `/register`, `/forgot-password`, `/oauth2-redirect.html`, `/oauth2-choose-role.html` | React | public |
+| `/profile` | React | any signed-in role (not in the student list; anonymous → `/login?returnUrl=%2Fprofile`) |
+| `/student`, `/student/quizzes`, `/student/classrooms`, `/student/classrooms/{n}`, `/student/history`, `/student/practice`, `/student/practice/play`, `/student/practice/review/{n}`, `/student/practice-history` (→ history tab) | React | `@PreAuthorize(STUDENT)` + existing `/student/**` filter rule |
 | `/student/quiz/play/{n}`, `/student/quiz/resume/{n}`, `/student/quiz/result/{n}` | React | numeric ids only |
-| `/student/categories`, `/student/practice/**`, `/student/questions`, `/student/quiz/create\|quick-create\|ai-create\|{id}/edit`, `/student/quiz/play?…`, `/student/quiz/result?…`, `/student/quiz/history/{n}`, `/student/practice-history` | Thymeleaf | not migrated |
-| `/profile`, `/oauth2-choose-role.html` | Thymeleaf / static | not migrated |
+| `/student/categories`, `/student/practice/personal-play`, `/student/questions`, `/student/quiz/create\|quick-create\|ai-create\|{id}/edit`, `/student/quiz/play?…`, `/student/quiz/result?…`, `/student/quiz/history/{n}` | Thymeleaf | not migrated |
 | `/teacher/**`, `/admin/**` | Thymeleaf | untouched |
 | `/api/**`, `/actuator/**`, `/oauth2/**`, `/login/oauth2/**`, `/avatars/**`, `/css|js|images/**` | never forwarded | |
 
@@ -116,6 +116,21 @@ routes); their templates were left on disk. `QuizHistoryPaginationTest.testPageS
 (now also checks React vs legacy routing, built asset reachable, API not captured), new `E2E` (Playwright against the real
 container). `Publish Image` requires all four.
 
+## 10a. Sprint 2A summary
+
+Migrated: student practice (setup, player, review, history tab), profile, notifications (bell), OAuth first-login role
+choice, quiz proctoring parity. Not started (Sprint 2B / later): categories and question bank, Excel import, personal quiz
+CRUD / quick-create / AI create, Teacher UI, Admin UI, marketing landing, "view all questions" quiz mode.
+
+- **Security fix first:** notification ownership (IDOR on mark-as-read) — see `frontend/docs/API_MAP.md`.
+- **Routing:** still an explicit allow-list (no `/student/**` wildcard); `SpaRoutingIntegrationTest` covers the new routes and that
+  `/student/practice/personal-play` and `/student/categories` stay Thymeleaf.
+- **`goToSafePath()`** picks React Router for React-owned paths and a full page load for server-rendered ones.
+- **Shared UI fix:** `Modal` re-focused its first control on every keystroke because its focus effect depended on `onClose`;
+  it now keeps the latest `onClose` in a ref (regression-tested).
+- **Look and feel:** design tokens and the app shell were restyled to match the legacy Thymeleaf UI (top header, green/blue palette, Inter/Nunito Sans); details and the open Vietnamese-copy gap are in `frontend/docs/MIGRATION_PARITY.md`.
+- Full parity table and deviations: `frontend/docs/MIGRATION_PARITY.md`.
+
 ## 11. Findings and risks discovered
 
 - **Resolved after Sprint 1:** `GlobalExceptionHandle`'s catch-all `RuntimeException` handler used to swallow Spring Security's `AccessDeniedException`, so a wrong-role call to any `@PreAuthorize` REST endpoint returned 500 instead of 403 (still denied, no data). A dedicated `AccessDeniedException` handler with a new `FORBIDDEN` (1045) code now returns 403; unauthenticated stays 401.
@@ -128,13 +143,14 @@ container). `Publish Image` requires all four.
 
 ## 12. Bundle sizes (production build)
 
-Measured from `vite build` (Vite 8):
+Measured from `vite build` (Vite 8) after Sprint 2A (Sprint 1 entry was 245.80 kB raw / 76.13 kB gzip):
 
 | Asset | Raw | gzip |
 |---|---|---|
-| Entry JS (React, Router, TanStack Query, shell) | 245.80 kB | 76.13 kB |
+| Entry JS (React, Router, TanStack Query, shell, notification bell) | 262.37 kB | 80.90 kB |
 | Entry CSS (tokens, global, shared primitives) | 5.12 kB | 1.54 kB |
-| Largest lazy route chunk — quiz player JS / CSS | 11.44 kB / 4.29 kB | 4.00 kB / 1.15 kB |
+| Largest lazy route chunk — quiz player JS (with proctoring) | 13.94 kB | 4.78 kB |
+| Practice player / setup / review / profile chunks | 10.53 / 7.10 / 3.47 / 7.58 kB | 3.70 / 2.37 / 1.28 / 2.80 kB |
 | Other route chunks (auth, dashboard, list, classrooms, history, result) | 0.3–2.4 kB each | < 1.1 kB each |
 
 Auth, dashboard, quiz list, classrooms, history, quiz player and result are separate lazily loaded chunks.
@@ -142,7 +158,7 @@ There is no code-splitting of vendor libraries beyond that; not needed at this s
 
 ## 13. Remaining work (Sprint 2+)
 
-Teacher and Admin UIs; student practice/categories/personal-quiz authoring/AI create; profile page; OAuth "choose role";
-notifications; proctoring (`/log-violation`) in the React quiz player; "view all questions" mode; marketing landing
-content; delete the orphaned Thymeleaf templates/JS/CSS once nothing links to them; `AccessDeniedException` → 403;
+Teacher and Admin UIs; categories / question bank / Excel import; personal-quiz authoring/AI create; "view all questions"
+mode; marketing landing content; backend follow-ups (practice history pagination, 403 vs 401 on foreign practice detail,
+`oauth2-register` proof-of-identity, avatar extension allow-list); delete the orphaned Thymeleaf templates/JS/CSS once nothing links to them; `AccessDeniedException` → 403;
 consider `check-email` live validation.

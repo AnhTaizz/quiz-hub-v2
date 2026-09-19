@@ -1,4 +1,4 @@
-# API migration map (React student slice)
+# API migration map (React student slice, Sprint 1 + 2A)
 
 Every entry below was read from the actual Spring controllers/DTOs (not inferred). "Legacy caller" is the
 Thymeleaf page/JS that used the data before the React migration. Types live in `src/types/api.ts`.
@@ -22,9 +22,10 @@ Thymeleaf page/JS that used the data before the React migration. Types live in `
 | Live email check | `GET /api/auth/check-email?email=` | query | `boolean` | public | `js/register.js` |
 | Forgot password | `POST /api/auth/forgot-password?email=` | **query param**, no body | `string` | public | `js/forgot-password.js` |
 | Reset password | `POST /api/auth/reset-password` | `{email,otp,newPassword,confirmPassword}` | `string` | public | `js/forgot-password.js` |
-| OAuth2 complete profile | `POST /api/auth/oauth2-register` | `{email,fullName,avatarUrl,role}` | `AuthResponse` | public | `oauth2-choose-role.html` (**still legacy**) |
-| Profile | `GET/PUT /api/users/my-profile` | `{fullName,phone,avatarUrl}` | `UserProfileResponse` | any user | `js/profile.js` (page still legacy) |
-| Avatar upload | `POST /api/users/upload-avatar` (multipart `file`) | ≤5 MB image | `{url: "/avatars/<uuid>.<ext>"}` | any user | `js/profile.js` |
+| OAuth2 complete profile | `POST /api/auth/oauth2-register` | `{email,fullName,avatarUrl,role}` | `AuthResponse` | public | `oauth2-choose-role.html` → React `OAuth2ChooseRolePage` (Sprint 2A) |
+| Profile | `GET/PUT /api/users/my-profile` | `{fullName,phone,avatarUrl}` | `UserProfileResponse` | any user | `js/profile.js` → React `ProfilePage` (Sprint 2A) |
+| Avatar upload | `POST /api/users/upload-avatar` (multipart `file`) | ≤5 MB image | `{url: "/avatars/<uuid>.<ext>"}`; failures are `400 {error}` | any user | `js/profile.js` |
+| Change password | `POST /api/users/change-password` | `{oldPassword,newPassword,confirmPassword}` | text | any user | `js/profile.js` |
 
 OAuth2 success redirect (unchanged backend): `/oauth2-redirect.html?token=&id=&email=&fullName=<base64 utf-8>&role=&avatarUrl=`
 or `?error=<message>` (locked account). Handled by `OAuth2RedirectPage`.
@@ -59,8 +60,54 @@ change):
 Enums: `Role` ADMIN/TEACHER/STUDENT · `QuestionType` SINGLE_CHOICE/MULTIPLE_CHOICE/FILL_IN_BLANK · `QuestionLevel`
 EASY/MEDIUM/HARD · `JoinStatus` PENDING/APPROVED/REJECTED/REMOVED.
 
-## Not migrated in Sprint 1 (still Thymeleaf)
+## Practice (Sprint 2A)
 
-Practice mode (`/api/student/practice/*`, no revision field), categories/question bank, personal quiz authoring
-(`/student/quiz/create|quick-create|ai-create|{id}/edit`), per-assignment attempt history
-(`/student/quiz/history/{assigningId}`), notifications (`/api/notifications`), profile page, all teacher/admin pages.
+Practice has **no revision field** and is not the quiz-attempt contract: saves are best-effort upserts, the backend
+rejects a save after submit (`PRACTICE_ALREADY_SUBMITTED`, code 1033), and the score is computed only by the backend.
+
+| React feature | Method + path | Request | Response | Notes |
+|---|---|---|---|---|
+| Category tree | `GET /api/categories` (via `category.api.ts`) | — | `CategoryNode[]` with question counts | Only PUBLIC questions count. |
+| Question count | `GET /api/student/practice/count?categoryId=` | query | bare number | Category + descendants, PUBLIC only. |
+| Start / resume sequential | `POST /api/student/practice/start` | `{categoryId,limit,offset,isRandom,forceNew,practiceId}` | `{questions,practiceId,categoryId,categoryName,quizTitle}` | `limit` must be ≥ 1 (0 divides by zero server-side; validated in the UI). Sequential paging is offset/limit based, so only chunk-aligned ranges are offered; custom free ranges are **not** ported. |
+| Save answer | `POST /api/student/practice/save-answer?practiceId=` | `{questionId, selectedAnswerId \| selectedAnswerIds \| selectedText}` | empty | Choice saves immediately, fill-in debounced 500 ms. |
+| Submit | `POST /api/student/practice/submit` | `{categoryId,practiceId,answers[]}` (every question, empty for unanswered) | `PracticeResult` | Client never recomputes the score. |
+| History list | `GET /api/student/practice/history` | — | `PracticeHistoryItem[]` | **Unpaginated** (backend has no paging); shown as a plain list. Not faked as server pagination. |
+| Detail / review / resume random | `GET /api/student/practice/history/detail?id=` | query | `PracticeResult` | For a foreign id the backend answers **401** (`UNAUTHORIZED` code), which the shared `httpClient` treats as session expiry and signs the user out. Documented quirk, backend unchanged. |
+
+The start response includes each answer's `isCorrect` (legacy behaviour). React uses it only for the optional
+display-only "show answer" feedback and never for scoring. Legacy `sessionStorage` hand-off keys (`practice_questions`,
+`practice_id`, `practice_category_id`, `practice_category_name`, `practice_offset`, `practice_settings[_{id}]`,
+`practice_is_shuffled_{id}`, `studentReturnUrl`) are still read/written so the legacy category pages hand off to the
+React player. A stateless personal-quiz practice (no `practice_id`) is handed to the legacy
+`/student/practice/personal-play`.
+
+## Notifications (Sprint 2A)
+
+| React feature | Method + path | Response | Notes |
+|---|---|---|---|
+| List | `GET /api/notifications` | `NotificationResponseDTO[] {id,title,message,type,read,link,createdAt}` | Own notifications only. `read` is the wire name (legacy JS reads `read`). |
+| Unread count | `GET /api/notifications/unread-count` | number | Polled every 60 s while the shell is mounted. |
+| Mark one read | `PUT /api/notifications/{id}/read` | empty | **Ownership enforced** (see below). |
+| Mark all read | `PUT /api/notifications/read-all` | empty | Scoped to the caller. |
+
+**Fixed in this sprint (RED test first):** `markAsRead(id)` used to load the notification by id only, so any signed-in
+user could mark another user's notification read (IDOR). It now uses `findByIdAndUserId`; a foreign **or** missing id both
+answer `404 NOTIFICATION_NOT_FOUND` (1046) so the API does not reveal which ids exist. The controller also returns a DTO
+instead of the JPA entity. Covered by `NotificationOwnershipIntegrationTest` (8 tests).
+
+Notification `link` values are untrusted input: the React bell only navigates to an internal path that passes the same
+safe-path helper used for `returnUrl` (rejects `https://…`, `//evil`, `javascript:`, `data:`, backslash tricks).
+
+## Proctoring (Sprint 2A)
+
+`POST /api/student/quiz/log-violation` `{attemptId, violationType}` (unchanged) → `{violationCount, maxViolations?, autoSubmitted, ...}`.
+Codes: `TAB_SWITCH`, `WINDOW_BLUR`, `FULLSCREEN_EXIT`, `TAB_CLOSE`, `MANUAL_EXIT`. The server counts every code, auto-submits at
+3 and is idempotent afterwards. `TAB_CLOSE` is sent with `fetch(..., {keepalive:true})` through `httpClient` (it needs the
+`Authorization` header, which `sendBeacon` cannot set).
+
+## Still Thymeleaf (not migrated)
+
+Categories / question bank, Excel import, personal quiz authoring (`/student/quiz/create|quick-create|ai-create|{id}/edit`),
+per-assignment attempt history (`/student/quiz/history/{assigningId}`), the stateless personal-quiz practice player,
+all teacher and admin pages.
