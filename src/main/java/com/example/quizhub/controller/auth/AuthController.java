@@ -2,7 +2,10 @@ package com.example.quizhub.controller.auth;
 
 import java.security.Principal;
 
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,12 +15,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.quizhub.dto.auth.response.AuthResponse;
+import com.example.quizhub.dto.auth.response.OAuth2PendingRegistrationResponse;
+import com.example.quizhub.security.OAuth2RegistrationTicketCookie;
 import com.example.quizhub.service.AuthService;
 import com.example.quizhub.dto.auth.request.AuthRequest;
 import com.example.quizhub.dto.auth.request.OAuth2RegisterRequest;
 import com.example.quizhub.dto.auth.request.RegisterRequest;
 import com.example.quizhub.dto.auth.request.ResetPasswordRequest;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -33,9 +39,27 @@ public class AuthController {
         return ResponseEntity.ok(authService.register(registerRequest));
     }
 
+    /**
+     * Identity comes from OAuth2RegistrationTicketCookie.COOKIE_NAME, set only by
+     * OAuth2AuthenticationSuccessHandler after a real Google login - never from the request body. The ticket
+     * is single-use, so the cookie is cleared here on success regardless (it is already consumed
+     * server-side; clearing it is just hygiene, not part of the security guarantee).
+     */
     @PostMapping("/oauth2-register")
-    public ResponseEntity<AuthResponse> oauth2Register(@Valid @RequestBody OAuth2RegisterRequest oauth2RegisterRequest) {
-        return ResponseEntity.ok(authService.registerOAuth2(oauth2RegisterRequest));
+    public ResponseEntity<AuthResponse> oauth2Register(
+            @Valid @RequestBody OAuth2RegisterRequest oauth2RegisterRequest,
+            @CookieValue(name = OAuth2RegistrationTicketCookie.COOKIE_NAME, required = false) String ticketToken,
+            HttpServletRequest request) {
+        AuthResponse response = authService.registerOAuth2(ticketToken, oauth2RegisterRequest);
+        ResponseCookie cleared = OAuth2RegistrationTicketCookie.clear(request.isSecure());
+        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cleared.toString()).body(response);
+    }
+
+    /** Read-only preview for the choose-role page ("Signed in as X"). Does not consume the ticket. */
+    @GetMapping("/oauth2-register/pending")
+    public ResponseEntity<OAuth2PendingRegistrationResponse> pendingOAuth2Registration(
+            @CookieValue(name = OAuth2RegistrationTicketCookie.COOKIE_NAME, required = false) String ticketToken) {
+        return ResponseEntity.ok(authService.getPendingOAuth2Registration(ticketToken));
     }
 
     @GetMapping("/check-email")

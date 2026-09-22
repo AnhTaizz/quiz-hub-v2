@@ -15,10 +15,10 @@ import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
+import com.example.quizhub.repository.OAuth2RegistrationTicketRepository;
 import com.example.quizhub.repository.UserRepository;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -45,8 +45,8 @@ class OAuth2AuthenticationSuccessHandlerTest {
     void setUp() throws Exception {
         JwtService jwtService = mock(JwtService.class);
         userRepository = mock(UserRepository.class);
-        PasswordEncoder passwordEncoder = mock(PasswordEncoder.class);
-        handler = new OAuth2AuthenticationSuccessHandler(jwtService, userRepository, passwordEncoder);
+        OAuth2RegistrationTicketRepository ticketRepository = mock(OAuth2RegistrationTicketRepository.class);
+        handler = new OAuth2AuthenticationSuccessHandler(jwtService, userRepository, ticketRepository);
 
         request = mock(HttpServletRequest.class);
         response = mock(HttpServletResponse.class);

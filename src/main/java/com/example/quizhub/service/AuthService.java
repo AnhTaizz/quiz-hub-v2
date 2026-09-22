@@ -3,6 +3,7 @@ package com.example.quizhub.service;
 import org.springframework.stereotype.Service;
 
 import com.example.quizhub.dto.auth.response.AuthResponse;
+import com.example.quizhub.dto.auth.response.OAuth2PendingRegistrationResponse;
 import com.example.quizhub.dto.auth.request.AuthRequest;
 import com.example.quizhub.dto.auth.request.OAuth2RegisterRequest;
 import com.example.quizhub.dto.auth.request.RegisterRequest;
@@ -12,7 +13,14 @@ import com.example.quizhub.dto.auth.request.ResetPasswordRequest;
 public interface AuthService {
     AuthResponse register(RegisterRequest request);
 
-    AuthResponse registerOAuth2(OAuth2RegisterRequest request);
+    /**
+     * Completes registration for the identity bound server-side to ticketToken. Only request.getRole() is
+     * ever read from the client; email/fullName/avatarUrl come from the ticket, never the request.
+     */
+    AuthResponse registerOAuth2(String ticketToken, OAuth2RegisterRequest request);
+
+    /** Read-only preview of the pending registration for display; does not consume the ticket. */
+    OAuth2PendingRegistrationResponse getPendingOAuth2Registration(String ticketToken);
 
     AuthResponse login(AuthRequest request);
 
