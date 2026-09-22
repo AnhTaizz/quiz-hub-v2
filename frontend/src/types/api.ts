@@ -47,11 +47,18 @@ export interface ResetPasswordRequest {
   confirmPassword: string;
 }
 
+// Identity (email/fullName/avatarUrl) is resolved server-side from the OAuth2 registration ticket
+// cookie - the client only ever chooses the role. See docs/backend/OAUTH2_REGISTRATION_SECURITY.md.
 export interface OAuth2RegisterRequest {
+  role: string;
+}
+
+// GET /api/auth/oauth2-register/pending - display-only preview of the pending ticket, never used to
+// create the account.
+export interface OAuth2PendingRegistration {
   email: string;
   fullName: string;
-  avatarUrl: string;
-  role: string;
+  avatarUrl: string | null;
 }
 
 // --- User profile ---

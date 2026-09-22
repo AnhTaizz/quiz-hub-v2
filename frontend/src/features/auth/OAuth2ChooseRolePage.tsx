@@ -1,13 +1,13 @@
-import { useMemo, useState, type FormEvent } from "react";
-import { Link, useNavigate, useSearchParams } from "react-router";
-import { useMutation } from "@tanstack/react-query";
+import { useState, type FormEvent } from "react";
+import { Link, useNavigate } from "react-router";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { authApi } from "@/api/auth.api";
 import { isApiError } from "@/api/httpClient";
 import { useAuth } from "@/auth/AuthProvider";
 import { roleHomePath } from "@/auth/authStorage";
 import { Button } from "@/components/ui/Button";
+import { Spinner } from "@/components/ui/Spinner";
 import { goToSafePath } from "@/utils/routes";
-import { parseChooseRoleParams } from "./oauthParams";
 import "./AuthPages.css";
 
 type ChosenRole = "STUDENT" | "TEACHER";
@@ -26,31 +26,30 @@ const ROLE_OPTIONS: { value: ChosenRole; title: string; description: string }[] 
 ];
 
 /**
- * First-login role choice for a new Google user. Replaces static/oauth2-choose-role.html, which built its error
- * toast with innerHTML. Everything from the URL or the server is rendered as text.
+ * First-login role choice for a new Google user. Identity (email/fullName/avatarUrl) is never read from
+ * the URL and never sent by this page - it lives server-side, bound to the oauth2_reg_ticket HttpOnly
+ * cookie the backend set right after a real Google callback (see
+ * docs/backend/OAUTH2_REGISTRATION_SECURITY.md). This page only fetches a display-only preview of it
+ * (GET /auth/oauth2-register/pending) and lets the user pick a role; the POST that actually creates the
+ * account sends nothing but that role.
  *
- * On success the session is written directly through AuthProvider.login() - the same code path as the React
- * OAuth callback - so, unlike the legacy hop through /oauth2-redirect.html?token=..., the token never appears
- * in a URL (history, Referer, logs).
+ * The token never appears in a URL (history, Referer, logs): on success the session is written directly
+ * through AuthProvider.login(), the same code path as the React OAuth callback.
  */
 export function OAuth2ChooseRolePage() {
-  const [searchParams] = useSearchParams();
-  const params = useMemo(() => parseChooseRoleParams(searchParams), [searchParams]);
   const [role, setRole] = useState<ChosenRole | null>(null);
   const [formError, setFormError] = useState<string | null>(null);
   const { login } = useAuth();
   const navigate = useNavigate();
 
+  const pending = useQuery({
+    queryKey: ["auth", "oauth2-pending"],
+    queryFn: ({ signal }) => authApi.getPendingOAuth2Registration(signal),
+    retry: false,
+  });
+
   const mutation = useMutation({
-    mutationFn: (chosen: ChosenRole) => {
-      if (!params) throw new Error("Missing sign-in information");
-      return authApi.oauth2Register({
-        email: params.email,
-        fullName: params.fullName,
-        avatarUrl: params.avatarUrl,
-        role: chosen,
-      });
-    },
+    mutationFn: (chosen: ChosenRole) => authApi.oauth2Register({ role: chosen }),
     onSuccess: (auth) => {
       login(auth.token, {
         id: auth.id,
@@ -73,7 +72,15 @@ export function OAuth2ChooseRolePage() {
     mutation.mutate(role);
   }
 
-  if (!params) {
+  if (pending.isLoading) {
+    return (
+      <div className="qh-auth-page">
+        <Spinner label="Loading your Google sign-in" />
+      </div>
+    );
+  }
+
+  if (pending.isError || !pending.data) {
     return (
       <div className="qh-auth-page">
         <div className="qh-auth-card">
@@ -89,12 +96,14 @@ export function OAuth2ChooseRolePage() {
     );
   }
 
+  const info = pending.data;
+
   return (
     <div className="qh-auth-page">
       <form className="qh-auth-card qh-role-page" onSubmit={handleSubmit} noValidate>
         <h1 className="qh-auth-title">Welcome to QuizHub</h1>
         <p className="qh-role-page__intro">
-          Signed in as <strong>{params.fullName}</strong> ({params.email}). Choose how you will use QuizHub to finish
+          Signed in as <strong>{info.fullName}</strong> ({info.email}). Choose how you will use QuizHub to finish
           creating your account.
         </p>
 

@@ -89,36 +89,17 @@ test("notifications: the assignment notice is unread, opens in an accessible pan
   await expect(page.getByRole("button", { name: /^Notifications$/ })).toBeVisible();
 });
 
-test.describe("OAuth first-login role choice (no Google involved)", () => {
-  function chooseRoleUrl(email: string, name: string) {
-    const encoded = Buffer.from(name, "utf-8").toString("base64");
-    return `/oauth2-choose-role.html?email=${encodeURIComponent(email)}&fullName=${encodeURIComponent(encoded)}`;
-  }
-
-  test("a new Google user picks a role via the public oauth2-register API and lands signed in", async ({ page }) => {
-    const email = `oauth-${randomUUID().slice(0, 10)}@e2e.test`;
-    await page.goto(chooseRoleUrl(email, "Nguyễn Văn Á"));
-    await expect(page.getByRole("heading", { name: "Welcome to QuizHub" })).toBeVisible();
-    await expect(page.getByText("Nguyễn Văn Á")).toBeVisible();
-    await expect(page.getByRole("button", { name: "Continue" })).toBeDisabled();
-
-    await page.getByRole("radio", { name: /i'm a student/i }).check();
-    await page.getByRole("button", { name: "Continue" }).click();
-    await expect(page).toHaveURL(/\/student$/);
-    await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
-  });
-
-  test("missing or malformed parameters show an error instead of a form", async ({ page }) => {
-    await page.goto("/oauth2-choose-role.html?email=not-an-email");
-    await expect(page.getByRole("heading", { name: "Sign-in information missing" })).toBeVisible();
-    await expect(page.getByRole("radio")).toHaveCount(0);
-  });
-
-  test("the URL name is rendered as text, never as markup", async ({ page }) => {
-    const email = `oauth-${randomUUID().slice(0, 10)}@e2e.test`;
-    await page.goto(chooseRoleUrl(email, "<img src=x onerror=window.__pwned=1>"));
-    await expect(page.getByRole("heading", { name: "Welcome to QuizHub" })).toBeVisible();
-    expect(await page.evaluate(() => (window as unknown as { __pwned?: number }).__pwned)).toBeUndefined();
-    await expect(page.locator("img[src='x']")).toHaveCount(0);
-  });
-});
+// OAuth first-login role choice previously had E2E coverage here that drove
+// /oauth2-choose-role.html directly with ?email=&fullName= query parameters and called the (at the time)
+// public POST /api/auth/oauth2-register with a client-supplied email - i.e. it exercised the exact
+// unauthenticated-account-creation defect fixed in this sprint (see
+// docs/backend/OAUTH2_REGISTRATION_SECURITY.md) as if it were a legitimate flow.
+//
+// Registration now requires a real Google OAuth2 callback: the backend only ever sets the
+// oauth2_reg_ticket cookie itself, and this E2E suite deliberately has no test-only endpoint or DB access
+// to mint one (see e2e/support/api.ts). Driving this flow here would require a real Google test account,
+// which the task this fix was made under explicitly excludes. The page-level behavior (disabled Continue
+// until a role is picked, the request sending only {role}, error display, the "no valid pending
+// registration" error state, and hostile-name-as-text rendering) is instead covered by
+// src/features/auth/OAuth2ChooseRolePage.test.tsx, which mocks GET /auth/oauth2-register/pending and POST
+// /auth/oauth2-register the way a real ticket-bound session would respond.

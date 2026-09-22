@@ -22,13 +22,21 @@ Thymeleaf page/JS that used the data before the React migration. Types live in `
 | Live email check | `GET /api/auth/check-email?email=` | query | `boolean` | public | `js/register.js` |
 | Forgot password | `POST /api/auth/forgot-password?email=` | **query param**, no body | `string` | public | `js/forgot-password.js` |
 | Reset password | `POST /api/auth/reset-password` | `{email,otp,newPassword,confirmPassword}` | `string` | public | `js/forgot-password.js` |
-| OAuth2 complete profile | `POST /api/auth/oauth2-register` | `{email,fullName,avatarUrl,role}` | `AuthResponse` | public | `oauth2-choose-role.html` → React `OAuth2ChooseRolePage` (Sprint 2A) |
+| OAuth2 complete registration | `POST /api/auth/oauth2-register` | `{role}` only — identity comes from the `oauth2_reg_ticket` HttpOnly cookie, never the body (see `docs/backend/OAUTH2_REGISTRATION_SECURITY.md`) | `AuthResponse` | public, but requires a valid ticket cookie set by a real prior Google callback; 400 `OAUTH2_REGISTRATION_INVALID` (1047) without one, 400 `INVALID_ROLE` (1048) for an unrecognized role | `oauth2-choose-role.html` → React `OAuth2ChooseRolePage` (Sprint 2A; rewritten this sprint) |
+| OAuth2 pending registration preview | `GET /api/auth/oauth2-register/pending` | — | `{email,fullName,avatarUrl}` for display only; 400 `OAUTH2_REGISTRATION_INVALID` if there is no valid ticket | public (ticket-cookie-scoped) | **NEW** this sprint |
 | Profile | `GET/PUT /api/users/my-profile` | `{fullName,phone,avatarUrl}` | `UserProfileResponse` | any user | `js/profile.js` → React `ProfilePage` (Sprint 2A) |
 | Avatar upload | `POST /api/users/upload-avatar` (multipart `file`) | ≤5 MB image | `{url: "/avatars/<uuid>.<ext>"}`; failures are `400 {error}` | any user | `js/profile.js` |
 | Change password | `POST /api/users/change-password` | `{oldPassword,newPassword,confirmPassword}` | text | any user | `js/profile.js` |
 
-OAuth2 success redirect (unchanged backend): `/oauth2-redirect.html?token=&id=&email=&fullName=<base64 utf-8>&role=&avatarUrl=`
-or `?error=<message>` (locked account). Handled by `OAuth2RedirectPage`.
+**Changed this sprint:** a new Google user is now redirected to a bare `/oauth2-choose-role.html` with
+**no query parameters at all** — identity travels only via the `oauth2_reg_ticket` cookie, never the URL.
+`OAuth2ChooseRolePage` fetches the display preview via the new GET above instead of parsing `?email=&fullName=`.
+
+**Unchanged, and a documented remaining risk:** the *existing*-Google-user login redirect still is
+`/oauth2-redirect.html?token=&id=&email=&fullName=<base64 utf-8>&role=&avatarUrl=` (or `?error=<message>`
+for a locked account) — a live JWT in a URL query parameter. This is a separate, pre-existing risk from
+the registration defect this sprint closed; see `docs/backend/OAUTH2_REGISTRATION_SECURITY.md` §5. Handled
+by `OAuth2RedirectPage` (unchanged).
 
 ## Student dashboard, quizzes, classrooms
 
