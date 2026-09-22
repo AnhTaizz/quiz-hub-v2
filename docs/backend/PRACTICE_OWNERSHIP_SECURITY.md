@@ -103,7 +103,7 @@ migrated React practice player is the only caller per
 accounts (A, B) with real JWTs, a shared category with three PUBLIC
 questions, and pre-seeded `Practice`/`PracticeDetail` rows for B.
 
-16 tests, covering:
+17 tests, covering:
 
 - A cannot resume, save into, submit, or read B's practice (each
   asserted at both the HTTP-status level and by re-reading B's row from
@@ -121,9 +121,16 @@ questions, and pre-seeded `Practice`/`PracticeDetail` rows for B.
 - Saving after the owner's own practice is completed still returns
   `PRACTICE_ALREADY_SUBMITTED` (existing rule, unchanged).
 - No JWT → 401; a valid JWT for the wrong owner → never 401.
+- A multi-answer submit where one answer is ownership-invalid rolls back
+  the *entire* transaction, including any earlier, valid answer already
+  `save()`d in the same call — verified by direct `JdbcTemplate` reads
+  against Postgres, not the JPA entity (added during the verification
+  pass, see §5).
 
 RED (pre-fix, commit `6ae76d3`): 16 tests, 10 failures, 0 errors.
 GREEN (post-fix, commit `64ac144`): 16 tests, 0 failures, 0 errors.
+GREEN (verification pass, commit below): 17 tests (added the rollback
+proof), 0 failures, 0 errors.
 
 ## 5. Remaining risks (not fixed this sprint)
 
@@ -140,21 +147,30 @@ GREEN (post-fix, commit `64ac144`): 16 tests, 0 failures, 0 errors.
   same way `QuizTakingServiceImpl.validateQuestionInQuiz` does. Suggested
   test: an owner submits a `questionId` from a category never part of
   their practice's original range/category tree.
-- **`submitPractice` does not validate the whole payload before mutating
-  state.** `QuizTakingServiceImpl.validateSubmitPayload` validates every
-  question/answer in a multi-question submit *before* touching the
-  database, so a malformed entry anywhere in the payload leaves nothing
-  persisted. `PracticeServiceImpl.submitPractice` still persists
-  `PracticeDetail` rows question-by-question inside the loop, so a
-  malformed entry partway through a multi-answer submit could leave
-  earlier, valid answers persisted while the throw prevents
-  `isCompleted`/`correctAnswers` from being set. This sprint's new test
-  (`submitRejectsAnAnswerIdThatBelongsToADifferentQuestion`) only
-  exercises a single-answer submit and does not assert full-payload
-  atomicity; the pre-existing quiz-attempt pattern for this was
-  intentionally not ported here to avoid scope creep. Recommended
-  follow-up: adopt the same validate-then-mutate structure in
-  `submitPractice`.
+- **CORRECTED (verified, was wrong in the original version of this
+  document):** this document previously claimed that `submitPractice`
+  could leave earlier, valid answers persisted if a later answer in the
+  same multi-answer payload failed `ANSWER_NOT_IN_QUESTION` validation,
+  because `PracticeDetail` rows are saved question-by-question inside the
+  loop rather than after a QuizTakingServiceImpl-style upfront
+  `validateSubmitPayload` pass. **That claim was wrong.**
+  `submitPractice` is `@Transactional`, `AppException extends
+  RuntimeException`, and Spring's default rollback rule rolls back on
+  any unchecked exception — so when `validateAnswerBelongsToQuestion`
+  throws partway through the loop, the entire transaction (including any
+  `PracticeDetail` rows already `save()`d earlier in the same call) rolls
+  back, not just `isCompleted`/`correctAnswers`. This is now verified by
+  `submitRollsBackEarlierValidAnswersWhenALaterAnswerFailsValidation`: it
+  submits a valid answer for one question followed by an
+  ownership-invalid answer for a second, then re-reads
+  `_practice_detail` via a plain `JdbcTemplate` count (not the JPA
+  entity, not a cached persistence context — a query that can only see
+  what Postgres actually committed) and asserts **zero** rows exist for
+  that practice afterward. `PracticeServiceImpl.submitPractice` does
+  **not** need the `validateSubmitPayload`-style upfront-validation
+  refactor that `QuizTakingServiceImpl` uses; the outcome is already
+  equivalent (all-or-nothing) via transactional rollback, just achieved
+  differently. No code change was needed for this item.
 - **`saveAnswer`/`submitPractice` still trust `answerRepository.findById`
   silently returning nothing** for a `selectedAnswerId` that does not
   exist at all (as before this sprint) — this is existing, unchanged

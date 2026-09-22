@@ -254,6 +254,42 @@ class PracticeOwnershipIntegrationTest {
         assertThat(reloaded.getIsCompleted()).as("a malformed answer must not leave the practice half-graded").isFalse();
     }
 
+    /**
+     * submitPractice() is @Transactional and AppException extends RuntimeException, so Spring's default
+     * rollback rule (rollback on unchecked exceptions) should undo the WHOLE method - including the
+     * PracticeDetail row persisted for the first, valid answer in the payload - not just leave
+     * isCompleted=false. This proves that end to end: two DB reads happen through fresh
+     * repository calls in this un-@Transactional test class, so they hit Postgres for real, not a
+     * stale Hibernate persistence-context cache from inside the (already-finished, rolled-back) request.
+     */
+    @Test
+    void submitRollsBackEarlierValidAnswersWhenALaterAnswerFailsValidation() throws Exception {
+        String body = json(new SubmitReq(category.getId(), practiceAOwnCategory.getId(),
+                List.of(
+                        new AnswerReq(q1.getId(), q1Correct.getId(), null, null), // valid
+                        new AnswerReq(q2.getId(), q1Correct.getId(), null, null)  // invalid: q1's answer against q2
+                )));
+
+        MvcResult result = call(post("/api/student/practice/submit").contentType(MediaType.APPLICATION_JSON).content(body), tokenA);
+
+        assertThat(result.getResponse().getStatus()).isEqualTo(400);
+        assertThat(result.getResponse().getContentAsString()).contains("\"code\":1044");
+
+        // Fresh reads via JdbcTemplate: bypasses any Hibernate session/persistence-context entirely,
+        // so this can only see what Postgres actually committed - not an in-memory view of the request.
+        Integer practiceDetailRows = jdbcTemplate.queryForObject(
+                "SELECT COUNT(*) FROM _practice_detail WHERE practice_id = ?",
+                Integer.class, practiceAOwnCategory.getId());
+        assertThat(practiceDetailRows)
+                .as("the first (valid) answer's PracticeDetail must be rolled back with the rest of the transaction, "
+                        + "not left half-persisted")
+                .isEqualTo(0);
+
+        Practice reloaded = practiceRepository.findById(practiceAOwnCategory.getId()).orElseThrow();
+        assertThat(reloaded.getIsCompleted()).isFalse();
+        assertThat(reloaded.getCorrectAnswers()).isEqualTo(0);
+    }
+
     // ---------- B. saveAnswer() ----------
 
     @Test
