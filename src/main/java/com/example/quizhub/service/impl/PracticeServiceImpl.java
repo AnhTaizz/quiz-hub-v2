@@ -140,9 +140,14 @@ public class PracticeServiceImpl implements PracticeService {
                                 practice = practiceRepository.save(newPractice);
                         } else {
                                 if (request.getPracticeId() != null) {
-                                        practice = practiceRepository.findById(request.getPracticeId())
+                                        practice = practiceRepository
+                                                        .findByIdAndUserId(request.getPracticeId(), user.getId())
                                                         .orElseThrow(() -> new AppException(
                                                                         ErrorCode.PRACTICE_NOT_FOUND));
+                                        if (practice.getCategory() == null
+                                                        || !practice.getCategory().getId().equals(category.getId())) {
+                                                throw new AppException(ErrorCode.PRACTICE_NOT_FOUND);
+                                        }
                                 } else {
                                         practice = practiceRepository
                                                         .findFirstByUserIdAndCategoryIdAndPracticeLimitAndPracticeOffsetAndIsRandomAndIsCompletedFalseOrderByCreatedAtDesc(
@@ -209,7 +214,8 @@ public class PracticeServiceImpl implements PracticeService {
         @Override
         @Transactional
         public void saveAnswer(Long practiceId, PracticeAnswerRequestDTO ansReq) {
-                Practice practice = practiceRepository.findById(practiceId)
+                User user = getCurrentUser();
+                Practice practice = practiceRepository.findByIdAndUserId(practiceId, user.getId())
                                 .orElseThrow(() -> new AppException(ErrorCode.PRACTICE_NOT_FOUND));
 
                 if (Boolean.TRUE.equals(practice.getIsCompleted())) {
@@ -245,6 +251,7 @@ public class PracticeServiceImpl implements PracticeService {
                                         Answer sa = answerRepository.findById(ansReq.getSelectedAnswerId())
                                                         .orElse(null);
                                         if (sa != null) {
+                                                validateAnswerBelongsToQuestion(sa, question);
                                                 selectedAnswers.add(sa);
                                                 if (Boolean.TRUE.equals(sa.getIsCorrect())) {
                                                         isCorrect = true;
@@ -255,6 +262,9 @@ public class PracticeServiceImpl implements PracticeService {
                         case MULTIPLE_CHOICE:
                                 if (ansReq.getSelectedAnswerIds() != null && !ansReq.getSelectedAnswerIds().isEmpty()) {
                                         List<Answer> sas = answerRepository.findAllById(ansReq.getSelectedAnswerIds());
+                                        for (Answer sa : sas) {
+                                                validateAnswerBelongsToQuestion(sa, question);
+                                        }
                                         selectedAnswers.addAll(sas);
 
                                         List<Long> saIds = sas.stream().map(Answer::getId).sorted()
@@ -284,6 +294,12 @@ public class PracticeServiceImpl implements PracticeService {
                 detail.setIsCorrect(isCorrect);
 
                 practiceDetailRepository.save(detail);
+        }
+
+        private void validateAnswerBelongsToQuestion(Answer answer, Question question) {
+                if (answer.getQuestion() == null || !answer.getQuestion().getId().equals(question.getId())) {
+                        throw new AppException(ErrorCode.ANSWER_NOT_IN_QUESTION);
+                }
         }
 
         @Override
@@ -340,8 +356,12 @@ public class PracticeServiceImpl implements PracticeService {
 
                 Practice practice;
                 if (request.getPracticeId() != null) {
-                        practice = practiceRepository.findById(request.getPracticeId())
+                        practice = practiceRepository.findByIdAndUserId(request.getPracticeId(), user.getId())
                                         .orElseThrow(() -> new AppException(ErrorCode.PRACTICE_NOT_FOUND));
+                        if (practice.getCategory() == null
+                                        || !practice.getCategory().getId().equals(category.getId())) {
+                                throw new AppException(ErrorCode.PRACTICE_NOT_FOUND);
+                        }
                 } else {
                         practice = practiceRepository
                                         .findFirstByUserIdAndCategoryIdAndPracticeLimitAndPracticeOffsetAndIsRandomAndIsCompletedFalseOrderByCreatedAtDesc(
@@ -383,6 +403,7 @@ public class PracticeServiceImpl implements PracticeService {
                                                 Answer sa = answerRepository.findById(ansReq.getSelectedAnswerId())
                                                                 .orElse(null);
                                                 if (sa != null) {
+                                                        validateAnswerBelongsToQuestion(sa, question);
                                                         selectedAnswers.add(sa);
                                                         if (Boolean.TRUE.equals(sa.getIsCorrect())) {
                                                                 isCorrect = true;
@@ -395,6 +416,9 @@ public class PracticeServiceImpl implements PracticeService {
                                                         && !ansReq.getSelectedAnswerIds().isEmpty()) {
                                                 List<Answer> sas = answerRepository
                                                                 .findAllById(ansReq.getSelectedAnswerIds());
+                                                for (Answer sa : sas) {
+                                                        validateAnswerBelongsToQuestion(sa, question);
+                                                }
                                                 selectedAnswers.addAll(sas);
 
                                                 List<Long> saIds = sas.stream().map(Answer::getId).sorted()
@@ -532,13 +556,10 @@ public class PracticeServiceImpl implements PracticeService {
         @Transactional(readOnly = true)
         public PracticeResultResponseDTO getPracticeDetail(Long practiceId) {
                 User user = getCurrentUser();
-                Practice practice = practiceRepository.findById(practiceId)
+                // A foreign id must look identical to a missing one - never confirm someone else's id exists,
+                // and never answer with 401 (the frontend treats 401 as a dead session and logs the caller out).
+                Practice practice = practiceRepository.findByIdAndUserId(practiceId, user.getId())
                                 .orElseThrow(() -> new AppException(ErrorCode.PRACTICE_NOT_FOUND));
-
-                // Check ownership
-                if (!practice.getUser().getId().equals(user.getId())) {
-                        throw new AppException(ErrorCode.UNAUTHORIZED);
-                }
 
                 List<PracticeDetailResponseDTO> details = practice.getDetails().stream()
                                 .sorted(Comparator.comparingLong(d -> d.getId()))

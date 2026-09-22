@@ -34,4 +34,7 @@ public interface PracticeRepository extends JpaRepository<Practice, Long> {
     List<Practice> findByUserIdAndCategoryIdAndIsCompletedTrueOrderByCreatedAtDesc(Long userId, Long categoryId);
 
     List<Practice> findByUserIdAndIsCompletedTrueOrderByCreatedAtDesc(Long userId);
+
+    /** Ownership-scoped lookup: a foreign or non-existent id both come back empty, so callers map both to PRACTICE_NOT_FOUND. */
+    Optional<Practice> findByIdAndUserId(Long id, Long userId);
 }
