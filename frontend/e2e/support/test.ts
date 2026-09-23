@@ -84,9 +84,9 @@ export async function showLastQuestion(page: Page): Promise<void> {
 
 export async function loginAsStudent(page: Page, world: World, returnUrl?: string): Promise<void> {
   await page.goto(returnUrl ? `/login?returnUrl=${encodeURIComponent(returnUrl)}` : "/login");
-  await page.getByLabel("Email").fill(world.student.email);
-  await page.getByLabel("Password", { exact: true }).fill(world.student.password);
-  await page.getByRole("button", { name: "Sign in" }).click();
+  await page.getByLabel("Địa chỉ email").fill(world.student.email);
+  await page.getByLabel("Mật khẩu", { exact: true }).fill(world.student.password);
+  await page.getByRole("button", { name: "Đăng nhập", exact: true }).click();
   // Don't return mid-login: callers navigate next, which would abort the in-flight sign-in request.
   await page.waitForURL((url) => !url.pathname.startsWith("/login"));
 }

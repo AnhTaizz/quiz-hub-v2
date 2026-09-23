@@ -14,7 +14,7 @@ export function PracticeFlashcard({ question, number, onFlip }: { question: Prac
 
   return (
     <section className="qh-flashcard" aria-label={`Flashcard ${number}`}>
-      <p className="qh-flashcard__label">{flipped ? "Answer" : `Question ${number}`}</p>
+      <p className="qh-flashcard__label">{flipped ? "Đáp án" : `Câu ${number}`}</p>
       {flipped ? (
         answers.length > 0 ? (
           <ul className="qh-flashcard__answers">

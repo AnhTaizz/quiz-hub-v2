@@ -55,16 +55,16 @@ beforeEach(() => {
 describe("ProfilePage", () => {
   it("loads the profile into the form and keeps the email read-only", async () => {
     renderPage();
-    expect(await screen.findByLabelText("Full name")).toHaveValue("Ada Lovelace");
+    expect(await screen.findByLabelText("Họ và tên")).toHaveValue("Ada Lovelace");
     expect(screen.getByLabelText("Email")).toBeDisabled();
   });
 
   it("does not save a blank name", async () => {
     const user = userEvent.setup();
     renderPage();
-    const name = await screen.findByLabelText("Full name");
+    const name = await screen.findByLabelText("Họ và tên");
     await user.clear(name);
-    await user.click(screen.getByRole("button", { name: "Save changes" }));
+    await user.click(screen.getByRole("button", { name: "Lưu thay đổi" }));
 
     expect(await screen.findByRole("alert")).toHaveTextContent(/required/i);
     expect(api.update).not.toHaveBeenCalled();
@@ -73,11 +73,11 @@ describe("ProfilePage", () => {
   it("always re-sends the current phone/avatar (the backend overwrites all three) and refreshes the stored user", async () => {
     const user = userEvent.setup();
     renderPage();
-    const name = await screen.findByLabelText("Full name");
+    const name = await screen.findByLabelText("Họ và tên");
     await user.clear(name);
     await user.type(name, "Ada King");
-    await user.type(screen.getByLabelText("Phone number"), "0123456789");
-    await user.click(screen.getByRole("button", { name: "Save changes" }));
+    await user.type(screen.getByLabelText("Số điện thoại"), "0123456789");
+    await user.click(screen.getByRole("button", { name: "Lưu thay đổi" }));
 
     await waitFor(() =>
       expect(api.update).toHaveBeenCalledWith({ fullName: "Ada King", phone: "0123456789", avatarUrl: "/avatars/old.png" }),
@@ -89,8 +89,8 @@ describe("ProfilePage", () => {
   it("rejects a non-image before uploading anything", async () => {
     const user = userEvent.setup({ applyAccept: false });
     renderPage();
-    await screen.findByLabelText("Full name");
-    await user.upload(screen.getByLabelText("Choose a photo to upload"), new File(["x"], "evil.html", { type: "text/html" }));
+    await screen.findByLabelText("Họ và tên");
+    await user.upload(screen.getByLabelText("Chọn ảnh để tải lên"), new File(["x"], "evil.html", { type: "text/html" }));
 
     expect(await screen.findByRole("alert")).toHaveTextContent(/image file/i);
     expect(api.uploadAvatar).not.toHaveBeenCalled();
@@ -100,12 +100,12 @@ describe("ProfilePage", () => {
     api.uploadAvatar.mockResolvedValue({ url: "/avatars/new.png" });
     const user = userEvent.setup();
     renderPage();
-    await screen.findByLabelText("Full name");
-    await user.upload(screen.getByLabelText("Choose a photo to upload"), new File(["x"], "me.png", { type: "image/png" }));
+    await screen.findByLabelText("Họ và tên");
+    await user.upload(screen.getByLabelText("Chọn ảnh để tải lên"), new File(["x"], "me.png", { type: "image/png" }));
 
     await waitFor(() => expect(api.uploadAvatar).toHaveBeenCalled());
     expect(api.update).not.toHaveBeenCalled();
-    await user.click(screen.getByRole("button", { name: "Save changes" }));
+    await user.click(screen.getByRole("button", { name: "Lưu thay đổi" }));
     await waitFor(() =>
       expect(api.update).toHaveBeenCalledWith(expect.objectContaining({ avatarUrl: "/avatars/new.png" })),
     );
@@ -115,8 +115,8 @@ describe("ProfilePage", () => {
     api.uploadAvatar.mockRejectedValue({ status: 400, message: "File ảnh không được vượt quá 5MB" });
     const user = userEvent.setup();
     renderPage();
-    await screen.findByLabelText("Full name");
-    await user.upload(screen.getByLabelText("Choose a photo to upload"), new File(["x"], "me.png", { type: "image/png" }));
+    await screen.findByLabelText("Họ và tên");
+    await user.upload(screen.getByLabelText("Chọn ảnh để tải lên"), new File(["x"], "me.png", { type: "image/png" }));
 
     expect(await screen.findByText("File ảnh không được vượt quá 5MB")).toBeInTheDocument();
   });
@@ -125,12 +125,12 @@ describe("ProfilePage", () => {
     api.changePassword.mockRejectedValue({ status: 400, code: 1011, message: "Mật khẩu hiện tại không chính xác" });
     const user = userEvent.setup();
     renderPage();
-    await user.click(await screen.findByRole("button", { name: "Change password" }));
+    await user.click(await screen.findByRole("button", { name: "Đổi mật khẩu" }));
     const dialog = await screen.findByRole("dialog");
-    await user.type(screen.getByLabelText("Current password"), "wrong-old");
-    await user.type(screen.getByLabelText("New password"), "new-secret");
-    await user.type(screen.getByLabelText("Confirm new password"), "new-secret");
-    await user.click(screen.getByRole("button", { name: "Update password" }));
+    await user.type(screen.getByLabelText("Mật khẩu hiện tại"), "wrong-old");
+    await user.type(screen.getByLabelText("Mật khẩu mới"), "new-secret");
+    await user.type(screen.getByLabelText("Xác nhận mật khẩu mới"), "new-secret");
+    await user.click(screen.getByRole("button", { name: "Cập nhật mật khẩu" }));
 
     await waitFor(() => expect(api.changePassword).toHaveBeenCalled());
     expect(await screen.findByText("Mật khẩu hiện tại không chính xác")).toBeInTheDocument();
@@ -145,11 +145,11 @@ describe("ProfilePage", () => {
   it("does not call the API for a too-short new password", async () => {
     const user = userEvent.setup();
     renderPage();
-    await user.click(await screen.findByRole("button", { name: "Change password" }));
-    await user.type(screen.getByLabelText("Current password"), "old-secret");
-    await user.type(screen.getByLabelText("New password"), "abc");
-    await user.type(screen.getByLabelText("Confirm new password"), "abc");
-    await user.click(screen.getByRole("button", { name: "Update password" }));
+    await user.click(await screen.findByRole("button", { name: "Đổi mật khẩu" }));
+    await user.type(screen.getByLabelText("Mật khẩu hiện tại"), "old-secret");
+    await user.type(screen.getByLabelText("Mật khẩu mới"), "abc");
+    await user.type(screen.getByLabelText("Xác nhận mật khẩu mới"), "abc");
+    await user.click(screen.getByRole("button", { name: "Cập nhật mật khẩu" }));
 
     expect(await screen.findByText(/at least 6/)).toBeInTheDocument();
     expect(api.changePassword).not.toHaveBeenCalled();

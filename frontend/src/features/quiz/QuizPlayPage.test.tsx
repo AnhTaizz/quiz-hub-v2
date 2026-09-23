@@ -105,8 +105,8 @@ describe("QuizPlayPage", () => {
     const user = userEvent.setup();
 
     renderQuiz();
-    await user.click(await screen.findByRole("button", { name: "Submit quiz" }));
-    const confirm = await screen.findByRole("button", { name: "Submit" });
+    await user.click(await screen.findByRole("button", { name: "Nộp bài thi" }));
+    const confirm = await screen.findByRole("button", { name: "Nộp bài" });
     await user.dblClick(confirm);
 
     expect(await screen.findByText("Result page")).toBeInTheDocument();
@@ -122,8 +122,8 @@ describe("QuizPlayPage", () => {
     await user.click(await screen.findByLabelText("4"));
     await waitFor(() => expect(localStorage.getItem("quizhub:attempt:99")).not.toBeNull());
 
-    await user.click(screen.getByRole("button", { name: "Submit quiz" }));
-    await user.click(await screen.findByRole("button", { name: "Submit" }));
+    await user.click(screen.getByRole("button", { name: "Nộp bài thi" }));
+    await user.click(await screen.findByRole("button", { name: "Nộp bài" }));
 
     // Failed submit: recovery data must still be there.
     await waitFor(() => expect(mocked.submit).toHaveBeenCalledTimes(1));
@@ -219,8 +219,8 @@ describe("QuizPlayPage", () => {
       );
       const user = userEvent.setup();
       renderQuiz();
-      await user.click(await screen.findByRole("button", { name: "Submit quiz" }));
-      await user.click(await screen.findByRole("button", { name: "Submit" }));
+      await user.click(await screen.findByRole("button", { name: "Nộp bài thi" }));
+      await user.click(await screen.findByRole("button", { name: "Nộp bài" }));
 
       act(() => {
         window.dispatchEvent(new Event("blur"));
@@ -238,8 +238,8 @@ describe("QuizPlayPage", () => {
       mocked.submit.mockRejectedValueOnce({ status: 500, message: "boom" });
       const user = userEvent.setup();
       renderQuiz();
-      await user.click(await screen.findByRole("button", { name: "Submit quiz" }));
-      await user.click(await screen.findByRole("button", { name: "Submit" }));
+      await user.click(await screen.findByRole("button", { name: "Nộp bài thi" }));
+      await user.click(await screen.findByRole("button", { name: "Nộp bài" }));
       await waitFor(() => expect(mocked.submit).toHaveBeenCalledTimes(1));
       await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
 
@@ -253,11 +253,11 @@ describe("QuizPlayPage", () => {
       mocked.start.mockResolvedValue(quiz());
       const user = userEvent.setup();
       renderQuiz();
-      await user.click(await screen.findByRole("button", { name: "Exit exam" }));
-      expect(await screen.findByRole("dialog", { name: "Leave the exam?" })).toBeInTheDocument();
+      await user.click(await screen.findByRole("button", { name: /Thoát bài thi/ }));
+      expect(await screen.findByRole("dialog", { name: "Rời khỏi bài thi?" })).toBeInTheDocument();
       expect(mocked.logViolation).not.toHaveBeenCalled(); // opening the dialog logs nothing
 
-      await user.click(screen.getByRole("button", { name: "Leave now" }));
+      await user.click(screen.getByRole("button", { name: "Rời đi ngay" }));
       await waitFor(() =>
         expect(mocked.logViolation).toHaveBeenCalledWith({ attemptId: 99, violationCode: "MANUAL_EXIT" }),
       );
@@ -269,7 +269,7 @@ describe("QuizPlayPage", () => {
       mocked.start.mockResolvedValue(quiz());
       const user = userEvent.setup();
       renderQuiz();
-      await user.click(await screen.findByRole("button", { name: "Submit quiz" }));
+      await user.click(await screen.findByRole("button", { name: "Nộp bài thi" }));
       await screen.findByRole("dialog");
       expect(mocked.logViolation).not.toHaveBeenCalled();
     });

@@ -61,11 +61,11 @@ describe("OAuth2ChooseRolePage", () => {
     const user = userEvent.setup();
     renderAt(good);
 
-    const continueButton = screen.getByRole("button", { name: "Continue" });
+    const continueButton = screen.getByRole("button", { name: "Tiếp tục" });
     expect(continueButton).toBeDisabled();
     expect(screen.getAllByRole("radio")).toHaveLength(2);
 
-    await user.click(screen.getByRole("radio", { name: /i'm a student/i }));
+    await user.click(screen.getByRole("radio", { name: /tôi là học viên/i }));
     expect(continueButton).toBeEnabled();
   });
 
@@ -73,8 +73,8 @@ describe("OAuth2ChooseRolePage", () => {
     api.oauth2Register.mockResolvedValue(auth("STUDENT"));
     const user = userEvent.setup();
     renderAt(good);
-    await user.click(screen.getByRole("radio", { name: /i'm a student/i }));
-    await user.click(screen.getByRole("button", { name: "Continue" }));
+    await user.click(screen.getByRole("radio", { name: /tôi là học viên/i }));
+    await user.click(screen.getByRole("button", { name: "Tiếp tục" }));
 
     await waitFor(() =>
       expect(api.oauth2Register).toHaveBeenCalledWith({
@@ -93,8 +93,8 @@ describe("OAuth2ChooseRolePage", () => {
     api.oauth2Register.mockResolvedValue(auth("TEACHER"));
     const user = userEvent.setup();
     renderAt(good);
-    await user.click(screen.getByRole("radio", { name: /i'm a teacher/i }));
-    await user.click(screen.getByRole("button", { name: "Continue" }));
+    await user.click(screen.getByRole("radio", { name: /tôi là giáo viên/i }));
+    await user.click(screen.getByRole("button", { name: "Tiếp tục" }));
 
     await waitFor(() => expect(assign).toHaveBeenCalledWith("/teacher"));
   });
@@ -103,19 +103,19 @@ describe("OAuth2ChooseRolePage", () => {
     api.oauth2Register.mockRejectedValueOnce({ status: 400, code: 1013, message: "Email đã tồn tại" });
     const user = userEvent.setup();
     renderAt(good);
-    await user.click(screen.getByRole("radio", { name: /i'm a student/i }));
-    await user.click(screen.getByRole("button", { name: "Continue" }));
+    await user.click(screen.getByRole("radio", { name: /tôi là học viên/i }));
+    await user.click(screen.getByRole("button", { name: "Tiếp tục" }));
 
     expect(await screen.findByRole("alert")).toHaveTextContent("Email đã tồn tại");
-    expect(screen.getByRole("button", { name: "Continue" })).toBeEnabled();
+    expect(screen.getByRole("button", { name: "Tiếp tục" })).toBeEnabled();
     expect(localStorage.getItem("token")).toBeNull();
   });
 
   it("degrades gracefully when the handoff parameters are missing or malformed", () => {
     renderAt("?fullName=abc");
-    expect(screen.getByRole("alert")).toHaveTextContent(/could not read/i);
+    expect(screen.getByRole("alert")).toHaveTextContent(/không thể đọc/i);
     expect(screen.queryByRole("radio")).not.toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Back to sign in" })).toHaveAttribute("href", "/login");
+    expect(screen.getByRole("link", { name: "Quay lại đăng nhập" })).toHaveAttribute("href", "/login");
   });
 
   it("renders a hostile name as inert text and never forwards a non-https avatar URL", async () => {
@@ -129,8 +129,8 @@ describe("OAuth2ChooseRolePage", () => {
     expect(screen.getByText(hostile)).toBeInTheDocument();
     expect(document.querySelector("img[src='x']")).toBeNull();
 
-    await user.click(screen.getByRole("radio", { name: /i'm a student/i }));
-    await user.click(screen.getByRole("button", { name: "Continue" }));
+    await user.click(screen.getByRole("radio", { name: /tôi là học viên/i }));
+    await user.click(screen.getByRole("button", { name: "Tiếp tục" }));
     await waitFor(() => expect(api.oauth2Register).toHaveBeenCalledWith(expect.objectContaining({ avatarUrl: "" })));
   });
 });

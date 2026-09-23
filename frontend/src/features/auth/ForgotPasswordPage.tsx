@@ -6,6 +6,7 @@ import { isApiError } from "@/api/httpClient";
 import { Input } from "@/components/ui/Input";
 import { PasswordInput } from "@/components/ui/PasswordInput";
 import { Button } from "@/components/ui/Button";
+import { PublicHeader } from "./PublicHeader";
 import "./AuthPages.css";
 
 export function ForgotPasswordPage() {
@@ -20,13 +21,13 @@ export function ForgotPasswordPage() {
   const requestOtp = useMutation({
     mutationFn: () => authApi.forgotPassword(email),
     onSuccess: () => setStep("reset"),
-    onError: (error) => setFormError(isApiError(error) ? error.message : "Could not send code."),
+    onError: (error) => setFormError(isApiError(error) ? error.message : "Không thể gửi mã xác nhận."),
   });
 
   const resetPassword = useMutation({
     mutationFn: () => authApi.resetPassword({ email, otp, newPassword, confirmPassword }),
     onSuccess: () => navigate("/login", { replace: true }),
-    onError: (error) => setFormError(isApiError(error) ? error.message : "Could not reset password."),
+    onError: (error) => setFormError(isApiError(error) ? error.message : "Không thể đặt lại mật khẩu."),
   });
 
   function handleRequestSubmit(event: FormEvent) {
@@ -39,7 +40,7 @@ export function ForgotPasswordPage() {
     event.preventDefault();
     setFormError(null);
     if (newPassword !== confirmPassword) {
-      setFormError("Passwords do not match.");
+      setFormError("Mật khẩu xác nhận không khớp.");
       return;
     }
     resetPassword.mutate();
@@ -47,8 +48,11 @@ export function ForgotPasswordPage() {
 
   return (
     <div className="qh-auth-page">
+      <PublicHeader />
       <div className="qh-auth-card">
-        <h1 className="qh-auth-title">Reset your password</h1>
+        <div className="qh-auth-card__icon"><i className="bi bi-shield-lock" /></div>
+        <h1 className="qh-auth-title">Khôi phục mật khẩu</h1>
+        <p className="qh-auth-subtitle">{step === "request" ? "Nhập email để nhận mã xác nhận" : "Nhập mã đã gửi tới email của bạn"}</p>
 
         {formError && (
           <p className="qh-auth-error" role="alert">
@@ -68,13 +72,13 @@ export function ForgotPasswordPage() {
               onChange={(e) => setEmail(e.target.value)}
             />
             <Button type="submit" isLoading={requestOtp.isPending} style={{ width: "100%" }}>
-              Send reset code
+              Gửi mã xác nhận
             </Button>
           </form>
         ) : (
           <form onSubmit={handleResetSubmit} noValidate>
             <Input
-              label="Reset code"
+              label="Mã xác nhận"
               name="otp"
               autoComplete="one-time-code"
               required
@@ -82,7 +86,7 @@ export function ForgotPasswordPage() {
               onChange={(e) => setOtp(e.target.value)}
             />
             <PasswordInput
-              label="New password"
+              label="Mật khẩu mới"
               name="newPassword"
               autoComplete="new-password"
               minLength={6}
@@ -91,7 +95,7 @@ export function ForgotPasswordPage() {
               onChange={(e) => setNewPassword(e.target.value)}
             />
             <PasswordInput
-              label="Confirm new password"
+              label="Xác nhận mật khẩu mới"
               name="confirmPassword"
               autoComplete="new-password"
               minLength={6}
@@ -100,13 +104,13 @@ export function ForgotPasswordPage() {
               onChange={(e) => setConfirmPassword(e.target.value)}
             />
             <Button type="submit" isLoading={resetPassword.isPending} style={{ width: "100%" }}>
-              Reset password
+              Đặt lại mật khẩu
             </Button>
           </form>
         )}
 
         <div className="qh-auth-links">
-          <Link to="/login">Back to sign in</Link>
+          <Link to="/login"><i className="bi bi-arrow-left" /> Quay lại đăng nhập</Link>
         </div>
       </div>
     </div>

@@ -1,5 +1,4 @@
 import { useRef, useState, type FormEvent } from "react";
-import { Link } from "react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { profileApi } from "@/api/profile.api";
 import { isApiError } from "@/api/httpClient";
@@ -11,13 +10,14 @@ import { Card } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
 import { Spinner } from "@/components/ui/Spinner";
 import { ErrorState } from "@/components/feedback/ErrorState";
+import { StudentHeader } from "@/components/layout/AppShell";
 import { useToast } from "@/components/feedback/ToastProvider";
 import { AvatarPreview } from "./AvatarPreview";
 import { ChangePasswordModal } from "./ChangePasswordModal";
 import { validateAvatarFile, validateProfile } from "./profileValidation";
 import "./ProfilePage.css";
 
-const ROLE_LABEL: Record<Role, string> = { STUDENT: "Student", TEACHER: "Teacher", ADMIN: "Administrator" };
+const ROLE_LABEL: Record<Role, string> = { STUDENT: "Học viên", TEACHER: "Giáo viên", ADMIN: "Quản trị viên" };
 
 export function ProfilePage() {
   const { data, isLoading, isError, refetch } = useQuery({
@@ -29,9 +29,8 @@ export function ProfilePage() {
     <div className="qh-profile-page">
       <ProfileHeader role={data?.role} />
       <main className="qh-profile-main">
-        <h1 className="qh-profile-title">Your profile</h1>
-        {isLoading && <Spinner label="Loading profile" />}
-        {isError && <ErrorState message="Could not load your profile." onRetry={() => void refetch()} />}
+        {isLoading && <Spinner label="Đang tải hồ sơ" />}
+        {isError && <ErrorState message="Không thể tải hồ sơ của bạn." onRetry={() => void refetch()} />}
         {/* key: re-seed the form if a different account's profile is ever loaded */}
         {data && <ProfileForm key={data.id} profile={data} />}
       </main>
@@ -44,22 +43,18 @@ function ProfileHeader({ role }: { role: Role | undefined }) {
   const effectiveRole = role ?? user?.role ?? "STUDENT";
   const home = roleHomePath(effectiveRole);
 
+  if (effectiveRole === "STUDENT") return <StudentHeader />;
+
   return (
     <header className="qh-profile-header">
       <span className="qh-profile-brand">QuizHub</span>
-      <nav className="qh-profile-header__actions" aria-label="Profile navigation">
-        {/* Student dashboard is a React route; teacher/admin dashboards are still server-rendered (full page load). */}
-        {effectiveRole === "STUDENT" ? (
-          <Link to={home} className="qh-button qh-button--secondary">
-            Back to dashboard
-          </Link>
-        ) : (
-          <a href={home} className="qh-button qh-button--secondary">
-            Back to dashboard
-          </a>
-        )}
+      <nav className="qh-profile-header__actions" aria-label="Điều hướng hồ sơ">
+        {/* Teacher/admin dashboards are still server-rendered, so this remains a full page navigation. */}
+        <a href={home} className="qh-button qh-button--secondary">
+          Quay lại trang chủ
+        </a>
         <Button variant="ghost" type="button" onClick={logout}>
-          Log out
+          Đăng xuất
         </Button>
       </nav>
     </header>
@@ -83,9 +78,9 @@ function ProfileForm({ profile }: { profile: UserProfileResponse }) {
     onSuccess: (result) => {
       // The backend only stores the file; the profile is not updated until Save (same as the legacy page).
       setAvatarUrl(result.url);
-      showToast("Photo uploaded. Save your profile to apply it.", "info");
+      showToast("Đã tải ảnh lên. Hãy lưu thay đổi để áp dụng.", "info");
     },
-    onError: (error) => setAvatarError(isApiError(error) ? error.message : "Could not upload the photo."),
+    onError: (error) => setAvatarError(isApiError(error) ? error.message : "Không thể tải ảnh lên."),
   });
 
   const save = useMutation({
@@ -95,11 +90,11 @@ function ProfileForm({ profile }: { profile: UserProfileResponse }) {
     onSuccess: (updated) => {
       updateUser({ fullName: updated.fullName, avatarUrl: updated.avatarUrl });
       queryClient.setQueryData(["profile"], updated);
-      showToast("Profile saved.", "success");
+      showToast("Đã lưu hồ sơ.", "success");
     },
     onError: (error) => {
       if (isApiError(error) && error.errors?.fullName) setFullNameError(error.errors.fullName);
-      else showToast(isApiError(error) ? error.message : "Could not save your profile.", "error");
+      else showToast(isApiError(error) ? error.message : "Không thể lưu hồ sơ.", "error");
     },
   });
 
@@ -124,17 +119,21 @@ function ProfileForm({ profile }: { profile: UserProfileResponse }) {
   return (
     <>
       <div className="qh-profile-grid">
-        <Card className="qh-profile-avatar-card">
+        <Card className={`qh-profile-avatar-card qh-profile-avatar-card--${profile.role.toLowerCase()}`}>
           <AvatarPreview url={avatarUrl} name={fullName} />
           <p className="qh-profile-name">{fullName || "—"}</p>
           <p className="qh-profile-email">{profile.email}</p>
           <span className="qh-profile-role">{ROLE_LABEL[profile.role]}</span>
         </Card>
 
-        <Card>
-          <form onSubmit={handleSubmit} noValidate aria-label="Edit profile">
+        <Card className="qh-profile-form-card">
+          <div className="qh-profile-form-header">
+            <h1>Hồ sơ cá nhân</h1>
+            <p>Cập nhật thông tin tài khoản của bạn</p>
+          </div>
+          <form onSubmit={handleSubmit} noValidate aria-label="Chỉnh sửa hồ sơ">
             <Input
-              label="Full name"
+              label="Họ và tên"
               name="fullName"
               autoComplete="name"
               required
@@ -144,7 +143,7 @@ function ProfileForm({ profile }: { profile: UserProfileResponse }) {
             />
             <Input label="Email" name="email" value={profile.email} disabled readOnly />
             <Input
-              label="Phone number"
+              label="Số điện thoại"
               name="phone"
               type="tel"
               autoComplete="tel"
@@ -154,7 +153,7 @@ function ProfileForm({ profile }: { profile: UserProfileResponse }) {
 
             <div className="qh-field">
               <span className="qh-field__label" id="qh-avatar-label">
-                Profile photo
+                Ảnh đại diện
               </span>
               <div className="qh-profile-avatar-actions" role="group" aria-labelledby="qh-avatar-label">
                 <input
@@ -162,7 +161,7 @@ function ProfileForm({ profile }: { profile: UserProfileResponse }) {
                   type="file"
                   accept="image/*"
                   className="visually-hidden"
-                  aria-label="Choose a photo to upload"
+                  aria-label="Chọn ảnh để tải lên"
                   tabIndex={-1}
                   onChange={(event) => {
                     handleFile(event.target.files?.[0]);
@@ -170,15 +169,15 @@ function ProfileForm({ profile }: { profile: UserProfileResponse }) {
                   }}
                 />
                 <Button type="button" variant="secondary" onClick={() => fileInput.current?.click()} isLoading={upload.isPending}>
-                  Upload photo
+                  Tải ảnh lên
                 </Button>
                 {avatarUrl && (
                   <Button type="button" variant="ghost" onClick={() => setAvatarUrl(null)}>
-                    Remove photo
+                    Xóa ảnh
                   </Button>
                 )}
               </div>
-              <p className="qh-profile-hint">JPEG, PNG, GIF or WebP, up to 5 MB.</p>
+              <p className="qh-profile-hint">JPEG, PNG, GIF hoặc WebP, tối đa 5 MB.</p>
               {avatarError && (
                 <p className="qh-field__error" role="alert">
                   {avatarError}
@@ -187,11 +186,11 @@ function ProfileForm({ profile }: { profile: UserProfileResponse }) {
             </div>
 
             <div className="qh-profile-actions">
-              <Button type="submit" isLoading={save.isPending}>
-                Save changes
+              <Button type="submit" className="qh-profile-save" isLoading={save.isPending}>
+                Lưu thay đổi
               </Button>
               <Button type="button" variant="secondary" onClick={() => setPasswordOpen(true)}>
-                Change password
+                Đổi mật khẩu
               </Button>
             </div>
           </form>

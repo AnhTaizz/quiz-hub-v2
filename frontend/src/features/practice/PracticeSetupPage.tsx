@@ -4,7 +4,6 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { categoryApi } from "@/api/category.api";
 import { practiceApi } from "@/api/practice.api";
 import { isApiError } from "@/api/httpClient";
-import { PageHeader } from "@/components/layout/PageHeader";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
@@ -67,7 +66,7 @@ export function PracticeSetupPage() {
         chunkSize,
       });
       if (!resolved.ok) throw new Error(resolved.error);
-      if (categoryId === null) throw new Error("Choose a category.");
+      if (categoryId === null) throw new Error("Vui lòng chọn một thư mục câu hỏi.");
       const response = await practiceApi.start({
         categoryId,
         limit: resolved.value.limit,
@@ -79,7 +78,7 @@ export function PracticeSetupPage() {
     },
     onSuccess: ({ response, resolved }) => {
       if (response.questions.length === 0 || response.practiceId === null) {
-        setFormError("No questions were returned for this selection.");
+        setFormError("Không tìm thấy câu hỏi phù hợp với lựa chọn này.");
         return;
       }
       savePracticeSession({
@@ -93,14 +92,14 @@ export function PracticeSetupPage() {
       navigate("/student/practice/play");
     },
     onError: (error) => {
-      setFormError(isApiError(error) ? error.message : error instanceof Error ? error.message : "Could not start practice.");
+      setFormError(isApiError(error) ? error.message : error instanceof Error ? error.message : "Không thể bắt đầu luyện tập.");
     },
   });
 
   function handleSubmit(event: FormEvent) {
     event.preventDefault();
     if (categoryId === null) {
-      setFormError("Choose a category first.");
+      setFormError("Vui lòng chọn thư mục câu hỏi trước.");
       return;
     }
     setFormError(null);
@@ -112,31 +111,37 @@ export function PracticeSetupPage() {
   const noCategories = !categoriesLoading && groups.mine.length + groups.shared.length === 0;
 
   return (
-    <div>
-      <PageHeader
-        title="Practice"
-        description="Pick a category and settings, then practice at your own pace."
-        action={
+    <div className="qh-practice-page">
+      <section className="qh-practice-explorer">
+        <div className="qh-practice-explorer__heading">
+          <div>
+            <span className="qh-practice-explorer__eyebrow">NGÂN HÀNG CÂU HỎI</span>
+            <h1>Khám Phá Ngân Hàng Câu Hỏi</h1>
+            <p>Chọn một thư mục, thiết lập cách học và bắt đầu luyện tập theo nhịp độ của bạn.</p>
+          </div>
           <Link to="/student/history?tab=practice" className="qh-button qh-button--secondary">
-            Practice history
+            <i className="bi bi-clock-history" /> Lịch sử luyện tập
           </Link>
-        }
-      />
+        </div>
 
-      {categoriesLoading && <Spinner label="Loading categories" />}
+      {categoriesLoading && <Spinner label="Đang tải thư mục câu hỏi" />}
       {categoriesFailed && (
         <ErrorState
-          message="Could not load categories."
+          message="Không thể tải danh sách thư mục."
           onRetry={() => {
             void publicCategories.refetch();
             void myCategories.refetch();
           }}
         />
       )}
-      {noCategories && !categoriesFailed && <EmptyState title="No categories available yet" />}
+      {noCategories && !categoriesFailed && <EmptyState title="Chưa có thư mục câu hỏi nào" />}
 
       {!categoriesLoading && !categoriesFailed && !noCategories && (
-        <Card>
+        <Card className="qh-practice-settings">
+          <div className="qh-practice-settings__title">
+            <span><i className="bi bi-sliders" /></span>
+            <div><h2>Thiết lập luyện tập</h2><p>Tùy chỉnh bộ câu hỏi trước khi bắt đầu</p></div>
+          </div>
           <form onSubmit={handleSubmit} noValidate className="qh-practice-setup">
             {formError && (
               <p className="qh-practice-setup__error" role="alert">
@@ -146,7 +151,7 @@ export function PracticeSetupPage() {
 
             <div className="qh-field">
               <label htmlFor="practice-category" className="qh-field__label">
-                Category
+                Thư mục câu hỏi
               </label>
               <select
                 id="practice-category"
@@ -158,9 +163,9 @@ export function PracticeSetupPage() {
                   setFormError(null);
                 }}
               >
-                <option value="">Select a category…</option>
+                <option value="">Chọn một thư mục…</option>
                 {groups.mine.length > 0 && (
-                  <optgroup label="My categories">
+                  <optgroup label="Thư mục của tôi">
                     {groups.mine.map((option) => (
                       <option key={`m-${option.id}`} value={option.id}>
                         {option.label}
@@ -169,7 +174,7 @@ export function PracticeSetupPage() {
                   </optgroup>
                 )}
                 {groups.shared.length > 0 && (
-                  <optgroup label="Public categories">
+                  <optgroup label="Thư mục công khai">
                     {groups.shared.map((option) => (
                       <option key={`p-${option.id}`} value={option.id}>
                         {option.label}
@@ -180,29 +185,29 @@ export function PracticeSetupPage() {
               </select>
             </div>
 
-            {categoryId !== null && count.isLoading && <Spinner label="Counting questions" />}
+            {categoryId !== null && count.isLoading && <Spinner label="Đang đếm câu hỏi" />}
             {categoryId !== null && count.isError && (
-              <ErrorState message="Could not count the questions in this category." onRetry={() => void count.refetch()} />
+              <ErrorState message="Không thể đếm câu hỏi trong thư mục này." onRetry={() => void count.refetch()} />
             )}
             {categoryId !== null && count.data !== undefined && total === 0 && (
-              <EmptyState title="No questions in this category yet" description="Choose another category." />
+              <EmptyState title="Thư mục này chưa có câu hỏi" description="Hãy chọn một thư mục khác." />
             )}
 
             {categoryId !== null && total > 0 && (
               <>
                 <p className="qh-practice-setup__count" role="status">
-                  {total} question{total === 1 ? "" : "s"} available
+                  <i className="bi bi-patch-question" /> Có {total} câu hỏi sẵn sàng
                 </p>
 
                 <fieldset className="qh-practice-setup__group">
-                  <legend>Which questions?</legend>
+                  <legend>Chọn câu hỏi</legend>
                   <label className="qh-practice-setup__choice">
                     <input type="radio" name="mode" checked={mode === "range"} onChange={() => setMode("range")} />
-                    In order, by range
+                    Theo thứ tự, chọn khoảng câu hỏi
                   </label>
                   <label className="qh-practice-setup__choice">
                     <input type="radio" name="mode" checked={mode === "random"} onChange={() => setMode("random")} />
-                    Random selection
+                    Chọn ngẫu nhiên
                   </label>
                 </fieldset>
 
@@ -210,7 +215,7 @@ export function PracticeSetupPage() {
                   <div className="qh-practice-setup__group">
                     <div className="qh-field">
                       <label htmlFor="practice-chunk-size" className="qh-field__label">
-                        Questions per set
+                        Số câu mỗi bộ
                       </label>
                       <select
                         id="practice-chunk-size"
@@ -241,14 +246,14 @@ export function PracticeSetupPage() {
                             setFormError(null);
                           }}
                         >
-                          Questions {chunk.from}–{chunk.to}
+                          Câu {chunk.from}–{chunk.to}
                         </button>
                       ))}
                     </div>
                   </div>
                 ) : (
                   <Input
-                    label={`Number of questions (1–${total})`}
+                    label={`Số lượng câu hỏi (1–${total})`}
                     type="number"
                     inputMode="numeric"
                     min={1}
@@ -259,44 +264,45 @@ export function PracticeSetupPage() {
                 )}
 
                 <fieldset className="qh-practice-setup__group">
-                  <legend>How do you want to practice?</legend>
+                  <legend>Hình thức luyện tập</legend>
                   <label className="qh-practice-setup__choice">
                     <input type="radio" name="display" checked={displayMode === "sequential"} onChange={() => setDisplayMode("sequential")} />
-                    One question at a time
+                    Từng câu một
                   </label>
                   <label className="qh-practice-setup__choice">
                     <input type="radio" name="display" checked={displayMode === "all"} onChange={() => setDisplayMode("all")} />
-                    All questions on one page
+                    Tất cả câu hỏi trên một trang
                   </label>
                   <label className="qh-practice-setup__choice">
                     <input type="radio" name="display" checked={displayMode === "flashcard"} onChange={() => setDisplayMode("flashcard")} />
-                    Flashcards (study only, not scored)
+                    Thẻ ghi nhớ (chỉ ôn tập, không tính điểm)
                   </label>
                 </fieldset>
 
                 <div className="qh-practice-setup__group">
                   <label className="qh-practice-setup__choice">
                     <input type="checkbox" checked={showAnswer} onChange={(event) => setShowAnswer(event.target.checked)} />
-                    Show whether each answer is right as I go
+                    Hiện kết quả đúng/sai sau mỗi câu
                   </label>
                   <label className="qh-practice-setup__choice">
                     <input type="checkbox" checked={shuffle} onChange={(event) => setShuffle(event.target.checked)} />
-                    Shuffle the questions
+                    Đảo thứ tự câu hỏi
                   </label>
                   <label className="qh-practice-setup__choice">
                     <input type="checkbox" checked={shuffleAnswers} onChange={(event) => setShuffleAnswers(event.target.checked)} />
-                    Shuffle the answer options
+                    Đảo thứ tự đáp án
                   </label>
                 </div>
 
                 <Button type="submit" isLoading={start.isPending}>
-                  Start practice
+                  <i className="bi bi-play-fill" /> Bắt đầu luyện tập
                 </Button>
               </>
             )}
           </form>
         </Card>
       )}
+      </section>
     </div>
   );
 }

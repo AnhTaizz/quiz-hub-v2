@@ -72,8 +72,8 @@ describe("PracticeReviewPage", () => {
 
     expect(await screen.findByText("5 / 10")).toBeInTheDocument();
     expect(screen.getByText("1 / 2")).toBeInTheDocument();
-    expect(screen.getByText("Correct")).toBeInTheDocument();
-    expect(screen.getByText("Incorrect")).toBeInTheDocument();
+    expect(screen.getByText("Chính xác")).toBeInTheDocument();
+    expect(screen.getByText("Chưa chính xác")).toBeInTheDocument();
     expect(screen.getByText("Lyon")).toBeInTheDocument();
     expect(screen.getByText("Paris")).toBeInTheDocument();
     expect(container.querySelectorAll("input, textarea, select")).toHaveLength(0);
@@ -89,13 +89,13 @@ describe("PracticeReviewPage", () => {
   it("does not show a score for a practice that was never submitted", async () => {
     api.detail.mockResolvedValue(result({ correctAnswers: null, score: null, details: [] }));
     renderReview();
-    expect(await screen.findByText("This practice has not been submitted yet")).toBeInTheDocument();
-    expect(screen.queryByText("Score")).not.toBeInTheDocument();
+    expect(await screen.findByText("Bài luyện tập này chưa được nộp")).toBeInTheDocument();
+    expect(screen.queryByText("Điểm số")).not.toBeInTheDocument();
   });
 
   it("shows a not-found message for a practice that cannot be loaded", async () => {
     api.detail.mockRejectedValue({ status: 404, message: "missing" });
     renderReview();
-    expect(await screen.findByText("This practice could not be found.")).toBeInTheDocument();
+    expect(await screen.findByText("Không tìm thấy bài luyện tập này.")).toBeInTheDocument();
   });
 });

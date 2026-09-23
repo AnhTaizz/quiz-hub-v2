@@ -1,60 +1,33 @@
-.qh-join-card {
-  margin-bottom: var(--space-6);
-}
-
-.qh-join-form {
-  display: flex;
-  align-items: flex-end;
-  gap: var(--space-4);
-}
-
-.qh-join-form .qh-field {
-  margin-bottom: 0;
-  flex: 1;
-  max-width: 260px;
-}
-
-.qh-classroom-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: var(--space-4);
-}
-
-.qh-classroom-card {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-}
-
-.qh-classroom-card__header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-2);
-}
-
-.qh-classroom-card__header h3 {
-  margin: 0;
-  font-size: 16px;
-}
-
-.qh-classroom-card__meta {
-  margin: 0;
-  color: var(--color-text-muted);
-  font-size: 13px;
-}
-
-.qh-classroom-card .qh-button {
-  text-decoration: none;
-  text-align: center;
-}
-
-@media (max-width: 430px) {
-  .qh-join-form {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  .qh-join-form .qh-field {
-    max-width: none;
-  }
-}
+.qh-classrooms-hero { position:relative; display:flex; align-items:center; justify-content:space-between; gap:24px; overflow:hidden; margin-bottom:40px; padding:40px; border-radius:24px; background:linear-gradient(135deg,#1e1b4b,#312e81); color:#fff; box-shadow:0 20px 40px rgba(30,27,75,.2); }
+.qh-classrooms-hero::after { content:""; position:absolute; width:300px; height:300px; right:-80px; top:-160px; border-radius:50%; background:rgba(255,255,255,.05); }
+.qh-classrooms-hero h1 { margin:0 0 10px; color:#fff; font-size:38px; font-weight:900; }
+.qh-classrooms-hero p { max-width:720px; margin:0; color:rgba(255,255,255,.75); line-height:1.6; }
+.qh-classrooms-hero button { position:relative; z-index:1; display:flex; align-items:center; gap:10px; padding:13px 22px; border:0; border-radius:14px; background:#fff; color:#1e1b4b; font-weight:800; cursor:pointer; white-space:nowrap; }
+.qh-classroom-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:20px; }
+.qh-classroom-card { display:flex; flex-direction:column; min-width:0; overflow:hidden; border:1px solid #e2e8f0; border-radius:20px; background:#fff; transition:.3s; }
+.qh-classroom-card:hover { transform:translateY(-7px); border-color:#3b82f6; box-shadow:0 20px 40px rgba(0,0,0,.06); }
+.qh-classroom-card__banner { position:relative; height:140px; background:#6366f1; }
+.qh-classroom-card__banner img, .qh-classroom-card__cover { width:100%; height:100%; object-fit:cover; }
+.qh-classroom-card__cover { display:grid; place-items:center; background:linear-gradient(135deg,#4338ca,#38bdf8); color:rgba(255,255,255,.75); font-size:46px; }
+.qh-classroom-card__banner .qh-badge { position:absolute; top:14px; right:14px; padding:6px 12px; backdrop-filter:blur(8px); }
+.qh-classroom-card__body { flex:1; padding:22px 24px; }
+.qh-classroom-card__teacher { display:flex; align-items:center; gap:9px; margin:0 0 12px; color:#64748b; font-size:12px; font-weight:600; }
+.qh-classroom-card__teacher span { display:grid; place-items:center; width:32px; height:32px; border-radius:50%; background:#28a745; color:#fff; font-size:10px; }
+.qh-classroom-card__body h3 { margin:0 0 8px; color:#1e1b4b; font-size:20px; font-weight:800; }
+.qh-classroom-card__body > p { margin:0; color:#64748b; font-size:13px; line-height:1.6; }
+.qh-classroom-card footer { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:18px 24px; border-top:1px solid #e2e8f0; background:#f8fafc; }
+.qh-classroom-card footer small { color:#718096; }
+.qh-classroom-card footer a { color:#2563eb; text-decoration:none; font-size:13px; font-weight:800; }
+.qh-classroom-card footer b { color:#d97706; font-size:12px; }
+.qh-join-modal { position:fixed; inset:0; z-index:100; display:grid; place-items:center; padding:20px; background:rgba(15,23,42,.55); backdrop-filter:blur(4px); }
+.qh-join-modal .qh-card { position:relative; width:min(480px,100%); padding:32px; border-radius:24px; }
+.qh-join-modal h2 { margin:0 0 6px; color:#1e1b4b; }.qh-join-modal p{margin:0 0 22px;color:#718096}.qh-join-modal__close{position:absolute;top:14px;right:16px;border:0;background:none;font-size:28px;cursor:pointer;color:#64748b}
+.qh-join-form { display:flex; align-items:flex-end; gap:12px; }.qh-join-form .qh-field{flex:1;margin:0}
+.qh-classroom-detail__back { display:inline-block; margin-bottom:18px; color:#2563eb; text-decoration:none; font-weight:800; }
+.qh-classroom-detail__hero { display:flex; align-items:center; justify-content:space-between; gap:24px; margin-bottom:34px; padding:30px 34px; border-radius:20px; background:linear-gradient(135deg,#1e1b4b,#312e81); color:#fff; box-shadow:0 10px 28px rgba(30,27,75,.16); }
+.qh-classroom-detail__hero h1 { margin:0 0 6px; color:#fff; font-size:32px; }.qh-classroom-detail__hero p{margin:0;color:rgba(255,255,255,.72)}
+.qh-classroom-detail__teacher { display:flex; align-items:center; gap:12px; }.qh-classroom-detail__teacher>span{display:grid;place-items:center;width:50px;height:50px;border:2px solid #fff;border-radius:50%;background:#28a745;font-weight:800}.qh-classroom-detail__teacher div{display:flex;flex-direction:column}.qh-classroom-detail__teacher small{color:rgba(255,255,255,.7)}
+.qh-classroom-detail__section { margin-bottom:38px; }.qh-classroom-detail__section>h2{display:flex;align-items:center;gap:10px;margin:0 0 18px;color:#1e1b4b;font-size:20px}.qh-classroom-detail__section>h2 i{color:#2563eb}
+.qh-topic-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; }.qh-topic-grid article{padding:22px;border:1px solid #eef2f7;border-radius:18px;background:#fff;box-shadow:0 3px 12px rgba(0,0,0,.05)}.qh-topic-grid article>div{display:flex;justify-content:space-between}.qh-topic-grid article span{padding:4px 8px;border-radius:6px;background:rgba(37,99,235,.1);color:#2563eb;font-size:10px;font-weight:800;text-transform:uppercase}.qh-topic-grid article i{color:#2563eb;font-size:22px}.qh-topic-grid h3{margin:16px 0 5px;color:#1e1b4b;font-size:17px}.qh-topic-grid p{margin:0;color:#718096;font-size:12px}.qh-classroom-detail__empty{padding:24px;border-radius:12px;background:#f8fafc;color:#718096;text-align:center}
+@media(max-width:960px){.qh-classroom-grid,.qh-topic-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:650px){.qh-classrooms-hero,.qh-classroom-detail__hero{align-items:flex-start;flex-direction:column;padding:26px 20px}.qh-classroom-grid,.qh-topic-grid{grid-template-columns:1fr}.qh-join-form{align-items:stretch;flex-direction:column}}
