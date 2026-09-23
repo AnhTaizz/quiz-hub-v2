@@ -2,14 +2,13 @@ import { useState } from "react";
 import { Link, useSearchParams } from "react-router";
 import { useQuery } from "@tanstack/react-query";
 import { studentApi } from "@/api/student.api";
-import { PageHeader } from "@/components/layout/PageHeader";
 import { Card } from "@/components/ui/Card";
 import { Spinner } from "@/components/ui/Spinner";
 import { ErrorState } from "@/components/feedback/ErrorState";
-import { EmptyState } from "@/components/feedback/EmptyState";
 import { Pagination } from "@/components/ui/Pagination";
 import { PracticeHistoryPanel } from "@/features/practice/PracticeHistoryPanel";
 import "./StudentHistoryPage.css";
+import { formatDateTime } from "@/utils/format";
 
 const PAGE_SIZE = 10;
 
@@ -24,10 +23,15 @@ export function StudentHistoryPage() {
   }
 
   return (
-    <div>
-      <PageHeader title="History" />
+    <div className="qh-history-page">
+      <div className="qh-history-toolbar">
+        <div className="qh-history-heading">
+          <span>HISTORY</span>
+          <h1>Lịch sử làm bài</h1>
+          <p>Theo dõi kết quả bài thi và các lượt tự luyện tập của bạn.</p>
+        </div>
 
-      <div className="qh-history-tabs" role="tablist" aria-label="History type">
+        <div className="qh-history-tabs" role="tablist" aria-label="History type">
         <button
           type="button"
           role="tab"
@@ -41,7 +45,7 @@ export function StudentHistoryPage() {
             if (event.key === "ArrowRight") selectTab("practice");
           }}
         >
-          Quizzes
+          <i className="bi bi-file-earmark-check" /> Bài thi &amp; Bài tập
         </button>
         <button
           type="button"
@@ -56,8 +60,9 @@ export function StudentHistoryPage() {
             if (event.key === "ArrowLeft") selectTab("quiz");
           }}
         >
-          Practice
+          <i className="bi bi-pencil-square" /> Bài tự luyện tập
         </button>
+        </div>
       </div>
 
       {tab === "quiz" ? (
@@ -86,24 +91,33 @@ function QuizHistoryPanel() {
 
   return (
     <>
-      {isLoading && <Spinner label="Loading history" />}
-      {isError && <ErrorState message="Could not load your history." onRetry={() => void refetch()} />}
+      {isLoading && <Spinner label="Đang tải lịch sử" />}
+      {isError && <ErrorState message="Không thể tải lịch sử làm bài." onRetry={() => void refetch()} />}
 
       {data && data.content.length === 0 && (
-        <EmptyState title="No quiz attempts yet" description="Completed quizzes will show up here." />
+        <div className="qh-history-empty">
+          <svg aria-hidden="true" viewBox="0 0 64 64">
+            <path d="M17 8h28a7 7 0 0 1 7 7v34a7 7 0 0 1-7 7H17a7 7 0 0 1-7-7V15a7 7 0 0 1 7-7Z" />
+            <path d="M10 19H6m4 12H6m4 12H6M27 25l14 14m0-14L27 39" />
+          </svg>
+          <h2>Chưa có lịch sử làm bài</h2>
+          <p>Bạn chưa hoàn thành bất kỳ bài thi nào.</p>
+          <Link to="/student/quizzes">Đến bài thi của tôi</Link>
+        </div>
       )}
 
       {data && data.content.length > 0 && (
         <div className={`qh-history-list ${isPlaceholderData ? "qh-history-list--refreshing" : ""}`}>
           {data.content.map((item) => (
             <Card key={item.attemptId} className="qh-history-item">
-              <div>
+              <span className={`qh-history-item__badge ${item.result >= 8 ? "is-high" : item.result >= 5 ? "is-mid" : "is-low"}`}>{item.result}</span>
+              <div className="qh-history-item__main">
                 <p className="qh-history-item__title">
-                  <Link to={`/student/quiz/result/${item.attemptId}`}>{item.quizTitle}</Link>
+                  {item.quizTitle}
                 </p>
-                {item.classroomName && <p className="qh-history-item__meta">{item.classroomName}</p>}
+                <p className="qh-history-item__meta"><span>{item.classroomName || "Đề thi cá nhân"}</span> <i className="bi bi-calendar3" /> {formatDateTime(item.startedAt)}</p>
               </div>
-              <p className="qh-history-item__score">{item.result}</p>
+              <Link className="qh-history-item__view" to={`/student/quiz/result/${item.attemptId}`}>Xem chi tiết <i className="bi bi-chevron-right" /></Link>
             </Card>
           ))}
         </div>

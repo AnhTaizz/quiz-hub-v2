@@ -33,6 +33,6 @@ describe("OAuth2RedirectPage (F-02 regression)", () => {
 
   it("shows a friendly message when the callback is missing required params", () => {
     renderAt("/oauth2-redirect.html");
-    expect(screen.getByText(/invalid sign-in response/i)).toBeInTheDocument();
+    expect(screen.getByText(/phản hồi đăng nhập không hợp lệ/i)).toBeInTheDocument();
   });
 });

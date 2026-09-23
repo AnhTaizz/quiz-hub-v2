@@ -8,6 +8,7 @@ import { roleHomePath } from "@/auth/authStorage";
 import { Button } from "@/components/ui/Button";
 import { Spinner } from "@/components/ui/Spinner";
 import { goToSafePath } from "@/utils/routes";
+import { PublicHeader } from "./PublicHeader";
 import "./AuthPages.css";
 
 type ChosenRole = "STUDENT" | "TEACHER";
@@ -15,13 +16,13 @@ type ChosenRole = "STUDENT" | "TEACHER";
 const ROLE_OPTIONS: { value: ChosenRole; title: string; description: string }[] = [
   {
     value: "STUDENT",
-    title: "I'm a student",
-    description: "Join classrooms, take quizzes and track your progress.",
+    title: "Tôi là học viên",
+    description: "Tham gia lớp học, làm bài thi và theo dõi tiến độ.",
   },
   {
     value: "TEACHER",
-    title: "I'm a teacher",
-    description: "Create questions, manage classrooms and review your students' results.",
+    title: "Tôi là giáo viên",
+    description: "Tạo câu hỏi, quản lý lớp học và xem kết quả học viên.",
   },
 ];
 
@@ -61,7 +62,7 @@ export function OAuth2ChooseRolePage() {
       goToSafePath(null, roleHomePath(auth.role), navigate);
     },
     onError: (error) => {
-      setFormError(isApiError(error) ? error.message : "Could not finish creating your account. Please try again.");
+      setFormError(isApiError(error) ? error.message : "Không thể hoàn tất tạo tài khoản. Vui lòng thử lại.");
     },
   });
 
@@ -75,7 +76,8 @@ export function OAuth2ChooseRolePage() {
   if (pending.isLoading) {
     return (
       <div className="qh-auth-page">
-        <Spinner label="Loading your Google sign-in" />
+        <PublicHeader />
+        <Spinner label="Đang tải thông tin đăng nhập Google" />
       </div>
     );
   }
@@ -83,13 +85,14 @@ export function OAuth2ChooseRolePage() {
   if (pending.isError || !pending.data) {
     return (
       <div className="qh-auth-page">
+        <PublicHeader />
         <div className="qh-auth-card">
-          <h1 className="qh-auth-title">Sign-in information missing</h1>
+          <h1 className="qh-auth-title">Thiếu thông tin đăng nhập</h1>
           <p className="qh-auth-error" role="alert">
-            We could not read your Google sign-in details. Please start again.
+            Không thể đọc thông tin đăng nhập Google. Vui lòng bắt đầu lại.
           </p>
           <div className="qh-auth-links">
-            <Link to="/login">Back to sign in</Link>
+            <Link to="/login">Quay lại đăng nhập</Link>
           </div>
         </div>
       </div>
@@ -100,11 +103,11 @@ export function OAuth2ChooseRolePage() {
 
   return (
     <div className="qh-auth-page">
+      <PublicHeader />
       <form className="qh-auth-card qh-role-page" onSubmit={handleSubmit} noValidate>
-        <h1 className="qh-auth-title">Welcome to QuizHub</h1>
+        <h1 className="qh-auth-title">Chào mừng đến QuizHub</h1>
         <p className="qh-role-page__intro">
-          Signed in as <strong>{info.fullName}</strong> ({info.email}). Choose how you will use QuizHub to finish
-          creating your account.
+          Bạn đang đăng nhập với tên <strong>{info.fullName}</strong> ({info.email}). Chọn vai trò để hoàn tất tạo tài khoản.
         </p>
 
         {formError && (
@@ -132,11 +135,11 @@ export function OAuth2ChooseRolePage() {
         </fieldset>
 
         <Button type="submit" disabled={!role} isLoading={mutation.isPending} style={{ width: "100%" }}>
-          Continue
+          Tiếp tục
         </Button>
 
         <div className="qh-auth-links">
-          <Link to="/login">Cancel</Link>
+          <Link to="/login">Hủy</Link>
         </div>
       </form>
     </div>

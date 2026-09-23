@@ -1,0 +1,18 @@
+.qh-quiz-list-hero { position:relative; overflow:hidden; margin-bottom:32px; padding:52px 46px; border-radius:32px; background:linear-gradient(140deg,#1e1b4b 0%,#312e81 50%,#4338ca 100%); box-shadow:0 20px 40px rgba(49,46,129,.15); color:#fff; }
+.qh-quiz-list-hero::before { content:""; position:absolute; inset:0; background-image:radial-gradient(circle,rgba(255,255,255,.06) 1px,transparent 1px); background-size:30px 30px; }
+.qh-quiz-list-hero > div { position:relative; z-index:1; }
+.qh-quiz-list-hero__title { display:flex; align-items:center; gap:16px; margin-bottom:12px; }
+.qh-quiz-list-hero h1 { margin:0; color:#fff; font-size:42px; font-weight:900; letter-spacing:-1px; }
+.qh-quiz-list-hero h1 span { color:#38bdf8; }
+.qh-quiz-list-hero b { padding:7px 14px; border-radius:999px; background:#38bdf8; color:#1e1b4b; font-size:12px; }
+.qh-quiz-list-hero p { max-width:560px; margin:0; color:rgba(255,255,255,.75); line-height:1.65; }
+.qh-quiz-filter { position:sticky; top:88px; z-index:5; display:flex; gap:12px; margin-bottom:34px; padding:12px; border:1px solid #cbd5e1; border-radius:20px; background:rgba(255,255,255,.82); backdrop-filter:blur(12px); box-shadow:0 10px 25px rgba(0,0,0,.03); }
+.qh-quiz-filter label { position:relative; flex:1; }
+.qh-quiz-filter label i { position:absolute; left:16px; top:50%; transform:translateY(-50%); color:#94a3b8; }
+.qh-quiz-filter input, .qh-quiz-filter select { width:100%; height:48px; border:2px solid #cbd5e1; border-radius:14px; background:#fff; color:#475569; font:600 14px var(--font-sans); outline:none; }
+.qh-quiz-filter input { padding:0 16px 0 46px; }
+.qh-quiz-filter select { max-width:260px; padding:0 18px; }
+.qh-quiz-filter input:focus, .qh-quiz-filter select:focus { border-color:#6366f1; box-shadow:0 0 0 4px rgba(99,102,241,.1); }
+.qh-quiz-list-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:22px; }
+@media(max-width:980px){.qh-quiz-list-grid{grid-template-columns:repeat(2,minmax(0,1fr));}}
+@media(max-width:680px){.qh-quiz-list-hero{padding:32px 20px;border-radius:20px}.qh-quiz-list-hero h1{font-size:32px}.qh-quiz-filter{position:static;flex-direction:column}.qh-quiz-filter select{max-width:none}.qh-quiz-list-grid{grid-template-columns:1fr}}

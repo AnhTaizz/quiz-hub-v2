@@ -67,11 +67,11 @@ describe("OAuth2ChooseRolePage", () => {
     const user = userEvent.setup();
     renderPage();
 
-    const continueButton = await screen.findByRole("button", { name: "Continue" });
+    const continueButton = await screen.findByRole("button", { name: "Tiếp tục" });
     expect(continueButton).toBeDisabled();
     expect(screen.getAllByRole("radio")).toHaveLength(2);
 
-    await user.click(screen.getByRole("radio", { name: /i'm a student/i }));
+    await user.click(screen.getByRole("radio", { name: /tôi là học viên/i }));
     expect(continueButton).toBeEnabled();
   });
 
@@ -81,8 +81,8 @@ describe("OAuth2ChooseRolePage", () => {
     const user = userEvent.setup();
     renderPage();
 
-    await user.click(await screen.findByRole("radio", { name: /i'm a student/i }));
-    await user.click(screen.getByRole("button", { name: "Continue" }));
+    await user.click(await screen.findByRole("radio", { name: /tôi là học viên/i }));
+    await user.click(screen.getByRole("button", { name: "Tiếp tục" }));
 
     await waitFor(() => expect(api.oauth2Register).toHaveBeenCalledWith({ role: "STUDENT" }));
     await waitFor(() => expect(screen.getByTestId("where")).toHaveTextContent("/student"));
@@ -96,8 +96,8 @@ describe("OAuth2ChooseRolePage", () => {
     const user = userEvent.setup();
     renderPage();
 
-    await user.click(await screen.findByRole("radio", { name: /i'm a teacher/i }));
-    await user.click(screen.getByRole("button", { name: "Continue" }));
+    await user.click(await screen.findByRole("radio", { name: /tôi là giáo viên/i }));
+    await user.click(screen.getByRole("button", { name: "Tiếp tục" }));
 
     await waitFor(() => expect(assign).toHaveBeenCalledWith("/teacher"));
   });
@@ -108,11 +108,11 @@ describe("OAuth2ChooseRolePage", () => {
     const user = userEvent.setup();
     renderPage();
 
-    await user.click(await screen.findByRole("radio", { name: /i'm a student/i }));
-    await user.click(screen.getByRole("button", { name: "Continue" }));
+    await user.click(await screen.findByRole("radio", { name: /tôi là học viên/i }));
+    await user.click(screen.getByRole("button", { name: "Tiếp tục" }));
 
     expect(await screen.findByRole("alert")).toHaveTextContent("Email đã tồn tại");
-    expect(screen.getByRole("button", { name: "Continue" })).toBeEnabled();
+    expect(screen.getByRole("button", { name: "Tiếp tục" })).toBeEnabled();
     expect(localStorage.getItem("token")).toBeNull();
   });
 
@@ -120,9 +120,9 @@ describe("OAuth2ChooseRolePage", () => {
     api.getPendingOAuth2Registration.mockRejectedValue({ status: 400, code: 1047, message: "Expired" });
     renderPage();
 
-    expect(await screen.findByRole("alert")).toHaveTextContent(/could not read/i);
+    expect(await screen.findByRole("alert")).toHaveTextContent(/không thể đọc/i);
     expect(screen.queryByRole("radio")).not.toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Back to sign in" })).toHaveAttribute("href", "/login");
+    expect(screen.getByRole("link", { name: "Quay lại đăng nhập" })).toHaveAttribute("href", "/login");
   });
 
   it("renders a hostile name as inert text - it is data from our own backend, never markup", async () => {

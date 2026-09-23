@@ -25,16 +25,16 @@ export function PracticeHistoryPanel() {
     queryFn: ({ signal }) => practiceApi.history(signal),
   });
 
-  if (isLoading) return <Spinner label="Loading practice history" />;
-  if (isError) return <ErrorState message="Could not load your practice history." onRetry={() => void refetch()} />;
+  if (isLoading) return <Spinner label="Đang tải lịch sử luyện tập" />;
+  if (isError) return <ErrorState message="Không thể tải lịch sử luyện tập." onRetry={() => void refetch()} />;
   if (!data || data.length === 0) {
     return (
       <EmptyState
-        title="No practice sessions yet"
-        description="Start a practice to see it here."
+        title="Chưa có dữ liệu luyện tập"
+        description="Hãy bắt đầu luyện tập để cải thiện kỹ năng của bạn."
         action={
           <Link to="/student/practice" className="qh-button qh-button--primary">
-            Start practicing
+            Đến Luyện tập
           </Link>
         }
       />
@@ -62,7 +62,7 @@ function PracticeHistoryCard({ item }: { item: PracticeHistoryItem }) {
       savePracticeSession(session);
       navigate("/student/practice/play");
     },
-    onError: (error) => showToast(isApiError(error) ? error.message : "Could not resume this practice.", "error"),
+    onError: (error) => showToast(isApiError(error) ? error.message : "Không thể tiếp tục lượt luyện tập này.", "error"),
   });
 
   const total = item.totalQuestions ?? 0;
@@ -71,25 +71,25 @@ function PracticeHistoryCard({ item }: { item: PracticeHistoryItem }) {
   return (
     <Card className="qh-practice-history__item">
       <div className="qh-practice-history__main">
-        <p className="qh-practice-history__title">{item.categoryName ?? "Practice"}</p>
+        <p className="qh-practice-history__title">{item.categoryName ?? "Luyện tập"}</p>
         <p className="qh-practice-history__meta">
-          {formatDateTime(item.createdAt)} · {item.isRandom ? "Random" : "In order"}
-          {!item.isCompleted && total > 0 && ` · ${item.answeredQuestions ?? 0} of ${total} answered`}
+          {formatDateTime(item.createdAt)} · {item.isRandom ? "Ngẫu nhiên" : "Theo thứ tự"}
+          {!item.isCompleted && total > 0 && ` · ${item.answeredQuestions ?? 0}/${total} câu`}
         </p>
       </div>
       <div className="qh-practice-history__status">
         {item.isCompleted ? (
           <>
-            <Badge tone="success">{percent !== null ? `${percent}%` : "Completed"}</Badge>
+            <Badge tone="success">{percent !== null ? `${percent}%` : "Hoàn thành"}</Badge>
             <Link to={`/student/practice/review/${item.id}`} className="qh-button qh-button--secondary">
-              Review
+              Xem kết quả
             </Link>
           </>
         ) : (
           <>
-            <Badge tone="warning">In progress</Badge>
+            <Badge tone="warning">Đang làm</Badge>
             <Button type="button" variant="secondary" isLoading={resume.isPending} onClick={() => resume.mutate()}>
-              Resume
+              Làm tiếp
             </Button>
           </>
         )}

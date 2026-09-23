@@ -1,5 +1,5 @@
 .qh-profile-page {
-  min-height: 100%;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
 }
@@ -26,20 +26,20 @@
 
 .qh-profile-main {
   width: 100%;
-  max-width: 880px;
+  max-width: 980px;
   margin: 0 auto;
-  padding: var(--space-5);
+  padding: 40px 24px;
 }
 
-.qh-profile-title {
-  font-size: 24px;
-  margin: 0 0 var(--space-5);
+.qh-profile-page > .qh-shell__header + .qh-profile-main {
+  padding-top: 116px;
 }
 
 .qh-profile-grid {
   display: grid;
-  grid-template-columns: 260px 1fr;
-  gap: var(--space-5);
+  grid-template-columns: 280px minmax(0, 580px);
+  justify-content: center;
+  gap: 28px;
   align-items: start;
 }
 
@@ -48,18 +48,22 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
-  gap: var(--space-2);
+  padding: 40px 28px;
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.07);
 }
 
 .qh-avatar {
   border-radius: 50%;
   overflow: hidden;
-  background: var(--color-primary);
+  background: linear-gradient(135deg, #2563eb, #7c3aed);
   color: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  border: 4px solid #fff;
+  box-shadow: 0 8px 24px rgba(37, 99, 235, 0.25);
+  margin-bottom: 18px;
 }
 
 .qh-avatar__img {
@@ -69,18 +73,22 @@
 }
 
 .qh-avatar__initials {
-  font-size: 32px;
+  font-family: var(--font-heading);
+  font-size: 36px;
   font-weight: 800;
 }
 
 .qh-profile-name {
-  margin: var(--space-2) 0 0;
-  font-weight: 700;
+  margin: 0 0 6px;
+  color: #1a1a2e;
+  font-family: var(--font-heading);
+  font-size: 18px;
+  font-weight: 800;
   overflow-wrap: anywhere;
 }
 
 .qh-profile-email {
-  margin: 0;
+  margin: 0 0 16px;
   font-size: 13px;
   color: var(--color-text-muted);
   overflow-wrap: anywhere;
@@ -88,10 +96,81 @@
 
 .qh-profile-role {
   font-size: 12px;
-  font-weight: 700;
-  padding: 2px var(--space-3);
+  font-weight: 800;
+  padding: 6px 16px;
   border-radius: var(--radius-pill);
-  background: var(--color-border);
+  color: #fff;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  background: linear-gradient(135deg, #64748b, #475569);
+}
+
+.qh-profile-avatar-card--teacher .qh-profile-role {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+}
+
+.qh-profile-avatar-card--admin .qh-profile-role {
+  background: linear-gradient(135deg, #7c3aed, #5b21b6);
+}
+
+.qh-profile-form-card {
+  padding: 36px 40px;
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.07);
+}
+
+.qh-profile-form-header {
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.qh-profile-form-header h1 {
+  margin: 0 0 4px;
+  color: #1a1a2e;
+  font-size: 22px;
+  font-weight: 800;
+}
+
+.qh-profile-form-header p {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 14px;
+}
+
+.qh-profile-form-card .qh-field {
+  gap: 8px;
+  margin-bottom: 22px;
+}
+
+.qh-profile-form-card .qh-field__label {
+  color: #1a1a2e;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.qh-profile-form-card .qh-field__input {
+  height: 48px;
+  padding: 0 16px;
+  border-width: 1.5px;
+  border-radius: 12px;
+  background: #f8fafc;
+  color: #1a1a2e;
+  transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.qh-profile-form-card .qh-field__input:focus {
+  outline: none;
+  border-color: #2563eb;
+  background: #fff;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.08);
+}
+
+.qh-profile-form-card .qh-field__input:disabled {
+  cursor: not-allowed;
+  background: #f1f5f9;
+  color: var(--color-text-muted);
 }
 
 .qh-profile-avatar-actions {
@@ -107,10 +186,20 @@
 }
 
 .qh-profile-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-3);
-  margin-top: var(--space-4);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  margin-top: 28px;
+}
+
+.qh-profile-save {
+  background: #2563eb;
+}
+
+.qh-profile-save:not(:disabled):hover {
+  background: #1d4ed8;
+  box-shadow: 0 6px 18px rgba(37, 99, 235, 0.3);
+  transform: translateY(-1px);
 }
 
 @media (max-width: 768px) {
@@ -119,11 +208,20 @@
   }
 
   .qh-profile-main {
-    padding: var(--space-4);
+    padding: 24px 16px;
   }
 
   .qh-profile-header {
     padding: var(--space-3) var(--space-4);
+  }
+
+  .qh-profile-form-card,
+  .qh-profile-avatar-card {
+    padding: 28px 22px;
+  }
+
+  .qh-profile-actions {
+    grid-template-columns: 1fr;
   }
 }
 

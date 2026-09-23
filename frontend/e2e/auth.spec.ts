@@ -8,9 +8,9 @@ function originPattern(baseURL: string | undefined, path: string): RegExp {
 test.describe("authentication", () => {
   test("wrong credentials show a friendly error and stay on the login page", async ({ page }) => {
     await page.goto("/login");
-    await page.getByLabel("Email").fill("nobody@example.com");
-    await page.getByLabel("Password", { exact: true }).fill("definitely-wrong");
-    await page.getByRole("button", { name: "Sign in" }).click();
+    await page.getByLabel("Địa chỉ email").fill("nobody@example.com");
+    await page.getByLabel("Mật khẩu", { exact: true }).fill("definitely-wrong");
+    await page.getByRole("button", { name: "Đăng nhập", exact: true }).click();
 
     await expect(page.getByRole("alert")).toBeVisible();
     await expect(page).toHaveURL(/\/login$/);
@@ -48,7 +48,8 @@ test.describe("authentication", () => {
   test("logging out returns the user to a protected-route login redirect", async ({ page, world }) => {
     await loginAsStudent(page, world);
     await expect(page).toHaveURL(/\/student$/);
-    await page.getByRole("button", { name: "Log out" }).click();
+    await page.locator(".qh-shell__account summary").click();
+    await page.getByRole("button", { name: "Đăng xuất" }).click();
     await page.goto("/student");
     await expect(page).toHaveURL(/\/login/);
   });

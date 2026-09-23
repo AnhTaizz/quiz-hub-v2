@@ -62,7 +62,7 @@ export function NotificationBell() {
     else if (target.kind === "server") window.location.assign(target.path);
   }
 
-  const label = count > 0 ? `Notifications, ${count} unread` : "Notifications";
+  const label = count > 0 ? `Thông báo, ${count} chưa đọc` : "Thông báo";
 
   return (
     <div className="qh-bell" ref={containerRef}>
@@ -86,22 +86,22 @@ export function NotificationBell() {
       </button>
 
       {open && (
-        <div id={panelId} className="qh-bell__panel" role="region" aria-label="Notifications">
+        <div id={panelId} className="qh-bell__panel" role="region" aria-label="Thông báo">
           <div className="qh-bell__panel-header">
-            <h2 className="qh-bell__title">Notifications</h2>
+            <h2 className="qh-bell__title">Thông báo</h2>
             <button
               type="button"
               className="qh-bell__mark-all"
               onClick={() => markAll.mutate()}
               disabled={markAll.isPending || count === 0}
             >
-              Mark all as read
+              Đánh dấu đã đọc tất cả
             </button>
           </div>
 
-          {list.isLoading && <Spinner label="Loading notifications" />}
-          {list.isError && <ErrorState message="Could not load notifications." onRetry={() => void list.refetch()} />}
-          {list.data && list.data.length === 0 && <EmptyState title="No notifications yet" />}
+          {list.isLoading && <Spinner label="Đang tải thông báo" />}
+          {list.isError && <ErrorState message="Không thể tải thông báo." onRetry={() => void list.refetch()} />}
+          {list.data && list.data.length === 0 && <EmptyState title="Chưa có thông báo" />}
 
           {list.data && list.data.length > 0 && (
             <ul className="qh-bell__list">
@@ -112,7 +112,7 @@ export function NotificationBell() {
                     className={`qh-bell__item ${item.read ? "" : "qh-bell__item--unread"}`}
                     onClick={() => void handleItemClick(item)}
                   >
-                    {!item.read && <span className="visually-hidden">Unread: </span>}
+                    {!item.read && <span className="visually-hidden">Chưa đọc: </span>}
                     <span className="qh-bell__item-title">{item.title}</span>
                     <span className="qh-bell__item-message">{item.message}</span>
                     <span className="qh-bell__item-time">{formatDateTime(item.createdAt)}</span>
