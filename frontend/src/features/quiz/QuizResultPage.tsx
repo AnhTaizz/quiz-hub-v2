@@ -1,11 +1,10 @@
-import { useParams } from "react-router";
+import { Link, useParams } from "react-router";
 import { useQuery } from "@tanstack/react-query";
 import { quizApi } from "@/api/quiz.api";
 import { Spinner } from "@/components/ui/Spinner";
 import { ErrorState } from "@/components/feedback/ErrorState";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
-import { PageHeader } from "@/components/layout/PageHeader";
 import "./QuizResultPage.css";
 
 export function QuizResultPage() {
@@ -18,25 +17,30 @@ export function QuizResultPage() {
     enabled: Number.isFinite(id),
   });
 
-  if (isLoading) return <Spinner label="Loading result" />;
-  if (isError || !data) return <ErrorState message="Could not load this result." onRetry={() => refetch()} />;
+  if (isLoading) return <Spinner label="Đang tải kết quả" />;
+  if (isError || !data) return <ErrorState message="Không thể tải kết quả bài thi." onRetry={() => refetch()} />;
 
   return (
-    <div>
-      <PageHeader title={data.quizTitle} description={`Score: ${data.score}`} />
+    <div className="qh-result-page">
+      <section className="qh-result-hero">
+        <Link to="/student/history" className="qh-result-hero__back"><i className="bi bi-arrow-left" /> Quay lại lịch sử</Link>
+        <span className="qh-result-hero__eyebrow">KẾT QUẢ BÀI THI</span>
+        <h1>{data.quizTitle}</h1>
+        <div className="qh-result-hero__score"><strong>{data.score}</strong><span>Điểm số</span></div>
+      </section>
 
       <div className="qh-result-summary">
         <Card>
           <p className="qh-result-summary__value">{data.correctNum}</p>
-          <p className="qh-result-summary__label">Correct</p>
+          <p className="qh-result-summary__label">Câu đúng</p>
         </Card>
         <Card>
           <p className="qh-result-summary__value">{data.incorrectNum}</p>
-          <p className="qh-result-summary__label">Incorrect</p>
+          <p className="qh-result-summary__label">Câu sai</p>
         </Card>
         <Card>
           <p className="qh-result-summary__value">{data.totalNum}</p>
-          <p className="qh-result-summary__label">Total</p>
+          <p className="qh-result-summary__label">Tổng số câu</p>
         </Card>
       </div>
 
@@ -44,17 +48,17 @@ export function QuizResultPage() {
         {data.questions.map((question, index) => (
           <Card key={question.questionId} className="qh-result-question">
             <div className="qh-result-question__header">
-              <span>Question {index + 1}</span>
+              <span>Câu {index + 1}</span>
               {/* Rendered exactly as the backend reports it - the frontend
                   never infers or overrides answer visibility itself. */}
               <Badge tone={question.isCorrect ? "success" : "danger"}>
-                {question.isCorrect ? "Correct" : "Incorrect"}
+                {question.isCorrect ? "Chính xác" : "Chưa chính xác"}
               </Badge>
             </div>
             <p className="qh-result-question__text">{question.text}</p>
 
             {question.selectedText != null && question.selectedText !== "" ? (
-              <p className="qh-result-question__your-answer">Your answer: {question.selectedText}</p>
+              <p className="qh-result-question__your-answer"><b>Câu trả lời của bạn:</b> {question.selectedText}</p>
             ) : (
               <ul className="qh-result-question__answers">
                 {question.answers.map((answer) => {

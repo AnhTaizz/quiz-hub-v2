@@ -74,7 +74,7 @@ describe("PracticePlayPage", () => {
 
   it("offers to set up a practice when nothing is in progress", () => {
     renderPlay();
-    expect(screen.getByText("No practice in progress")).toBeInTheDocument();
+    expect(screen.getByText("Chưa có phiên luyện tập")).toBeInTheDocument();
   });
 
   it("shows a visible save error with a retry that keeps the chosen answer", async () => {
@@ -98,11 +98,11 @@ describe("PracticePlayPage", () => {
     renderPlay();
 
     await user.click(await screen.findByRole("radio", { name: "A" }));
-    await user.click(screen.getByRole("button", { name: "Submit practice" }));
+    await user.click(screen.getByRole("button", { name: "Nộp bài luyện tập" }));
     expect(api.submit).not.toHaveBeenCalled();
-    expect(screen.getByText(/1 of 1 questions/)).toBeInTheDocument();
+    expect(screen.getByText(/1\/1 câu hỏi/)).toBeInTheDocument();
 
-    const confirm = screen.getByRole("button", { name: "Submit" });
+    const confirm = screen.getByRole("button", { name: "Nộp bài" });
     await user.dblClick(confirm);
     await waitFor(() => expect(screen.getByTestId("where")).toHaveTextContent("/student/practice/review/77"));
     expect(api.submit).toHaveBeenCalledTimes(1);
@@ -116,10 +116,10 @@ describe("PracticePlayPage", () => {
     renderPlay();
 
     await user.click(await screen.findByRole("radio", { name: "A" }));
-    await user.click(screen.getByRole("button", { name: "Submit practice" }));
-    await user.click(screen.getByRole("button", { name: "Submit" }));
+    await user.click(screen.getByRole("button", { name: "Nộp bài luyện tập" }));
+    await user.click(screen.getByRole("button", { name: "Nộp bài" }));
 
-    expect(await screen.findByText(/Server exploded|Could not submit/)).toBeInTheDocument();
+    expect(await screen.findByText(/Server exploded|Không thể nộp bài/)).toBeInTheDocument();
     expect(screen.queryByTestId("where")).not.toBeInTheDocument();
     expect(screen.getByRole("radio", { name: "A" })).toBeChecked();
   });

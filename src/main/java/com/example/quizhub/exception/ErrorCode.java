@@ -61,7 +61,11 @@ public enum ErrorCode {
     // Authenticated but not permitted (403). Distinct from UNAUTHORIZED (401, not authenticated).
     FORBIDDEN(1045, "Bạn không có quyền truy cập tài nguyên này", HttpStatus.FORBIDDEN),
     // Also returned for a notification that exists but belongs to someone else (never reveal which).
-    NOTIFICATION_NOT_FOUND(1046, "Không tìm thấy thông báo", HttpStatus.NOT_FOUND);
+    NOTIFICATION_NOT_FOUND(1046, "Không tìm thấy thông báo", HttpStatus.NOT_FOUND),
+    // Missing/expired/already-consumed OAuth2 registration ticket, or no Google callback happened at all.
+    // One code for all three: never reveal which case applies.
+    OAUTH2_REGISTRATION_INVALID(1047, "Phiên đăng ký Google đã hết hạn hoặc không hợp lệ, vui lòng đăng nhập lại bằng Google", HttpStatus.BAD_REQUEST),
+    INVALID_ROLE(1048, "Vai trò không hợp lệ", HttpStatus.BAD_REQUEST);
 
     final int code;
     final String message;

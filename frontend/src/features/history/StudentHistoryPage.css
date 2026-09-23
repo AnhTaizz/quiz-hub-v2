@@ -1,60 +1,26 @@
-.qh-history-list {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-}
-
-.qh-history-list--refreshing {
-  opacity: 0.6;
-}
-
-.qh-history-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-3);
-}
-
-.qh-history-item__title {
-  margin: 0;
-  font-weight: 600;
-  overflow-wrap: anywhere;
-}
-
-.qh-history-item__meta {
-  margin: 0;
-  font-size: 13px;
-  color: var(--color-text-muted);
-}
-
-.qh-history-item__score {
-  margin: 0;
-  font-weight: 800;
-  font-size: 18px;
-  color: var(--color-primary);
-  flex-shrink: 0;
-}
-
-.qh-history-tabs {
-  display: flex;
-  gap: var(--space-2);
-  margin-bottom: var(--space-4);
-  border-bottom: 1px solid var(--color-border);
-}
-
-.qh-history-tab {
-  min-height: 44px;
-  padding: 0 var(--space-4);
-  background: none;
-  border: none;
-  border-bottom: 3px solid transparent;
-  font-weight: 700;
-  font-size: 15px;
-  color: var(--color-text-muted);
-  cursor: pointer;
-}
-
-.qh-history-tab--active {
-  color: var(--color-primary);
-  border-bottom-color: var(--color-primary);
-}
+.qh-shell:has(.qh-history-page) { background:#fff; }
+.qh-shell__content:has(.qh-history-page) { max-width:none;padding-left:0;padding-right:0;background:#fff; }
+.qh-history-page { width:100%;max-width:1220px;min-height:calc(100vh - 90px);margin:0 auto;padding:22px 34px 70px; }
+.qh-history-toolbar { display:flex;align-items:flex-start;justify-content:space-between;gap:36px;padding:10px 0 25px;border-bottom:1px solid #eef2f7; }
+.qh-history-heading>span { display:block;margin-bottom:7px;color:#64748b;font-size:11px;font-weight:900;letter-spacing:.14em; }
+.qh-history-heading h1 { margin:0;color:#111827;font-size:36px;font-weight:900;letter-spacing:-.04em; }
+.qh-history-heading p { margin:8px 0 0;color:#8a96a9;font-size:14px; }
+.qh-history-tabs { display:flex;gap:5px;padding:5px;border-radius:13px;background:#f1f5f9; }
+.qh-history-tab { display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:42px;padding:0 18px;border:0;border-radius:9px;color:#718096;background:transparent;font-size:13px;font-weight:800;white-space:nowrap;cursor:pointer;transition:.18s ease; }
+.qh-history-tab i { color:#94a3b8; }
+.qh-history-tab:hover { color:#334155;background:rgba(255,255,255,.65); }
+.qh-history-tab--active { color:#4f46e5;background:#fff;box-shadow:0 3px 10px rgba(15,23,42,.08); }
+.qh-history-tab--active i { color:#6366f1; }
+.qh-history-page [role="tabpanel"] { padding-top:26px; }
+.qh-history-empty { display:flex;min-height:430px;flex-direction:column;align-items:center;justify-content:center;text-align:center; }
+.qh-history-empty>svg { width:62px;height:62px;fill:none;stroke:#dfe6ef;stroke-width:4;stroke-linecap:round;stroke-linejoin:round; }
+.qh-history-empty h2 { margin:25px 0 8px;color:#475569;font-size:22px;font-weight:800; }
+.qh-history-empty p { margin:0;color:#94a3b8;font-size:14px; }
+.qh-history-empty a { margin-top:24px;padding:11px 23px;border-radius:10px;color:#fff;background:#1677ff;text-decoration:none;font-size:13px;font-weight:800;box-shadow:0 7px 17px rgba(22,119,255,.2); }
+.qh-history-list { display:flex;flex-direction:column;gap:12px;max-width:1000px;margin:0 auto; }.qh-history-list--refreshing{opacity:.6}
+.qh-history-item { display:flex;align-items:center;gap:20px;padding:20px 22px;border:1px solid #edf1f6;border-radius:13px;box-shadow:0 4px 14px rgba(15,23,42,.035);transition:.18s ease; }.qh-history-item:hover{border-color:#dce4ee;box-shadow:0 10px 24px rgba(15,23,42,.06)}
+.qh-history-item__badge { display:grid;width:50px;height:50px;flex:0 0 50px;place-items:center;border-radius:11px;font-size:17px;font-weight:900; }.qh-history-item__badge.is-high{color:#15803d;background:#dcfce7}.qh-history-item__badge.is-mid{color:#d97706;background:#fef3c7}.qh-history-item__badge.is-low{color:#dc2626;background:#fee2e2}
+.qh-history-item__main { flex:1;min-width:0; }.qh-history-item__title{margin:0 0 7px;color:#1e293b;font-weight:800}.qh-history-item__meta{margin:0;color:#8490a4;font-size:12px}.qh-history-item__meta span{display:inline-block;margin-right:10px;padding:4px 8px;border-radius:6px;color:#475569;background:#f1f5f9;font-weight:700}.qh-history-item__view{padding:10px 17px;border-radius:9px;color:#4f46e5;background:#eef2ff;text-decoration:none;font-size:13px;font-weight:800;white-space:nowrap}
+.qh-history-page .qh-practice-history { max-width:1000px;margin:0 auto; }
+@media(max-width:760px){.qh-history-page{padding:15px 18px 50px}.qh-history-toolbar{flex-direction:column;gap:20px}.qh-history-tabs{width:100%}.qh-history-tab{flex:1;padding:0 9px}.qh-history-heading h1{font-size:30px}.qh-history-empty{min-height:360px}.qh-history-item{align-items:flex-start;flex-wrap:wrap}.qh-history-item__main{flex-basis:calc(100% - 70px)}.qh-history-item__view{margin-left:70px}}
+@media(max-width:430px){.qh-history-tabs{display:grid;grid-template-columns:1fr}.qh-history-item__view{width:100%;margin-left:0;text-align:center}}

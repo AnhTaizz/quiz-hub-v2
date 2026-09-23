@@ -1,0 +1,1 @@
+create table _oauth2_registration_ticket (token varchar(64) not null, avatar_url TEXT, created_at timestamp(6), consumed_at timestamp(6), email varchar(100) not null, expires_at timestamp(6) not null, full_name varchar(255) not null, primary key (token));

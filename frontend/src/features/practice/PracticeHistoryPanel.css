@@ -13,6 +13,14 @@
   justify-content: space-between;
   gap: var(--space-4);
   flex-wrap: wrap;
+  padding: 22px 24px;
+  border-radius: 16px;
+  transition: transform .2s, box-shadow .2s;
+}
+
+.qh-practice-history__item:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 25px rgba(0, 0, 0, .06);
 }
 
 .qh-practice-history__main {

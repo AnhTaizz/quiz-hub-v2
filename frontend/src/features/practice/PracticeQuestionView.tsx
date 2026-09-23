@@ -6,9 +6,9 @@ import { correctTexts, evaluateAnswer, seededShuffle, type AnswerValue } from ".
 import "./PracticeQuestionView.css";
 
 const TYPE_LABEL: Record<string, string> = {
-  SINGLE_CHOICE: "Choose one",
-  MULTIPLE_CHOICE: "Choose all that apply",
-  FILL_IN_BLANK: "Fill in the blank",
+  SINGLE_CHOICE: "Chọn một đáp án",
+  MULTIPLE_CHOICE: "Chọn tất cả đáp án đúng",
+  FILL_IN_BLANK: "Điền vào chỗ trống",
 };
 
 interface Props {
@@ -68,7 +68,7 @@ export function PracticeQuestionView({
     <section className="qh-practice-q" id={`practice-q-${question.id}`} aria-label={`Question ${number}`}>
       <div className="qh-practice-q__header">
         <p className="qh-practice-q__meta">
-          Question {number} · {TYPE_LABEL[question.type] ?? question.type}
+          Câu {number} · {TYPE_LABEL[question.type] ?? question.type}
         </p>
         <SaveIndicator status={saveStatus} onRetry={onRetry} />
       </div>
@@ -122,15 +122,15 @@ export function PracticeQuestionView({
 
       {needsCheckButton && (
         <Button type="button" variant="secondary" onClick={onCheck} disabled={disabled || (value.ids.length === 0 && value.text.trim() === "")}>
-          Check answer
+          Kiểm tra đáp án
         </Button>
       )}
 
       {reveal && (
         <p className={`qh-practice-q__verdict ${verdict ? "qh-practice-q__verdict--ok" : "qh-practice-q__verdict--bad"}`} role="status">
-          {verdict ? "Correct" : "Incorrect"}
+          {verdict ? "Chính xác" : "Chưa chính xác"}
           {question.type === "FILL_IN_BLANK" && verdict === false && correctTexts(question).length > 0 && (
-            <> - correct answer: {correctTexts(question).join(" or ")}</>
+            <> - đáp án đúng: {correctTexts(question).join(" hoặc ")}</>
           )}
         </p>
       )}

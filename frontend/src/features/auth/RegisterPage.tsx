@@ -9,6 +9,7 @@ import { goToSafePath } from "@/utils/routes";
 import { Input } from "@/components/ui/Input";
 import { PasswordInput } from "@/components/ui/PasswordInput";
 import { Button } from "@/components/ui/Button";
+import { PublicHeader } from "./PublicHeader";
 import "./AuthPages.css";
 
 type RegisterRole = "STUDENT" | "TEACHER";
@@ -36,7 +37,7 @@ export function RegisterPage() {
       goToSafePath(null, roleHomePath(auth.role), navigate);
     },
     onError: (error) => {
-      setFormError(isApiError(error) ? error.message : "Registration failed. Please try again.");
+      setFormError(isApiError(error) ? error.message : "Đăng ký thất bại. Vui lòng thử lại.");
     },
   });
 
@@ -44,7 +45,7 @@ export function RegisterPage() {
     event.preventDefault();
     setFormError(null);
     if (password !== confirmPassword) {
-      setFormError("Passwords do not match.");
+      setFormError("Mật khẩu xác nhận không khớp.");
       return;
     }
     mutation.mutate();
@@ -52,8 +53,11 @@ export function RegisterPage() {
 
   return (
     <div className="qh-auth-page">
+      <PublicHeader />
       <form className="qh-auth-card" onSubmit={handleSubmit} noValidate>
-        <h1 className="qh-auth-title">Create your account</h1>
+        <div className="qh-auth-card__icon"><i className="bi bi-person-plus" /></div>
+        <h1 className="qh-auth-title">Tạo tài khoản QuizHub</h1>
+        <p className="qh-auth-subtitle">Bắt đầu học và giảng dạy theo cách thông minh hơn</p>
 
         {formError && (
           <p className="qh-auth-error" role="alert">
@@ -62,7 +66,7 @@ export function RegisterPage() {
         )}
 
         <Input
-          label="Full name"
+          label="Họ và tên"
           name="fullName"
           autoComplete="name"
           required
@@ -79,7 +83,7 @@ export function RegisterPage() {
           onChange={(e) => setEmail(e.target.value)}
         />
         <PasswordInput
-          label="Password"
+          label="Mật khẩu"
           name="password"
           autoComplete="new-password"
           minLength={6}
@@ -88,7 +92,7 @@ export function RegisterPage() {
           onChange={(e) => setPassword(e.target.value)}
         />
         <PasswordInput
-          label="Confirm password"
+          label="Xác nhận mật khẩu"
           name="confirmPassword"
           autoComplete="new-password"
           minLength={6}
@@ -98,7 +102,7 @@ export function RegisterPage() {
         />
 
         <fieldset className="qh-role-fieldset">
-          <legend>I am a...</legend>
+          <legend>Bạn sử dụng QuizHub với vai trò</legend>
           <label className="qh-role-option">
             <input
               type="radio"
@@ -107,7 +111,7 @@ export function RegisterPage() {
               checked={role === "STUDENT"}
               onChange={() => setRole("STUDENT")}
             />
-            Student
+            <i className="bi bi-mortarboard" /> Học viên
           </label>
           <label className="qh-role-option">
             <input
@@ -117,16 +121,16 @@ export function RegisterPage() {
               checked={role === "TEACHER"}
               onChange={() => setRole("TEACHER")}
             />
-            Teacher
+            <i className="bi bi-easel2" /> Giáo viên
           </label>
         </fieldset>
 
         <Button type="submit" isLoading={mutation.isPending} style={{ width: "100%" }}>
-          Create account
+          Tạo tài khoản
         </Button>
 
         <div className="qh-auth-links">
-          <Link to="/login">Already have an account?</Link>
+          <span>Đã có tài khoản? <Link to="/login">Đăng nhập</Link></span>
         </div>
       </form>
     </div>

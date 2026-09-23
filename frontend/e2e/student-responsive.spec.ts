@@ -41,7 +41,7 @@ test("key student routes have no horizontal overflow from 360px to 1440px", asyn
   // width would (correctly) end the quiz.
   await page.setViewportSize({ width: 1280, height: 800 });
   await page.goto("/student/quizzes");
-  await page.getByRole("link", { name: /start quiz|resume quiz/i }).first().click();
+  await page.locator(".qh-quiz-card__action").getByRole("link", { name: /làm bài|tiếp tục/i }).first().click();
   await expect(page.getByRole("timer")).toBeVisible();
   // The fullscreen gate is deliberately NOT passed: a fullscreen window cannot be resized (Chromium refuses
   // setWindowBounds), and the quiz layout is fully rendered - and measured - underneath the overlay.
@@ -56,7 +56,7 @@ test("key student routes have no horizontal overflow from 360px to 1440px", asyn
   for (const width of WIDTHS) {
     await page.setViewportSize({ width, height: 800 });
     await page.goto("/login");
-    await expect(page.getByRole("button", { name: "Sign in" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Đăng nhập", exact: true })).toBeVisible();
     await noHorizontalOverflow(page, "login", width);
   }
 });

@@ -2,6 +2,7 @@ import { httpClient } from "./httpClient";
 import type {
   AuthResponse,
   LoginRequest,
+  OAuth2PendingRegistration,
   OAuth2RegisterRequest,
   RegisterRequest,
   ResetPasswordRequest,
@@ -23,6 +24,12 @@ export const authApi = {
   resetPassword: (payload: ResetPasswordRequest) =>
     httpClient.post<string>("/auth/reset-password", { body: payload }),
 
+  // The identity behind this call comes from the oauth2_reg_ticket cookie the backend set after a real
+  // Google login (see docs/backend/OAUTH2_REGISTRATION_SECURITY.md); httpClient already sends cookies
+  // same-origin, so no extra wiring is needed here.
   oauth2Register: (payload: OAuth2RegisterRequest) =>
     httpClient.post<AuthResponse>("/auth/oauth2-register", { body: payload }),
+
+  getPendingOAuth2Registration: (signal?: AbortSignal) =>
+    httpClient.get<OAuth2PendingRegistration>("/auth/oauth2-register/pending", { signal }),
 };

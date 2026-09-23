@@ -47,8 +47,8 @@ function QuizPlayPage({ source }: { source: QuizSource }) {
     onViolation: (result, code) => {
       if (code === "FULLSCREEN_EXIT") setEverLeftFullscreen(true);
       showToast(
-        `Warning ${result.violationCount} of ${MAX_VIOLATIONS}: leaving the exam is recorded. ` +
-          `${Math.max(MAX_VIOLATIONS - result.violationCount, 0)} more and the quiz is submitted automatically.`,
+        `Cảnh báo ${result.violationCount}/${MAX_VIOLATIONS}: hệ thống đã ghi nhận bạn rời màn hình thi. ` +
+          `Còn ${Math.max(MAX_VIOLATIONS - result.violationCount, 0)} lần trước khi bài tự động được nộp.`,
         "warning",
       );
     },
@@ -58,7 +58,7 @@ function QuizPlayPage({ source }: { source: QuizSource }) {
       setAutoSubmitted(true);
       clearLocalAttempt(result.attemptId);
       void exitFullscreenQuietly();
-      showToast(`Your quiz was submitted automatically after ${result.violationCount} violations.`, "error");
+      showToast(`Bài thi đã tự động được nộp sau ${result.violationCount} lần vi phạm.`, "error");
       redirectTimer.current = setTimeout(
         () => navigate(`/student/quiz/result/${result.attemptId}`, { replace: true }),
         1500,
@@ -79,7 +79,7 @@ function QuizPlayPage({ source }: { source: QuizSource }) {
         navigate(`/student/quiz/result/${result.id}`, { replace: true });
       }
     } catch (error) {
-      showToast(isApiError(error) ? error.message : "Could not submit quiz. Your answers are saved locally - please try again.", "error");
+      showToast(isApiError(error) ? error.message : "Không thể nộp bài. Câu trả lời vẫn được lưu trên thiết bị, vui lòng thử lại.", "error");
       // Failed: the attempt is still open, so monitoring resumes (active flips back to true).
       setSubmitting(false);
       setConfirmOpen(false);
@@ -107,16 +107,16 @@ function QuizPlayPage({ source }: { source: QuizSource }) {
   );
 
   if (attempt.isLoading) {
-    return <Spinner label="Loading quiz" />;
+    return <Spinner label="Đang tải bài thi" />;
   }
 
   if (attempt.isError || !state) {
-    return <ErrorState message={attempt.errorMessage ?? "Could not load this quiz."} onRetry={() => attempt.refetch()} />;
+    return <ErrorState message={attempt.errorMessage ?? "Không thể tải bài thi này."} onRetry={() => attempt.refetch()} />;
   }
 
   const question = state.questions[state.currentIndex];
   if (!question) {
-    return <ErrorState message="This question could not be loaded." onRetry={() => attempt.refetch()} />;
+    return <ErrorState message="Không thể tải câu hỏi này." onRetry={() => attempt.refetch()} />;
   }
   const answer = state.answers[question.id] ?? { answerIds: [], selectedText: null };
   const saveStatus = state.saveStatus[question.id] ?? "idle";
@@ -133,7 +133,7 @@ function QuizPlayPage({ source }: { source: QuizSource }) {
       <header className="qh-quiz-play__header">
         <h1 className="qh-quiz-play__title">{state.quizTitle}</h1>
         <Button variant="ghost" type="button" onClick={() => setExitOpen(true)}>
-          Exit exam
+          <i className="bi bi-box-arrow-left" /> Thoát bài thi
         </Button>
         <div
           className={`qh-quiz-play__timer ${countdown.isCritical ? "qh-quiz-play__timer--critical" : ""}`}
@@ -180,7 +180,7 @@ function QuizPlayPage({ source }: { source: QuizSource }) {
       <section className="qh-quiz-play__question" aria-label={`Question ${state.currentIndex + 1}`}>
         <div className="qh-quiz-play__question-header">
           <p className="qh-quiz-play__question-count">
-            Question {state.currentIndex + 1} of {state.questions.length}
+            Câu {state.currentIndex + 1} / {state.questions.length}
           </p>
           <SaveIndicator status={saveStatus} onRetry={() => attempt.retrySave(question.id)} />
         </div>
@@ -235,7 +235,7 @@ function QuizPlayPage({ source }: { source: QuizSource }) {
             checked={!!state.flags[question.id]}
             onChange={() => attempt.toggleFlag(question.id)}
           />
-          Flag for review
+          <i className="bi bi-flag" /> Đánh dấu xem lại
         </label>
       </section>
 
@@ -245,54 +245,52 @@ function QuizPlayPage({ source }: { source: QuizSource }) {
           onClick={() => attempt.goToQuestion(Math.max(0, state.currentIndex - 1))}
           disabled={state.currentIndex === 0}
         >
-          Previous
+          <i className="bi bi-arrow-left" /> Câu trước
         </Button>
         {state.currentIndex < state.questions.length - 1 ? (
-          <Button onClick={() => attempt.goToQuestion(state.currentIndex + 1)}>Next</Button>
+          <Button onClick={() => attempt.goToQuestion(state.currentIndex + 1)}>Câu tiếp <i className="bi bi-arrow-right" /></Button>
         ) : (
-          <Button onClick={() => setConfirmOpen(true)}>Submit quiz</Button>
+          <Button onClick={() => setConfirmOpen(true)}><i className="bi bi-send" /> Nộp bài thi</Button>
         )}
       </footer>
 
       <Modal
         isOpen={confirmOpen}
         onClose={() => (submitting ? undefined : setConfirmOpen(false))}
-        title="Submit quiz?"
+        title="Xác nhận nộp bài?"
         footer={
           <>
             <Button variant="secondary" onClick={() => setConfirmOpen(false)} disabled={submitting}>
-              Keep working
+              Tiếp tục làm bài
             </Button>
             <Button onClick={handleSubmit} isLoading={submitting}>
-              Submit
+              Nộp bài
             </Button>
           </>
         }
       >
         <p>
-          You have answered {answeredCount} of {state.questions.length} questions. Once submitted, you cannot
-          change your answers.
+          Bạn đã trả lời {answeredCount}/{state.questions.length} câu hỏi. Sau khi nộp bài, bạn sẽ không thể thay đổi câu trả lời.
         </p>
       </Modal>
 
       <Modal
         isOpen={exitOpen}
         onClose={() => setExitOpen(false)}
-        title="Leave the exam?"
+        title="Rời khỏi bài thi?"
         footer={
           <>
             <Button variant="secondary" onClick={() => setExitOpen(false)}>
-              Keep working
+              Tiếp tục làm bài
             </Button>
             <Button variant="danger" onClick={() => void handleExit()}>
-              Leave now
+              Rời đi ngay
             </Button>
           </>
         }
       >
         <p>
-          Leaving is recorded as an early exit and counts toward the {MAX_VIOLATIONS}-violation limit. Your saved
-          answers are kept, and you can resume this quiz if time remains.
+          Việc rời bài thi sẽ được ghi nhận và tính vào giới hạn {MAX_VIOLATIONS} lần vi phạm. Các câu trả lời đã lưu vẫn được giữ lại và bạn có thể tiếp tục nếu còn thời gian.
         </p>
       </Modal>
     </div>

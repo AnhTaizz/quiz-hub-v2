@@ -5,6 +5,7 @@ import { roleHomePath, type StoredUser } from "@/auth/authStorage";
 import { goToSafePath } from "@/utils/routes";
 import type { Role } from "@/types/api";
 import { Spinner } from "@/components/ui/Spinner";
+import { PublicHeader } from "./PublicHeader";
 import "./AuthPages.css";
 
 function base64ToUtf8(value: string): string {
@@ -45,7 +46,7 @@ export function OAuth2RedirectPage() {
     const avatarUrl = searchParams.get("avatarUrl");
 
     if (!token || !id || !email || !roleParam || !KNOWN_ROLES.includes(roleParam as Role)) {
-      return { kind: "error", message: "Invalid sign-in response. Please try again." };
+      return { kind: "error", message: "Phản hồi đăng nhập không hợp lệ. Vui lòng thử lại." };
     }
 
     return {
@@ -70,13 +71,14 @@ export function OAuth2RedirectPage() {
   if (callback.kind === "error") {
     return (
       <div className="qh-auth-page">
+        <PublicHeader />
         <div className="qh-auth-card">
-          <h1 className="qh-auth-title">Sign-in failed</h1>
+          <h1 className="qh-auth-title">Đăng nhập thất bại</h1>
           <p className="qh-auth-error" role="alert">
             {callback.message}
           </p>
           <div className="qh-auth-links">
-            <Link to="/login">Back to sign in</Link>
+            <Link to="/login">Quay lại đăng nhập</Link>
           </div>
         </div>
       </div>
@@ -85,7 +87,8 @@ export function OAuth2RedirectPage() {
 
   return (
     <div className="qh-auth-page">
-      <Spinner label="Signing you in" />
+      <PublicHeader />
+      <Spinner label="Đang đăng nhập" />
     </div>
   );
 }

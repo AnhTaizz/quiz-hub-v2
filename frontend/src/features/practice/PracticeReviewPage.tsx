@@ -27,9 +27,9 @@ export function PracticeReviewPage() {
     enabled: Number.isFinite(practiceId),
   });
 
-  if (isLoading) return <Spinner label="Loading review" />;
+  if (isLoading) return <Spinner label="Đang tải kết quả" />;
   if (isError || !data) {
-    const message = isApiError(error) && error.status === 404 ? "This practice could not be found." : "Could not load this review.";
+    const message = isApiError(error) && error.status === 404 ? "Không tìm thấy bài luyện tập này." : "Không thể tải kết quả.";
     return <ErrorState message={message} onRetry={() => void refetch()} />;
   }
 
@@ -38,22 +38,22 @@ export function PracticeReviewPage() {
   return (
     <div>
       <PageHeader
-        title="Practice review"
+        title="Xem lại bài luyện tập"
         description={data.categoryName ?? undefined}
         action={
           <Link to="/student/history?tab=practice" className="qh-button qh-button--secondary">
-            Back to history
+            Quay lại lịch sử
           </Link>
         }
       />
 
       {!submitted && (
         <EmptyState
-          title="This practice has not been submitted yet"
-          description="Finish and submit it to see your score and the correct answers."
+          title="Bài luyện tập này chưa được nộp"
+          description="Hoàn thành và nộp bài để xem điểm cùng đáp án đúng."
           action={
             <Link to="/student/history?tab=practice" className="qh-button qh-button--primary">
-              Go to practice history
+              Đến lịch sử luyện tập
             </Link>
           }
         />
@@ -64,17 +64,17 @@ export function PracticeReviewPage() {
           <div className="qh-review-summary">
             <Card>
               <p className="qh-review-summary__value">{data.score !== null ? `${data.score} / 10` : "—"}</p>
-              <p className="qh-review-summary__label">Score</p>
+              <p className="qh-review-summary__label">Điểm số</p>
             </Card>
             <Card>
               <p className="qh-review-summary__value">
                 {data.correctAnswers} / {data.totalQuestions}
               </p>
-              <p className="qh-review-summary__label">Correct answers</p>
+              <p className="qh-review-summary__label">Câu trả lời đúng</p>
             </Card>
             <Card>
               <p className="qh-review-summary__value qh-review-summary__value--small">{formatDateTime(data.createdAt)}</p>
-              <p className="qh-review-summary__label">Started</p>
+              <p className="qh-review-summary__label">Bắt đầu lúc</p>
             </Card>
           </div>
 
@@ -99,21 +99,21 @@ function ReviewCard({ detail, number }: { detail: PracticeDetail; number: number
   return (
     <Card className="qh-review-card">
       <div className="qh-review-card__header">
-        <span>Question {number}</span>
-        <Badge tone={detail.isCorrect ? "success" : "danger"}>{detail.isCorrect ? "Correct" : "Incorrect"}</Badge>
+        <span>Câu {number}</span>
+        <Badge tone={detail.isCorrect ? "success" : "danger"}>{detail.isCorrect ? "Chính xác" : "Chưa chính xác"}</Badge>
       </div>
       <p className="qh-review-card__text">{detail.questionText}</p>
 
       {isFill ? (
         <dl className="qh-review-card__fill">
           <div>
-            <dt>Your answer</dt>
-            <dd>{detail.selectedText && detail.selectedText.trim() !== "" ? detail.selectedText : "No answer"}</dd>
+            <dt>Câu trả lời của bạn</dt>
+            <dd>{detail.selectedText && detail.selectedText.trim() !== "" ? detail.selectedText : "Chưa trả lời"}</dd>
           </div>
           {correctTexts.length > 0 && (
             <div>
-              <dt>Correct answer</dt>
-              <dd>{correctTexts.join(" or ")}</dd>
+              <dt>Đáp án đúng</dt>
+              <dd>{correctTexts.join(" hoặc ")}</dd>
             </div>
           )}
         </dl>

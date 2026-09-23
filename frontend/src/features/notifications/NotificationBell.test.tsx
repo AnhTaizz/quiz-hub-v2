@@ -63,7 +63,7 @@ describe("NotificationBell", () => {
   it("exposes the unread count in the button's accessible name", async () => {
     renderBell();
     expect(
-      await screen.findByRole("button", { name: "Notifications, 2 unread" }, { timeout: 4000 }),
+      await screen.findByRole("button", { name: "Thông báo, 2 chưa đọc" }, { timeout: 4000 }),
     ).toBeInTheDocument();
   });
 
@@ -71,15 +71,15 @@ describe("NotificationBell", () => {
     api.list.mockResolvedValue([]);
     const user = userEvent.setup();
     renderBell();
-    await user.click(await screen.findByRole("button", { name: /Notifications/ }));
-    expect(await screen.findByText("No notifications yet")).toBeInTheDocument();
+    await user.click(await screen.findByRole("button", { name: /Thông báo/ }));
+    expect(await screen.findByText("Chưa có thông báo")).toBeInTheDocument();
   });
 
   it("shows an error with retry when the list fails", async () => {
     api.list.mockRejectedValueOnce({ status: 500, message: "boom" }).mockResolvedValue([item({})]);
     const user = userEvent.setup();
     renderBell();
-    await user.click(await screen.findByRole("button", { name: /Notifications/ }));
+    await user.click(await screen.findByRole("button", { name: /Thông báo/ }));
     await user.click(await screen.findByRole("button", { name: "Retry" }));
     expect(await screen.findByText("Quiz assigned")).toBeInTheDocument();
   });
@@ -88,7 +88,7 @@ describe("NotificationBell", () => {
     api.list.mockResolvedValue([item({ id: 7, link: "/student/history" })]);
     const user = userEvent.setup();
     renderBell();
-    await user.click(await screen.findByRole("button", { name: /Notifications/ }));
+    await user.click(await screen.findByRole("button", { name: /Thông báo/ }));
     await user.click(await screen.findByRole("button", { name: /Quiz assigned/ }));
 
     expect(api.markRead).toHaveBeenCalledWith(7);
@@ -100,7 +100,7 @@ describe("NotificationBell", () => {
     api.list.mockResolvedValue([item({ link: "/teacher/classrooms/5/members" })]);
     const user = userEvent.setup();
     renderBell();
-    await user.click(await screen.findByRole("button", { name: /Notifications/ }));
+    await user.click(await screen.findByRole("button", { name: /Thông báo/ }));
     await user.click(await screen.findByRole("button", { name: /Quiz assigned/ }));
 
     await waitFor(() => expect(assign).toHaveBeenCalledWith("/teacher/classrooms/5/members"));
@@ -112,7 +112,7 @@ describe("NotificationBell", () => {
       api.list.mockResolvedValue([item({ link })]);
       const user = userEvent.setup();
       renderBell();
-      await user.click(await screen.findByRole("button", { name: /Notifications/ }));
+      await user.click(await screen.findByRole("button", { name: /Thông báo/ }));
       await user.click(await screen.findByRole("button", { name: /Quiz assigned/ }));
 
       await waitFor(() => expect(api.markRead).toHaveBeenCalled());
@@ -125,7 +125,7 @@ describe("NotificationBell", () => {
     api.list.mockResolvedValue([item({ title: "<img src=x onerror=alert(1)>", message: "<b>bold</b>" })]);
     const user = userEvent.setup();
     renderBell();
-    await user.click(await screen.findByRole("button", { name: /Notifications/ }));
+    await user.click(await screen.findByRole("button", { name: /Thông báo/ }));
 
     expect(await screen.findByText("<img src=x onerror=alert(1)>")).toBeInTheDocument();
     expect(document.querySelector("img[src='x']")).toBeNull();
@@ -135,13 +135,13 @@ describe("NotificationBell", () => {
     api.list.mockResolvedValue([item({})]);
     const user = userEvent.setup();
     renderBell();
-    const bell = await screen.findByRole("button", { name: /Notifications/ });
+    const bell = await screen.findByRole("button", { name: /Thông báo/ });
     await user.click(bell);
-    await user.click(await screen.findByRole("button", { name: "Mark all as read" }));
+    await user.click(await screen.findByRole("button", { name: "Đánh dấu đã đọc tất cả" }));
     expect(api.markAllRead).toHaveBeenCalled();
 
     await user.keyboard("{Escape}");
-    expect(screen.queryByRole("region", { name: "Notifications" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("region", { name: "Thông báo" })).not.toBeInTheDocument();
     expect(bell).toHaveFocus();
   });
 });

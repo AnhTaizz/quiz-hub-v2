@@ -20,12 +20,12 @@ export function ChangePasswordModal({ isOpen, onClose }: { isOpen: boolean; onCl
   const mutation = useMutation({
     mutationFn: () => profileApi.changePassword(values),
     onSuccess: () => {
-      showToast("Password changed.", "success");
+      showToast("Đã đổi mật khẩu.", "success");
       handleClose();
     },
     onError: (error) => {
       if (!isApiError(error)) {
-        setGeneral("Could not change the password. Please try again.");
+        setGeneral("Không thể đổi mật khẩu. Vui lòng thử lại.");
         return;
       }
       const mapped = mapPasswordApiError(error);
@@ -61,14 +61,14 @@ export function ChangePasswordModal({ isOpen, onClose }: { isOpen: boolean; onCl
     <Modal
       isOpen={isOpen}
       onClose={mutation.isPending ? () => undefined : handleClose}
-      title="Change password"
+      title="Đổi mật khẩu"
       footer={
         <>
           <Button variant="secondary" type="button" onClick={handleClose} disabled={mutation.isPending}>
-            Cancel
+            Hủy
           </Button>
           <Button type="submit" form="qh-change-password-form" isLoading={mutation.isPending}>
-            Update password
+            Cập nhật mật khẩu
           </Button>
         </>
       }
@@ -79,9 +79,9 @@ export function ChangePasswordModal({ isOpen, onClose }: { isOpen: boolean; onCl
             {general}
           </p>
         )}
-        <PasswordInput label="Current password" autoComplete="current-password" {...field("oldPassword")} />
-        <PasswordInput label="New password" autoComplete="new-password" {...field("newPassword")} />
-        <PasswordInput label="Confirm new password" autoComplete="new-password" {...field("confirmNewPassword")} />
+        <PasswordInput label="Mật khẩu hiện tại" autoComplete="current-password" {...field("oldPassword")} />
+        <PasswordInput label="Mật khẩu mới" autoComplete="new-password" {...field("newPassword")} />
+        <PasswordInput label="Xác nhận mật khẩu mới" autoComplete="new-password" {...field("confirmNewPassword")} />
       </form>
     </Modal>
   );

@@ -27,11 +27,11 @@ export function PracticePlayPage() {
     return (
       <div className="qh-practice-play">
         <EmptyState
-          title="No practice in progress"
-          description="Choose a category and settings to start a new practice session."
+          title="Chưa có phiên luyện tập"
+          description="Chọn một thư mục và thiết lập để bắt đầu luyện tập."
           action={
             <Link to="/student/practice" className="qh-button qh-button--primary">
-              Set up a practice
+              Thiết lập luyện tập
             </Link>
           }
         />
@@ -47,7 +47,7 @@ function HandOffToLegacyPlayer() {
   useEffect(() => {
     window.location.replace(LEGACY_PERSONAL_PLAY);
   }, []);
-  return <Spinner label="Opening your practice" />;
+  return <Spinner label="Đang mở bài luyện tập" />;
 }
 
 function PracticePlayer({ session }: { session: PracticeSession }) {
@@ -87,7 +87,7 @@ function PracticePlayer({ session }: { session: PracticeSession }) {
       if (result) navigate(`/student/practice/review/${result.practiceId ?? session.practiceId}`, { replace: true });
     } catch (error) {
       showToast(
-        isApiError(error) ? error.message : "Could not submit your practice. Your answers are kept - please try again.",
+        isApiError(error) ? error.message : "Không thể nộp bài luyện tập. Câu trả lời vẫn được giữ lại, vui lòng thử lại.",
         "error",
       );
       setSubmitting(false);
@@ -122,20 +122,20 @@ function PracticePlayer({ session }: { session: PracticeSession }) {
     <div className="qh-practice-play">
       <header className="qh-practice-play__header">
         <div className="qh-practice-play__heading">
-          <h1 className="qh-practice-play__title">{session.categoryName || "Practice"}</h1>
+          <h1 className="qh-practice-play__title">{session.categoryName || "Luyện tập"}</h1>
           <p className="qh-practice-play__progress">
-            {isFlashcard ? `Card ${state.index + 1} of ${total}` : `${player.answeredCount} of ${total} answered`}
+            {isFlashcard ? `Thẻ ${state.index + 1}/${total}` : `Đã trả lời ${player.answeredCount}/${total} câu`}
           </p>
         </div>
         <Button variant="secondary" type="button" onClick={exit}>
-          Exit
+          Thoát
         </Button>
       </header>
 
       {state.alreadySubmitted && (
         <p className="qh-practice-play__alert" role="alert">
-          This practice was already submitted, so new answers cannot be saved.{" "}
-          <Link to={`/student/practice/review/${session.practiceId}`}>Open the review</Link>
+          Bài luyện tập này đã được nộp nên câu trả lời mới sẽ không được lưu.{" "}
+          <Link to={`/student/practice/review/${session.practiceId}`}>Xem lại kết quả</Link>
         </p>
       )}
 
@@ -176,43 +176,43 @@ function PracticePlayer({ session }: { session: PracticeSession }) {
       {current && displayMode !== "all" && (
         <label className="qh-practice-play__flag">
           <input type="checkbox" checked={!!state.flagged[current.id]} onChange={() => player.toggleFlag(current.id)} />
-          Flag for review
+          <i className="bi bi-flag" /> Đánh dấu xem lại
         </label>
       )}
 
       <footer className="qh-practice-play__footer">
         {displayMode !== "all" && (
           <Button variant="secondary" onClick={() => player.goTo(Math.max(0, state.index - 1))} disabled={state.index === 0}>
-            Previous
+            Câu trước
           </Button>
         )}
         {displayMode !== "all" && state.index < total - 1 ? (
-          <Button onClick={() => player.goTo(state.index + 1)}>Next</Button>
+          <Button onClick={() => player.goTo(state.index + 1)}>Câu tiếp</Button>
         ) : isFlashcard ? (
-          <Button onClick={exit}>Finish studying</Button>
+          <Button onClick={exit}>Hoàn thành ôn tập</Button>
         ) : (
-          <Button onClick={() => setConfirmOpen(true)}>Submit practice</Button>
+          <Button onClick={() => setConfirmOpen(true)}>Nộp bài luyện tập</Button>
         )}
       </footer>
 
       <Modal
         isOpen={confirmOpen}
         onClose={() => (submitting ? undefined : setConfirmOpen(false))}
-        title="Submit practice?"
+        title="Xác nhận nộp bài?"
         footer={
           <>
             <Button variant="secondary" onClick={() => setConfirmOpen(false)} disabled={submitting}>
-              Keep working
+              Tiếp tục làm bài
             </Button>
             <Button onClick={() => void doSubmit()} isLoading={submitting}>
-              Submit
+              Nộp bài
             </Button>
           </>
         }
       >
         <p>
-          You have answered {player.answeredCount} of {total} questions.
-          {unanswered > 0 && ` ${unanswered} unanswered question${unanswered === 1 ? "" : "s"} will count as incorrect.`}
+          Bạn đã trả lời {player.answeredCount}/{total} câu hỏi.
+          {unanswered > 0 && ` ${unanswered} câu chưa trả lời sẽ được tính là sai.`}
         </p>
       </Modal>
     </div>
