@@ -1,5 +1,6 @@
 package com.example.quizhub.security;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.contains;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -14,10 +15,13 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
+import com.example.quizhub.entity.User;
+import com.example.quizhub.entity.enums.Role;
 import com.example.quizhub.repository.OAuth2RegistrationTicketRepository;
 import com.example.quizhub.repository.UserRepository;
 
@@ -37,13 +41,14 @@ import jakarta.servlet.http.HttpServletResponse;
 class OAuth2AuthenticationSuccessHandlerTest {
 
     private UserRepository userRepository;
+    private JwtService jwtService;
     private OAuth2AuthenticationSuccessHandler handler;
     private HttpServletRequest request;
     private HttpServletResponse response;
 
     @BeforeEach
     void setUp() throws Exception {
-        JwtService jwtService = mock(JwtService.class);
+        jwtService = mock(JwtService.class);
         userRepository = mock(UserRepository.class);
         OAuth2RegistrationTicketRepository ticketRepository = mock(OAuth2RegistrationTicketRepository.class);
         handler = new OAuth2AuthenticationSuccessHandler(jwtService, userRepository, ticketRepository);
@@ -89,5 +94,73 @@ class OAuth2AuthenticationSuccessHandlerTest {
         handler.onAuthenticationSuccess(request, response, auth);
 
         verify(response, never()).sendRedirect(contains("oauth2-choose-role"));
+    }
+
+    // ---------- RED (task: harden existing-user Google login) ----------
+    //
+    // A real Google callback for an email that already has an enabled account. The handler currently
+    // generates a real JWT and puts it - plus id/email/fullName/role/avatarUrl - directly into the
+    // /oauth2-redirect.html query string of a server-side sendRedirect(). That URL then persists in
+    // browser history, any reverse proxy/CDN access log that logs query strings (a common default), and
+    // the Referer header of any subresource request that races the client-side history.replaceState().
+    //
+    // FAKE_JWT_MARKER below is never a real signed JWT - JwtService itself is mocked, so no real signing
+    // key or token value is ever produced or logged by this test.
+
+    private static final String FAKE_JWT_MARKER = "FAKE.JWT.MARKER.NOT-A-REAL-TOKEN";
+
+    private User existingEnabledUser() {
+        return User.builder()
+                .id(42L)
+                .email("existing.user@gmail.com")
+                .fullName("Existing User")
+                .role(Role.STUDENT)
+                .avatarUrl("https://example.test/avatar.png")
+                .isEnable(true)
+                .isVerified(true)
+                .password("irrelevant-for-oauth2-login")
+                .build();
+    }
+
+    @Test
+    void existingEnabledUserLoginMustNotPutTheJwtInTheRedirectUrl() throws Exception {
+        User user = existingEnabledUser();
+        when(userRepository.findByEmail("existing.user@gmail.com")).thenReturn(Optional.of(user));
+        when(jwtService.generateToken(user)).thenReturn(FAKE_JWT_MARKER);
+        Authentication auth = authFor(Map.of(
+                "sub", "g-42", "email", "existing.user@gmail.com", "email_verified", true,
+                "name", "Existing User"));
+
+        handler.onAuthenticationSuccess(request, response, auth);
+
+        ArgumentCaptor<String> redirectCaptor = ArgumentCaptor.forClass(String.class);
+        verify(response).sendRedirect(redirectCaptor.capture());
+        String redirectUrl = redirectCaptor.getValue();
+
+        assertThat(redirectUrl)
+                .as("the JWT must never appear as a URL query parameter on the OAuth2 redirect")
+                .doesNotContain(FAKE_JWT_MARKER)
+                .doesNotContain("token=");
+    }
+
+    @Test
+    void existingEnabledUserLoginMustNotPutIdentityFieldsInTheRedirectUrl() throws Exception {
+        User user = existingEnabledUser();
+        when(userRepository.findByEmail("existing.user@gmail.com")).thenReturn(Optional.of(user));
+        when(jwtService.generateToken(user)).thenReturn(FAKE_JWT_MARKER);
+        Authentication auth = authFor(Map.of(
+                "sub", "g-42", "email", "existing.user@gmail.com", "email_verified", true,
+                "name", "Existing User"));
+
+        handler.onAuthenticationSuccess(request, response, auth);
+
+        ArgumentCaptor<String> redirectCaptor = ArgumentCaptor.forClass(String.class);
+        verify(response).sendRedirect(redirectCaptor.capture());
+        String redirectUrl = redirectCaptor.getValue();
+
+        assertThat(redirectUrl)
+                .as("no account identity may be carried in the OAuth2 redirect URL - it must be a bare "
+                        + "redirect to /oauth2-redirect.html, with any session handoff happening out of band")
+                .isEqualTo("/oauth2-redirect.html");
     }
 }
