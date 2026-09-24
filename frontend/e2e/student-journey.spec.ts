@@ -19,7 +19,7 @@ test("student core journey: dashboard -> start -> answer -> autosave -> reload r
   await expect(page.getByRole("heading", { name: world.quizTitle })).toBeVisible();
 
   // Start the quiz
-  await page.getByRole("link", { name: /start quiz|resume quiz/i }).first().click();
+  await page.locator(".qh-task-card__actions").getByRole("link", { name: /làm bài|tiếp tục/i }).first().click();
   await expect(page).toHaveURL(/\/student\/quiz\/play\/\d+$/);
   await expect(page.getByRole("timer")).toBeVisible();
 
@@ -31,26 +31,26 @@ test("student core journey: dashboard -> start -> answer -> autosave -> reload r
   await expectAnswerRestored(page, firstKind);
 
   // Answer the other question (a reload always returns to question 1)
-  await page.getByRole("button", { name: "Next" }).click();
-  await expect(page.getByText(/^Question 2 of \d+$/)).toBeVisible();
+  await page.getByRole("button", { name: "Câu tiếp" }).click();
+  await expect(page.getByText(/^Câu 2 \/ \d+$/)).toBeVisible();
   await answerCurrentQuestion(page);
 
   // Submit through the confirmation dialog
-  await page.getByRole("button", { name: "Submit quiz" }).click();
+  await page.getByRole("button", { name: "Nộp bài thi" }).click();
   const dialog = page.getByRole("dialog");
   await expect(dialog).toBeVisible();
-  await dialog.getByRole("button", { name: "Submit", exact: true }).click();
+  await dialog.getByRole("button", { name: "Nộp bài", exact: true }).click();
 
   // Result page
   await expect(page).toHaveURL(/\/student\/quiz\/result\/\d+$/);
-  await expect(page.getByText("Correct", { exact: true }).first()).toBeVisible();
+  await expect(page.getByText("Chính xác", { exact: true }).first()).toBeVisible();
   await expect(page.getByRole("heading", { name: world.quizTitle })).toBeVisible();
 });
 
 test("keyboard-only: quiz answer, modal open/close with Escape and focus return", async ({ page, world }) => {
   await loginAsStudent(page, world);
   await page.goto("/student/quizzes");
-  await page.getByRole("link", { name: /start quiz|resume quiz/i }).first().focus();
+  await page.locator(".qh-quiz-card__action").getByRole("link", { name: /làm bài|tiếp tục/i }).first().focus();
   await page.keyboard.press("Enter");
   await expect(page).toHaveURL(/\/student\/quiz\/play\/\d+$/);
 
@@ -62,7 +62,7 @@ test("keyboard-only: quiz answer, modal open/close with Escape and focus return"
 
   // Open the submit dialog from the last question, close with Escape, focus returns to the trigger
   await showLastQuestion(page);
-  const trigger = page.getByRole("button", { name: "Submit quiz" });
+  const trigger = page.getByRole("button", { name: "Nộp bài thi" });
   await trigger.focus();
   await page.keyboard.press("Enter");
   await expect(page.getByRole("dialog")).toBeVisible();
