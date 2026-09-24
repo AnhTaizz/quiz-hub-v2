@@ -12,7 +12,7 @@ async function expectNoHorizontalOverflow(page: Page, label: string) {
 test.describe("360 x 800 viewport", () => {
   test("login page has no horizontal overflow", async ({ page }) => {
     await page.goto("/login");
-    await expect(page.getByRole("button", { name: "Sign in" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Đăng nhập", exact: true })).toBeVisible();
     await expectNoHorizontalOverflow(page, "login");
   });
 
@@ -33,7 +33,7 @@ test.describe("360 x 800 viewport", () => {
     await expectNoHorizontalOverflow(page, "history");
 
     await page.goto("/student/quizzes");
-    await page.getByRole("link", { name: /start quiz|resume quiz/i }).first().click();
+    await page.locator(".qh-quiz-card__action").getByRole("link", { name: /làm bài|tiếp tục/i }).first().click();
     await expect(page.getByRole("timer")).toBeVisible();
     await expectNoHorizontalOverflow(page, "quiz play");
 

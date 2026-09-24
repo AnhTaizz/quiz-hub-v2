@@ -8,29 +8,30 @@ import { expect, loginAsStudent, test } from "./support/test";
 
 test("profile: edit name and phone, reload and see them persisted", async ({ page, world }) => {
   await loginAsStudent(page, world);
-  await page.getByRole("link", { name: "Profile" }).first().click();
+  await page.locator(".qh-shell__account summary").click();
+  await page.getByRole("link", { name: "Hồ sơ cá nhân" }).first().click();
   await expect(page).toHaveURL(/\/profile$/);
-  await expect(page.getByRole("heading", { name: "Your profile" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Hồ sơ cá nhân" })).toBeVisible();
 
   const name = `Renamed ${randomUUID().slice(0, 6)}`;
-  await page.getByLabel("Full name").fill(name);
-  await page.getByLabel("Phone number").fill("0912345678");
-  await page.getByRole("button", { name: "Save changes" }).click();
-  await expect(page.getByText("Profile saved.")).toBeVisible();
+  await page.getByLabel("Họ và tên").fill(name);
+  await page.getByLabel("Số điện thoại").fill("0912345678");
+  await page.getByRole("button", { name: "Lưu thay đổi" }).click();
+  await expect(page.getByText("Đã lưu hồ sơ.")).toBeVisible();
 
   await page.reload();
-  await expect(page.getByLabel("Full name")).toHaveValue(name);
-  await expect(page.getByLabel("Phone number")).toHaveValue("0912345678");
+  await expect(page.getByLabel("Họ và tên")).toHaveValue(name);
+  await expect(page.getByLabel("Số điện thoại")).toHaveValue("0912345678");
   await expect(page.getByLabel("Email")).toBeDisabled();
 });
 
 test("profile: an empty name is rejected before anything is saved", async ({ page, world }) => {
   await loginAsStudent(page, world, "/profile");
   await expect(page).toHaveURL(/\/profile$/);
-  await page.getByLabel("Full name").fill("");
-  await page.getByRole("button", { name: "Save changes" }).click();
+  await page.getByLabel("Họ và tên").fill("");
+  await page.getByRole("button", { name: "Lưu thay đổi" }).click();
   await expect(page.getByRole("alert").first()).toBeVisible();
-  await expect(page.getByText("Profile saved.")).toHaveCount(0);
+  await expect(page.getByText("Đã lưu hồ sơ.")).toHaveCount(0);
 });
 
 test("practice setup: opens from the navigation and offers set-up or an empty state, never a crash", async ({
@@ -38,10 +39,10 @@ test("practice setup: opens from the navigation and offers set-up or an empty st
   world,
 }) => {
   await loginAsStudent(page, world);
-  await page.getByRole("link", { name: "Practice" }).first().click();
+  await page.getByRole("link", { name: "Luyện tập" }).first().click();
   await expect(page).toHaveURL(/\/student\/practice$/);
-  await expect(page.getByRole("heading", { name: "Practice", exact: true })).toBeVisible();
-  await expect(page.getByRole("link", { name: "Practice history" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Khám Phá Ngân Hàng Câu Hỏi", exact: true })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Lịch sử luyện tập" })).toBeVisible();
 });
 
 test("practice history: the Practice tab shows an empty state for a new student and survives reload", async ({
@@ -50,9 +51,9 @@ test("practice history: the Practice tab shows an empty state for a new student 
 }) => {
   await loginAsStudent(page, world, "/student/history?tab=practice");
   await expect(page).toHaveURL(/\/student\/history\?tab=practice$/);
-  await expect(page.getByRole("tab", { name: /practice/i })).toHaveAttribute("aria-selected", "true");
+  await expect(page.getByRole("tab", { name: /luyện tập/i })).toHaveAttribute("aria-selected", "true");
   await page.reload();
-  await expect(page.getByRole("tab", { name: /practice/i })).toHaveAttribute("aria-selected", "true");
+  await expect(page.getByRole("tab", { name: /luyện tập/i })).toHaveAttribute("aria-selected", "true");
 });
 
 test("legacy practice-history URL redirects into the React history tab", async ({ page, world }) => {
@@ -62,8 +63,8 @@ test("legacy practice-history URL redirects into the React history tab", async (
 
 test("practice play without a session sends the student back to set one up", async ({ page, world }) => {
   await loginAsStudent(page, world, "/student/practice/play");
-  await expect(page.getByText("No practice in progress")).toBeVisible();
-  await page.getByRole("link", { name: "Set up a practice" }).click();
+  await expect(page.getByText("Chưa có phiên luyện tập")).toBeVisible();
+  await page.getByRole("link", { name: "Thiết lập luyện tập" }).click();
   await expect(page).toHaveURL(/\/student\/practice$/);
 });
 
@@ -73,20 +74,20 @@ test("notifications: the assignment notice is unread, opens in an accessible pan
 }) => {
   // Assigning the quiz (done by the world, through the public API) notifies the student.
   await loginAsStudent(page, world);
-  const bell = page.getByRole("button", { name: /^Notifications, 1 unread$/ });
+  const bell = page.getByRole("button", { name: /^Thông báo, 1 chưa đọc$/ });
   await bell.click();
   await expect(bell).toHaveAttribute("aria-expanded", "true");
-  const panel = page.getByRole("region", { name: "Notifications" });
-  await expect(panel.getByRole("button", { name: /^Unread:/ })).toHaveCount(1);
+  const panel = page.getByRole("region", { name: "Thông báo" });
+  await expect(panel.getByRole("button", { name: /^Chưa đọc:/ })).toHaveCount(1);
 
-  await panel.getByRole("button", { name: "Mark all as read" }).click();
-  await expect(page.getByRole("button", { name: /^Notifications$/ })).toBeVisible();
+  await panel.getByRole("button", { name: "Đánh dấu đã đọc tất cả" }).click();
+  await expect(page.getByRole("button", { name: /^Thông báo$/ })).toBeVisible();
 
   await page.keyboard.press("Escape");
-  await expect(page.getByRole("button", { name: /^Notifications/ })).toHaveAttribute("aria-expanded", "false");
+  await expect(page.getByRole("button", { name: /^Thông báo/ })).toHaveAttribute("aria-expanded", "false");
 
   await page.reload();
-  await expect(page.getByRole("button", { name: /^Notifications$/ })).toBeVisible();
+  await expect(page.getByRole("button", { name: /^Thông báo$/ })).toBeVisible();
 });
 
 // OAuth first-login role choice previously had E2E coverage here that drove
