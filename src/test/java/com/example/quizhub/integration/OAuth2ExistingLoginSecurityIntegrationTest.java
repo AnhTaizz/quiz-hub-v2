@@ -130,6 +130,30 @@ class OAuth2ExistingLoginSecurityIntegrationTest {
                 .anySatisfy(header -> assertThat(header).contains(OAuth2LoginTicketCookie.COOKIE_NAME + "="));
     }
 
+    /**
+     * Default configuration (no server.forward-headers-strategy): a plain-HTTP request carrying a
+     * client-supplied X-Forwarded-Proto must not change the cookie's attributes - nothing trusted set that
+     * header. OAuth2LoginTrustedProxyCookieIntegrationTest covers the case where the deployment does
+     * declare its proxy trusted.
+     */
+    @Test
+    void anUntrustedForwardedProtoHeaderDoesNotMakeTheCookieSecure() throws Exception {
+        User user = user("plain-http@gmail.com", true);
+        String token = loginTicket(user.getId(), OAuth2LoginTicketCookie.TTL);
+
+        MvcResult result = mockMvc.perform(post("/api/auth/oauth2-login")
+                .cookie(new Cookie(OAuth2LoginTicketCookie.COOKIE_NAME, token))
+                .header("X-Forwarded-Proto", "https")).andReturn();
+
+        assertThat(result.getResponse().getStatus()).isEqualTo(200);
+        assertThat(result.getResponse().getHeaders("Set-Cookie"))
+                .filteredOn(h -> h.startsWith(OAuth2LoginTicketCookie.COOKIE_NAME + "="))
+                .singleElement()
+                .satisfies(h -> assertThat(h).containsIgnoringCase("HttpOnly").containsIgnoringCase("SameSite=Lax")
+                        .contains("Path=/api/auth").contains("Max-Age=0")
+                        .doesNotContainPattern("(?i);\\s*Secure\\s*(;|$)"));
+    }
+
     // ---------- No ticket, fake ticket, expired, replay ----------
 
     @Test

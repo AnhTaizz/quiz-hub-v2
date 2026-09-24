@@ -2,6 +2,7 @@ package com.example.quizhub.controller.auth;
 
 import java.security.Principal;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
@@ -34,6 +35,9 @@ import lombok.RequiredArgsConstructor;
 @CrossOrigin("*")
 public class AuthController {
     private final AuthService authService;
+
+    @Value("${app.security.cookie-force-secure:false}")
+    private boolean forceSecureCookies;
 
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest registerRequest) {
@@ -76,7 +80,8 @@ public class AuthController {
             @CookieValue(name = OAuth2LoginTicketCookie.COOKIE_NAME, required = false) String ticketToken,
             HttpServletRequest request) {
         AuthResponse response = authService.exchangeOAuth2Login(ticketToken);
-        ResponseCookie cleared = OAuth2LoginTicketCookie.clear(OAuth2LoginTicketCookie.isEffectivelySecure(request));
+        ResponseCookie cleared = OAuth2LoginTicketCookie.clear(
+                OAuth2LoginTicketCookie.shouldBeSecure(request, forceSecureCookies));
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, cleared.toString())
                 .header(HttpHeaders.CACHE_CONTROL, "no-store")

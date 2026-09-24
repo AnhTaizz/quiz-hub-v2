@@ -187,4 +187,65 @@ class OAuth2AuthenticationSuccessHandlerTest {
 
         verify(loginTicketRepository, never()).save(any());
     }
+
+    // ---------- Login-ticket cookie attributes, per deployment topology ----------
+    //
+    // Secure must follow the scheme the SERVLET CONTAINER says the request arrived on (request.isSecure()),
+    // never a raw request header the app parses itself: whether an X-Forwarded-Proto header comes from a
+    // trusted TLS-terminating proxy or straight from a client is a deployment decision
+    // (server.forward-headers-strategy + trusted proxy addresses), and only the container can make it.
+    // An explicit app.security.cookie-force-secure=true override exists for HTTPS deployments that do not
+    // configure forwarded-header trust.
+
+    private static final java.util.regex.Pattern SECURE_ATTRIBUTE =
+            java.util.regex.Pattern.compile("(?i);\\s*Secure\\s*(;|$)");
+
+    private String issuedLoginTicketCookie() throws Exception {
+        when(userRepository.findByEmail("existing.user@gmail.com")).thenReturn(Optional.of(existingEnabledUser()));
+        handler.onAuthenticationSuccess(request, response, existingUserAuth());
+        ArgumentCaptor<String> headerCaptor = ArgumentCaptor.forClass(String.class);
+        verify(response).addHeader(org.mockito.ArgumentMatchers.eq("Set-Cookie"), headerCaptor.capture());
+        return headerCaptor.getValue();
+    }
+
+    @Test
+    void localHttpIssuesTheFullAttributeSetWithoutSecure() throws Exception {
+        String cookie = issuedLoginTicketCookie();
+
+        assertThat(cookie)
+                .startsWith(OAuth2LoginTicketCookie.COOKIE_NAME + "=")
+                .containsIgnoringCase("HttpOnly")
+                .containsIgnoringCase("SameSite=Lax")
+                .contains("Path=/api/auth")
+                .contains("Max-Age=90");
+        assertThat(SECURE_ATTRIBUTE.matcher(cookie).find())
+                .as("plain HTTP (local dev) must not get Secure, or the browser would drop the cookie")
+                .isFalse();
+    }
+
+    @Test
+    void directHttpsIssuesASecureCookie() throws Exception {
+        when(request.isSecure()).thenReturn(true);
+
+        assertThat(SECURE_ATTRIBUTE.matcher(issuedLoginTicketCookie()).find()).isTrue();
+    }
+
+    @Test
+    void aClientSuppliedForwardedProtoHeaderDoesNotDecideTheSecureAttribute() throws Exception {
+        // Plain-HTTP request that reached the app directly, carrying a header nothing trusted set. If the
+        // container had been configured to trust a proxy that set it, request.isSecure() would say so.
+        when(request.isSecure()).thenReturn(false);
+        when(request.getHeader("X-Forwarded-Proto")).thenReturn("https");
+
+        assertThat(SECURE_ATTRIBUTE.matcher(issuedLoginTicketCookie()).find())
+                .as("an untrusted X-Forwarded-Proto must not change cookie attributes")
+                .isFalse();
+    }
+
+    @Test
+    void forceSecureMakesTheCookieSecureEvenWhenTheContainerSeesPlainHttp() throws Exception {
+        org.springframework.test.util.ReflectionTestUtils.setField(handler, "forceSecureCookies", true);
+
+        assertThat(SECURE_ATTRIBUTE.matcher(issuedLoginTicketCookie()).find()).isTrue();
+    }
 }

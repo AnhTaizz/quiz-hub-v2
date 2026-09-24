@@ -10,6 +10,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
@@ -33,6 +34,9 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     private final UserRepository userRepository;
     private final OAuth2RegistrationTicketRepository oauth2RegistrationTicketRepository;
     private final OAuth2LoginTicketRepository oauth2LoginTicketRepository;
+
+    @Value("${app.security.cookie-force-secure:false}")
+    private boolean forceSecureCookies;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
@@ -97,7 +101,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         oauth2LoginTicketRepository.save(ticket);
 
         ResponseCookie cookie = OAuth2LoginTicketCookie.issue(
-                ticket.getToken(), OAuth2LoginTicketCookie.isEffectivelySecure(request));
+                ticket.getToken(), OAuth2LoginTicketCookie.shouldBeSecure(request, forceSecureCookies));
         response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
         getRedirectStrategy().sendRedirect(request, response, "/oauth2-redirect.html");
     }

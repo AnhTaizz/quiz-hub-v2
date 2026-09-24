@@ -22,16 +22,18 @@ import org.springframework.http.ResponseCookie;
  * survive the round trip from the Google redirect landing on /oauth2-redirect.html to that page's own
  * exchange call a moment later, not a user pausing to read anything.
  *
- * Secure is computed from {@link #isEffectivelySecure}, not the plain request.isSecure(): behind a
- * reverse proxy that terminates TLS and forwards plain HTTP internally (the common production shape for
- * this app - see docker-compose.prod.yml, which has no server.ssl config of its own), request.isSecure()
- * alone would report false even though the browser is actually on HTTPS, and the cookie would then be
- * issued without Secure on what the browser thinks is a secure origin. Falling back to X-Forwarded-Proto
- * closes that gap while still working unmodified over plain HTTP in local dev (neither is true there, so
- * Secure is correctly left off). This trusts X-Forwarded-Proto unconditionally, which is only safe when
- * the app is not directly reachable except through a proxy that sets/overwrites that header itself - true
- * for this deployment (docker-compose maps only the app's own container port), but worth re-checking if
- * that topology ever changes.
+ * Secure ({@link #shouldBeSecure}) follows request.isSecure() - the scheme the servlet container says the
+ * request arrived on - plus an explicit override. It deliberately does NOT read X-Forwarded-Proto itself:
+ * whether that header came from a trusted TLS-terminating proxy or straight from a client is a deployment
+ * fact only the container can know (server.forward-headers-strategy, and for "native" the trusted proxy
+ * addresses in server.tomcat.remoteip.internal-proxies). docker-compose.prod.yml publishes the app's port
+ * directly on the host, so nothing in this repository guarantees every request passes through a proxy.
+ *
+ * - Local HTTP: isSecure() is false, override off -> no Secure (the cookie must still work).
+ * - Direct HTTPS (TLS terminated by the app): isSecure() is true -> Secure.
+ * - HTTPS behind a reverse proxy: Secure only if the deployment either configures forwarded-header trust
+ *   for that proxy (then isSecure() is true) or sets app.security.cookie-force-secure=true. See
+ *   docs/backend/OAUTH2_EXISTING_LOGIN_SECURITY.md for the configuration requirement.
  */
 public final class OAuth2LoginTicketCookie {
 
@@ -50,9 +52,9 @@ public final class OAuth2LoginTicketCookie {
         return Base64.getUrlEncoder().withoutPadding().encodeToString(bytes);
     }
 
-    /** See the class-level note on why this is not just request.isSecure(). */
-    public static boolean isEffectivelySecure(HttpServletRequest request) {
-        return request.isSecure() || "https".equalsIgnoreCase(request.getHeader("X-Forwarded-Proto"));
+    /** See the class-level note: never derived from a raw forwarded header. */
+    public static boolean shouldBeSecure(HttpServletRequest request, boolean forceSecure) {
+        return forceSecure || request.isSecure();
     }
 
     public static ResponseCookie issue(String token, boolean secureRequest) {
