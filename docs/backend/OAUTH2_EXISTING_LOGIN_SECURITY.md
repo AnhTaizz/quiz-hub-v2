@@ -110,6 +110,23 @@ different tables behind different repositories with different single-use
   winner - verified with two real concurrent threads
   (`concurrentExchangesOfTheSameTicketYieldExactlyOneSuccess`), not a
   sequential simulation.
+- **The browser never replays a settled exchange.** The app keeps one
+  QueryClient per page load and `logout()` does not clear it. An earlier
+  revision of `OAuth2RedirectPage` keyed the exchange query by a fixed key
+  with `staleTime: Infinity` and kept its module-level promise forever, so
+  a later client-side visit to `/oauth2-redirect.html` in the same page load
+  re-used the old result and called `login()` with the old Google user's
+  JWT: after logout it restored the session; after a *different* user
+  signed in by password with `returnUrl=/oauth2-redirect.html` it replaced
+  that user's session with the Google user's; and on `?error=` it still
+  signed in from the cached data. Reproduced by three regression tests in
+  `OAuth2RedirectPage.test.tsx`, then fixed: the effect ignores data on an
+  `?error=` route, and a settled exchange is spent (promise cleared,
+  per-page-load generation bumped; each mount keys its query by the
+  generation it started in, `gcTime: 0`). The StrictMode double-mount of
+  one callback still shares one key and one promise - covered by a test
+  rendering under real `<StrictMode>` that asserts exactly one exchange
+  call.
 - **Account status is re-checked at exchange time, not trusted from
   issuance.** A ticket issued for an account that becomes locked or is
   deleted in the (short, ~90s-bounded) window before exchange is rejected -
@@ -138,25 +155,49 @@ different tables behind different repositories with different single-use
   controller does not set `Access-Control-Allow-Credentials: true`, so
   browsers never attach the cookie to a cross-origin request against this
   endpoint regardless.
-- **`Secure` cookie attribute behind a reverse proxy.** Unlike the
-  registration ticket's cookie (which uses the plain `request.isSecure()`
-  and is unaffected by this fix), `OAuth2LoginTicketCookie.issue` computes
-  `Secure` via `isEffectivelySecure`, which also trusts
-  `X-Forwarded-Proto: https` when set. `request.isSecure()` alone reports
-  `false` behind a reverse proxy that terminates TLS and forwards plain HTTP
-  internally - the shape `docker-compose.prod.yml` implies (no
-  `server.ssl.*` in `application.yaml`, and no in-repo reverse-proxy config,
-  so whatever terminates TLS in front of this app in production is external
-  and unverified from this repository). This trusts `X-Forwarded-Proto`
-  unconditionally, which is only safe when the app is not directly reachable
-  except through a proxy that sets/overwrites that header itself; that
-  matches `docker-compose.prod.yml`'s topology (only the app container's own
-  port is published) but should be re-checked if that topology changes. Over
-  plain HTTP in local dev, neither condition is true, so `Secure` is
-  correctly omitted and the cookie still works. The *registration* ticket
-  cookie's own use of plain `request.isSecure()` was already flagged as a
-  deployment-dependent risk in a prior review pass and is unchanged here -
-  deliberately out of scope for this fix (see §5).
+- **`Secure` cookie attribute.** `OAuth2LoginTicketCookie.shouldBeSecure` is
+  `app.security.cookie-force-secure || request.isSecure()`. App code never
+  reads `X-Forwarded-Proto` itself: whether that header came from a trusted
+  TLS-terminating proxy or straight from a client is a deployment fact only
+  the servlet container can know. (An earlier revision of this PR did read
+  the header directly; a client-supplied `X-Forwarded-Proto: https` on a
+  plain-HTTP request then decided the attribute. That could only ever *add*
+  `Secure` to the sender's own response - it cannot strip `Secure` from a
+  victim's cookie - but it let an untrusted header drive security
+  behaviour, so it was replaced.) Required behaviour, each covered by a
+  test:
+
+  | Topology | Result | Test |
+  | :--- | :--- | :--- |
+  | Local HTTP, override off | no `Secure` (cookie must still work) | `localHttpIssuesTheFullAttributeSetWithoutSecure` |
+  | HTTPS terminated by the app | `Secure` | `directHttpsIssuesASecureCookie` |
+  | Plain HTTP + client-supplied `X-Forwarded-Proto: https` | header ignored, no `Secure` | `aClientSuppliedForwardedProtoHeaderDoesNotDecideTheSecureAttribute`, `anUntrustedForwardedProtoHeaderDoesNotMakeTheCookieSecure` |
+  | HTTPS behind a proxy the deployment declares trusted (`server.forward-headers-strategy`) | `Secure` | `OAuth2LoginTrustedProxyCookieIntegrationTest` |
+  | `app.security.cookie-force-secure=true` | `Secure` regardless of scheme | `forceSecureMakesTheCookieSecureEvenWhenTheContainerSeesPlainHttp` |
+
+  All cases also assert `HttpOnly`, `SameSite=Lax`, `Path=/api/auth` and
+  `Max-Age` (90 on issue, 0 on clear).
+
+  **Production topology is not known from this repository**, so it is not
+  assumed. `application.yaml` has no `server.ssl.*` and no
+  `server.forward-headers-strategy`, `deploy/` has no proxy configuration,
+  and `docker-compose.prod.yml` publishes the app port directly on the host
+  (`${APP_PORT:-8080}:8080`) - nothing guarantees every request passes
+  through a proxy. **Configuration requirement for any HTTPS deployment**
+  (without it the cookie is issued without `Secure`):
+  - either set `COOKIE_FORCE_SECURE=true` (maps to
+    `app.security.cookie-force-secure`) - simplest, independent of proxy
+    setup; only for deployments reachable over HTTPS only;
+  - or declare the proxy trusted: `server.forward-headers-strategy=native`
+    with `server.tomcat.remoteip.internal-proxies` restricted to the proxy's
+    address (Tomcat's default trusts all private ranges, which includes the
+    Docker bridge gateway that directly-published host-port traffic arrives
+    from), and ensure the proxy overwrites, not appends to, any
+    client-supplied `X-Forwarded-Proto`. `framework` is only appropriate if
+    the app port is not reachable except through the proxy.
+
+  The *registration* ticket cookie still uses plain `request.isSecure()`
+  without the override - out of scope for this PR (see §5).
 
 ## 4. API status/error codes
 
@@ -177,12 +218,16 @@ email/password `login()`/`register()`, and logout.
 
 ## 5. Remaining risks (not fixed this pass)
 
-- **Registration ticket cookie's `Secure` flag** still uses plain
-  `request.isSecure()` (no `X-Forwarded-Proto` fallback). Flagged in a prior
-  review pass, unchanged here - fixing it is a one-line, low-risk change but
-  is a different file/concern than this task's mandate; recommend folding it
-  into the same follow-up that revisits `isEffectivelySecure`'s
-  trust-the-proxy assumption if the deployment topology ever changes.
+- **Registration ticket cookie's `Secure` flag** uses plain
+  `request.isSecure()` and does not honour `app.security.cookie-force-secure`.
+  Same deployment requirement applies (forwarded-header trust makes it
+  correct too); applying the override to it is a small follow-up outside this
+  PR's scope.
+- **`logout()` does not clear the TanStack Query cache.** Only the OAuth2
+  exchange result is handled here (spent on settlement, never replayed, see
+  `OAuth2RedirectPage.tsx`); other cached per-user data (profile, dashboard)
+  still survives a logout within the same page load. Pre-existing and
+  unrelated to this PR.
 - **Legacy static `src/main/resources/static/oauth2-redirect.html` and
   `oauth2-choose-role.html`** still exist on disk and still contain the old
   vanilla-JS logic that reads `token` from the URL and writes it to
@@ -197,11 +242,11 @@ email/password `login()`/`register()`, and logout.
   ownership check. No other code path serves these files at their nominal
   URLs. Recommend deleting them in a separate, narrowly-scoped cleanup PR
   rather than folding that into this one.
-- **`OAuth2LoginTicketCookie.isEffectivelySecure` trusts `X-Forwarded-Proto`
-  unconditionally.** Safe only because this app is not directly exposed
-  except through docker-compose's own port mapping; would need a
-  trusted-proxy allowlist if that ever changes (e.g. a CDN or LB the app
-  itself is also directly reachable behind/around).
+- **HTTPS deployment configuration is still required** (see §3, `Secure`):
+  until `COOKIE_FORCE_SECURE=true` or trusted forwarded headers are
+  configured, an HTTPS deployment issues the login-ticket cookie without
+  `Secure`. Not assumed here because the production topology is not in this
+  repository.
 - **Ticket TTL of 90 seconds** is a judgment call inside the 60-120s range
   the task specified; not load-tested under slow-network conditions where
   the redirect-to-exchange round trip itself could occasionally exceed it.
