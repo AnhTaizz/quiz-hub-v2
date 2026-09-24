@@ -59,12 +59,12 @@ public class ExistingSchemaBaselineTest {
         Integer countVersions = jdbcTemplate.queryForObject(
                 "SELECT count(*) FROM flyway_schema_history",
                 Integer.class);
-        assertThat(countVersions).isEqualTo(3);
+        assertThat(countVersions).isEqualTo(4);
 
         MigrationInfo currentInfo = flyway.info().current();
         assertThat(currentInfo).isNotNull();
-        assertThat(currentInfo.getVersion().toString()).isEqualTo("3");
-        assertThat(currentInfo.getDescription()).isEqualTo("oauth2 registration ticket");
+        assertThat(currentInfo.getVersion().toString()).isEqualTo("4");
+        assertThat(currentInfo.getDescription()).isEqualTo("oauth2 login ticket");
         assertThat(currentInfo.getType().name()).isEqualTo("SQL");
     }
 }

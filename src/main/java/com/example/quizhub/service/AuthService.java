@@ -22,6 +22,14 @@ public interface AuthService {
     /** Read-only preview of the pending registration for display; does not consume the ticket. */
     OAuth2PendingRegistrationResponse getPendingOAuth2Registration(String ticketToken);
 
+    /**
+     * Completes an existing-user Google login for the account bound server-side to ticketToken (issued
+     * by OAuth2AuthenticationSuccessHandler right after a real Google callback for that user). Re-checks
+     * the account still exists and is still enabled at exchange time - a ticket issued for an account
+     * that is locked or deleted between issuance and exchange must never yield a JWT.
+     */
+    AuthResponse exchangeOAuth2Login(String ticketToken);
+
     AuthResponse login(AuthRequest request);
 
     void forgotPassword(String email);
