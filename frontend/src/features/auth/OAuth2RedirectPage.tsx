@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams, Link } from "react-router";
 import { useQuery } from "@tanstack/react-query";
 import { authApi } from "@/api/auth.api";
@@ -37,15 +37,39 @@ import "./AuthPages.css";
 // problem above): once the underlying authApi.oauth2Login() call is dispatched, every mount within the
 // same page load - aborted-and-discarded or the one that survives - awaits that exact same promise rather
 // than ever calling it again, so the survivor still receives the real result once it settles regardless
-// of what happened to the mount that started it. Exported as an object (not a bare module `let`) only so
-// OAuth2RedirectPage.test.tsx can reset it between otherwise-independent test cases within one module
-// lifetime; nothing else should read or write it.
-export const oauth2LoginExchangeState: { promise: ReturnType<typeof authApi.oauth2Login> | null } = {
+// of what happened to the mount that started it.
+//
+// A settled exchange is spent: its result belongs to the one callback that produced it and must never be
+// handed to a later mount in the same page load (the app keeps one QueryClient per page load and logout()
+// does not clear it). Otherwise a client-side revisit of this route - after logout, or after a different
+// user signs in with a password and returnUrl points here - would replay the old Google user's JWT.
+// Settlement therefore clears the promise and bumps `generation`; each mount captures the generation it
+// started in and keys its query by it, so the StrictMode double-mount of ONE callback (both mounts render
+// before anything settles) still shares one key and one promise, while any later mount gets a fresh key
+// with no cached data and asks the server again (which, with no new ticket, answers 400).
+//
+// Exported as an object (not bare module `let`s) only so OAuth2RedirectPage.test.tsx can reset it between
+// otherwise-independent test cases within one module lifetime; nothing else should read or write it.
+export const oauth2LoginExchangeState: {
+  promise: ReturnType<typeof authApi.oauth2Login> | null;
+  generation: number;
+} = {
   promise: null,
+  generation: 0,
 };
 
 function exchangeOAuth2LoginOnce() {
-  oauth2LoginExchangeState.promise ??= authApi.oauth2Login();
+  if (!oauth2LoginExchangeState.promise) {
+    const promise = authApi.oauth2Login();
+    const spend = () => {
+      if (oauth2LoginExchangeState.promise !== promise) return;
+      oauth2LoginExchangeState.promise = null;
+      oauth2LoginExchangeState.generation += 1;
+    };
+    // then(spend, spend), not finally(): finally() would create a second, unhandled rejecting promise.
+    promise.then(spend, spend);
+    oauth2LoginExchangeState.promise = promise;
+  }
   return oauth2LoginExchangeState.promise;
 }
 
@@ -54,21 +78,25 @@ export function OAuth2RedirectPage() {
   const errorParam = searchParams.get("error");
   const { login } = useAuth();
   const navigate = useNavigate();
+  const [generation] = useState(() => oauth2LoginExchangeState.generation);
 
   const exchange = useQuery({
-    queryKey: ["auth", "oauth2-login-exchange"],
+    queryKey: ["auth", "oauth2-login-exchange", generation],
     // No AbortSignal forwarded on purpose: this call must never be cancelled mid-flight once dispatched -
     // there would be no way to know whether the ticket got consumed server-side before the abort landed.
     queryFn: exchangeOAuth2LoginOnce,
     enabled: !errorParam,
     retry: false,
     staleTime: Infinity,
+    // The cached value is a live JWT - drop it as soon as nothing is observing it.
+    gcTime: 0,
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
   });
 
   useEffect(() => {
-    if (!exchange.data) return;
+    // An error callback must never sign anyone in, even if an exchange result is somehow on hand.
+    if (errorParam || !exchange.data) return;
     const auth = exchange.data;
     login(auth.token, {
       id: auth.id,
@@ -78,7 +106,7 @@ export function OAuth2RedirectPage() {
       avatarUrl: auth.avatarUrl,
     });
     goToSafePath(null, roleHomePath(auth.role), navigate);
-  }, [exchange.data, login, navigate]);
+  }, [errorParam, exchange.data, login, navigate]);
 
   if (errorParam) {
     return (
