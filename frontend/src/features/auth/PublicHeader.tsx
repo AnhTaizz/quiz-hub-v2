@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { Link, useLocation } from "react-router";
 import "./PublicHeader.css";
 
@@ -136,7 +137,7 @@ export function PublicHeader({ variant }: PublicHeaderProps) {
     );
   }
 
-  // Exact 1:1 V1 Header
+  // Exact 1:1 V1 Header with Accessible Responsive Mobile Menu
   return (
     <header id="header" className={`fixed-top ${scrolled ? "header-scrolled" : ""}`}>
       <div className="container d-flex align-items-center justify-content-between">
@@ -187,12 +188,14 @@ export function PublicHeader({ variant }: PublicHeaderProps) {
               </Link>
             </li>
           </ul>
+
           <button
             type="button"
             className="mobile-nav-toggle"
             id="mobile-nav-toggle"
             aria-label={mobileOpen ? "Đóng menu" : "Mở menu điều hướng"}
             aria-expanded={mobileOpen}
+            aria-controls="nav-menu"
             onClick={() => setMobileOpen((prev) => !prev)}
           >
             <i className={`bi ${mobileOpen ? "bi-x" : "bi-list"}`} />
@@ -202,6 +205,17 @@ export function PublicHeader({ variant }: PublicHeaderProps) {
           </button>
         </nav>
       </div>
+
+      {mobileOpen &&
+        typeof document !== "undefined" &&
+        createPortal(
+          <div
+            className="mobile-nav-backdrop"
+            onClick={closeMobile}
+            aria-hidden="true"
+          />,
+          document.body
+        )}
     </header>
   );
 }

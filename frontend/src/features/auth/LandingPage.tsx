@@ -215,7 +215,6 @@ export function LandingPage() {
       <section
         className="hero-section"
         id="hero"
-        style={{ paddingBottom: "120px" }}
         aria-label="Giới thiệu QuizHub"
         onMouseEnter={() => setIsPaused(true)}
         onMouseLeave={() => setIsPaused(false)}
@@ -228,7 +227,7 @@ export function LandingPage() {
         <div className="container position-relative">
           <div id="heroCarousel" className="carousel slide carousel-fade">
             {/* Indicators */}
-            <div className="carousel-indicators" style={{ bottom: "-70px", gap: "14px" }}>
+            <div className="carousel-indicators">
               {HERO_SLIDES.map((slide, idx) => (
                 <button
                   key={idx}
@@ -237,13 +236,6 @@ export function LandingPage() {
                   aria-label={`Slide ${idx + 1}: ${slide.badge}`}
                   aria-current={activeSlide === idx ? "true" : undefined}
                   onClick={() => setActiveSlide(idx)}
-                  style={{
-                    width: "14px",
-                    height: "14px",
-                    borderRadius: "50%",
-                    border: "2px solid transparent",
-                    transition: "all 0.3s",
-                  }}
                 />
               ))}
             </div>
@@ -266,10 +258,7 @@ export function LandingPage() {
                             {slide.announce}
                           </div>
                           <h1 className="hero-title mb-4">{slide.title}</h1>
-                          <p
-                            className="hero-sub mb-4"
-                            style={{ fontSize: "1.15rem", color: "rgba(255,255,255,0.85)" }}
-                          >
+                          <p className="hero-sub mb-4">
                             {slide.description}
                           </p>
                           <div className="hero-actions d-flex gap-3">
@@ -289,14 +278,7 @@ export function LandingPage() {
                         </div>
                       </div>
                       <div className="col-lg-6 d-none d-lg-block">
-                        <div
-                          className="hero-screen shadow-lg"
-                          style={{
-                            borderRadius: "16px",
-                            border: "1px solid rgba(255,255,255,0.15)",
-                            overflow: "hidden",
-                          }}
-                        >
+                        <div className="hero-screen shadow-lg">
                           <div
                             className="screen-bar"
                             style={{
@@ -338,8 +320,6 @@ export function LandingPage() {
                             src={slide.image}
                             className="d-block w-100"
                             style={{
-                              height: "440px",
-                              objectFit: "cover",
                               objectPosition: idx === 0 ? "left top" : "center",
                             }}
                             alt={slide.imageAlt}

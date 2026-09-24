@@ -264,7 +264,7 @@
   color: #1a1a2e;
   letter-spacing: -0.5px;
   text-decoration: none;
-  margin-left: 20px;
+  margin-left: 0;
 }
 
 #header .logo-icon {
@@ -286,7 +286,7 @@
 #header .navbar > ul {
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: clamp(8px, 1.2vw, 18px);
   list-style: none;
   margin: 0;
   padding: 0;
@@ -295,7 +295,7 @@
 #header .navbar a.nav-link {
   display: inline-flex;
   align-items: center;
-  padding: 8px 16px;
+  padding: 8px clamp(10px, 1vw, 16px);
   color: #4a5568;
   font-size: 15px;
   font-weight: 600;
@@ -309,8 +309,8 @@
   content: '';
   position: absolute;
   bottom: 0px;
-  left: 16px;
-  right: 16px;
+  left: 12px;
+  right: 12px;
   height: 2px;
   background: linear-gradient(90deg, #10b981, #3b82f6);
   transform: scaleX(0);
@@ -330,12 +330,13 @@
 #header .nav-btn-login {
   color: #10b981 !important;
   font-weight: 800 !important;
-  padding: 8px 22px !important;
+  padding: 8px clamp(14px, 1.5vw, 22px) !important;
   border-radius: 100px !important;
   background: rgba(16, 185, 129, 0.12) !important;
   border: 1.5px solid transparent !important;
   text-decoration: none;
   transition: all 0.3s ease !important;
+  white-space: nowrap;
 }
 
 #header .nav-btn-login:hover {
@@ -349,14 +350,15 @@
   background: linear-gradient(135deg, #10b981, #2563eb) !important;
   color: #fff !important;
   font-weight: 700 !important;
-  padding: 8px 26px !important;
+  padding: 8px clamp(16px, 1.8vw, 26px) !important;
   border-radius: 100px !important;
   border: none !important;
-  margin-left: 4px;
+  margin-left: 2px;
   transition: all 0.3s ease !important;
   box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3) !important;
   text-decoration: none;
   letter-spacing: 0.3px;
+  white-space: nowrap;
 }
 
 #header .nav-btn-signup:hover {
@@ -371,43 +373,89 @@
   cursor: pointer;
   display: none;
   line-height: 0;
-  transition: 0.5s;
+  transition: 0.3s;
   background: transparent;
   border: none;
-  padding: 0;
+  padding: 6px;
+  border-radius: 8px;
   outline: none;
 }
 
-@media (max-width: 992px) {
+#header .mobile-nav-toggle:focus-visible {
+  outline: 2px solid #10b981;
+  outline-offset: 2px;
+}
+
+/* Mobile backdrop for landing page header */
+.mobile-nav-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.55);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 998;
+}
+
+@media (max-width: 1024px) {
   #header .mobile-nav-toggle {
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   #header .navbar ul {
     position: fixed;
     inset: 0 0 0 auto;
-    width: 280px;
+    width: min(300px, 82vw);
     height: 100vh;
     background: #ffffff;
     flex-direction: column;
-    align-items: flex-start;
-    padding: 80px 20px 40px;
-    gap: 4px;
-    box-shadow: -6px 0 30px rgba(0, 0, 0, .15);
+    align-items: stretch;
+    padding: 84px 20px 40px;
+    gap: 6px;
+    box-shadow: -8px 0 32px rgba(0, 0, 0, .18);
     transform: translateX(100%);
-    transition: transform .3s ease;
+    visibility: hidden;
+    pointer-events: none;
+    transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.28s;
     z-index: 999;
+    overflow-y: auto;
   }
 
   #header .navbar ul.nav-open {
     transform: translateX(0);
+    visibility: visible;
+    pointer-events: auto;
   }
 
   #header .navbar a {
     width: 100%;
   }
 
+  #header .navbar a.nav-link {
+    padding: 12px 14px;
+    border-radius: 8px;
+  }
+
+  #header .navbar a.nav-link:hover,
+  #header .navbar a.nav-link.active {
+    background: rgba(16, 185, 129, 0.08);
+  }
+
+  #header .nav-btn-login {
+    text-align: center;
+    justify-content: center;
+    margin-top: 10px;
+    width: 100%;
+    display: block;
+  }
+
   #header .nav-btn-signup {
     margin-left: 0 !important;
+    text-align: center;
+    justify-content: center;
+    margin-top: 6px;
+    width: 100%;
+    display: block;
   }
 }

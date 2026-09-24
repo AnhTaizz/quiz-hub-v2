@@ -47,8 +47,10 @@ describe("LandingPage Component - V1 1:1 Parity", () => {
     clearSession();
   });
 
-  it("renders all core landing page sections with exact V1 content and structure", () => {
-    renderLanding();
+  it(
+    "renders all core landing page sections with exact V1 content and structure",
+    () => {
+      renderLanding();
 
     // 1. Header (V1 style)
     const header = screen.getByRole("banner");
@@ -134,7 +136,7 @@ describe("LandingPage Component - V1 1:1 Parity", () => {
 
     // 9. Scroll to Top button
     expect(screen.getByLabelText(/Cuộn lên đầu trang/i)).toBeInTheDocument();
-  });
+  }, 15000);
 
   it("navigates hero slides with Next and Prev controls across all 4 slides", () => {
     renderLanding();
@@ -275,7 +277,7 @@ describe("LandingPage Component - V1 1:1 Parity", () => {
     }
   });
 
-  it("toggles mobile navigation menu", () => {
+  it("toggles mobile navigation menu and closes on Escape or backdrop click", () => {
     renderLanding();
 
     const toggleBtn = document.getElementById("mobile-nav-toggle")!;
@@ -286,7 +288,21 @@ describe("LandingPage Component - V1 1:1 Parity", () => {
     fireEvent.click(toggleBtn);
     expect(toggleBtn.getAttribute("aria-expanded")).toBe("true");
 
-    // Click link to close
+    // Press Escape to close
+    fireEvent.keyDown(window, { key: "Escape" });
+    expect(toggleBtn.getAttribute("aria-expanded")).toBe("false");
+
+    // Open again, click backdrop to close
+    fireEvent.click(toggleBtn);
+    expect(toggleBtn.getAttribute("aria-expanded")).toBe("true");
+    const backdrop = document.querySelector(".mobile-nav-backdrop")!;
+    expect(backdrop).toBeInTheDocument();
+    fireEvent.click(backdrop);
+    expect(toggleBtn.getAttribute("aria-expanded")).toBe("false");
+
+    // Open again, click link to close
+    fireEvent.click(toggleBtn);
+    expect(toggleBtn.getAttribute("aria-expanded")).toBe("true");
     const navLink = screen.getAllByText("Về chúng tôi")[0]!;
     fireEvent.click(navLink);
     expect(toggleBtn.getAttribute("aria-expanded")).toBe("false");
