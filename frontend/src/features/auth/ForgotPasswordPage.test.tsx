@@ -1,4 +1,4 @@
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor, act } from "@testing-library/react";
 import { MemoryRouter, Routes, Route } from "react-router";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
@@ -298,7 +298,7 @@ describe("ForgotPasswordPage Component - V1 4-Step Parity and Auth Behavior", ()
     expect(authApi.resetPassword).not.toHaveBeenCalled();
   });
 
-  it("13. disables resend button while countdown timer is active", async () => {
+  it("13. disables resend link and shows countdown while countdown timer is active", async () => {
     vi.mocked(authApi.forgotPassword).mockResolvedValue("OK");
     renderForgotPassword();
 
@@ -307,49 +307,151 @@ describe("ForgotPasswordPage Component - V1 4-Step Parity and Auth Behavior", ()
     await waitFor(() => screen.getByLabelText("Chữ số OTP 1"));
 
     expect(screen.getByText("60")).toBeInTheDocument();
+    const resendLink = document.getElementById("resendLink");
+    expect(resendLink).toBeInTheDocument();
+    expect(resendLink).toHaveClass("disabled");
     expect(screen.queryByRole("button", { name: /^Gửi lại$/i })).not.toBeInTheDocument();
   });
 
-  it("14. enables resend button after countdown reaches 0", async () => {
+  it("14. enables resend button after fake timer advances 60 seconds to 0", async () => {
+    vi.useFakeTimers();
     vi.mocked(authApi.forgotPassword).mockResolvedValue("OK");
     renderForgotPassword();
 
     fireEvent.change(screen.getByLabelText(/^Địa chỉ Email$/i), { target: { value: "user@example.com" } });
-    fireEvent.click(screen.getByRole("button", { name: /Gửi mã OTP/i }));
-    await waitFor(() => screen.getByLabelText("Chữ số OTP 1"));
+    await act(async () => {
+      fireEvent.click(screen.getByRole("button", { name: /Gửi mã OTP/i }));
+      await vi.advanceTimersByTimeAsync(100);
+    });
 
+    expect(screen.getByLabelText("Chữ số OTP 1")).toBeInTheDocument();
     expect(screen.getByText("60")).toBeInTheDocument();
 
-    // Fast-forward interval using real test without fake timer hang
-    const countdownEl = screen.getByText("60");
-    expect(countdownEl).toBeInTheDocument();
+    // Advance 30 seconds
+    act(() => {
+      vi.advanceTimersByTime(30000);
+    });
+    expect(screen.getByText("30")).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /^Gửi lại$/i })).not.toBeInTheDocument();
+
+    // Advance remaining 30 seconds
+    act(() => {
+      vi.advanceTimersByTime(30000);
+    });
+
+    // Countdown reached 0: disabled resend link is replaced with active button
+    expect(document.getElementById("resendLink")).not.toBeInTheDocument();
+    const resendBtn = screen.getByRole("button", { name: /^Gửi lại$/i });
+    expect(resendBtn).toBeInTheDocument();
+    expect(resendBtn).not.toBeDisabled();
   });
 
-  it("15. resends OTP to the current email and restarts countdown on click", async () => {
+  it("15. resends OTP to the current email, clears OTP fields, displays success notice, and restarts countdown", async () => {
+    vi.useFakeTimers();
     vi.mocked(authApi.forgotPassword).mockResolvedValue("OK");
     renderForgotPassword();
 
     fireEvent.change(screen.getByLabelText(/^Địa chỉ Email$/i), { target: { value: "user@example.com" } });
-    fireEvent.click(screen.getByRole("button", { name: /Gửi mã OTP/i }));
-    await waitFor(() => screen.getByLabelText("Chữ số OTP 1"));
+    await act(async () => {
+      fireEvent.click(screen.getByRole("button", { name: /Gửi mã OTP/i }));
+      await vi.advanceTimersByTimeAsync(100);
+    });
 
-    // Verify initial request
+    expect(screen.getByLabelText("Chữ số OTP 1")).toBeInTheDocument();
     expect(authApi.forgotPassword).toHaveBeenCalledTimes(1);
     expect(authApi.forgotPassword).toHaveBeenCalledWith("user@example.com");
+
+    // Fast forward to countdown 0
+    act(() => {
+      vi.advanceTimersByTime(60000);
+    });
+
+    // Enter some test OTP digits
+    const otp0 = screen.getByLabelText("Chữ số OTP 1");
+    act(() => {
+      fireEvent.change(otp0, { target: { value: "7" } });
+    });
+    expect(otp0).toHaveValue("7");
+
+    const resendBtn = screen.getByRole("button", { name: /^Gửi lại$/i });
+    expect(resendBtn).toBeInTheDocument();
+
+    // Click resend
+    await act(async () => {
+      fireEvent.click(resendBtn);
+      await vi.advanceTimersByTimeAsync(100);
+    });
+
+    // Assert 2nd call to API with same email
+    expect(authApi.forgotPassword).toHaveBeenCalledTimes(2);
+    expect(authApi.forgotPassword).toHaveBeenLastCalledWith("user@example.com");
+
+    // Assert OTP fields were reset
+    expect(screen.getByLabelText("Chữ số OTP 1")).toHaveValue("");
+
+    // Assert success notice
+    expect(screen.getByText("Mã OTP mới đã được gửi!")).toBeInTheDocument();
+
+    // Assert countdown restarted back to 60
+    expect(screen.getByText("60")).toBeInTheDocument();
+    expect(document.getElementById("resendLink")).toHaveClass("disabled");
   });
 
-  it("16. cleans up interval timers upon unmount and step changes", async () => {
+  it("16. handles resend API failure by displaying server error and avoiding false success", async () => {
+    vi.useFakeTimers();
+    vi.mocked(authApi.forgotPassword).mockResolvedValueOnce("OK");
+    renderForgotPassword();
+
+    fireEvent.change(screen.getByLabelText(/^Địa chỉ Email$/i), { target: { value: "user@example.com" } });
+    await act(async () => {
+      fireEvent.click(screen.getByRole("button", { name: /Gửi mã OTP/i }));
+      await vi.advanceTimersByTimeAsync(100);
+    });
+
+    // Fast forward to countdown 0
+    act(() => {
+      vi.advanceTimersByTime(60000);
+    });
+
+    const resendBtn = screen.getByRole("button", { name: /^Gửi lại$/i });
+    expect(resendBtn).toBeInTheDocument();
+
+    // Mock failure on resend
+    vi.mocked(authApi.forgotPassword).mockRejectedValueOnce({
+      status: 500,
+      message: "Không thể kết nối máy chủ gửi mail.",
+    });
+
+    await act(async () => {
+      fireEvent.click(resendBtn);
+      await vi.advanceTimersByTimeAsync(100);
+    });
+
+    expect(screen.getByText("Không thể kết nối máy chủ gửi mail.")).toBeInTheDocument();
+    expect(screen.queryByText("Mã OTP mới đã được gửi!")).not.toBeInTheDocument();
+  });
+
+  it("17. cleans up interval timers upon unmount and when timer expires", async () => {
+    vi.useFakeTimers();
+    const clearIntervalSpy = vi.spyOn(globalThis, "clearInterval");
     vi.mocked(authApi.forgotPassword).mockResolvedValue("OK");
     const { unmount } = renderForgotPassword();
 
     fireEvent.change(screen.getByLabelText(/^Địa chỉ Email$/i), { target: { value: "user@example.com" } });
-    fireEvent.click(screen.getByRole("button", { name: /Gửi mã OTP/i }));
-    await waitFor(() => screen.getByLabelText("Chữ số OTP 1"));
+    await act(async () => {
+      fireEvent.click(screen.getByRole("button", { name: /Gửi mã OTP/i }));
+      await vi.advanceTimersByTimeAsync(100);
+    });
 
-    expect(() => unmount()).not.toThrow();
+    expect(screen.getByLabelText("Chữ số OTP 1")).toBeInTheDocument();
+    expect(screen.getByText("60")).toBeInTheDocument();
+
+    // Unmount during active countdown
+    unmount();
+    expect(clearIntervalSpy).toHaveBeenCalled();
   });
 
-  it("17. toggles new password and confirm password visibility independently", async () => {
+  it("18. toggles new password and confirm password visibility independently", async () => {
     vi.mocked(authApi.forgotPassword).mockResolvedValue("OK");
     renderForgotPassword();
 
@@ -384,7 +486,7 @@ describe("ForgotPasswordPage Component - V1 4-Step Parity and Auth Behavior", ()
     expect(newPw).toHaveAttribute("type", "password");
   });
 
-  it("18. validates new password length and password mismatch at Step 3", async () => {
+  it("19. validates new password length and password mismatch at Step 3", async () => {
     vi.mocked(authApi.forgotPassword).mockResolvedValue("OK");
     renderForgotPassword();
 
@@ -414,7 +516,7 @@ describe("ForgotPasswordPage Component - V1 4-Step Parity and Auth Behavior", ()
     expect(authApi.resetPassword).not.toHaveBeenCalled();
   });
 
-  it("19. calculates password strength helper correctly across levels", () => {
+  it("20. calculates password strength helper correctly across levels", () => {
     expect(calculatePasswordStrength("").score).toBe(0);
     expect(calculatePasswordStrength("12345").label).toBe("Rất yếu");
     expect(calculatePasswordStrength("123456").label).toBe("Yếu");
@@ -423,7 +525,7 @@ describe("ForgotPasswordPage Component - V1 4-Step Parity and Auth Behavior", ()
     expect(calculatePasswordStrength("SuperSecure!Pass123").label).toBe("Rất mạnh");
   });
 
-  it("20. calls resetPassword API with exact payload { email, otp, newPassword, confirmPassword }", async () => {
+  it("21. calls resetPassword API with exact payload { email, otp, newPassword, confirmPassword }", async () => {
     vi.mocked(authApi.forgotPassword).mockResolvedValue("OK");
     vi.mocked(authApi.resetPassword).mockResolvedValue("Đặt lại mật khẩu thành công!");
 
@@ -455,7 +557,7 @@ describe("ForgotPasswordPage Component - V1 4-Step Parity and Auth Behavior", ()
     });
   });
 
-  it("21. stays on Step 3 and shows error when resetPassword API rejects with invalid/expired OTP", async () => {
+  it("22. stays on Step 3 and shows error when resetPassword API rejects with invalid/expired OTP", async () => {
     vi.mocked(authApi.forgotPassword).mockResolvedValue("OK");
     vi.mocked(authApi.resetPassword).mockRejectedValue({
       status: 400,
@@ -485,7 +587,7 @@ describe("ForgotPasswordPage Component - V1 4-Step Parity and Auth Behavior", ()
     expect(screen.queryByRole("heading", { level: 2, name: "Đặt lại thành công!" })).not.toBeInTheDocument();
   });
 
-  it("22. transitions to Step 4 (Success screen) upon successful password reset", async () => {
+  it("23. transitions to Step 4 (Success screen) upon successful password reset", async () => {
     vi.mocked(authApi.forgotPassword).mockResolvedValue("OK");
     vi.mocked(authApi.resetPassword).mockResolvedValue("Đặt lại mật khẩu thành công!");
 
@@ -515,7 +617,7 @@ describe("ForgotPasswordPage Component - V1 4-Step Parity and Auth Behavior", ()
     expect(screen.queryByLabelText("Tiến trình khôi phục mật khẩu")).not.toBeInTheDocument();
   });
 
-  it("23. success screen provides a button that navigates directly to /login", async () => {
+  it("24. success screen provides a button that navigates directly to /login", async () => {
     vi.mocked(authApi.forgotPassword).mockResolvedValue("OK");
     vi.mocked(authApi.resetPassword).mockResolvedValue("OK");
 
@@ -543,7 +645,7 @@ describe("ForgotPasswordPage Component - V1 4-Step Parity and Auth Behavior", ()
     expect(loginBtn).toHaveAttribute("href", "/login");
   });
 
-  it("24. maintains PublicHeader and navigation links on ForgotPasswordPage", () => {
+  it("25. maintains PublicHeader and navigation links on ForgotPasswordPage", () => {
     renderForgotPassword();
 
     const brandLink = screen.getByRole("link", { name: /QuizHub - Trang chủ/i });
@@ -557,7 +659,7 @@ describe("ForgotPasswordPage Component - V1 4-Step Parity and Auth Behavior", ()
     expect(signupLink).toHaveAttribute("href", "/register");
   });
 
-  it("25. manages mobile drawer menu and keyboard interaction on ForgotPasswordPage", () => {
+  it("26. manages mobile drawer menu and keyboard interaction on ForgotPasswordPage", () => {
     renderForgotPassword();
 
     const toggleBtn = document.getElementById("mobile-nav-toggle")!;
@@ -572,7 +674,7 @@ describe("ForgotPasswordPage Component - V1 4-Step Parity and Auth Behavior", ()
     expect(document.activeElement).toBe(toggleBtn);
   });
 
-  it("26. redirects authenticated users to their role home dashboard", () => {
+  it("27. redirects authenticated users to their role home dashboard", () => {
     setSession("valid-token", {
       id: 88,
       email: "student@example.com",
