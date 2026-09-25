@@ -250,6 +250,24 @@
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 }
 
+#header .container {
+  width: 100%;
+  max-width: 1320px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: clamp(16px, 2.5vw, 32px);
+  padding-right: clamp(16px, 2.5vw, 32px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+}
+
+#header .navbar {
+  display: flex;
+  align-items: center;
+}
+
 #header .logo {
   margin: 0;
   line-height: 1;

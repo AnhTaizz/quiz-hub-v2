@@ -90,22 +90,25 @@
   align-items: center;
   justify-content: center;
   width: 100%;
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0 16px;
   position: relative;
   z-index: 1;
 }
 
 .auth-card {
-  background: rgba(16, 12, 40, 0.82);
+  background: rgba(16, 12, 40, 0.76);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 24px;
-  padding: 40px;
+  padding: 44px 40px;
   width: 100%;
   max-width: 440px;
   box-shadow: 0 50px 100px rgba(0, 0, 0, .6),
-    0 0 0 1px rgba(255, 255, 255, .07),
-    inset 0 1px 0 rgba(255, 255, 255, .08);
+    0 0 0 1px rgba(255, 255, 255, .08),
+    inset 0 1px 0 rgba(255, 255, 255, .1);
   position: relative;
   z-index: 2;
 }
