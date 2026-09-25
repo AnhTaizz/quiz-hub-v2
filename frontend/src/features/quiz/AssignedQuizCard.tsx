@@ -16,22 +16,50 @@ export function AssignedQuizCard({ quiz, variant = "card" }: { quiz: AssignedQui
   if (variant === "task") {
     return (
       <article className="qh-task-card">
-        <div className="qh-task-card__icon"><i className="bi bi-file-earmark-text" /></div>
-        <div className="qh-task-card__body">
-          <h3>{quiz.quizTitle ?? "Đề thi chưa đặt tên"}</h3>
-          <div className="qh-task-card__chips">
-            {quiz.durationInMins != null && <span><i className="bi bi-clock" /> {quiz.durationInMins} phút</span>}
-            <span><i className="bi bi-person-walking" /> Lượt: {quiz.attemptsMade} / {maxAttempts ?? "∞"}</span>
-            <span className="qh-task-card__due"><i className="bi bi-calendar-event" /> Hạn: {quiz.dueDate ? formatDateTime(quiz.dueDate) : "Không thời hạn"}</span>
+        <div className="qh-task-card__layout">
+          <div className="qh-task-card__summary">
+            <div className="qh-task-card__icon" aria-hidden="true">
+              <i className="bi bi-file-earmark-text" />
+            </div>
+            <div className="qh-task-card__body">
+              <h3>{quiz.quizTitle ?? "Đề thi chưa đặt tên"}</h3>
+              <div className="qh-task-card__chips">
+                {quiz.durationInMins != null && (
+                  <span className="qh-task-card__chip">
+                    <i className="bi bi-clock" aria-hidden="true" /> {quiz.durationInMins} phút
+                  </span>
+                )}
+                <span className={`qh-task-card__chip ${quiz.attemptsMade > 0 ? "qh-task-card__chip--attempted" : ""}`}>
+                  <i className="bi bi-person-walking" aria-hidden="true" /> Lượt: {quiz.attemptsMade} / {maxAttempts ?? "∞"}
+                </span>
+                <span className="qh-task-card__chip qh-task-card__chip--due">
+                  <i className="bi bi-calendar-event" aria-hidden="true" /> Hạn: {quiz.dueDate ? formatDateTime(quiz.dueDate) : "Không thời hạn"}
+                </span>
+              </div>
+            </div>
           </div>
-        </div>
-        <div className="qh-task-card__actions">
-          <a href={`/student/quiz/history/${quiz.assigningId}`} className="qh-task-card__history"><i className="bi bi-clock-history" /> Lịch sử</a>
-          {availability === "available" && !attemptsExhausted ? (
-            <Link to={`/student/quiz/play/${quiz.assigningId}`} className="qh-task-card__start">
-              <i className="bi bi-pencil-square" /> {quiz.hasUnfinished ? "Tiếp tục" : "Làm bài"}
-            </Link>
-          ) : <span className="qh-task-card__disabled">{availability === "not_started" ? "Sắp tới" : availability === "expired" ? "Hết hạn" : "Hết lượt"}</span>}
+          <div className="qh-task-card__actions">
+            <a
+              href={`/student/quiz/history/${quiz.assigningId}`}
+              className="qh-task-card__action qh-task-card__history"
+            >
+              <i className="bi bi-clock-history" aria-hidden="true" />
+              <span>Lịch sử</span>
+            </a>
+            {availability === "available" && !attemptsExhausted ? (
+              <Link
+                to={`/student/quiz/play/${quiz.assigningId}`}
+                className="qh-task-card__action qh-task-card__start"
+              >
+                <i className="bi bi-pencil-square" aria-hidden="true" />
+                <span>{quiz.hasUnfinished ? "Tiếp tục" : "Làm bài"}</span>
+              </Link>
+            ) : (
+              <span className="qh-task-card__action qh-task-card__disabled">
+                {availability === "not_started" ? "Sắp tới" : availability === "expired" ? "Hết hạn" : "Hết lượt"}
+              </span>
+            )}
+          </div>
         </div>
       </article>
     );
