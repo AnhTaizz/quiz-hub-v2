@@ -1,16 +1,136 @@
-.qh-task-card { display:flex; align-items:center; gap:16px; margin-bottom:18px; padding:24px; border:1px solid #e2e8f0; border-left:4px solid #2563eb; border-radius:16px; background:#fff; transition:.25s; }
-.qh-task-card:hover { transform:translateY(-3px); box-shadow:0 12px 36px rgba(15,23,42,.08); }
-.qh-task-card__icon { display:grid; place-items:center; width:56px; height:56px; flex:0 0 56px; border-radius:16px; background:rgba(37,99,235,.1); color:#2563eb; font-size:24px; }
-.qh-task-card__body { flex:1; min-width:0; }
-.qh-task-card__body h3 { margin:0 0 10px; color:#1a1a2e; font-size:18px; font-weight:800; }
-.qh-task-card__chips { display:flex; flex-wrap:wrap; gap:8px; }
-.qh-task-card__chips span { display:inline-flex; align-items:center; gap:6px; padding:6px 10px; border-radius:8px; background:#f4f7fa; color:#718096; font-size:12px; font-weight:700; }
-.qh-task-card__chips .qh-task-card__due { background:rgba(40,167,69,.1); color:#28a745; }
-.qh-task-card__actions { display:flex; flex-wrap:wrap; gap:8px; }
-.qh-task-card__actions a, .qh-task-card__disabled { display:inline-flex; align-items:center; justify-content:center; gap:6px; min-height:42px; padding:0 18px; border-radius:999px; text-decoration:none; font-size:13px; font-weight:800; white-space:nowrap; }
-.qh-task-card__history { border:1px solid #2563eb; color:#2563eb; }
-.qh-task-card__start { background:#28a745; color:#fff; }
-.qh-task-card__disabled { background:#f1f5f9; color:#94a3b8; }
+.qh-task-card {
+  padding: 24px;
+  border: 1px solid #e2e8f0;
+  border-left: 4px solid #0d6efd;
+  border-radius: 16px;
+  background: #fff;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.qh-task-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 36px rgba(15, 23, 42, 0.08);
+}
+
+.qh-task-card__layout {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.qh-task-card__summary {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 16px;
+}
+
+.qh-task-card__icon {
+  display: grid;
+  width: 56px;
+  height: 56px;
+  flex: 0 0 56px;
+  place-items: center;
+  border-radius: 16px;
+  background: rgba(13, 110, 253, 0.1);
+  color: #0d6efd;
+  font-size: 24px;
+}
+
+.qh-task-card__body { min-width: 0; }
+
+.qh-task-card__body h3 {
+  margin: 0 0 8px;
+  color: #1a1a2e;
+  font-family: var(--font-heading, "Nunito Sans", sans-serif);
+  font-size: 18px;
+  font-weight: 800;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.qh-task-card__chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.qh-task-card__chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: #f4f7fa;
+  color: #64748b;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.qh-task-card__chip--attempted {
+  border-color: rgba(13, 110, 253, 0.25);
+  color: #0d6efd;
+}
+
+.qh-task-card__chip--due {
+  background: rgba(40, 167, 69, 0.1);
+  color: #28833d;
+}
+
+.qh-task-card__actions {
+  display: flex;
+  flex: 0 0 auto;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.qh-task-card__action {
+  display: inline-flex;
+  min-height: 40px;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 20px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  font-size: 13.5px;
+  font-weight: 700;
+  line-height: 1;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.qh-task-card__history {
+  border-color: #0d6efd;
+  background: transparent;
+  color: #0d6efd;
+}
+
+.qh-task-card__history:hover {
+  background: #0d6efd;
+  color: #fff;
+}
+
+.qh-task-card__start {
+  background: #16a34a;
+  color: #fff;
+}
+
+.qh-task-card__start:hover {
+  background: #15803d;
+  color: #fff;
+}
+
+.qh-task-card__disabled {
+  background: #f1f5f9;
+  color: #64748b;
+}
 
 .qh-quiz-card { display:flex; flex-direction:column; gap:0; min-height:100%; padding:28px; border-radius:24px; transition:.3s; }
 .qh-quiz-card:hover { transform:translateY(-8px); border-color:#6366f1; box-shadow:0 20px 40px rgba(0,0,0,.08); }
@@ -33,4 +153,21 @@
 .qh-quiz-card__history { border:2px solid #6366f1; color:#6366f1; }
 .qh-quiz-card__class { margin:20px 0 0; padding-top:16px; border-top:1px solid #f1f5f9; color:#64748b; font-size:12px; font-weight:700; }
 
-@media (max-width:700px) { .qh-task-card { align-items:flex-start; flex-wrap:wrap; padding:18px; } .qh-task-card__body { flex-basis:calc(100% - 76px); } .qh-task-card__actions { width:100%; } }
+@media (prefers-reduced-motion: reduce) {
+  .qh-task-card { transition: none; }
+  .qh-task-card:hover { transform: none; }
+}
+
+@media (max-width: 760px) {
+  .qh-task-card { padding: 18px; }
+  .qh-task-card__layout { align-items: stretch; flex-direction: column; gap: 16px; }
+  .qh-task-card__summary { align-items: flex-start; }
+  .qh-task-card__actions { width: 100%; }
+  .qh-task-card__action { flex: 1 1 130px; }
+}
+
+@media (max-width: 420px) {
+  .qh-task-card__summary { flex-direction: column; }
+  .qh-task-card__icon { width: 48px; height: 48px; flex-basis: 48px; border-radius: 14px; }
+  .qh-task-card__chip { max-width: 100%; overflow-wrap: anywhere; white-space: normal; }
+}

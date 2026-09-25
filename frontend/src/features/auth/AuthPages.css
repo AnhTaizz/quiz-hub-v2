@@ -1,4 +1,939 @@
-.qh-auth-page {
+/* =========================================================
+   QuizHub - Auth Pages Styles (Login, Register, OAuth2)
+   ========================================================= */
+
+/* ─── V1 AUTH HERO & BACKGROUND ─────────────────────────── */
+.auth-page-v1 {
+  padding: 0 !important;
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.auth-hero-section {
+  min-height: 100vh;
+  width: 100%;
+  background: linear-gradient(140deg, #0f0c29 0%, #1a237e 35%, #302b63 65%, #24243e 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  padding: 92px 16px 36px;
+  flex: 1;
+}
+
+/* Dot-grid overlay */
+.auth-hero-section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(255, 255, 255, .07) 1px, transparent 1px);
+  background-size: 32px 32px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Gradient orbs */
+.auth-hero-section::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 60% 55% at 80% 20%, rgba(99, 102, 241, .22) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 50% at 15% 85%, rgba(37, 99, 235, .18) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Glowing animated blobs */
+.auth-hero-section .hero-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.auth-hero-section .hero-blob-1 {
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(139, 92, 246, .35) 0%, transparent 70%);
+  top: -180px;
+  right: -150px;
+  animation: authBlobDrift1 14s ease-in-out infinite alternate;
+}
+
+.auth-hero-section .hero-blob-2 {
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(59, 130, 246, .28) 0%, transparent 70%);
+  bottom: -100px;
+  left: -80px;
+  animation: authBlobDrift2 18s ease-in-out infinite alternate;
+}
+
+@keyframes authBlobDrift1 {
+  from { transform: translate(0, 0) scale(1); }
+  to   { transform: translate(-50px, 60px) scale(1.1); }
+}
+
+@keyframes authBlobDrift2 {
+  from { transform: translate(0, 0) scale(1); }
+  to   { transform: translate(60px, -40px) scale(1.15); }
+}
+
+/* ─── V1 AUTH CARD ───────────────────────────────────────── */
+.login-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0 16px;
+  position: relative;
+  z-index: 1;
+}
+
+.auth-card {
+  background: rgba(16, 12, 40, 0.76);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 20px;
+  padding: 32px 28px;
+  width: 100%;
+  max-width: 390px;
+  box-shadow: 0 40px 90px rgba(0, 0, 0, .55),
+    0 0 0 1px rgba(255, 255, 255, .08),
+    inset 0 1px 0 rgba(255, 255, 255, .1);
+  position: relative;
+  z-index: 2;
+}
+
+/* Card Header */
+.auth-header {
+  text-align: center;
+}
+
+.auth-header h2 {
+  color: #fff;
+  font-family: 'Nunito Sans', sans-serif;
+  font-weight: 800;
+  font-size: 23px;
+  margin-bottom: 6px;
+  letter-spacing: -0.02em;
+}
+
+.auth-header p {
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 20px;
+  font-size: 13.5px;
+}
+
+/* Form Groups & Inputs */
+.auth-card .form-group {
+  margin-bottom: 15px;
+  text-align: left;
+}
+
+.auth-card .form-group label {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  display: block;
+}
+
+.auth-card .input-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.auth-card .input-wrapper > i {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: rgba(255, 255, 255, 0.35);
+  font-size: 16px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.auth-card .form-control-auth {
+  width: 100%;
+  padding: 10.5px 14px 10.5px 40px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  color: #fff;
+  font-size: 14px;
+  font-family: 'Inter', sans-serif;
+  outline: none;
+  transition: border-color 0.25s ease, background-color 0.25s ease, box-shadow 0.25s ease;
+  box-sizing: border-box;
+}
+
+.auth-card .form-control-auth::placeholder {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.auth-card .form-control-auth:focus {
+  border-color: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.05);
+}
+
+.auth-card .form-control-auth.is-invalid {
+  border-color: rgba(248, 113, 113, 0.6) !important;
+}
+
+/* Toggle Password visibility button */
+.auth-card .toggle-pw {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 15px;
+  padding: 4px 6px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s, background-color 0.2s;
+  z-index: 2;
+}
+
+.auth-card .toggle-pw:hover {
+  color: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.auth-card .toggle-pw:focus-visible {
+  outline: 2px solid #4ade80;
+  outline-offset: 2px;
+}
+
+/* Error box */
+.login-error-box {
+  margin-top: 8px;
+  padding: 9px 12px;
+  background: rgba(248, 113, 113, 0.12);
+  border: 1px solid rgba(248, 113, 113, 0.3);
+  border-radius: 8px;
+  color: #fca5a5;
+  font-size: 12.5px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-align: left;
+  animation: loginErrorFade 0.2s ease-in;
+}
+
+@keyframes loginErrorFade {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.login-error-box i {
+  font-size: 14px;
+  flex-shrink: 0;
+  color: #f87171;
+}
+
+/* Forgot Password Row */
+.auth-links-row {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.auth-forgot-link {
+  font-size: 13px;
+  color: #4ade80;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s;
+}
+
+.auth-forgot-link:hover {
+  color: #22c55e;
+  text-decoration: underline;
+}
+
+/* Primary Submit Button */
+.btn-auth {
+  width: 100%;
+  padding: 11px 16px;
+  background: #4ade80;
+  border: none;
+  border-radius: 9999px;
+  color: #1a1a2e;
+  font-weight: 800;
+  font-size: 14.5px;
+  font-family: 'Nunito Sans', sans-serif;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 4px 14px rgba(74, 222, 128, 0.35);
+  text-decoration: none;
+  box-sizing: border-box;
+}
+
+.btn-auth:hover {
+  background: #22c55e;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(74, 222, 128, 0.45);
+  color: #1a1a2e;
+}
+
+.btn-auth:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Loading Spinner inside Button */
+.btn-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(26, 26, 46, 0.3);
+  border-top-color: #1a1a2e;
+  border-radius: 50%;
+  animation: authSpin 0.7s linear infinite;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+@keyframes authSpin {
+  to { transform: rotate(360deg); }
+}
+
+/* Divider (Hoặc) */
+.auth-divider {
+  display: flex;
+  align-items: center;
+  margin: 18px 0;
+  gap: 12px;
+}
+
+.auth-divider-line {
+  flex: 1;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.auth-divider span {
+  padding: 0 4px;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 12.5px;
+  font-weight: 500;
+}
+
+/* Google Login Button */
+.btn-google {
+  background: #ffffff !important;
+  color: #1e293b !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  padding: 10px 16px !important;
+}
+
+.btn-google:hover {
+  background: #f8fafc !important;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 255, 255, 0.2) !important;
+  color: #1e293b !important;
+}
+
+.btn-google .google-icon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+/* Footer link */
+.auth-footer {
+  margin-top: 22px;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 13px;
+}
+
+.auth-footer a {
+  color: #4ade80;
+  font-weight: 700;
+  text-decoration: none;
+  margin-left: 4px;
+  transition: color 0.2s;
+}
+
+.auth-footer a:hover {
+  color: #22c55e;
+  text-decoration: underline;
+}
+
+/* ─── V1 REGISTER PAGE STYLES (Parity with V1 2-Step Flow) ── */
+.auth-card.auth-card-register {
+  max-width: 440px;
+}
+
+/* Step Indicator (Dots) */
+.step-dots {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 22px;
+}
+
+.step-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.step-dot.active {
+  width: 24px;
+  border-radius: 4px;
+  background: #4ade80;
+}
+
+.step-dot.completed {
+  background: #4ade80;
+  opacity: 0.85;
+}
+
+/* Role Selection Cards (Step 1) */
+.role-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 22px;
+}
+
+.role-card-btn {
+  background: rgba(255, 255, 255, 0.04);
+  border: 2px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 22px 14px 18px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  position: relative;
+  width: 100%;
+  color: inherit;
+  font-family: inherit;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+.role-card-btn:hover {
+  border-color: rgba(74, 222, 128, 0.4);
+  background: rgba(74, 222, 128, 0.06);
+  transform: translateY(-2px);
+}
+
+.role-card-btn.teacher-card:hover {
+  border-color: rgba(56, 189, 248, 0.4);
+  background: rgba(56, 189, 248, 0.06);
+}
+
+.role-card-btn.selected.student-card {
+  border-color: #4ade80;
+  background: rgba(74, 222, 128, 0.1);
+  box-shadow: 0 0 0 1px #4ade80, 0 8px 24px rgba(74, 222, 128, 0.2);
+}
+
+.role-card-btn.selected.teacher-card {
+  border-color: #38bdf8;
+  background: rgba(56, 189, 248, 0.1);
+  box-shadow: 0 0 0 1px #38bdf8, 0 8px 24px rgba(56, 189, 248, 0.2);
+}
+
+.role-card-btn:focus-visible {
+  outline: 2px solid #4ade80;
+  outline-offset: 2px;
+}
+
+.role-card-btn.teacher-card:focus-visible {
+  outline-color: #38bdf8;
+}
+
+.role-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 12px;
+  font-size: 24px;
+  transition: all 0.25s;
+}
+
+.student-card .role-icon {
+  background: rgba(74, 222, 128, 0.15);
+  color: #4ade80;
+}
+
+.teacher-card .role-icon {
+  background: rgba(56, 189, 248, 0.15);
+  color: #38bdf8;
+}
+
+.selected.student-card .role-icon {
+  background: rgba(74, 222, 128, 0.25);
+}
+
+.selected.teacher-card .role-icon {
+  background: rgba(56, 189, 248, 0.25);
+}
+
+.role-name {
+  font-family: 'Nunito Sans', sans-serif;
+  font-weight: 800;
+  font-size: 15px;
+  color: #fff;
+  margin-bottom: 4px;
+}
+
+.role-desc {
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, 0.5);
+  line-height: 1.45;
+}
+
+.check-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #4ade80;
+  color: #1a1a2e;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  opacity: 0;
+  transform: scale(0);
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.selected .check-badge {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.selected.teacher-card .check-badge {
+  background: #38bdf8;
+}
+
+/* Next button (Step 1) */
+.btn-next-step {
+  width: 100%;
+  padding: 11px 16px;
+  background: #4ade80;
+  border: none;
+  border-radius: 9999px;
+  color: #1a1a2e;
+  font-family: 'Nunito Sans', sans-serif;
+  font-weight: 800;
+  font-size: 14.5px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  opacity: 0.4;
+  pointer-events: none;
+  box-shadow: 0 4px 14px rgba(74, 222, 128, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-sizing: border-box;
+}
+
+.btn-next-step.ready {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.btn-next-step.ready:hover {
+  background: #22c55e;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(74, 222, 128, 0.45);
+}
+
+.btn-next-step:focus-visible {
+  outline: 2px solid #4ade80;
+  outline-offset: 2px;
+}
+
+/* Role back-badge (Step 2) */
+.role-back-badge-wrapper {
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+.role-back-badge-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 14px;
+  border-radius: 9999px;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: opacity 0.2s, transform 0.2s;
+  background: transparent;
+  font-family: inherit;
+}
+
+.role-back-badge-btn:hover {
+  opacity: 0.85;
+  transform: translateX(-2px);
+}
+
+.role-back-badge-btn.student {
+  background: rgba(74, 222, 128, 0.15);
+  color: #4ade80;
+}
+
+.role-back-badge-btn.teacher {
+  background: rgba(56, 189, 248, 0.15);
+  color: #38bdf8;
+}
+
+.role-back-badge-btn:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+/* Step container transitions */
+.reg-step-container {
+  animation: stepFadeIn 0.25s ease-out;
+}
+
+@keyframes stepFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reg-step-container {
+    animation: none;
+  }
+}
+
+/* Field-level error text */
+.field-error-text {
+  color: #fca5a5;
+  font-size: 12px;
+  font-weight: 600;
+  margin-top: 5px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  text-align: left;
+}
+
+.field-error-text i {
+  font-size: 13px;
+  color: #f87171;
+  flex-shrink: 0;
+}
+
+/* ─── V1 FORGOT PASSWORD PAGE STYLES (Parity with V1 4-Step Flow) ── */
+.auth-card.auth-card-forgot-password {
+  max-width: 480px;
+}
+
+.back-to-login {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13.5px;
+  color: rgba(255, 255, 255, 0.55);
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s ease, transform 0.2s ease;
+  margin-bottom: 18px;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.back-to-login:hover {
+  color: #4ade80;
+  transform: translateX(-2px);
+}
+
+.back-to-login:focus-visible {
+  outline: 2px solid #4ade80;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Step Progress Indicator (1 - 2 - 3) */
+.step-progress {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  margin-bottom: 28px;
+  width: 100%;
+}
+
+.step-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.step-circle {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.4);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.step-circle.done {
+  background: #4ade80;
+  border-color: #4ade80;
+  color: #1a1a2e;
+}
+
+.step-circle.active {
+  border-color: #4ade80;
+  color: #4ade80;
+  background: rgba(74, 222, 128, 0.12);
+  box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.2);
+}
+
+.step-label {
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, 0.4);
+  font-weight: 600;
+  white-space: nowrap;
+  transition: color 0.3s ease;
+}
+
+.step-label.active {
+  color: #4ade80;
+}
+
+.step-label.done {
+  color: rgba(74, 222, 128, 0.85);
+}
+
+.step-line {
+  width: clamp(24px, 7vw, 48px);
+  height: 2px;
+  background: rgba(255, 255, 255, 0.12);
+  margin: 0 6px 20px;
+  transition: background-color 0.3s ease;
+  flex-shrink: 0;
+}
+
+.step-line.done {
+  background: #4ade80;
+}
+
+/* Email Highlight (Step 2) */
+.email-highlight {
+  display: inline-block;
+  background: rgba(74, 222, 128, 0.1);
+  border: 1px solid rgba(74, 222, 128, 0.25);
+  border-radius: 8px;
+  padding: 4px 12px;
+  color: #4ade80;
+  font-weight: 600;
+  font-size: 13.5px;
+  margin: 4px 0 16px;
+  word-break: break-all;
+}
+
+/* OTP 6-Box Inputs */
+.otp-group {
+  display: flex;
+  gap: clamp(6px, 1.8vw, 10px);
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.otp-input {
+  width: clamp(40px, 11.5vw, 52px);
+  height: clamp(48px, 13.5vw, 60px);
+  text-align: center;
+  font-size: clamp(20px, 5vw, 24px);
+  font-weight: 700;
+  background: rgba(255, 255, 255, 0.06);
+  border: 2px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  color: #fff;
+  outline: none;
+  transition: all 0.2s ease;
+  caret-color: #4ade80;
+  font-family: inherit;
+  box-sizing: border-box;
+}
+
+.otp-input:focus {
+  border-color: #4ade80;
+  background: rgba(74, 222, 128, 0.08);
+  box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.18);
+}
+
+.otp-input.filled {
+  border-color: rgba(74, 222, 128, 0.5);
+}
+
+.otp-input.error {
+  border-color: #f87171;
+  background: rgba(248, 113, 113, 0.08);
+  box-shadow: 0 0 0 2px rgba(248, 113, 113, 0.2);
+}
+
+/* Resend Row */
+.resend-row {
+  text-align: center;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.55);
+  margin-bottom: 20px;
+}
+
+.resend-row button,
+.resend-row a {
+  color: #4ade80;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: inherit;
+  font-family: inherit;
+  transition: color 0.2s ease;
+}
+
+.resend-row button:hover:not(:disabled),
+.resend-row a:hover:not(.disabled) {
+  text-decoration: underline;
+  color: #22c55e;
+}
+
+.resend-row button:disabled,
+.resend-row a.disabled {
+  color: rgba(255, 255, 255, 0.3);
+  pointer-events: none;
+  cursor: not-allowed;
+  text-decoration: none;
+}
+
+.resend-row #countdown {
+  font-weight: 700;
+  color: #4ade80;
+}
+
+/* Password Strength Indicator */
+.strength-bar-wrap {
+  height: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+  margin: 8px 0 4px;
+  overflow: hidden;
+}
+
+.strength-bar {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.3s ease, background-color 0.3s ease;
+  width: 0;
+}
+
+.strength-label {
+  font-size: 12px;
+  font-weight: 600;
+  display: block;
+  margin-bottom: 6px;
+  transition: color 0.3s ease;
+}
+
+/* Success Screen */
+.success-icon {
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(74, 222, 128, 0.2), rgba(34, 197, 94, 0.1));
+  border: 2px solid rgba(74, 222, 128, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36px;
+  color: #4ade80;
+  margin: 0 auto 18px;
+  animation: pulseSuccess 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes pulseSuccess {
+  0% {
+    transform: scale(0.6);
+    opacity: 0;
+  }
+  70% {
+    transform: scale(1.08);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .success-icon {
+    animation: none;
+  }
+}
+
+/* ─── LEGACY GENERIC AUTH STYLES (Preserved for Register / Forgot Password) ─── */
+.qh-auth-page:not(.auth-page-v1) {
   min-height: 100vh;
   display: flex;
   align-items: center;
@@ -10,6 +945,7 @@
     radial-gradient(circle at 84% 80%, rgba(59,130,246,.16), transparent 30%),
     linear-gradient(135deg,#080d1d,#121a35 58%,#080e20);
 }
+
 .qh-auth-card {
   width: 100%;
   max-width: 450px;
@@ -20,6 +956,7 @@
   box-shadow: 0 28px 80px rgba(0,0,0,.42);
   backdrop-filter: blur(22px);
 }
+
 .qh-auth-card__icon { display:grid;width:54px;height:54px;margin:0 auto 17px;place-items:center;border:1px solid rgba(52,211,153,.25);border-radius:15px;color:#6ee7b7;background:rgba(16,185,129,.12);font-size:23px; }
 .qh-auth-title { margin:0;text-align:center;color:#fff;font-size:27px;letter-spacing:-.025em; }
 .qh-auth-subtitle { margin:8px 0 27px;text-align:center;color:#8e9ab3;font-size:14px; }
@@ -32,13 +969,166 @@
 .qh-auth-card .qh-button--primary:hover { background:linear-gradient(135deg,#34d399,#10b981); }
 .qh-auth-error { margin:0 0 18px;padding:12px 14px;border:1px solid rgba(248,113,113,.25);border-radius:9px;color:#fecaca;background:rgba(220,38,38,.14);font-size:13px; }
 .qh-auth-links { display:flex;justify-content:space-between;gap:15px;margin-top:21px;color:#8e9ab3;font-size:13px; }
-.qh-auth-links a { color:#6ee7b7;text-decoration:none;font-weight:700; }.qh-auth-links a:hover{text-decoration:underline}
-.qh-auth-divider { display:flex;align-items:center;gap:12px;margin:21px 0;color:#77839b;font-size:12px; }.qh-auth-divider::before,.qh-auth-divider::after{content:"";height:1px;flex:1;background:rgba(255,255,255,.1)}
-.qh-auth-google { width:100%;min-height:47px;color:#e8edf7!important;border-color:rgba(255,255,255,.13)!important;background:rgba(255,255,255,.055)!important;text-decoration:none; }.qh-auth-google:hover{background:rgba(255,255,255,.1)!important}
+.qh-auth-links a { color:#6ee7b7;text-decoration:none;font-weight:700; }
+.qh-auth-links a:hover{text-decoration:underline}
+.qh-auth-divider { display:flex;align-items:center;gap:12px;margin:21px 0;color:#77839b;font-size:12px; }
+.qh-auth-divider::before,.qh-auth-divider::after{content:"";height:1px;flex:1;background:rgba(255,255,255,.1)}
+.qh-auth-google { width:100%;min-height:47px;color:#e8edf7!important;border-color:rgba(255,255,255,.13)!important;background:rgba(255,255,255,.055)!important;text-decoration:none; }
+.qh-auth-google:hover{background:rgba(255,255,255,.1)!important}
+
 .qh-role-fieldset { display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:0 0 20px;padding:0;border:0; }
 .qh-role-fieldset legend { grid-column:1/-1;margin-bottom:9px;color:#c9d1df;font-size:13px;font-weight:700; }
 .qh-role-option { display:flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 12px;border:1px solid rgba(255,255,255,.13);border-radius:10px;color:#bac4d6;background:rgba(255,255,255,.04);font-size:13px;font-weight:700;cursor:pointer; }
-.qh-role-option:has(input:checked){border-color:#10b981;color:#6ee7b7;background:rgba(16,185,129,.12)}.qh-role-option input{accent-color:#10b981}
-.qh-role-page { max-width:470px; }.qh-role-page__intro{margin:0 0 18px;color:#94a3b8;font-size:14px;overflow-wrap:anywhere}
-.qh-role-cards{display:grid;gap:12px;margin:0 0 20px;padding:0;border:0}.qh-role-card{position:relative;display:flex;flex-direction:column;gap:4px;min-height:74px;padding:15px;border:1px solid rgba(255,255,255,.13);border-radius:12px;cursor:pointer}.qh-role-card--selected{border-color:#10b981;background:rgba(16,185,129,.1)}.qh-role-card__input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer}.qh-role-card__title{color:#fff;font-weight:800}.qh-role-card__description{color:#8e9ab3;font-size:13px}
-@media(max-width:540px){.qh-auth-page{padding:100px 14px 30px}.qh-auth-card{padding:28px 21px}.qh-auth-links{flex-direction:column;text-align:center}.qh-role-fieldset{grid-template-columns:1fr}}
+.qh-role-option:has(input:checked){border-color:#10b981;color:#6ee7b7;background:rgba(16,185,129,.12)}
+.qh-role-option input{accent-color:#10b981}
+
+.qh-role-page { max-width:470px; }
+.qh-role-page__intro{margin:0 0 18px;color:#94a3b8;font-size:14px;overflow-wrap:anywhere}
+.qh-role-cards{display:grid;gap:12px;margin:0 0 20px;padding:0;border:0}
+.qh-role-card{position:relative;display:flex;flex-direction:column;gap:4px;min-height:74px;padding:15px;border:1px solid rgba(255,255,255,.13);border-radius:12px;cursor:pointer}
+.qh-role-card--selected{border-color:#10b981;background:rgba(16,185,129,.1)}
+.qh-role-card__input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer}
+.qh-role-card__title{color:#fff;font-weight:800}
+.qh-role-card__description{color:#8e9ab3;font-size:13px}
+
+/* ─── RESPONSIVE BREAKPOINTS (Fluid without CSS zoom) ────── */
+@media (max-width: 576px) {
+  .auth-hero-section {
+    padding: 88px 12px 32px;
+  }
+
+  .auth-card {
+    padding: 26px 18px;
+    border-radius: 18px;
+  }
+
+  .auth-card.auth-card-register,
+  .auth-card.auth-card-forgot-password {
+    max-width: 100%;
+  }
+
+  .step-progress {
+    margin-bottom: 22px;
+  }
+
+  .step-circle {
+    width: 30px;
+    height: 30px;
+    font-size: 12px;
+  }
+
+  .step-line {
+    width: clamp(16px, 5vw, 32px);
+    margin: 0 4px 16px;
+  }
+
+  .otp-group {
+    gap: 6px;
+    margin-bottom: 18px;
+  }
+
+  .role-cards {
+    gap: 10px;
+    margin-bottom: 18px;
+  }
+
+  .role-card-btn {
+    padding: 18px 10px 14px;
+    border-radius: 14px;
+  }
+
+  .role-icon {
+    width: 44px;
+    height: 44px;
+    font-size: 20px;
+    margin-bottom: 8px;
+  }
+
+  .role-name {
+    font-size: 14px;
+  }
+
+  .role-desc {
+    font-size: 11px;
+  }
+
+  .btn-next-step {
+    padding: 10px 14px;
+    font-size: 14px;
+  }
+
+  .auth-header h2 {
+    font-size: 21px;
+  }
+
+  .auth-header p {
+    font-size: 13px;
+    margin-bottom: 18px;
+  }
+
+  .btn-auth {
+    padding: 11px 14px;
+    font-size: 14px;
+  }
+
+  .auth-card .form-control-auth {
+    padding: 10px 12px 10px 38px;
+    font-size: 13.5px;
+  }
+
+  .auth-card .input-wrapper > i {
+    left: 12px;
+    font-size: 15px;
+  }
+
+  .qh-auth-page:not(.auth-page-v1) {
+    padding: 100px 14px 30px;
+  }
+
+  .qh-auth-card {
+    padding: 28px 21px;
+  }
+
+  .qh-auth-links {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .qh-role-fieldset {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 360px) {
+  .auth-hero-section {
+    padding: 80px 8px 24px;
+  }
+
+  .auth-card {
+    padding: 22px 12px;
+  }
+
+  .role-cards {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .auth-header h2 {
+    font-size: 20px;
+  }
+
+  .auth-card .form-control-auth {
+    padding: 9.5px 10px 9.5px 34px;
+    font-size: 13px;
+  }
+
+  .auth-card .input-wrapper > i {
+    left: 10px;
+    font-size: 14px;
+  }
+
+  .btn-auth {
+    padding: 10px 12px;
+    font-size: 13.5px;
+  }
+}
