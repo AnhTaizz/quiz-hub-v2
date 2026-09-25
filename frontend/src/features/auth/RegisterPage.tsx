@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, type FormEvent } from "react";
-import { useNavigate, Link } from "react-router";
+import { useNavigate, Link, Navigate } from "react-router";
 import { useMutation } from "@tanstack/react-query";
 import { authApi } from "@/api/auth.api";
 import { isApiError } from "@/api/httpClient";
@@ -12,6 +12,9 @@ import "./AuthPages.css";
 export type RegisterRole = "STUDENT" | "TEACHER";
 
 export function RegisterPage() {
+  const { isAuthenticated, user, login } = useAuth();
+  const navigate = useNavigate();
+
   const [step, setStep] = useState<1 | 2>(1);
   const [role, setRole] = useState<RegisterRole | null>(null);
 
@@ -25,9 +28,6 @@ export function RegisterPage() {
 
   const [formError, setFormError] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
-
-  const { login } = useAuth();
-  const navigate = useNavigate();
 
   const step1HeadingRef = useRef<HTMLHeadingElement | null>(null);
   const step2HeadingRef = useRef<HTMLHeadingElement | null>(null);
@@ -71,6 +71,11 @@ export function RegisterPage() {
       }
     },
   });
+
+  // If already authenticated, redirect to role home
+  if (isAuthenticated && user) {
+    return <Navigate to={roleHomePath(user.role)} replace />;
+  }
 
   function handleGoStep2() {
     if (!role) return;
@@ -151,7 +156,7 @@ export function RegisterPage() {
             {/* Step indicator */}
             <div className="step-dots" aria-label={`Bước ${step} trên 2`}>
               <div
-                className={`step-dot ${step === 1 ? "active" : ""}`}
+                className={`step-dot ${step === 1 ? "active" : "completed"}`}
                 id="dot-1"
                 aria-current={step === 1 ? "step" : undefined}
               />

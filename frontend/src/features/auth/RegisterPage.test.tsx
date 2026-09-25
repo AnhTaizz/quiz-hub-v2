@@ -4,7 +4,7 @@ import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
 import { RegisterPage } from "./RegisterPage";
 import { AuthProvider } from "@/auth/AuthProvider";
-import { clearSession } from "@/auth/authStorage";
+import { clearSession, setSession } from "@/auth/authStorage";
 import { authApi } from "@/api/auth.api";
 import type { AuthResponse } from "@/types/api";
 
@@ -415,4 +415,65 @@ describe("RegisterPage Component - V1 2-Step Parity and Auth Behavior", () => {
       expect(screen.getByText("Student Dashboard")).toBeInTheDocument();
     });
   });
+
+  it("14. header navigation links work properly on RegisterPage", () => {
+    renderRegister();
+
+    // Brand logo navigates to /
+    const brandLink = screen.getByRole("link", { name: /QuizHub - Trang chủ/i });
+    expect(brandLink).toBeInTheDocument();
+    expect(brandLink).toHaveAttribute("href", "/");
+
+    // Section links exist
+    const aboutLink = screen.getByRole("link", { name: "Về chúng tôi" });
+    const featuresLink = screen.getByRole("link", { name: "Tính năng" });
+    const workflowLink = screen.getByRole("link", { name: "Quy trình" });
+    expect(aboutLink).toHaveAttribute("href", "/#about");
+    expect(featuresLink).toHaveAttribute("href", "/#features");
+    expect(workflowLink).toHaveAttribute("href", "/#workflow");
+
+    // Login link in header and footer
+    const loginLinks = screen.getAllByRole("link", { name: "Đăng nhập" });
+    expect(loginLinks.length).toBeGreaterThanOrEqual(1);
+    loginLinks.forEach((link) => {
+      expect(link).toHaveAttribute("href", "/login");
+    });
+
+    // Signup button in header
+    const signupBtn = screen.getByRole("link", { name: "Dùng miễn phí" });
+    expect(signupBtn).toHaveAttribute("href", "/register");
+  });
+
+  it("15. manages mobile header menu drawer and keyboard interaction without regression", () => {
+    renderRegister();
+
+    const toggleBtn = document.getElementById("mobile-nav-toggle")!;
+    expect(toggleBtn).toBeInTheDocument();
+    expect(toggleBtn).toHaveAttribute("aria-expanded", "false");
+
+    // Open mobile drawer
+    fireEvent.click(toggleBtn);
+    expect(toggleBtn).toHaveAttribute("aria-expanded", "true");
+
+    // Press Escape to close and verify focus returns to toggle button
+    fireEvent.keyDown(window, { key: "Escape" });
+    expect(toggleBtn).toHaveAttribute("aria-expanded", "false");
+    expect(document.activeElement).toBe(toggleBtn);
+  });
+
+  it("16. redirects authenticated users to their role home dashboard", () => {
+    setSession("valid-token", {
+      id: 99,
+      email: "existing@example.com",
+      fullName: "Đã Đăng Nhập",
+      role: "STUDENT",
+      avatarUrl: null,
+    });
+
+    renderRegister();
+
+    expect(screen.getByText("Student Dashboard")).toBeInTheDocument();
+    expect(screen.queryByRole("heading", { level: 2, name: "Bạn là ai?" })).not.toBeInTheDocument();
+  });
 });
+

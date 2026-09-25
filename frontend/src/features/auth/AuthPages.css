@@ -415,6 +415,11 @@
   background: #4ade80;
 }
 
+.step-dot.completed {
+  background: #4ade80;
+  opacity: 0.85;
+}
+
 /* Role Selection Cards (Step 1) */
 .role-cards {
   display: grid;
