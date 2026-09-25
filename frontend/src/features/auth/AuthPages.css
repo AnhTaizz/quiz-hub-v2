@@ -387,6 +387,283 @@
   text-decoration: underline;
 }
 
+/* ─── V1 REGISTER PAGE STYLES (Parity with V1 2-Step Flow) ── */
+.auth-card.auth-card-register {
+  max-width: 440px;
+}
+
+/* Step Indicator (Dots) */
+.step-dots {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 22px;
+}
+
+.step-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.step-dot.active {
+  width: 24px;
+  border-radius: 4px;
+  background: #4ade80;
+}
+
+/* Role Selection Cards (Step 1) */
+.role-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 22px;
+}
+
+.role-card-btn {
+  background: rgba(255, 255, 255, 0.04);
+  border: 2px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 22px 14px 18px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  position: relative;
+  width: 100%;
+  color: inherit;
+  font-family: inherit;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+.role-card-btn:hover {
+  border-color: rgba(74, 222, 128, 0.4);
+  background: rgba(74, 222, 128, 0.06);
+  transform: translateY(-2px);
+}
+
+.role-card-btn.teacher-card:hover {
+  border-color: rgba(56, 189, 248, 0.4);
+  background: rgba(56, 189, 248, 0.06);
+}
+
+.role-card-btn.selected.student-card {
+  border-color: #4ade80;
+  background: rgba(74, 222, 128, 0.1);
+  box-shadow: 0 0 0 1px #4ade80, 0 8px 24px rgba(74, 222, 128, 0.2);
+}
+
+.role-card-btn.selected.teacher-card {
+  border-color: #38bdf8;
+  background: rgba(56, 189, 248, 0.1);
+  box-shadow: 0 0 0 1px #38bdf8, 0 8px 24px rgba(56, 189, 248, 0.2);
+}
+
+.role-card-btn:focus-visible {
+  outline: 2px solid #4ade80;
+  outline-offset: 2px;
+}
+
+.role-card-btn.teacher-card:focus-visible {
+  outline-color: #38bdf8;
+}
+
+.role-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 12px;
+  font-size: 24px;
+  transition: all 0.25s;
+}
+
+.student-card .role-icon {
+  background: rgba(74, 222, 128, 0.15);
+  color: #4ade80;
+}
+
+.teacher-card .role-icon {
+  background: rgba(56, 189, 248, 0.15);
+  color: #38bdf8;
+}
+
+.selected.student-card .role-icon {
+  background: rgba(74, 222, 128, 0.25);
+}
+
+.selected.teacher-card .role-icon {
+  background: rgba(56, 189, 248, 0.25);
+}
+
+.role-name {
+  font-family: 'Nunito Sans', sans-serif;
+  font-weight: 800;
+  font-size: 15px;
+  color: #fff;
+  margin-bottom: 4px;
+}
+
+.role-desc {
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, 0.5);
+  line-height: 1.45;
+}
+
+.check-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #4ade80;
+  color: #1a1a2e;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  opacity: 0;
+  transform: scale(0);
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.selected .check-badge {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.selected.teacher-card .check-badge {
+  background: #38bdf8;
+}
+
+/* Next button (Step 1) */
+.btn-next-step {
+  width: 100%;
+  padding: 11px 16px;
+  background: #4ade80;
+  border: none;
+  border-radius: 9999px;
+  color: #1a1a2e;
+  font-family: 'Nunito Sans', sans-serif;
+  font-weight: 800;
+  font-size: 14.5px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  opacity: 0.4;
+  pointer-events: none;
+  box-shadow: 0 4px 14px rgba(74, 222, 128, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-sizing: border-box;
+}
+
+.btn-next-step.ready {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.btn-next-step.ready:hover {
+  background: #22c55e;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(74, 222, 128, 0.45);
+}
+
+.btn-next-step:focus-visible {
+  outline: 2px solid #4ade80;
+  outline-offset: 2px;
+}
+
+/* Role back-badge (Step 2) */
+.role-back-badge-wrapper {
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+.role-back-badge-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 14px;
+  border-radius: 9999px;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: opacity 0.2s, transform 0.2s;
+  background: transparent;
+  font-family: inherit;
+}
+
+.role-back-badge-btn:hover {
+  opacity: 0.85;
+  transform: translateX(-2px);
+}
+
+.role-back-badge-btn.student {
+  background: rgba(74, 222, 128, 0.15);
+  color: #4ade80;
+}
+
+.role-back-badge-btn.teacher {
+  background: rgba(56, 189, 248, 0.15);
+  color: #38bdf8;
+}
+
+.role-back-badge-btn:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+/* Step container transitions */
+.reg-step-container {
+  animation: stepFadeIn 0.25s ease-out;
+}
+
+@keyframes stepFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reg-step-container {
+    animation: none;
+  }
+}
+
+/* Field-level error text */
+.field-error-text {
+  color: #fca5a5;
+  font-size: 12px;
+  font-weight: 600;
+  margin-top: 5px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  text-align: left;
+}
+
+.field-error-text i {
+  font-size: 13px;
+  color: #f87171;
+  flex-shrink: 0;
+}
+
 /* ─── LEGACY GENERIC AUTH STYLES (Preserved for Register / Forgot Password) ─── */
 .qh-auth-page:not(.auth-page-v1) {
   min-height: 100vh;
@@ -453,32 +730,66 @@
   }
 
   .auth-card {
-    padding: 28px 20px;
-    border-radius: 20px;
+    padding: 26px 18px;
+    border-radius: 18px;
   }
 
-  .auth-header h2 {
-    font-size: 24px;
+  .auth-card.auth-card-register {
+    max-width: 100%;
   }
 
-  .auth-header p {
-    font-size: 13.5px;
-    margin-bottom: 20px;
+  .role-cards {
+    gap: 10px;
+    margin-bottom: 18px;
   }
 
-  .btn-auth {
-    padding: 12px 16px;
-    font-size: 15px;
+  .role-card-btn {
+    padding: 18px 10px 14px;
+    border-radius: 14px;
   }
 
-  .auth-card .form-control-auth {
-    padding: 12px 14px 12px 42px;
+  .role-icon {
+    width: 44px;
+    height: 44px;
+    font-size: 20px;
+    margin-bottom: 8px;
+  }
+
+  .role-name {
     font-size: 14px;
   }
 
+  .role-desc {
+    font-size: 11px;
+  }
+
+  .btn-next-step {
+    padding: 10px 14px;
+    font-size: 14px;
+  }
+
+  .auth-header h2 {
+    font-size: 21px;
+  }
+
+  .auth-header p {
+    font-size: 13px;
+    margin-bottom: 18px;
+  }
+
+  .btn-auth {
+    padding: 11px 14px;
+    font-size: 14px;
+  }
+
+  .auth-card .form-control-auth {
+    padding: 10px 12px 10px 38px;
+    font-size: 13.5px;
+  }
+
   .auth-card .input-wrapper > i {
-    left: 14px;
-    font-size: 16px;
+    left: 12px;
+    font-size: 15px;
   }
 
   .qh-auth-page:not(.auth-page-v1) {
@@ -505,25 +816,30 @@
   }
 
   .auth-card {
-    padding: 24px 14px;
+    padding: 22px 12px;
+  }
+
+  .role-cards {
+    grid-template-columns: 1fr;
+    gap: 10px;
   }
 
   .auth-header h2 {
-    font-size: 22px;
+    font-size: 20px;
   }
 
   .auth-card .form-control-auth {
-    padding: 11px 12px 11px 38px;
-    font-size: 13.5px;
+    padding: 9.5px 10px 9.5px 34px;
+    font-size: 13px;
   }
 
   .auth-card .input-wrapper > i {
-    left: 12px;
-    font-size: 15px;
+    left: 10px;
+    font-size: 14px;
   }
 
   .btn-auth {
-    padding: 11px 12px;
-    font-size: 14px;
+    padding: 10px 12px;
+    font-size: 13.5px;
   }
 }
