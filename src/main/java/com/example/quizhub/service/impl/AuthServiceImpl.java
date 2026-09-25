@@ -20,11 +20,13 @@ import com.example.quizhub.dto.auth.request.RegisterRequest;
 import com.example.quizhub.dto.auth.request.ResetPasswordRequest;
 import com.example.quizhub.dto.auth.response.AuthResponse;
 import com.example.quizhub.dto.auth.response.OAuth2PendingRegistrationResponse;
+import com.example.quizhub.entity.OAuth2LoginTicket;
 import com.example.quizhub.entity.OAuth2RegistrationTicket;
 import com.example.quizhub.entity.User;
 import com.example.quizhub.entity.enums.Role;
 import com.example.quizhub.exception.AppException;
 import com.example.quizhub.exception.ErrorCode;
+import com.example.quizhub.repository.OAuth2LoginTicketRepository;
 import com.example.quizhub.repository.OAuth2RegistrationTicketRepository;
 import com.example.quizhub.repository.UserRepository;
 import com.example.quizhub.security.JwtService;
@@ -37,6 +39,7 @@ import lombok.RequiredArgsConstructor;
 public class AuthServiceImpl implements AuthService {
     private final UserRepository userRepository;
     private final OAuth2RegistrationTicketRepository oauth2RegistrationTicketRepository;
+    private final OAuth2LoginTicketRepository oauth2LoginTicketRepository;
     private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
@@ -143,6 +146,47 @@ public class AuthServiceImpl implements AuthService {
                 .email(ticket.getEmail())
                 .fullName(ticket.getFullName())
                 .avatarUrl(ticket.getAvatarUrl())
+                .build();
+    }
+
+    /**
+     * Consuming the ticket and re-verifying the account happen in this one @Transactional method, so they
+     * commit or roll back together: if the account turns out to be gone or locked, that throw rolls the
+     * ticket-consume UPDATE back with it - the ticket becomes usable again rather than being burned with
+     * no JWT to show for it - and no JWT is ever generated for a check that failed. The ticket is consumed
+     * FIRST (atomically - see OAuth2LoginTicketRepository#consumeIfValid) so that of two concurrent
+     * exchanges of the SAME ticket, only one can ever reach the account checks below.
+     */
+    @Override
+    @Transactional
+    public AuthResponse exchangeOAuth2Login(String ticketToken) {
+        if (ticketToken == null) {
+            throw new AppException(ErrorCode.OAUTH2_LOGIN_INVALID);
+        }
+        LocalDateTime now = LocalDateTime.now();
+        int consumed = oauth2LoginTicketRepository.consumeIfValid(ticketToken, now);
+        if (consumed == 0) {
+            throw new AppException(ErrorCode.OAUTH2_LOGIN_INVALID);
+        }
+        OAuth2LoginTicket ticket = oauth2LoginTicketRepository.findById(ticketToken)
+                .orElseThrow(() -> new AppException(ErrorCode.OAUTH2_LOGIN_INVALID));
+
+        // Re-checked here, not trusted from issuance time: the account can be locked or deleted in the
+        // (short) window between the Google callback issuing this ticket and this exchange call.
+        User user = userRepository.findById(ticket.getUserId())
+                .orElseThrow(() -> new AppException(ErrorCode.OAUTH2_LOGIN_INVALID));
+        if (!user.getIsEnable()) {
+            throw new AppException(ErrorCode.OAUTH2_LOGIN_INVALID);
+        }
+
+        String token = jwtService.generateToken(user);
+        return AuthResponse.builder()
+                .token(token)
+                .id(user.getId())
+                .email(user.getEmail())
+                .fullName(user.getFullName())
+                .role(user.getRole())
+                .avatarUrl(user.getAvatarUrl())
                 .build();
     }
 

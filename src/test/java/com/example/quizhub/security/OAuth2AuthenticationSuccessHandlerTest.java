@@ -1,6 +1,8 @@
 package com.example.quizhub.security;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.contains;
+import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -14,10 +16,15 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
+import com.example.quizhub.entity.OAuth2LoginTicket;
+import com.example.quizhub.entity.User;
+import com.example.quizhub.entity.enums.Role;
+import com.example.quizhub.repository.OAuth2LoginTicketRepository;
 import com.example.quizhub.repository.OAuth2RegistrationTicketRepository;
 import com.example.quizhub.repository.UserRepository;
 
@@ -37,18 +44,25 @@ import jakarta.servlet.http.HttpServletResponse;
 class OAuth2AuthenticationSuccessHandlerTest {
 
     private UserRepository userRepository;
+    private OAuth2LoginTicketRepository loginTicketRepository;
     private OAuth2AuthenticationSuccessHandler handler;
     private HttpServletRequest request;
     private HttpServletResponse response;
 
     @BeforeEach
     void setUp() throws Exception {
-        JwtService jwtService = mock(JwtService.class);
         userRepository = mock(UserRepository.class);
         OAuth2RegistrationTicketRepository ticketRepository = mock(OAuth2RegistrationTicketRepository.class);
-        handler = new OAuth2AuthenticationSuccessHandler(jwtService, userRepository, ticketRepository);
+        loginTicketRepository = mock(OAuth2LoginTicketRepository.class);
+        handler = new OAuth2AuthenticationSuccessHandler(userRepository, ticketRepository, loginTicketRepository);
 
         request = mock(HttpServletRequest.class);
+        // DefaultRedirectStrategy prepends request.getContextPath() to the target URL. An unstubbed mock
+        // returns null, and Java string concatenation turns that into a literal "null" prefix (e.g.
+        // "null/oauth2-redirect.html") - a test-fixture artifact, not anything a real servlet container
+        // does (root-context deployments return "", never null). Stub it to "" so the exact-match
+        // assertions below observe the real target URL.
+        when(request.getContextPath()).thenReturn("");
         response = mock(HttpServletResponse.class);
         when(response.getWriter()).thenReturn(new PrintWriter(new StringWriter()));
         // DefaultRedirectStrategy (used internally by SimpleUrlAuthenticationSuccessHandler) calls
@@ -89,5 +103,149 @@ class OAuth2AuthenticationSuccessHandlerTest {
         handler.onAuthenticationSuccess(request, response, auth);
 
         verify(response, never()).sendRedirect(contains("oauth2-choose-role"));
+    }
+
+    // ---------- Existing-user Google login: no JWT or identity in the redirect URL ----------
+    //
+    // A real Google callback for an email that already has an enabled account. Before this fix, the
+    // handler generated a real JWT here and put it - plus id/email/fullName/role/avatarUrl - directly
+    // into the /oauth2-redirect.html query string of a server-side sendRedirect(). That URL then
+    // persisted in browser history, any reverse proxy/CDN access log that logs query strings (a common
+    // default), and the Referer header of any subresource request that raced the client-side
+    // history.replaceState(). The RED evidence for this (this test class's git history, pre-fix commit)
+    // asserted exactly the two things below and failed against the pre-fix handler: the redirect
+    // contained "token=" and the full identity querystring instead of a bare path.
+    //
+    // The fix moves JWT issuance out of this class entirely (see AuthServiceImpl#exchangeOAuth2Login) -
+    // this handler now only proves "a real Google callback happened for this existing user id" by minting
+    // a single-use OAuth2LoginTicket and handing its token to the browser as an HttpOnly cookie.
+
+    private User existingEnabledUser() {
+        return User.builder()
+                .id(42L)
+                .email("existing.user@gmail.com")
+                .fullName("Existing User")
+                .role(Role.STUDENT)
+                .avatarUrl("https://example.test/avatar.png")
+                .isEnable(true)
+                .isVerified(true)
+                .password("irrelevant-for-oauth2-login")
+                .build();
+    }
+
+    private Authentication existingUserAuth() {
+        return authFor(Map.of(
+                "sub", "g-42", "email", "existing.user@gmail.com", "email_verified", true,
+                "name", "Existing User"));
+    }
+
+    @Test
+    void existingEnabledUserLoginRedirectsToABarePathWithNoJwtOrIdentity() throws Exception {
+        when(userRepository.findByEmail("existing.user@gmail.com")).thenReturn(Optional.of(existingEnabledUser()));
+
+        handler.onAuthenticationSuccess(request, response, existingUserAuth());
+
+        ArgumentCaptor<String> redirectCaptor = ArgumentCaptor.forClass(String.class);
+        verify(response).sendRedirect(redirectCaptor.capture());
+
+        assertThat(redirectCaptor.getValue())
+                .as("no JWT or account identity may be carried in the OAuth2 redirect URL - it must be a "
+                        + "bare redirect to /oauth2-redirect.html, with the JWT handed over out of band")
+                .isEqualTo("/oauth2-redirect.html");
+    }
+
+    @Test
+    void existingEnabledUserLoginIssuesASingleUseLoginTicketBoundToThatUserId() throws Exception {
+        User user = existingEnabledUser();
+        when(userRepository.findByEmail("existing.user@gmail.com")).thenReturn(Optional.of(user));
+
+        handler.onAuthenticationSuccess(request, response, existingUserAuth());
+
+        ArgumentCaptor<OAuth2LoginTicket> ticketCaptor = ArgumentCaptor.forClass(OAuth2LoginTicket.class);
+        verify(loginTicketRepository).save(ticketCaptor.capture());
+        assertThat(ticketCaptor.getValue().getUserId()).isEqualTo(user.getId());
+
+        ArgumentCaptor<String> headerCaptor = ArgumentCaptor.forClass(String.class);
+        verify(response).addHeader(org.mockito.ArgumentMatchers.eq("Set-Cookie"), headerCaptor.capture());
+        assertThat(headerCaptor.getValue())
+                .as("the ticket must travel as an HttpOnly cookie, never a URL or response body field")
+                .contains(OAuth2LoginTicketCookie.COOKIE_NAME + "=")
+                .containsIgnoringCase("HttpOnly")
+                .containsIgnoringCase("SameSite=Lax");
+    }
+
+    @Test
+    void lockedExistingUserLoginIssuesNoTicketAtAll() throws Exception {
+        User locked = User.builder()
+                .id(43L).email("locked.user@gmail.com").fullName("Locked User")
+                .role(Role.STUDENT).isEnable(false).isVerified(true).password("x").build();
+        when(userRepository.findByEmail("locked.user@gmail.com")).thenReturn(Optional.of(locked));
+        Authentication auth = authFor(Map.of(
+                "sub", "g-43", "email", "locked.user@gmail.com", "email_verified", true));
+
+        handler.onAuthenticationSuccess(request, response, auth);
+
+        verify(loginTicketRepository, never()).save(any());
+    }
+
+    // ---------- Login-ticket cookie attributes, per deployment topology ----------
+    //
+    // Secure must follow the scheme the SERVLET CONTAINER says the request arrived on (request.isSecure()),
+    // never a raw request header the app parses itself: whether an X-Forwarded-Proto header comes from a
+    // trusted TLS-terminating proxy or straight from a client is a deployment decision
+    // (server.forward-headers-strategy + trusted proxy addresses), and only the container can make it.
+    // An explicit app.security.cookie-force-secure=true override exists for HTTPS deployments that do not
+    // configure forwarded-header trust.
+
+    private static final java.util.regex.Pattern SECURE_ATTRIBUTE =
+            java.util.regex.Pattern.compile("(?i);\\s*Secure\\s*(;|$)");
+
+    private String issuedLoginTicketCookie() throws Exception {
+        when(userRepository.findByEmail("existing.user@gmail.com")).thenReturn(Optional.of(existingEnabledUser()));
+        handler.onAuthenticationSuccess(request, response, existingUserAuth());
+        ArgumentCaptor<String> headerCaptor = ArgumentCaptor.forClass(String.class);
+        verify(response).addHeader(org.mockito.ArgumentMatchers.eq("Set-Cookie"), headerCaptor.capture());
+        return headerCaptor.getValue();
+    }
+
+    @Test
+    void localHttpIssuesTheFullAttributeSetWithoutSecure() throws Exception {
+        String cookie = issuedLoginTicketCookie();
+
+        assertThat(cookie)
+                .startsWith(OAuth2LoginTicketCookie.COOKIE_NAME + "=")
+                .containsIgnoringCase("HttpOnly")
+                .containsIgnoringCase("SameSite=Lax")
+                .contains("Path=/api/auth")
+                .contains("Max-Age=90");
+        assertThat(SECURE_ATTRIBUTE.matcher(cookie).find())
+                .as("plain HTTP (local dev) must not get Secure, or the browser would drop the cookie")
+                .isFalse();
+    }
+
+    @Test
+    void directHttpsIssuesASecureCookie() throws Exception {
+        when(request.isSecure()).thenReturn(true);
+
+        assertThat(SECURE_ATTRIBUTE.matcher(issuedLoginTicketCookie()).find()).isTrue();
+    }
+
+    @Test
+    void aClientSuppliedForwardedProtoHeaderDoesNotDecideTheSecureAttribute() throws Exception {
+        // Plain-HTTP request that reached the app directly, carrying a header nothing trusted set. If the
+        // container had been configured to trust a proxy that set it, request.isSecure() would say so.
+        when(request.isSecure()).thenReturn(false);
+        when(request.getHeader("X-Forwarded-Proto")).thenReturn("https");
+
+        assertThat(SECURE_ATTRIBUTE.matcher(issuedLoginTicketCookie()).find())
+                .as("an untrusted X-Forwarded-Proto must not change cookie attributes")
+                .isFalse();
+    }
+
+    @Test
+    void forceSecureMakesTheCookieSecureEvenWhenTheContainerSeesPlainHttp() throws Exception {
+        org.springframework.test.util.ReflectionTestUtils.setField(handler, "forceSecureCookies", true);
+
+        assertThat(SECURE_ATTRIBUTE.matcher(issuedLoginTicketCookie()).find()).isTrue();
     }
 }

@@ -1,13 +1,16 @@
 package com.example.quizhub.security;
 
+import com.example.quizhub.entity.OAuth2LoginTicket;
 import com.example.quizhub.entity.OAuth2RegistrationTicket;
 import com.example.quizhub.entity.User;
+import com.example.quizhub.repository.OAuth2LoginTicketRepository;
 import com.example.quizhub.repository.OAuth2RegistrationTicketRepository;
 import com.example.quizhub.repository.UserRepository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
@@ -19,7 +22,6 @@ import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
-import java.util.Base64;
 import java.util.Optional;
 
 import lombok.extern.slf4j.Slf4j;
@@ -29,9 +31,12 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
-    private final JwtService jwtService;
     private final UserRepository userRepository;
     private final OAuth2RegistrationTicketRepository oauth2RegistrationTicketRepository;
+    private final OAuth2LoginTicketRepository oauth2LoginTicketRepository;
+
+    @Value("${app.security.cookie-force-secure:false}")
+    private boolean forceSecureCookies;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
@@ -82,22 +87,23 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
             return;
         }
 
-        // Existing-user login still hands the JWT to the browser via a URL query parameter on this
-        // server-side redirect. That is a separate, pre-existing risk from the one this sprint closes
-        // (unauthenticated account creation) and is documented, unfixed, in this sprint's report.
-        String token = jwtService.generateToken(user);
-        String base64Name = Base64.getEncoder().encodeToString(user.getFullName().getBytes(StandardCharsets.UTF_8));
+        // No JWT or identity in the URL: a single-use, short-lived login ticket is bound to this user id
+        // server-side and handed to the browser only as an HttpOnly cookie. The redirect target is a bare
+        // path - /oauth2-redirect.html fetches the actual JWT via POST /api/auth/oauth2-login, which reads
+        // the same cookie and exchanges it for an AuthResponse in the JSON body only (see
+        // docs/backend/OAUTH2_EXISTING_LOGIN_SECURITY.md).
+        log.info("Issuing login ticket for existing user id: {}", user.getId());
+        OAuth2LoginTicket ticket = OAuth2LoginTicket.builder()
+                .token(OAuth2LoginTicketCookie.generateToken())
+                .userId(user.getId())
+                .expiresAt(LocalDateTime.now().plus(OAuth2LoginTicketCookie.TTL))
+                .build();
+        oauth2LoginTicketRepository.save(ticket);
 
-        String targetUrl = org.springframework.web.util.UriComponentsBuilder.fromUriString("/oauth2-redirect.html")
-                .queryParam("token", token)
-                .queryParam("id", user.getId())
-                .queryParam("email", user.getEmail())
-                .queryParam("fullName", base64Name)
-                .queryParam("role", user.getRole().name())
-                .queryParam("avatarUrl", user.getAvatarUrl() != null ? user.getAvatarUrl() : "")
-                .build().encode().toUriString();
-
-        getRedirectStrategy().sendRedirect(request, response, targetUrl);
+        ResponseCookie cookie = OAuth2LoginTicketCookie.issue(
+                ticket.getToken(), OAuth2LoginTicketCookie.shouldBeSecure(request, forceSecureCookies));
+        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+        getRedirectStrategy().sendRedirect(request, response, "/oauth2-redirect.html");
     }
 
     private void redirectWithError(HttpServletRequest request, HttpServletResponse response, String message)

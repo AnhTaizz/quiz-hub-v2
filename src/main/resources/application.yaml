@@ -100,3 +100,9 @@ app:
       url: https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent
   upload:
     avatar-dir: ./uploads/avatars/
+  security:
+    # Force the Secure attribute on the OAuth2 login-ticket cookie. Leave false for local HTTP. For an
+    # HTTPS deployment either set this true, or configure trusted forwarded headers for the proxy
+    # (server.forward-headers-strategy) so request.isSecure() is correct - see
+    # docs/backend/OAUTH2_EXISTING_LOGIN_SECURITY.md.
+    cookie-force-secure: ${COOKIE_FORCE_SECURE:false}

@@ -65,7 +65,10 @@ public enum ErrorCode {
     // Missing/expired/already-consumed OAuth2 registration ticket, or no Google callback happened at all.
     // One code for all three: never reveal which case applies.
     OAUTH2_REGISTRATION_INVALID(1047, "Phiên đăng ký Google đã hết hạn hoặc không hợp lệ, vui lòng đăng nhập lại bằng Google", HttpStatus.BAD_REQUEST),
-    INVALID_ROLE(1048, "Vai trò không hợp lệ", HttpStatus.BAD_REQUEST);
+    INVALID_ROLE(1048, "Vai trò không hợp lệ", HttpStatus.BAD_REQUEST),
+    // Missing/expired/already-consumed OAuth2 login ticket, or the account it points to is now locked or
+    // gone. One code for all of these: never reveal which case applies (mirrors OAUTH2_REGISTRATION_INVALID).
+    OAUTH2_LOGIN_INVALID(1049, "Phiên đăng nhập Google đã hết hạn hoặc không hợp lệ, vui lòng đăng nhập lại bằng Google", HttpStatus.BAD_REQUEST);
 
     final int code;
     final String message;

@@ -2,6 +2,7 @@ package com.example.quizhub.controller.auth;
 
 import java.security.Principal;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.quizhub.dto.auth.response.AuthResponse;
 import com.example.quizhub.dto.auth.response.OAuth2PendingRegistrationResponse;
+import com.example.quizhub.security.OAuth2LoginTicketCookie;
 import com.example.quizhub.security.OAuth2RegistrationTicketCookie;
 import com.example.quizhub.service.AuthService;
 import com.example.quizhub.dto.auth.request.AuthRequest;
@@ -33,6 +35,9 @@ import lombok.RequiredArgsConstructor;
 @CrossOrigin("*")
 public class AuthController {
     private final AuthService authService;
+
+    @Value("${app.security.cookie-force-secure:false}")
+    private boolean forceSecureCookies;
 
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest registerRequest) {
@@ -60,6 +65,27 @@ public class AuthController {
     public ResponseEntity<OAuth2PendingRegistrationResponse> pendingOAuth2Registration(
             @CookieValue(name = OAuth2RegistrationTicketCookie.COOKIE_NAME, required = false) String ticketToken) {
         return ResponseEntity.ok(authService.getPendingOAuth2Registration(ticketToken));
+    }
+
+    /**
+     * Identity comes from OAuth2LoginTicketCookie.COOKIE_NAME, set only by
+     * OAuth2AuthenticationSuccessHandler after a real Google login for an EXISTING, enabled account -
+     * never from the request (there is no request body: nothing the client could supply would be
+     * meaningful here). The ticket is single-use and is cleared here on success regardless (it is already
+     * consumed server-side; clearing it is hygiene, not part of the security guarantee).
+     * Cache-Control: no-store so the JWT-bearing body is never written to a shared/browser cache.
+     */
+    @PostMapping("/oauth2-login")
+    public ResponseEntity<AuthResponse> exchangeOAuth2Login(
+            @CookieValue(name = OAuth2LoginTicketCookie.COOKIE_NAME, required = false) String ticketToken,
+            HttpServletRequest request) {
+        AuthResponse response = authService.exchangeOAuth2Login(ticketToken);
+        ResponseCookie cleared = OAuth2LoginTicketCookie.clear(
+                OAuth2LoginTicketCookie.shouldBeSecure(request, forceSecureCookies));
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, cleared.toString())
+                .header(HttpHeaders.CACHE_CONTROL, "no-store")
+                .body(response);
     }
 
     @GetMapping("/check-email")

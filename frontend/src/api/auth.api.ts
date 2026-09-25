@@ -32,4 +32,10 @@ export const authApi = {
 
   getPendingOAuth2Registration: (signal?: AbortSignal) =>
     httpClient.get<OAuth2PendingRegistration>("/auth/oauth2-register/pending", { signal }),
+
+  // The identity behind this call comes from the oauth2_login_ticket cookie the backend set after a real
+  // Google login for an EXISTING account (see docs/backend/OAUTH2_EXISTING_LOGIN_SECURITY.md); httpClient
+  // already sends cookies same-origin, so no extra wiring is needed here. No request body: nothing the
+  // client could supply would be meaningful - the account is entirely determined by the ticket.
+  oauth2Login: (signal?: AbortSignal) => httpClient.post<AuthResponse>("/auth/oauth2-login", { signal }),
 };

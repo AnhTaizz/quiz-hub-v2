@@ -44,7 +44,7 @@ public class SecurityConfig {
                         "/app/**",
                         "/login","/register", "/forgot-password", "/oauth2-redirect.html", "/oauth2-choose-role.html",
                         "/api/auth/register", "/api/auth/login", "/api/auth/check-email", "/api/auth/oauth2-register",
-                        "/api/auth/oauth2-register/pending",
+                        "/api/auth/oauth2-register/pending", "/api/auth/oauth2-login",
                         "/api/auth/forgot-password", "/api/auth/reset-password",
                         "/error",
                         // Required for Docker/orchestrator health checks. Only health is exposed via
