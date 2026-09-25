@@ -31,8 +31,18 @@ public class ExistingSchemaBaselineTest {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
 
         // 1. Manually create tables to simulate existing schema
-        String schemaSql = Files.readString(Path.of("src/main/resources/db/migration/V1__baseline_schema.sql"));
+        String schemaSql = Files.readString(Path.of("src/main/resources/db/migration/V1__baseline_schema.sql"))
+                // Production was baselined at V1 from a pre-Flyway schema that did not yet
+                // contain this column. Keep V1 immutable and reproduce that state here.
+                .replace(" revision bigint,", "");
         jdbcTemplate.execute(schemaSql);
+
+        Integer revisionCountBefore = jdbcTemplate.queryForObject(
+                "SELECT count(*) FROM information_schema.columns "
+                        + "WHERE table_schema = current_schema() "
+                        + "AND table_name = '_user_attempt_answer' AND column_name = 'revision'",
+                Integer.class);
+        assertThat(revisionCountBefore).isEqualTo(0);
 
         // Ensure there is no flyway history yet
         Integer countHistoryBefore = jdbcTemplate.queryForObject(
@@ -59,12 +69,26 @@ public class ExistingSchemaBaselineTest {
         Integer countVersions = jdbcTemplate.queryForObject(
                 "SELECT count(*) FROM flyway_schema_history",
                 Integer.class);
-        assertThat(countVersions).isEqualTo(3);
+        assertThat(countVersions).isEqualTo(4);
+
+        String revisionType = jdbcTemplate.queryForObject(
+                "SELECT data_type FROM information_schema.columns "
+                        + "WHERE table_schema = current_schema() "
+                        + "AND table_name = '_user_attempt_answer' AND column_name = 'revision'",
+                String.class);
+        assertThat(revisionType).isEqualTo("bigint");
+
+        String revisionNullable = jdbcTemplate.queryForObject(
+                "SELECT is_nullable FROM information_schema.columns "
+                        + "WHERE table_schema = current_schema() "
+                        + "AND table_name = '_user_attempt_answer' AND column_name = 'revision'",
+                String.class);
+        assertThat(revisionNullable).isEqualTo("YES");
 
         MigrationInfo currentInfo = flyway.info().current();
         assertThat(currentInfo).isNotNull();
-        assertThat(currentInfo.getVersion().toString()).isEqualTo("3");
-        assertThat(currentInfo.getDescription()).isEqualTo("oauth2 registration ticket");
+        assertThat(currentInfo.getVersion().toString()).isEqualTo("4");
+        assertThat(currentInfo.getDescription()).isEqualTo("add revision to user attempt answer");
         assertThat(currentInfo.getType().name()).isEqualTo("SQL");
     }
 }

@@ -1,0 +1,2 @@
+ALTER TABLE IF EXISTS _user_attempt_answer
+ADD COLUMN IF NOT EXISTS revision BIGINT;
