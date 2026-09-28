@@ -50,9 +50,9 @@ Legend: **=** parity · **≈** intentional/benign difference · **✖** not mig
 | Notifications | Header dropdown | `NotificationBell`: unread badge, accessible panel (Escape closes, focus returns), mark one / all read, safe internal-link navigation | ★ | Ownership defect fixed on the backend (see API map). |
 | OAuth choose role | `oauth2-choose-role.html` (toast via `innerHTML`) | `OAuth2ChooseRolePage`, all text rendered as text | ★ | **Deviation:** on success the session is written directly with `login()` instead of hopping through `/oauth2-redirect.html?token=…`, so the token never appears in a URL. `OAuth2AuthenticationSuccessHandler` is unchanged. |
 
-### Visual parity (Sprint 2A follow-up)
+### Visual parity and UI Stabilization
 
-Requirement from the product owner: the migrated pages must keep looking like the old Thymeleaf UI. `tokens.css` now carries the legacy palette (green `#28a745` primary, blue `#2563eb` links/accent, `#f4f7fa` page background, `#1e1b4b` text), Inter + Nunito Sans (loaded from Google Fonts like the legacy pages), 8/14/20 px radii and the soft card shadow, and the shell copies the legacy header. The React-only dark theme was removed because the legacy site never had one. **Not done:** the legacy pages are in Vietnamese while the React copy is still English (labels such as "Trang chủ" / "Bài thi của tôi"); translating all strings is a separate, larger change and the E2E/unit tests select by the English names.
+Requirement from the product owner: the migrated pages must maintain design consistency and align with the legacy/v1 UI. `tokens.css` carries the legacy/v1 palette (green `#28a745` primary, blue `#2563eb` links/accent, `#f4f7fa` page background, `#1e1b4b` text), Inter + Nunito Sans, standardized radii/shadows, and `AppShell` acts as the single source of truth for the student application layout. Vietnamese copy and ARIA labels are fully implemented across all visible React pages and accessibility regions. Deterministic visual regression test coverage protects against visual regressions across desktop and mobile viewports.
 
 ### Sprint 2A deviations and follow-ups
 
