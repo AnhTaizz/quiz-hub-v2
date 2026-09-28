@@ -43,7 +43,9 @@ export default defineConfig(({ command }) => ({
   test: {
     environment: "jsdom",
     globals: true,
-    testTimeout: 30000,
+    // 15s timeout accommodates async user-event simulated typing in jsdom across multi-step flows
+    testTimeout: 15000,
+    // Playwright specs live in e2e/ and run under `npm run e2e`, never under Vitest.
     include: ["src/**/*.test.{ts,tsx}"],
     setupFiles: ["./src/testSetup.ts"],
     css: true,

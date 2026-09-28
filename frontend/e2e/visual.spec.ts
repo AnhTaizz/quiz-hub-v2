@@ -31,7 +31,7 @@ test.describe("Visual Regression - Public & Auth", () => {
 
     await expect(page).toHaveScreenshot("login-desktop.png", {
       animations: "disabled",
-      maxDiffPixelRatio: 0.05,
+      maxDiffPixelRatio: 0.005,
     });
 
     // Mobile viewport (390x844)
@@ -41,7 +41,7 @@ test.describe("Visual Regression - Public & Auth", () => {
 
     await expect(page).toHaveScreenshot("login-mobile.png", {
       animations: "disabled",
-      maxDiffPixelRatio: 0.05,
+      maxDiffPixelRatio: 0.005,
     });
   });
 });
@@ -62,16 +62,16 @@ test.describe("Visual Regression - Student AppShell & Pages", () => {
 
     await expect(page).toHaveScreenshot("student-dashboard-desktop.png", {
       animations: "disabled",
-      maxDiffPixelRatio: 0.05,
-      mask: [page.locator(".qh-task-card__chip--due"), page.locator(".qh-dashboard__recent-time")],
+      maxDiffPixelRatio: 0.005,
+      mask: [page.locator(".qh-task-card__chip--due")],
     });
 
     await page.setViewportSize({ width: 390, height: 844 });
     await stabilizePageForScreenshot(page);
     await expect(page).toHaveScreenshot("student-dashboard-mobile.png", {
       animations: "disabled",
-      maxDiffPixelRatio: 0.05,
-      mask: [page.locator(".qh-task-card__chip--due"), page.locator(".qh-dashboard__recent-time")],
+      maxDiffPixelRatio: 0.005,
+      mask: [page.locator(".qh-task-card__chip--due")],
     });
 
     // ==========================================
@@ -84,7 +84,7 @@ test.describe("Visual Regression - Student AppShell & Pages", () => {
 
     await expect(page).toHaveScreenshot("student-quiz-list-desktop.png", {
       animations: "disabled",
-      maxDiffPixelRatio: 0.05,
+      maxDiffPixelRatio: 0.005,
       mask: [page.locator(".qh-quiz-card__deadline")],
     });
 
@@ -92,7 +92,7 @@ test.describe("Visual Regression - Student AppShell & Pages", () => {
     await stabilizePageForScreenshot(page);
     await expect(page).toHaveScreenshot("student-quiz-list-mobile.png", {
       animations: "disabled",
-      maxDiffPixelRatio: 0.05,
+      maxDiffPixelRatio: 0.005,
       mask: [page.locator(".qh-quiz-card__deadline")],
     });
 
@@ -106,16 +106,14 @@ test.describe("Visual Regression - Student AppShell & Pages", () => {
 
     await expect(page).toHaveScreenshot("student-classroom-list-desktop.png", {
       animations: "disabled",
-      maxDiffPixelRatio: 0.05,
-      mask: [page.locator(".qh-classroom-card__footer")],
+      maxDiffPixelRatio: 0.005,
     });
 
     await page.setViewportSize({ width: 390, height: 844 });
     await stabilizePageForScreenshot(page);
     await expect(page).toHaveScreenshot("student-classroom-list-mobile.png", {
       animations: "disabled",
-      maxDiffPixelRatio: 0.05,
-      mask: [page.locator(".qh-classroom-card__footer")],
+      maxDiffPixelRatio: 0.005,
     });
 
     // ==========================================
@@ -128,16 +126,14 @@ test.describe("Visual Regression - Student AppShell & Pages", () => {
 
     await expect(page).toHaveScreenshot("student-history-desktop.png", {
       animations: "disabled",
-      maxDiffPixelRatio: 0.05,
-      mask: [page.locator(".qh-history-card__meta time")],
+      maxDiffPixelRatio: 0.005,
     });
 
     await page.setViewportSize({ width: 390, height: 844 });
     await stabilizePageForScreenshot(page);
     await expect(page).toHaveScreenshot("student-history-mobile.png", {
       animations: "disabled",
-      maxDiffPixelRatio: 0.05,
-      mask: [page.locator(".qh-history-card__meta time")],
+      maxDiffPixelRatio: 0.005,
     });
 
     // ==========================================
@@ -150,14 +146,14 @@ test.describe("Visual Regression - Student AppShell & Pages", () => {
 
     await expect(page).toHaveScreenshot("student-practice-setup-desktop.png", {
       animations: "disabled",
-      maxDiffPixelRatio: 0.05,
+      maxDiffPixelRatio: 0.005,
     });
 
     await page.setViewportSize({ width: 390, height: 844 });
     await stabilizePageForScreenshot(page);
     await expect(page).toHaveScreenshot("student-practice-setup-mobile.png", {
       animations: "disabled",
-      maxDiffPixelRatio: 0.05,
+      maxDiffPixelRatio: 0.005,
     });
 
     // ==========================================
@@ -170,14 +166,14 @@ test.describe("Visual Regression - Student AppShell & Pages", () => {
 
     await expect(page).toHaveScreenshot("profile-desktop.png", {
       animations: "disabled",
-      maxDiffPixelRatio: 0.05,
+      maxDiffPixelRatio: 0.005,
     });
 
     await page.setViewportSize({ width: 390, height: 844 });
     await stabilizePageForScreenshot(page);
     await expect(page).toHaveScreenshot("profile-mobile.png", {
       animations: "disabled",
-      maxDiffPixelRatio: 0.05,
+      maxDiffPixelRatio: 0.005,
     });
   });
 });
