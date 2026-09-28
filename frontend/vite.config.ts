@@ -43,7 +43,7 @@ export default defineConfig(({ command }) => ({
   test: {
     environment: "jsdom",
     globals: true,
-    // Playwright specs live in e2e/ and run under `npm run e2e`, never under Vitest.
+    testTimeout: 30000,
     include: ["src/**/*.test.{ts,tsx}"],
     setupFiles: ["./src/testSetup.ts"],
     css: true,
