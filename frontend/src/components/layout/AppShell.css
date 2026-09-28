@@ -4,24 +4,25 @@
   min-height: 100%;
   display: flex;
   flex-direction: column;
+  background: var(--color-background);
 }
 
 .qh-shell__header {
   display: flex;
   align-items: center;
-  gap: 24px;
-  height: 70px;
-  min-height: 70px;
-  padding: 0 clamp(28px, 3.8vw, 60px);
+  gap: clamp(12px, 1.8vw, 24px);
+  height: var(--shell-header-height, 70px);
+  min-height: var(--shell-header-height, 70px);
+  padding: 0 clamp(16px, 2.5vw, 36px);
   background: rgba(255, 255, 255, 0.98);
   backdrop-filter: blur(20px);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  border-bottom: 1px solid var(--color-border);
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
   position: fixed;
   left: 0;
   right: 0;
   top: 0;
-  z-index: 10;
+  z-index: 50;
 }
 
 .qh-shell__menu-toggle {
@@ -32,6 +33,7 @@
   cursor: pointer;
   padding: var(--space-2);
   color: var(--color-text);
+  border-radius: var(--radius-sm);
 }
 
 .qh-shell__brand {
@@ -39,7 +41,7 @@
   align-items: center;
   font-family: var(--font-heading);
   font-weight: 900;
-  font-size: 28px;
+  font-size: 26px;
   letter-spacing: -0.5px;
   color: var(--color-text);
   white-space: nowrap;
@@ -48,13 +50,13 @@
 
 .qh-shell__brand-icon {
   margin-right: 8px;
-  width: 27px;
-  height: 27px;
-  fill: #2cc56f;
+  width: 26px;
+  height: 26px;
+  fill: var(--color-primary);
 }
 
 .qh-shell__brand-hub {
-  background: linear-gradient(90deg, #10b981, #2563eb);
+  background: linear-gradient(90deg, #10b981, var(--color-accent));
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -64,33 +66,34 @@
 .qh-shell__nav {
   display: flex;
   align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-  margin-left: clamp(32px, 7vw, 110px);
+  gap: clamp(2px, 0.6vw, 8px);
+  flex-wrap: nowrap;
+  margin-left: clamp(14px, 2.2vw, 36px);
 }
 
 .qh-shell__nav-link {
   position: relative;
-  padding: 8px 12px;
+  padding: 8px clamp(8px, 0.9vw, 12px);
   border-radius: var(--radius-sm);
-  color: #4a5568;
+  color: var(--color-text-body);
   text-decoration: none;
-  font-size: 15px;
+  font-size: 14.5px;
   font-weight: 600;
-  transition: color 0.2s ease;
+  white-space: nowrap;
+  transition: color var(--transition-fast);
 }
 
 .qh-shell__nav-link::after {
   content: "";
   position: absolute;
-  left: 14px;
-  right: 14px;
+  left: 10px;
+  right: 10px;
   bottom: 0;
   height: 2px;
   border-radius: 2px;
-  background: linear-gradient(90deg, #10b981, #3b82f6);
+  background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
   transform: scaleX(0);
-  transition: transform 0.3s ease;
+  transition: transform var(--transition-normal);
 }
 
 .qh-shell__nav-link:hover {
@@ -104,51 +107,55 @@
 
 .qh-shell__nav-link--active {
   color: var(--color-text);
+  font-weight: 700;
 }
 
 .qh-shell__user {
   margin-left: auto;
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: clamp(8px, 1.2vw, 14px);
 }
 
 .qh-shell__join {
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  padding: 10px 18px;
+  padding: 8px 16px;
   border-radius: var(--radius-pill);
-  background: #159447;
+  background: var(--color-primary);
   color: #fff;
   text-decoration: none;
   font-size: 13px;
   font-weight: 800;
   white-space: nowrap;
+  transition: background var(--transition-fast);
 }
 
 .qh-shell__join:hover {
-  background: #117a3b;
+  background: var(--color-primary-hover);
+  color: #fff;
 }
 
 .qh-shell__avatar {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  border: 2px solid #e2e8f0;
-  background: #10b981;
+  border: 2px solid var(--color-border);
+  background: var(--color-primary);
   color: #fff;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   font-size: 14px;
   font-weight: 700;
+  object-fit: cover;
 }
 
 .qh-shell__account {
   position: relative;
-  padding-left: 14px;
-  border-left: 1px solid #e2e8f0;
+  padding-left: clamp(8px, 1.2vw, 14px);
+  border-left: 1px solid var(--color-border);
 }
 
 .qh-shell__account summary {
@@ -157,6 +164,7 @@
   gap: 10px;
   list-style: none;
   cursor: pointer;
+  border-radius: var(--radius-sm);
 }
 
 .qh-shell__account summary::-webkit-details-marker {
@@ -172,25 +180,27 @@
 }
 
 .qh-shell__identity strong {
-  color: #1e1b4b;
+  color: var(--color-text);
   font-size: 14px;
+  font-weight: 700;
 }
 
 .qh-shell__identity small {
-  color: #718096;
+  color: var(--color-text-muted);
   font-size: 11px;
 }
 
 .qh-shell__account-menu {
   position: absolute;
-  top: calc(100% + 14px);
+  top: calc(100% + 12px);
   right: 0;
   width: 210px;
   padding: 8px;
-  border: 1px solid #e2e8f0;
-  border-radius: 14px;
-  background: #fff;
-  box-shadow: 0 14px 35px rgba(15, 23, 42, 0.14);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-dropdown);
+  z-index: 60;
 }
 
 .qh-shell__account-menu a,
@@ -199,33 +209,38 @@
   align-items: center;
   gap: 10px;
   width: 100%;
-  padding: 10px 12px;
+  padding: 9px 12px;
   border: 0;
-  border-radius: 9px;
+  border-radius: var(--radius-sm);
   background: transparent;
-  color: #4a5568;
+  color: var(--color-text-body);
   text-decoration: none;
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
+  transition: background var(--transition-fast), color var(--transition-fast);
 }
 
 .qh-shell__account-menu a:hover,
 .qh-shell__account-menu button:hover {
-  background: #f8fafc;
-  color: #159447;
+  background: var(--color-surface-subtle);
+  color: var(--color-primary-hover);
 }
 
 .qh-shell__account-menu button:last-child {
-  color: #dc3545;
+  color: var(--color-danger);
+}
+.qh-shell__account-menu button:last-child:hover {
+  background: var(--color-danger-subtle);
+  color: var(--color-danger-hover);
 }
 
 .qh-shell__content {
   flex: 1;
   width: 100%;
-  max-width: 1320px;
+  max-width: var(--container-max-width, 1320px);
   margin: 0 auto;
-  padding: 112px 24px 60px;
+  padding: calc(var(--shell-header-height, 70px) + 24px) var(--container-padding-x, 24px) 60px;
   min-width: 0;
 }
 
@@ -236,7 +251,7 @@
   }
 
   .qh-shell__nav {
-    margin-left: 0;
+    margin-left: 8px;
   }
 }
 
@@ -248,7 +263,7 @@
   .qh-shell__nav {
     display: none;
     position: absolute;
-    top: 70px;
+    top: var(--shell-header-height, 70px);
     left: 0;
     right: 0;
     margin-left: 0;
@@ -266,24 +281,24 @@
   }
 
   .qh-shell__nav-link {
-    padding: 12px 8px;
+    padding: 12px var(--space-3);
   }
 
   .qh-shell__nav-link::after {
-    left: 8px;
+    left: 12px;
     right: auto;
     width: 32px;
   }
 
   .qh-shell__content {
-    padding: 90px var(--space-4) 40px;
+    padding: calc(var(--shell-header-height, 70px) + 16px) var(--space-3) 40px;
   }
 }
 
 @media (max-width: 600px) {
   .qh-shell__header {
     gap: var(--space-2);
-    padding: 10px var(--space-3);
+    padding: 0 var(--space-3);
   }
 
   .qh-shell__brand {

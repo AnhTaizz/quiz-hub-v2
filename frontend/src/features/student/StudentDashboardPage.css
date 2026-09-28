@@ -338,22 +338,6 @@
   .qh-dashboard-clock__date { font-size: 0.95rem; }
 }
 
-@media (min-width: 1101px) {
-  .qh-shell:has(.qh-dashboard) .qh-shell__nav {
-    flex-wrap: nowrap;
-    gap: 2px;
-    margin-left: clamp(16px, 2.5vw, 36px);
-  }
-
-  .qh-shell:has(.qh-dashboard) .qh-shell__nav-link {
-    padding-right: 9px;
-    padding-left: 9px;
-  }
-
-  .qh-shell:has(.qh-dashboard) .qh-shell__user {
-    gap: 10px;
-  }
-}
 
 @media (max-width: 960px) {
   .qh-dashboard-clock { display: none; }
