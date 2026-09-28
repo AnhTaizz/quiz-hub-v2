@@ -1,6 +1,6 @@
 import "./Spinner.css";
 
-export function Spinner({ label = "Loading" }: { label?: string }) {
+export function Spinner({ label = "Đang tải..." }: { label?: string }) {
   return (
     <span className="qh-spinner-wrap" role="status">
       <span className="qh-spinner" aria-hidden="true" />

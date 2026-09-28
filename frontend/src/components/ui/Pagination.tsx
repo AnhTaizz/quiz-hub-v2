@@ -13,23 +13,23 @@ export function Pagination({
   if (totalPages <= 1) return null;
 
   return (
-    <nav className="qh-pagination" aria-label="Pagination">
+    <nav className="qh-pagination" aria-label="Phân trang">
       <Button
         variant="secondary"
         onClick={() => onPageChange(page - 1)}
         disabled={page <= 0}
       >
-        Previous
+        Trang trước
       </Button>
       <span className="qh-pagination__status">
-        Page {page + 1} of {totalPages}
+        Trang {page + 1} / {totalPages}
       </span>
       <Button
         variant="secondary"
         onClick={() => onPageChange(page + 1)}
         disabled={page >= totalPages - 1}
       >
-        Next
+        Trang sau
       </Button>
     </nav>
   );

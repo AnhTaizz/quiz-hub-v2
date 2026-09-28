@@ -8,6 +8,8 @@ interface ModalProps {
   title: string;
   children: ReactNode;
   footer?: ReactNode;
+  className?: string;
+  maxWidth?: string | number;
 }
 
 const FOCUSABLE_SELECTOR =
@@ -18,7 +20,7 @@ const FOCUSABLE_SELECTOR =
  * aria-modal, or a focus trap - focus management there relies entirely on
  * unmodified Bootstrap defaults. This one owns all three explicitly.
  */
-export function Modal({ isOpen, onClose, title, children, footer }: ModalProps) {
+export function Modal({ isOpen, onClose, title, children, footer, className = "", maxWidth }: ModalProps) {
   const dialogRef = useRef<HTMLDivElement>(null);
   const previouslyFocused = useRef<HTMLElement | null>(null);
   // Callers routinely pass a fresh inline onClose every render. If the effect below depended on it, every
@@ -70,7 +72,8 @@ export function Modal({ isOpen, onClose, title, children, footer }: ModalProps) 
   return createPortal(
     <div className="qh-modal-overlay" onMouseDown={() => onCloseRef.current()}>
       <div
-        className="qh-modal"
+        className={`qh-modal ${className}`.trim()}
+        style={maxWidth ? { maxWidth } : undefined}
         role="dialog"
         aria-modal="true"
         aria-labelledby="qh-modal-title"
@@ -81,7 +84,7 @@ export function Modal({ isOpen, onClose, title, children, footer }: ModalProps) 
           <h2 id="qh-modal-title" className="qh-modal__title">
             {title}
           </h2>
-          <button type="button" className="qh-modal__close" onClick={onClose} aria-label="Close dialog">
+          <button type="button" className="qh-modal__close" onClick={onClose} aria-label="Đóng hộp thoại">
             ×
           </button>
         </div>

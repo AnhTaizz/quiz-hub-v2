@@ -1,39 +1,91 @@
 /*
- * Design tokens for the React app. The values reproduce the legacy Thymeleaf look (static/css/style.css and
- * dashboard-layout.css: green/blue palette, Inter + Nunito Sans, generously rounded cards, soft shadows) because
- * the migration must change the technology, not how the site looks. Every component reads from here.
+ * Design tokens for QuizHub React app.
+ * Values faithfully align with the legacy Thymeleaf aesthetic (static/css/style.css and
+ * dashboard-layout.css: green/blue palette, Inter + Nunito Sans, rounded cards, soft shadows).
  */
 :root {
+  /* Brand colors */
   --color-primary: #28a745;
   --color-primary-hover: #1e7e34;
+  --color-primary-light: #dcfce7;
+  --color-primary-subtle: #f0fdf4;
+  --color-primary-text: #15803d;
+
   --color-accent: #2563eb;
+  --color-accent-hover: #1d4ed8;
+  --color-accent-light: #dbeafe;
+  --color-accent-subtle: #eff6ff;
+  --color-accent-text: #1d4ed8;
+
+  /* Neutrals & Surfaces */
   --color-background: #f4f7fa;
   --color-surface: #ffffff;
+  --color-surface-subtle: #f8fafc;
+  --color-surface-muted: #f1f5f9;
+
+  /* Typography Colors */
   --color-text: #1e1b4b;
+  --color-text-body: #4a5568;
   --color-text-muted: #718096;
+  --color-text-light: #94a3b8;
+
+  /* Borders */
   --color-border: #e2e8f0;
+  --color-border-subtle: #edf2f7;
+  --color-border-focus: #3b82f6;
+
+  /* Status Colors */
   --color-success: #16a34a;
+  --color-success-light: #dcfce7;
+  --color-success-subtle: #f0fdf4;
   --color-warning: #fd7e14;
+  --color-warning-light: #fef3c7;
+  --color-warning-subtle: #fffbeb;
   --color-danger: #dc3545;
   --color-danger-hover: #b91c1c;
+  --color-danger-light: #fee2e2;
+  --color-danger-subtle: #fef2f2;
+  --color-info: #0ea5e9;
+  --color-info-light: #e0f2fe;
 
+  /* Spacing Scale */
   --space-1: 4px;
   --space-2: 8px;
   --space-3: 12px;
   --space-4: 16px;
   --space-5: 24px;
   --space-6: 32px;
+  --space-8: 48px;
 
+  /* Radii Scale */
+  --radius-xs: 4px;
   --radius-sm: 8px;
   --radius-md: 14px;
   --radius-lg: 20px;
+  --radius-xl: 24px;
   --radius-pill: 999px;
 
+  /* Shadows */
   --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.05);
   --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.08);
+  --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.05);
+  --shadow-hover: 0 12px 32px rgba(15, 23, 42, 0.09);
+  --shadow-dropdown: 0 14px 35px rgba(15, 23, 42, 0.14);
+  --shadow-modal: 0 20px 45px rgba(15, 23, 42, 0.2);
 
+  /* Typography */
   --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --font-heading: "Nunito Sans", "Inter", system-ui, sans-serif;
 
+  /* Layout Dimensions */
+  --shell-header-height: 70px;
+  --container-max-width: 1320px;
+  --container-padding-x: clamp(16px, 3vw, 24px);
+
+  /* Transitions */
+  --transition-fast: 0.18s ease;
+  --transition-normal: 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Focus Ring */
   --focus-ring: 0 0 0 3px rgba(40, 167, 69, 0.35);
 }
