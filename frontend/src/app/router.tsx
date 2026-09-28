@@ -63,7 +63,7 @@ function StudentOnly({ children }: { children: ReactNode }) {
 
 export function AppRouter() {
   return (
-    <Suspense fallback={<Spinner label="Loading page" />}>
+    <Suspense fallback={<Spinner label="Đang tải trang" />}>
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<LoginPage />} />

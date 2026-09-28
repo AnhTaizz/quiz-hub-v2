@@ -79,7 +79,7 @@ export function PracticeQuestionView({
         <input
           type="text"
           className={`qh-practice-q__fill ${verdict === true ? "qh-practice-q__fill--correct" : ""} ${verdict === false ? "qh-practice-q__fill--wrong" : ""}`}
-          aria-label="Your answer"
+          aria-label="Câu trả lời của bạn"
           autoComplete="off"
           value={value.text}
           readOnly={locked}

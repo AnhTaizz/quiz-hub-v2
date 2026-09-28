@@ -87,7 +87,7 @@ describe("PracticePlayPage", () => {
     expect(await screen.findByRole("alert")).toBeInTheDocument();
     expect(screen.getByRole("radio", { name: "B" })).toBeChecked();
 
-    await user.click(screen.getByRole("button", { name: /retry/i }));
+    await user.click(screen.getByRole("button", { name: "Thử lại" }));
     await waitFor(() => expect(api.saveAnswer).toHaveBeenCalledTimes(2));
     await waitFor(() => expect(screen.queryByRole("alert")).not.toBeInTheDocument());
   });

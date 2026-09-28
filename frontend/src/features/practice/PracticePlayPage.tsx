@@ -139,7 +139,7 @@ function PracticePlayer({ session }: { session: PracticeSession }) {
         </p>
       )}
 
-      <nav className="qh-practice-play__nav" aria-label="Question navigator">
+      <nav className="qh-practice-play__nav" aria-label="Danh sách câu hỏi">
         {session.questions.map((question, index) => {
           const answered = isAnswered(state.answers[question.id]);
           return (
@@ -155,7 +155,7 @@ function PracticePlayer({ session }: { session: PracticeSession }) {
                 .filter(Boolean)
                 .join(" ")}
               aria-current={displayMode !== "all" && index === state.index ? "step" : undefined}
-              aria-label={`Question ${index + 1}${isFlashcard ? "" : answered ? ", answered" : ", unanswered"}`}
+              aria-label={`Câu ${index + 1}${isFlashcard ? "" : answered ? ", đã trả lời" : ", chưa trả lời"}`}
               onClick={() => {
                 if (displayMode === "all") document.getElementById(`practice-q-${question.id}`)?.scrollIntoView({ block: "start" });
                 else player.goTo(index);

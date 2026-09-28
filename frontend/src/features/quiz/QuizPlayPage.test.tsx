@@ -139,7 +139,7 @@ describe("QuizPlayPage", () => {
     const user = userEvent.setup();
 
     renderQuiz();
-    await user.type(await screen.findByLabelText("Your answer"), "Paris");
+    await user.type(await screen.findByLabelText("Câu trả lời của bạn"), "Paris");
 
     await waitFor(() => expect(mocked.saveAnswer).toHaveBeenCalledTimes(1), { timeout: 3000 });
     expect(mocked.saveAnswer).toHaveBeenCalledWith(
@@ -157,8 +157,8 @@ describe("QuizPlayPage", () => {
     renderQuiz();
     await user.click(await screen.findByLabelText("4"));
 
-    expect(await screen.findByText(/save failed/i)).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Retry" })).toBeInTheDocument();
+    expect(await screen.findByText(/lưu thất bại/i)).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Thử lại" })).toBeInTheDocument();
 
     const stored = JSON.parse(localStorage.getItem("quizhub:attempt:99") ?? "{}");
     expect(stored.answers["1"]).toMatchObject({ answerIds: [11], revision: 1 });
