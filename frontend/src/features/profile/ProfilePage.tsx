@@ -1,4 +1,5 @@
 import { useRef, useState, type FormEvent } from "react";
+import { useSearchParams } from "react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { profileApi } from "@/api/profile.api";
 import { isApiError } from "@/api/httpClient";
@@ -62,16 +63,39 @@ function ProfileHeader({ role }: { role: Role | undefined }) {
 }
 
 function ProfileForm({ profile }: { profile: UserProfileResponse }) {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const isPasswordRequested = searchParams.get("dialog") === "password";
   const [fullName, setFullName] = useState(profile.fullName);
   const [phone, setPhone] = useState(profile.phone ?? "");
   const [avatarUrl, setAvatarUrl] = useState<string | null>(profile.avatarUrl);
   const [fullNameError, setFullNameError] = useState<string | undefined>();
   const [avatarError, setAvatarError] = useState<string | null>(null);
-  const [passwordOpen, setPasswordOpen] = useState(false);
+  const [manualPasswordOpen, setManualPasswordOpen] = useState(false);
+  const passwordOpen = isPasswordRequested || manualPasswordOpen;
   const fileInput = useRef<HTMLInputElement>(null);
   const { updateUser } = useAuth();
   const { showToast } = useToast();
   const queryClient = useQueryClient();
+
+  function handleOpenPasswordModal() {
+    setSearchParams((prev) => {
+      const next = new URLSearchParams(prev);
+      next.set("dialog", "password");
+      return next;
+    }, { replace: true });
+    setManualPasswordOpen(true);
+  }
+
+  function handleClosePasswordModal() {
+    setManualPasswordOpen(false);
+    if (searchParams.get("dialog") === "password") {
+      setSearchParams((prev) => {
+        const next = new URLSearchParams(prev);
+        next.delete("dialog");
+        return next;
+      }, { replace: true });
+    }
+  }
 
   const upload = useMutation({
     mutationFn: (file: File) => profileApi.uploadAvatar(file),
@@ -189,7 +213,7 @@ function ProfileForm({ profile }: { profile: UserProfileResponse }) {
               <Button type="submit" className="qh-profile-save" isLoading={save.isPending}>
                 Lưu thay đổi
               </Button>
-              <Button type="button" variant="secondary" onClick={() => setPasswordOpen(true)}>
+              <Button type="button" variant="secondary" onClick={handleOpenPasswordModal}>
                 Đổi mật khẩu
               </Button>
             </div>
@@ -197,7 +221,7 @@ function ProfileForm({ profile }: { profile: UserProfileResponse }) {
         </Card>
       </div>
 
-      <ChangePasswordModal isOpen={passwordOpen} onClose={() => setPasswordOpen(false)} />
+      <ChangePasswordModal isOpen={passwordOpen} onClose={handleClosePasswordModal} />
     </>
   );
 }

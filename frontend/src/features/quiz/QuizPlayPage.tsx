@@ -144,14 +144,14 @@ function QuizPlayPage({ source }: { source: QuizSource }) {
         </div>
       </header>
 
-      <div className="qh-quiz-play__progress" aria-label={`${answeredCount} of ${state.questions.length} answered`}>
+      <div className="qh-quiz-play__progress" aria-label={`Đã trả lời ${answeredCount} / ${state.questions.length} câu`}>
         <div
           className="qh-quiz-play__progress-bar"
           style={{ width: `${(answeredCount / state.questions.length) * 100}%` }}
         />
       </div>
 
-      <nav className="qh-quiz-play__nav" aria-label="Question navigator">
+      <nav className="qh-quiz-play__nav" aria-label="Danh sách câu hỏi">
         {state.questions.map((q, index) => {
           const a = state.answers[q.id];
           const isAnswered = a && (a.answerIds.length > 0 || !!a.selectedText?.trim());
@@ -169,7 +169,7 @@ function QuizPlayPage({ source }: { source: QuizSource }) {
                 .join(" ")}
               onClick={() => attempt.goToQuestion(index)}
               aria-current={index === state.currentIndex ? "step" : undefined}
-              aria-label={`Question ${index + 1}${isAnswered ? ", answered" : ", unanswered"}`}
+              aria-label={`Câu ${index + 1}${isAnswered ? ", đã trả lời" : ", chưa trả lời"}`}
             >
               {index + 1}
             </button>
@@ -177,7 +177,7 @@ function QuizPlayPage({ source }: { source: QuizSource }) {
         })}
       </nav>
 
-      <section className="qh-quiz-play__question" aria-label={`Question ${state.currentIndex + 1}`}>
+      <section className="qh-quiz-play__question" aria-label={`Câu hỏi ${state.currentIndex + 1}`}>
         <div className="qh-quiz-play__question-header">
           <p className="qh-quiz-play__question-count">
             Câu {state.currentIndex + 1} / {state.questions.length}
@@ -195,7 +195,7 @@ function QuizPlayPage({ source }: { source: QuizSource }) {
             className="qh-quiz-play__fill-input"
             value={answer.selectedText ?? ""}
             onChange={(e) => attempt.setFillAnswer(question.id, e.target.value)}
-            aria-label="Your answer"
+            aria-label="Câu trả lời của bạn"
             autoComplete="off"
           />
         ) : (

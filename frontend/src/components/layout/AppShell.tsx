@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, NavLink, Outlet } from "react-router";
 import { useAuth } from "@/auth/AuthProvider";
 import { NotificationBell } from "@/features/notifications/NotificationBell";
@@ -23,73 +23,111 @@ const LEGACY_NAV_ITEMS = [
 export function StudentHeader() {
   const { user, logout } = useAuth();
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const accountRef = useRef<HTMLDetailsElement>(null);
+
+  function closeAccountMenu() {
+    if (accountRef.current) {
+      accountRef.current.open = false;
+    }
+  }
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (accountRef.current && !accountRef.current.contains(event.target as Node)) {
+        accountRef.current.open = false;
+      }
+    }
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape" && accountRef.current?.open) {
+        accountRef.current.open = false;
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
 
   return (
     <header className="qh-shell__header">
-        <button
-          type="button"
-          className="qh-shell__menu-toggle"
-          aria-label={drawerOpen ? "Close navigation" : "Open navigation"}
-          aria-expanded={drawerOpen}
-          onClick={() => setDrawerOpen((v) => !v)}
-        >
-          <span aria-hidden="true">☰</span>
-        </button>
+      <button
+        type="button"
+        className="qh-shell__menu-toggle"
+        aria-label={drawerOpen ? "Đóng menu điều hướng" : "Mở menu điều hướng"}
+        aria-expanded={drawerOpen}
+        onClick={() => setDrawerOpen((v) => !v)}
+      >
+        <span aria-hidden="true">☰</span>
+      </button>
       <Link to="/student" className="qh-shell__brand">
-          <svg className="qh-shell__brand-icon" aria-hidden="true" viewBox="0 0 24 24">
-            <path d="M12 2 2 7l10 5 10-5-10-5Zm-8.2 8.2L2 11l10 5 10-5-1.8-.8L12 14.3 3.8 10.2Zm0 4L2 15l10 5 10-5-1.8-.8L12 18.3l-8.2-4.1Z" />
-          </svg>
-          Quiz<span className="qh-shell__brand-hub">Hub</span>
+        <svg className="qh-shell__brand-icon" aria-hidden="true" viewBox="0 0 24 24">
+          <path d="M12 2 2 7l10 5 10-5-10-5Zm-8.2 8.2L2 11l10 5 10-5-1.8-.8L12 14.3 3.8 10.2Zm0 4L2 15l10 5 10-5-1.8-.8L12 18.3l-8.2-4.1Z" />
+        </svg>
+        Quiz<span className="qh-shell__brand-hub">Hub</span>
       </Link>
 
-        <nav
-          className={`qh-shell__nav ${drawerOpen ? "qh-shell__nav--open" : ""}`}
-          aria-label="Main navigation"
-        >
-          {NAV_ITEMS.map((item) => (
-            <NavLink
-              key={item.to}
-              to={item.to}
-              end={item.end}
-              className={({ isActive }) => `qh-shell__nav-link ${isActive ? "qh-shell__nav-link--active" : ""}`}
-              onClick={() => setDrawerOpen(false)}
-            >
-              {item.label}
-            </NavLink>
-          ))}
-          {LEGACY_NAV_ITEMS.map((item) => (
-            <a key={item.href} href={item.href} className="qh-shell__nav-link">
-              {item.label}
-            </a>
-          ))}
-        </nav>
-
-        <div className="qh-shell__user">
-          <a className="qh-shell__join" href="/student/classrooms#join-classroom">
-            <i className="bi bi-plus-lg" aria-hidden="true" /> Nhập mã lớp
+      <nav
+        className={`qh-shell__nav ${drawerOpen ? "qh-shell__nav--open" : ""}`}
+        aria-label="Điều hướng chính"
+      >
+        {NAV_ITEMS.map((item) => (
+          <NavLink
+            key={item.to}
+            to={item.to}
+            end={item.end}
+            className={({ isActive }) => `qh-shell__nav-link ${isActive ? "qh-shell__nav-link--active" : ""}`}
+            onClick={() => setDrawerOpen(false)}
+          >
+            {item.label}
+          </NavLink>
+        ))}
+        {LEGACY_NAV_ITEMS.map((item) => (
+          <a key={item.href} href={item.href} className="qh-shell__nav-link">
+            {item.label}
           </a>
-          <NotificationBell />
-          <details className="qh-shell__account">
-            <summary>
-              <span className="qh-shell__identity">
-                <strong>{user?.fullName}</strong>
-                <small>Sinh viên</small>
+        ))}
+      </nav>
+
+      <div className="qh-shell__user">
+        <Link className="qh-shell__join" to="/student/classrooms#join-classroom">
+          <i className="bi bi-plus-lg" aria-hidden="true" /> Nhập mã lớp
+        </Link>
+        <NotificationBell />
+        <details className="qh-shell__account" ref={accountRef}>
+          <summary aria-label="Tài khoản người dùng">
+            <span className="qh-shell__identity">
+              <strong>{user?.fullName}</strong>
+              <small>Sinh viên</small>
+            </span>
+            {user?.avatarUrl ? (
+              <img className="qh-shell__avatar" src={user.avatarUrl} alt="" />
+            ) : (
+              <span className="qh-shell__avatar" aria-hidden="true">
+                {initials(user?.fullName ?? "")}
               </span>
-              {user?.avatarUrl ? (
-                <img className="qh-shell__avatar" src={user.avatarUrl} alt="" />
-              ) : (
-                <span className="qh-shell__avatar" aria-hidden="true">
-                  {initials(user?.fullName ?? "")}
-                </span>
-              )}
-            </summary>
-            <div className="qh-shell__account-menu">
-              <NavLink to="/profile"><i className="bi bi-person" /> Hồ sơ cá nhân</NavLink>
-              <NavLink to="/profile"><i className="bi bi-key" /> Đổi mật khẩu</NavLink>
-              <button type="button" onClick={logout}><i className="bi bi-box-arrow-right" /> Đăng xuất</button>
-            </div>
-          </details>
-        </div>
+            )}
+          </summary>
+          <div className="qh-shell__account-menu">
+            <NavLink to="/profile" onClick={closeAccountMenu}>
+              <i className="bi bi-person" /> Hồ sơ cá nhân
+            </NavLink>
+            <NavLink to="/profile?dialog=password" onClick={closeAccountMenu}>
+              <i className="bi bi-key" /> Đổi mật khẩu
+            </NavLink>
+            <button
+              type="button"
+              onClick={() => {
+                closeAccountMenu();
+                logout();
+              }}
+            >
+              <i className="bi bi-box-arrow-right" /> Đăng xuất
+            </button>
+          </div>
+        </details>
+      </div>
     </header>
   );
 }

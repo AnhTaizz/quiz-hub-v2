@@ -233,7 +233,7 @@ export function PracticeSetupPage() {
                         ))}
                       </select>
                     </div>
-                    <div role="radiogroup" aria-label="Question range" className="qh-practice-setup__chunks">
+                    <div role="radiogroup" aria-label="Phạm vi câu hỏi" className="qh-practice-setup__chunks">
                       {chunks.map((chunk, index) => (
                         <button
                           key={chunk.offset}

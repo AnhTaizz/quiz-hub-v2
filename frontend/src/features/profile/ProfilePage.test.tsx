@@ -154,4 +154,43 @@ describe("ProfilePage", () => {
     expect(await screen.findByText(/at least 6/)).toBeInTheDocument();
     expect(api.changePassword).not.toHaveBeenCalled();
   });
+
+  it("automatically opens ChangePasswordModal when dialog=password is in the URL search params", async () => {
+    const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+    render(
+      <QueryClientProvider client={client}>
+        <AuthProvider>
+          <ToastProvider>
+            <MemoryRouter initialEntries={["/profile?dialog=password"]}>
+              <ProfilePage />
+            </MemoryRouter>
+          </ToastProvider>
+        </AuthProvider>
+      </QueryClientProvider>,
+    );
+
+    expect(await screen.findByRole("dialog", { name: "Đổi mật khẩu" })).toBeInTheDocument();
+    expect(screen.getByLabelText("Mật khẩu hiện tại")).toBeInTheDocument();
+  });
+
+  it("closes the password modal and cleans up dialog search parameter when Cancel is clicked", async () => {
+    const user = userEvent.setup();
+    const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+    render(
+      <QueryClientProvider client={client}>
+        <AuthProvider>
+          <ToastProvider>
+            <MemoryRouter initialEntries={["/profile?dialog=password"]}>
+              <ProfilePage />
+            </MemoryRouter>
+          </ToastProvider>
+        </AuthProvider>
+      </QueryClientProvider>,
+    );
+
+    const dialog = await screen.findByRole("dialog", { name: "Đổi mật khẩu" });
+    expect(dialog).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "Hủy" }));
+    expect(screen.queryByRole("dialog", { name: "Đổi mật khẩu" })).not.toBeInTheDocument();
+  });
 });

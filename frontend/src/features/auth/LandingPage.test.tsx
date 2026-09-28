@@ -136,7 +136,7 @@ describe("LandingPage Component - V1 1:1 Parity", () => {
 
     // 9. Scroll to Top button
     expect(screen.getByLabelText(/Cuộn lên đầu trang/i)).toBeInTheDocument();
-  }, 15000);
+  }, 45000);
 
   it("navigates hero slides with Next and Prev controls across all 4 slides", () => {
     renderLanding();

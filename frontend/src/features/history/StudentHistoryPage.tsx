@@ -31,7 +31,7 @@ export function StudentHistoryPage() {
           <p>Theo dõi kết quả bài thi và các lượt tự luyện tập của bạn.</p>
         </div>
 
-        <div className="qh-history-tabs" role="tablist" aria-label="History type">
+        <div className="qh-history-tabs" role="tablist" aria-label="Loại lịch sử">
         <button
           type="button"
           role="tab"

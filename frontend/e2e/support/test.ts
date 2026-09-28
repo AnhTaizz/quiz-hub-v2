@@ -33,28 +33,28 @@ export async function passFullscreenGate(page: Page): Promise<void> {
 }
 
 async function currentQuestionKind(page: Page): Promise<AnswerKind> {
-  await expect(page.getByRole("region", { name: /^Question \d+$/ })).toBeVisible();
+  await expect(page.getByRole("region", { name: /^(Question|Câu hỏi) \d+$/ })).toBeVisible();
   await passFullscreenGate(page);
-  return (await page.getByLabel("Your answer").count()) > 0 ? "fill" : "choice";
+  return (await page.getByLabel(/^(Your answer|Câu trả lời của bạn)$/).count()) > 0 ? "fill" : "choice";
 }
 
 /** Answers whichever question is currently shown and waits for the autosave indicator. */
 export async function answerCurrentQuestion(page: Page): Promise<AnswerKind> {
   const kind = await currentQuestionKind(page);
   if (kind === "fill") {
-    await page.getByLabel("Your answer").fill("Paris");
+    await page.getByLabel(/^(Your answer|Câu trả lời của bạn)$/).fill("Paris");
   } else {
     await page.getByRole("radio").first().check();
   }
-  await expect(page.getByText("Saved", { exact: true })).toBeVisible();
+  await expect(page.getByText(/^(Saved|Đã lưu)$/, { exact: true })).toBeVisible();
   return kind;
 }
 
 export async function expectAnswerRestored(page: Page, kind: AnswerKind): Promise<void> {
-  await expect(page.getByRole("region", { name: /^Question \d+$/ })).toBeVisible();
+  await expect(page.getByRole("region", { name: /^(Question|Câu hỏi) \d+$/ })).toBeVisible();
   await passFullscreenGate(page);
   if (kind === "fill") {
-    await expect(page.getByLabel("Your answer")).toHaveValue("Paris");
+    await expect(page.getByLabel(/^(Your answer|Câu trả lời của bạn)$/)).toHaveValue("Paris");
   } else {
     await expect(page.getByRole("radio").first()).toBeChecked();
   }
@@ -62,7 +62,7 @@ export async function expectAnswerRestored(page: Page, kind: AnswerKind): Promis
 
 /** Navigates (via the question navigator) to the single-choice question, wherever it is. */
 export async function showChoiceQuestion(page: Page): Promise<void> {
-  const dots = page.getByRole("button", { name: /^Question \d+,/ });
+  const dots = page.getByRole("button", { name: /^(Question|Câu) \d+,/ });
   // count() does not auto-wait: without this the loop can run before the quiz has loaded (0 dots) and
   // wrongly conclude there is no single-choice question - which is what failed on the slower CI runner.
   await expect(dots.first()).toBeVisible();
@@ -79,7 +79,7 @@ export async function showChoiceQuestion(page: Page): Promise<void> {
 
 /** Navigates to the last question (where the Submit button is). */
 export async function showLastQuestion(page: Page): Promise<void> {
-  await page.getByRole("button", { name: /^Question \d+,/ }).last().click();
+  await page.getByRole("button", { name: /^(Question|Câu) \d+,/ }).last().click();
 }
 
 export async function loginAsStudent(page: Page, world: World, returnUrl?: string): Promise<void> {
