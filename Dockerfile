@@ -1,5 +1,5 @@
 # Giai đoạn 1: Dùng Maven và Java 21 để build ra file .jar
-FROM maven:3-eclipse-temurin-21 AS build
+FROM maven:3-eclipse-temurin-24 AS build
 WORKDIR /app
 
 # Copy file cấu hình trước để cache dependencies
