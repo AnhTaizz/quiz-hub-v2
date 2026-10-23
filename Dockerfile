@@ -21,7 +21,7 @@ RUN --mount=type=cache,target=/root/.m2 \
     mvn -B -ntp clean package -DskipTests
 
 # Giai đoạn 2: Môi trường chạy JRE 21 siêu nhẹ
-FROM eclipse-temurin:21-jre-alpine
+FROM eclipse-temurin:24-jre-alpine
 WORKDIR /app
 
 # curl is required for the container HEALTHCHECK below; BusyBox wget's flag
